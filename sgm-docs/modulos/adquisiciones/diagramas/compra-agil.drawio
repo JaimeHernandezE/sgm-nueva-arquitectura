@@ -1,0 +1,248 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Adquisiciones - Compra Ágil (actualizado)" id="compra-agil-v3-tabla">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1900" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- TABLA PRINCIPAL -->
+        <mxCell id="tbl" parent="1" style="shape=table;childLayout=tableLayout;startSize=40;collapsible=0;recursiveResize=0;expand=0;fontSize=16;whiteSpace=wrap;" value="Adquisiciones: Compra Ágil (actualizado)" vertex="1">
+          <mxGeometry height="880" width="1880" x="20" y="30" as="geometry" />
+        </mxCell>
+
+        <!-- FILA 1: Unidad Solicitante / Comprador -->
+        <mxCell id="row1" parent="tbl" style="shape=tableRow;horizontal=0;swimlaneHead=0;swimlaneBody=0;top=0;left=0;strokeColor=inherit;bottom=0;right=0;dropTarget=0;fontStyle=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;startSize=40;collapsible=0;recursiveResize=0;expand=0;fontSize=16;whiteSpace=wrap;" value="Unidad Solicitante / Comprador (SGM)" vertex="1">
+          <mxGeometry height="171" width="1880" y="40" as="geometry" />
+        </mxCell>
+
+        <!-- Columnas cabecera (dentro de fila 1) -->
+        <mxCell id="col1" parent="row1" style="swimlane;swimlaneHead=0;swimlaneBody=0;fontStyle=0;strokeColor=inherit;connectable=0;fillColor=none;startSize=40;collapsible=0;recursiveResize=0;expand=0;fontSize=14;" value="1. Creación y Publicación de Solicitud de Cotización" vertex="1">
+          <mxGeometry height="171" width="380" x="40" as="geometry" />
+        </mxCell>
+        <mxCell id="col2" parent="row1" style="swimlane;swimlaneHead=0;swimlaneBody=0;fontStyle=0;strokeColor=inherit;connectable=0;fillColor=none;startSize=40;collapsible=0;recursiveResize=0;expand=0;fontSize=14;" value="2. Recepción de Cotizaciones" vertex="1">
+          <mxGeometry height="171" width="340" x="420" as="geometry" />
+        </mxCell>
+        <mxCell id="col3" parent="row1" style="swimlane;swimlaneHead=0;swimlaneBody=0;fontStyle=0;strokeColor=inherit;connectable=0;fillColor=none;startSize=40;collapsible=0;recursiveResize=0;expand=0;fontSize=14;" value="3. Selección y Emisión de OC" vertex="1">
+          <mxGeometry height="171" width="380" x="760" as="geometry" />
+        </mxCell>
+        <mxCell id="col4" parent="row1" style="swimlane;swimlaneHead=0;swimlaneBody=0;fontStyle=0;strokeColor=inherit;connectable=0;fillColor=none;startSize=40;collapsible=0;recursiveResize=0;expand=0;fontSize=14;" value="4. Aceptación de OC y Compromiso Cierto" vertex="1">
+          <mxGeometry height="171" width="330" x="1140" as="geometry" />
+        </mxCell>
+        <mxCell id="col5" parent="row1" style="swimlane;swimlaneHead=0;swimlaneBody=0;fontStyle=0;strokeColor=inherit;connectable=0;fillColor=none;startSize=40;collapsible=0;recursiveResize=0;expand=0;fontSize=14;" value="5. Recepción Conforme y Devengo" vertex="1">
+          <mxGeometry height="171" width="410" x="1470" as="geometry" />
+        </mxCell>
+
+        <!-- Contenido celda F1-C1 -->
+        <mxCell id="start" parent="col1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="Inicio" vertex="1">
+          <mxGeometry height="40" width="40" x="20" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="t1" parent="col1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1a1a1a;" value="Comprador crea solicitud&#xa;(título, descripción, cantidad,&#xa;despacho, contacto)" vertex="1">
+          <mxGeometry height="65" width="150" x="90" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="t2" parent="col1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1a1a1a;" value="SOLPED + V°B° Jefatura&#xa;+ Pre-afectación" vertex="1">
+          <mxGeometry height="60" width="150" x="90" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="e_t1t2" edge="1" parent="col1" source="t1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" target="t2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_start_t1" edge="1" parent="col1" source="start" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" target="t1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t_dl" parent="col1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff8e1;strokeColor=#b8860b;dashed=1;" value="Deep link:&#xa;Gestionar en MP" vertex="1">
+          <mxGeometry height="45" width="120" x="250" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="e_t2_dl" edge="1" parent="col1" source="t2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" target="t_dl">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Contenido celda F1-C2 (Comprador no actúa, solo espera; nota) -->
+        <mxCell id="t_lock" parent="col2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1a1a1a;" value="SOLPED bloqueada:&#xa;'En proceso de cotización'&#xa;(solo lectura)" vertex="1">
+          <mxGeometry height="60" width="160" x="20" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="t_cancela" parent="col2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fde8e8;strokeColor=#c0392b;" value="Cancelar Solicitud&#xa;(motivo obligatorio,&#xa;antes de emitir OC)" vertex="1">
+          <mxGeometry height="55" width="150" x="20" y="130" as="geometry" />
+        </mxCell>
+
+        <!-- Contenido celda F1-C3 -->
+        <mxCell id="t_eval" parent="col3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1a1a1a;" value="Comprador revisa tabla&#xa;comparativa y selecciona&#xa;oferta" vertex="1">
+          <mxGeometry height="65" width="150" x="20" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="t_fundamenta" parent="col3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff8e1;strokeColor=#b8860b;" value="Si no elige menor precio:&#xa;fundamentación obligatoria" vertex="1">
+          <mxGeometry height="50" width="150" x="190" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e_eval_fund" edge="1" parent="col3" source="t_eval" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" target="t_fundamenta">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Contenido celda F1-C4: sin acción del comprador -->
+
+        <!-- Contenido celda F1-C5 -->
+        <mxCell id="t_recep" parent="col5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1a1a1a;strokeWidth=2;" value="Comprador ingresa&#xa;Recepción Conforme" vertex="1">
+          <mxGeometry height="60" width="150" x="30" y="60" as="geometry" />
+        </mxCell>
+
+        <!-- ============ FILA 2: Mercado Público ============ -->
+        <mxCell id="row2" parent="tbl" style="shape=tableRow;horizontal=0;swimlaneHead=0;swimlaneBody=0;top=0;left=0;strokeColor=inherit;bottom=0;right=0;dropTarget=0;fontStyle=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;startSize=40;collapsible=0;recursiveResize=0;expand=0;fontSize=16;whiteSpace=wrap;" value="Mercado Público (Portal / API)" vertex="1">
+          <mxGeometry height="220" width="1880" y="211" as="geometry" />
+        </mxCell>
+        <mxCell id="r2c1" parent="row2" style="swimlane;swimlaneHead=0;swimlaneBody=0;fontStyle=0;connectable=0;strokeColor=inherit;fillColor=none;startSize=0;collapsible=0;recursiveResize=0;expand=0;fontSize=16;" value="" vertex="1">
+          <mxGeometry height="220" width="380" x="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r2c2" parent="row2" style="swimlane;swimlaneHead=0;swimlaneBody=0;fontStyle=0;connectable=0;strokeColor=inherit;fillColor=none;startSize=0;collapsible=0;recursiveResize=0;expand=0;fontSize=16;" value="" vertex="1">
+          <mxGeometry height="220" width="340" x="420" as="geometry" />
+        </mxCell>
+        <mxCell id="r2c3" parent="row2" style="swimlane;swimlaneHead=0;swimlaneBody=0;fontStyle=0;connectable=0;strokeColor=inherit;fillColor=none;startSize=0;collapsible=0;recursiveResize=0;expand=0;fontSize=16;" value="" vertex="1">
+          <mxGeometry height="220" width="380" x="760" as="geometry" />
+        </mxCell>
+        <mxCell id="r2c4" parent="row2" style="swimlane;swimlaneHead=0;swimlaneBody=0;fontStyle=0;connectable=0;strokeColor=inherit;fillColor=none;startSize=0;collapsible=0;recursiveResize=0;expand=0;fontSize=16;" value="" vertex="1">
+          <mxGeometry height="220" width="330" x="1140" as="geometry" />
+        </mxCell>
+        <mxCell id="r2c5" parent="row2" style="swimlane;swimlaneHead=0;swimlaneBody=0;fontStyle=0;connectable=0;strokeColor=inherit;fillColor=none;startSize=0;collapsible=0;recursiveResize=0;expand=0;fontSize=16;" value="" vertex="1">
+          <mxGeometry height="220" width="410" x="1470" as="geometry" />
+        </mxCell>
+
+        <!-- MP: filtro normativo (celda C1) -->
+        <mxCell id="mp_filtro" parent="r2c1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Filtro normativo:&#xa;solo MiPymes/&#xa;locales (1ª instancia)" vertex="1">
+          <mxGeometry height="70" width="140" x="230" y="45" as="geometry" />
+        </mxCell>
+
+        <!-- MP: cotización (celda C2) -->
+        <mxCell id="mp_cotiza" parent="r2c2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Proveedores cotizan&#xa;(2-5 días hábiles)&#xa;+ Declaración Habilidad" vertex="1">
+          <mxGeometry height="60" width="150" x="20" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="mp_desierto" parent="r2c2" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="¿Alguien&#xa;cotiza?" vertex="1">
+          <mxGeometry height="60" width="90" x="200" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="e_mpcot_des" edge="1" parent="r2c2" source="mp_cotiza" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" target="mp_desierto">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="mp_ampliar" parent="r2c2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fde8e8;strokeColor=#c0392b;fontSize=9;" value="No MiPyme →&#xa;ampliar a grandes&#xa;empresas (2ª ronda)" vertex="1">
+          <mxGeometry height="55" width="120" x="80" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="mp_end_des" parent="r2c2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fde8e8;strokeColor=#c0392b;fontSize=9;" value="Desierto: evaluar&#xa;presupuesto/condiciones&#xa;y republicar" vertex="1">
+          <mxGeometry height="55" width="130" x="200" y="140" as="geometry" />
+        </mxCell>
+
+        <!-- MP: OC (celda C3) -->
+        <mxCell id="mp_emiteoc" parent="r2c3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Sistema precarga datos&#xa;y comprador emite OC" vertex="1">
+          <mxGeometry height="60" width="150" x="30" y="55" as="geometry" />
+        </mxCell>
+
+        <!-- MP: aceptación OC + gateway habilidad (celda C4) -->
+        <mxCell id="mp_acepta" parent="r2c4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;" value="Proveedor hace clic&#xa;'Aceptar'" vertex="1">
+          <mxGeometry height="55" width="130" x="20" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="mp_gw_hab" parent="r2c4" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="¿Proveedor hábil?&#xa;(Tesorería / DT)" vertex="1">
+          <mxGeometry height="65" width="130" x="180" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="e_acepta_gw" edge="1" parent="r2c4" source="mp_acepta" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" target="mp_gw_hab">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="mp_bloquea" parent="r2c4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fde8e8;strokeColor=#c0392b;fontSize=9;" value="Inhábil: bloquea&#xa;la compra" vertex="1">
+          <mxGeometry height="45" width="120" x="190" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="mp_rechaza" parent="r2c4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fde8e8;strokeColor=#c0392b;fontSize=9;" value="Proveedor rechaza OC →&#xa;2ª mejor oferta o cancelar" vertex="1">
+          <mxGeometry height="45" width="140" x="20" y="140" as="geometry" />
+        </mxCell>
+
+        <!-- ============ FILA 3: Contabilidad/Tesorería (SGM) ============ -->
+        <mxCell id="row3" parent="tbl" style="shape=tableRow;horizontal=0;swimlaneHead=0;swimlaneBody=0;top=0;left=0;strokeColor=inherit;bottom=0;right=0;dropTarget=0;fontStyle=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;startSize=40;collapsible=0;recursiveResize=0;expand=0;fontSize=16;whiteSpace=wrap;" value="Contabilidad / Tesorería (SGM)" vertex="1">
+          <mxGeometry height="180" width="1880" y="431" as="geometry" />
+        </mxCell>
+        <mxCell id="r3c1" parent="row3" style="swimlane;swimlaneHead=0;swimlaneBody=0;fontStyle=0;connectable=0;strokeColor=inherit;fillColor=none;startSize=0;collapsible=0;recursiveResize=0;expand=0;fontSize=16;" value="" vertex="1">
+          <mxGeometry height="180" width="380" x="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r3c2" parent="row3" style="swimlane;swimlaneHead=0;swimlaneBody=0;fontStyle=0;connectable=0;strokeColor=inherit;fillColor=none;startSize=0;collapsible=0;recursiveResize=0;expand=0;fontSize=16;" value="" vertex="1">
+          <mxGeometry height="180" width="340" x="420" as="geometry" />
+        </mxCell>
+        <mxCell id="r3c3" parent="row3" style="swimlane;swimlaneHead=0;swimlaneBody=0;fontStyle=0;connectable=0;strokeColor=inherit;fillColor=none;startSize=0;collapsible=0;recursiveResize=0;expand=0;fontSize=16;" value="" vertex="1">
+          <mxGeometry height="180" width="380" x="760" as="geometry" />
+        </mxCell>
+        <mxCell id="r3c4" parent="row3" style="swimlane;swimlaneHead=0;swimlaneBody=0;fontStyle=0;connectable=0;strokeColor=#6c8ebf;fillColor=#dae8fc;startSize=0;collapsible=0;recursiveResize=0;expand=0;fontSize=16;" value="" vertex="1">
+          <mxGeometry height="180" width="330" x="1140" as="geometry" />
+        </mxCell>
+        <mxCell id="r3c5" parent="row3" style="swimlane;swimlaneHead=0;swimlaneBody=0;fontStyle=0;connectable=0;strokeColor=inherit;fillColor=none;startSize=0;collapsible=0;recursiveResize=0;expand=0;fontSize=16;" value="" vertex="1">
+          <mxGeometry height="180" width="410" x="1470" as="geometry" />
+        </mxCell>
+
+        <!-- Hito crítico en celda C4 (fondo azul MP ya seteado en r3c4) -->
+        <mxCell id="hito_cc" parent="r3c4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;" value="Registrar Compromiso&#xa;Cierto (Obligación)" vertex="1">
+          <mxGeometry height="60" width="150" x="90" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="hito_note" parent="r3c4" style="text;html=1;fontSize=9;fontColor=#2d7a26;align=center;" value="Automático — Lectura API:&#xa;OC Aceptada" vertex="1">
+          <mxGeometry height="30" width="150" x="90" y="25" as="geometry" />
+        </mxCell>
+
+        <!-- Devengo en celda C5 -->
+        <mxCell id="t_devengo" parent="r3c5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1a1a1a;" value="Registrar Devengado&#xa;(Match a 3 vías)" vertex="1">
+          <mxGeometry height="60" width="130" x="30" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="t_devengo_note" parent="r3c5" style="text;html=1;fontSize=9;fontColor=#666666;align=center;" value="Requiere: OC (MP) +&#xa;Recep. Conforme (SGM) +&#xa;Factura (SII)" vertex="1">
+          <mxGeometry height="40" width="130" x="30" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="t_decreto" parent="r3c5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1a1a1a;" value="Generar Decreto&#xa;de Pago" vertex="1">
+          <mxGeometry height="60" width="120" x="180" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="t_pago" parent="r3c5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1a1a1a;" value="Ejecutar Pago&#xa;(máx. 30 días corridos)" vertex="1">
+          <mxGeometry height="60" width="130" x="320" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="end" parent="r3c5" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="Fin" vertex="1">
+          <mxGeometry height="40" width="40" x="360" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dev_dec" edge="1" parent="r3c5" source="t_devengo" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" target="t_decreto">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dec_pago" edge="1" parent="r3c5" source="t_decreto" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" target="t_pago">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_pago_end" edge="1" parent="r3c5" source="t_pago" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" target="end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ===== Conexiones inter-celda (nivel tabla, parent=tbl) ===== -->
+        <mxCell id="e_dl_filtro" edge="1" parent="tbl" source="t_dl" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;" target="mp_filtro">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_filtro_cotiza" edge="1" parent="tbl" source="mp_filtro" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" target="mp_cotiza">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_des_eval" edge="1" parent="tbl" source="mp_desierto" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" target="t_eval" value="sí">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_eval_emite" edge="1" parent="tbl" source="t_fundamenta" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" target="mp_emiteoc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_emite_acepta" edge="1" parent="tbl" source="mp_emiteoc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" target="mp_acepta">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_gw_hito" edge="1" parent="tbl" source="mp_gw_hab" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;strokeColor=#c0392b;strokeWidth=2;" target="hito_cc" value="hábil">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_hito_recep" edge="1" parent="tbl" source="hito_cc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" target="t_recep">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_recep_dev" edge="1" parent="tbl" source="t_recep" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" target="t_devengo">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Leyenda -->
+        <mxCell id="leg1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" value="Se ejecuta en Mercado Público" vertex="1">
+          <mxGeometry height="30" width="200" x="20" y="930" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" value="SGM actualiza estado vía API (automático)" vertex="1">
+          <mxGeometry height="30" width="240" x="230" y="930" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1a1a1a;fontSize=10;" value="Acción interna en SGM" vertex="1">
+          <mxGeometry height="30" width="160" x="480" y="930" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fde8e8;strokeColor=#c0392b;fontSize=10;" value="Edge case / bloqueo" vertex="1">
+          <mxGeometry height="30" width="160" x="650" y="930" as="geometry" />
+        </mxCell>
+        <mxCell id="leg5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff8e1;strokeColor=#b8860b;fontSize=10;dashed=1;" value="Deep link (navegación, no escritura)" vertex="1">
+          <mxGeometry height="30" width="240" x="820" y="930" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
