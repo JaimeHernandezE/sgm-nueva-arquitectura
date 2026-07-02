@@ -46,7 +46,7 @@ Exigencia sobre los contratos: **cada validación declarada en un contrato debe 
 | Asíncrona | La operación procede; la validación confirma o revierte después | Notificación de devengado a Contabilidad |
 | Cacheada | Se valida contra dato local con frescura declarada | Catálogos, tablas de referencia |
 
-**[PENDIENTE P-09]** Clasificar las validaciones del piloto Compra Ágil (insumo: los 14 sub-pasos y el catálogo de reglas bloqueantes/asesoras de la ficha QA).
+**[PENDIENTE P-09]** Clasificar las validaciones del piloto Compra Ágil (insumo: los 17 sub-pasos y el catálogo de reglas bloqueantes/asesoras de la ficha QA).
 
 ## 6. SLOs exigibles en las bases
 
@@ -96,7 +96,7 @@ Los BPMN de la especificación son notación, no tecnología: definen el flujo q
 5. **Versionamiento de procesos en vuelo.** Regla definida para instancias a mitad de flujo cuando el proceso cambia (terminan con la versión anterior o migran con criterio explícito). **[PENDIENTE P-12]** Definir la regla por tipo de flujo.
 6. **Trazabilidad contra la especificación como criterio de recepción.** El comportamiento del sistema debe ser demostrable contra el BPMN de la especificación: mismo conjunto de pasos, mismas decisiones, mismos cruces de módulo. Cumple o no cumple.
 
-Lectura de diseño que conecta con los contratos: en los BPMN, cada cruce de carril entre unidades que corresponden a módulos distintos es un borde de contrato. El recorrido de los 14 sub-pasos de Compra Ágil identifica simultáneamente los contratos (documento API-first) y los estados/transiciones de esta sección.
+Lectura de diseño que conecta con los contratos: en los BPMN, cada cruce de carril entre unidades que corresponden a módulos distintos es un borde de contrato. El recorrido de los 17 sub-pasos de Compra Ágil identifica simultáneamente los contratos (documento API-first) y los estados/transiciones de esta sección.
 
 ## 11. Resumen: qué va a las bases
 

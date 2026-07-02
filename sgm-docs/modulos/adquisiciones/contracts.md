@@ -1,6 +1,6 @@
 # Contrato del módulo: Adquisiciones
 
-> Piloto: macroproceso **Compra Ágil** (SOLPED → Pago, 14 sub-pasos).
+> Piloto: macroproceso **Compra Ágil** (SOLPED → Pago, 17 sub-pasos).
 > Estado: borrador funcional derivado de fichas de flujo y ficha QA.
 > Estándares transversales: [`arquitectura/estandares-api.md`](../../arquitectura/estandares-api.md)
 > Metodología: [`arquitectura/contrato-api-first.md`](../../arquitectura/contrato-api-first.md)
@@ -19,7 +19,8 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | `PurchaseRequest` | Expuesta | `id`, `requesting_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `status` | 1.1, 1.2, 2.1, 2.2 |
 | `PurchaseRequestLine` | Expuesta | `id`, `purchase_request_id`, `item_description`, `quantity`, `unit_of_measure`, `unit_price`, `price_source` | 1.1 |
 | `PurchaseRequestApproval` | Expuesta | `id`, `purchase_request_id`, `approver_id`, `decision`, `decision_date`, `comments` | 1.2 |
-| `BudgetPreCommitment` | Expuesta | `id`, `purchase_request_id`, `budget_line_id`, `estimated_amount`, `fiscal_year`, `status` | 1.3 |
+| `BudgetAvailabilityCertificate` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status` | 1.5 |
+| `BudgetPreCommitment` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `budget_availability_certificate_id`, `budget_line_id`, `estimated_amount`, `fiscal_year`, `status` | 1.6 |
 | `AgileQuoteProcess` | Expuesta | `id`, `purchase_request_id`, `deep_link_clicked_at`, `mp_quote_id` | 2.1, 2.2 |
 | `PurchaseOrder` | Expuesta | `id`, `purchase_request_id`, `mp_oc_id`, `supplier_rut`, `total_amount`, `selection_justification`, `status`, `acceptance_date` | 2.4, 3.1, 3.2 |
 | `BudgetCommitment` | Expuesta | `id`, `purchase_order_id`, `budget_pre_commitment_id`, `committed_amount`, `commitment_date`, `source` | 3.2 |
@@ -72,16 +73,45 @@ Convenciones de error y paginación según [`estandares-api.md`](../../arquitect
 - **Sub-pasos:** 1.2
 - **Reglas:** `comments` obligatorio si rechazo → `status = draft`
 
-#### `POST /purchase-requests/{id}/budget-pre-commitment` — `createBudgetPreCommitment`
+#### `POST /purchase-requests/{id}/budget-verification` — `verifyBudgetAvailability`
 - **Sub-pasos:** 1.3
-- **Entrada:** `budget_line_id`, `estimated_amount`, `fiscal_year`
+- **Entrada:** `budget_line_id`, `amount`, `fiscal_year`, `decision` (`confirmed` \| `rejected`), `comments` (obligatorio si rechazo)
 - **Reglas:**
   | Regla | Severidad | QA | Error |
   |---|---|---|---|
-  | Disponibilidad presupuestaria con trazabilidad de saldo | blocking | 8, 11 P0/P1 | `BUDGET_UNAVAILABLE` |
-  | Generador ≠ aprobador CDP (segregación funciones) | blocking | 9 P1 | `SEGREGATION_OF_DUTIES_VIOLATION` |
+  | Disponibilidad presupuestaria con trazabilidad de saldo | blocking | 8 P1 | `BUDGET_UNAVAILABLE` |
   | SOLPED en `pending_finance` | blocking | — | `INVALID_STATUS` |
-- **Dependencias:** `checkBudgetAvailability`, `createBudgetPreCommitment` (Presupuestos)
+- **Dependencias:** `checkBudgetAvailability` (Presupuestos)
+
+#### `POST /purchase-requests/{id}/budget-financing-request` — `requestBudgetFinancing`
+- **Sub-pasos:** 1.4
+- **Entrada:** `justification` (texto)
+- **Reglas:** paso optativo; no avanza el ciclo principal hasta resolución externa de presupuesto
+- **Evento emitido:** `BudgetFinancingRequested`
+
+#### `POST /purchase-requests/{id}/budget-availability-certificate` — `issueBudgetAvailabilityCertificate`
+- **Sub-pasos:** 1.5
+- **Entrada:** `budget_line_id`, `certified_amount`, `fiscal_year`
+- **Reglas:**
+  | Regla | Severidad | QA | Error |
+  |---|---|---|---|
+  | Verificación confirmada en 1.3 | blocking | — | `VERIFICATION_REQUIRED` |
+  | Verificador ≠ firmante CDP | blocking | 9 P1 | `SEGREGATION_OF_DUTIES_VIOLATION` |
+  | Saldo disponible al revalidar | blocking | 8, 11 P0/P1 | `BUDGET_UNAVAILABLE` |
+  | Firma electrónica válida (FirmaGob) | blocking | 5, 7 P1 | `SIGNATURE_REQUIRED` |
+- **Dependencias:** `checkBudgetAvailability`, `requestSignature`, `confirmSignature`
+- **Evento emitido:** `BudgetAvailabilityCertificateIssued`
+
+#### `POST /purchase-requests/{id}/budget-pre-commitment` — `createBudgetPreCommitment`
+- **Sub-pasos:** 1.6
+- **Entrada:** `budget_line_id`, `estimated_amount`, `fiscal_year`, `budget_availability_certificate_id`
+- **Reglas:**
+  | Regla | Severidad | QA | Error |
+  |---|---|---|---|
+  | CDP vigente (`budget_availability_certificate_id`) | blocking | — | `CDP_REQUIRED` |
+  | Disponibilidad presupuestaria con trazabilidad de saldo | blocking | 8, 11 P0/P1 | `BUDGET_UNAVAILABLE` |
+  | SOLPED en `pending_finance` | blocking | — | `INVALID_STATUS` |
+- **Dependencias:** `createBudgetPreCommitment` (Presupuestos), `registerPreObligation` (Contabilidad)
 - **Evento emitido:** `BudgetPreCommitmentCreated`
 
 ### 2.2 Modalidad de Compra (Compra Ágil)
@@ -172,8 +202,8 @@ Interfaces de proveedor — no llamadas a módulos concretos. El proveedor puede
 
 | Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
 |---|---|---|---|
-| `checkBudgetAvailability` | 1.3, 3.2 | Síncrona bloqueante | Error `BUDGET_PROVIDER_UNAVAILABLE`; operación no procede |
-| `createBudgetPreCommitment` | 1.3 | Síncrona bloqueante | Rechazo → `BUDGET_UNAVAILABLE`; sin efecto parcial |
+| `checkBudgetAvailability` | 1.3, 1.5, 1.6 | Síncrona bloqueante | Error `BUDGET_PROVIDER_UNAVAILABLE`; operación no procede |
+| `createBudgetPreCommitment` | 1.6 | Síncrona bloqueante | Rechazo → `BUDGET_UNAVAILABLE`; sin efecto parcial |
 | `convertPreCommitmentToCommitment` | 3.2 | Síncrona bloqueante | Rechazo → `BUDGET_UNAVAILABLE`; OC queda `commitment_pending` |
 
 ### 3.2 Contabilidad
@@ -181,6 +211,7 @@ Interfaces de proveedor — no llamadas a módulos concretos. El proveedor puede
 | Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
 |---|---|---|---|
 | `registerBudgetCommitment` | 3.2 | Asíncrona | Reintento; alerta operacional si persiste |
+| `registerPreObligation` | 1.6 | Síncrona bloqueante | `ACCOUNTING_PROVIDER_UNAVAILABLE`; preobligación no persiste |
 | `getInvoiceForMatch` | 5.1 | Síncrona bloqueante | `INVOICE_PROVIDER_UNAVAILABLE`; no habilita match |
 | `registerAccrual` | 5.2 | Síncrona bloqueante | `ACCOUNTING_PROVIDER_UNAVAILABLE`; no persiste devengado |
 
@@ -194,8 +225,8 @@ Interfaces de proveedor — no llamadas a módulos concretos. El proveedor puede
 
 | Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
 |---|---|---|---|
-| `requestSignature` | 1.2, 4.1, 5.3 | Síncrona bloqueante | `SIGNATURE_PROVIDER_UNAVAILABLE`; documento queda `pending_signature` |
-| `confirmSignature` | 1.2 | Síncrona bloqueante | `SIGNATURE_REJECTED`; no transiciona estado |
+| `requestSignature` | 1.2, 1.5, 4.1, 5.3 | Síncrona bloqueante | `SIGNATURE_PROVIDER_UNAVAILABLE`; documento queda `pending_signature` |
+| `confirmSignature` | 1.2, 1.5 | Síncrona bloqueante | `SIGNATURE_REJECTED`; no transiciona estado |
 
 ### 3.5 Mercado Público (solo lectura)
 
@@ -231,7 +262,9 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 | Evento | Sub-pasos | Esquema (campos principales) |
 |---|---|---|
 | `PurchaseRequestApproved` | 1.2 | `purchase_request_id`, `approver_id`, `approved_at` |
-| `BudgetPreCommitmentCreated` | 1.3 | `budget_pre_commitment_id`, `purchase_request_id`, `estimated_amount` |
+| `BudgetFinancingRequested` | 1.4 | `purchase_request_id`, `requested_at`, `justification` |
+| `BudgetAvailabilityCertificateIssued` | 1.5 | `certificate_id`, `purchase_request_id`, `certificate_number`, `signed_at` |
+| `BudgetPreCommitmentCreated` | 1.6 | `budget_pre_commitment_id`, `purchase_request_id`, `estimated_amount` |
 | `PurchaseOrderIssued` | 2.4 | `purchase_order_id`, `mp_oc_id`, `total_amount`, `supplier_rut` |
 | `PurchaseOrderAccepted` | 3.2 | `purchase_order_id`, `acceptance_date`, `total_amount` |
 | `BudgetCommitmentCreated` | 3.2 | `budget_commitment_id`, `committed_amount`, `commitment_date` |
@@ -251,8 +284,8 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 |---|---|---|---|---|
 | 5 | P1 | Seguimiento de firmas | `approvePurchaseRequest` | `SIGNATURE_REQUIRED` |
 | 7 | P1 | Firma electrónica SOLPED | `approvePurchaseRequest`, `confirmGoodsReceipt` | `SIGNATURE_REQUIRED` |
-| 8 | P1 | Trazabilidad disponibilidad | `createBudgetPreCommitment` | Respuesta incluye desglose de saldo |
-| 9 | P1 | Segregación CDP | `createBudgetPreCommitment` | `SEGREGATION_OF_DUTIES_VIOLATION` |
+| 8 | P1 | Trazabilidad disponibilidad | `verifyBudgetAvailability`, `issueBudgetAvailabilityCertificate` | Respuesta incluye desglose de saldo |
+| 9 | P1 | Segregación CDP | `issueBudgetAvailabilityCertificate` | `SEGREGATION_OF_DUTIES_VIOLATION` |
 | 11 | P0 | Preobligación sin saldo | `createBudgetPreCommitment`, `syncPurchaseOrderAccepted` | `BUDGET_UNAVAILABLE` |
 | 27 | P0 | Obligación excede saldo | `syncPurchaseOrderAccepted` | `AMOUNT_DEVIATION_EXCEEDED` / `BUDGET_UNAVAILABLE` |
 | 31 | P0 | Devengado sin recepción | `performThreeWayMatch`, `registerAccrual` | `GOODS_RECEIPT_REQUIRED`, `THREE_WAY_MATCH_REQUIRED` |
@@ -269,7 +302,10 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 |---|---|---|---|
 | 1.1 | `createPurchaseRequest`, `submitPurchaseRequest` | `getPriceReference`, `checkStockAvailability` | — |
 | 1.2 | `approvePurchaseRequest`, `rejectPurchaseRequest` | `requestSignature`, `confirmSignature` | `PurchaseRequestApproved` |
-| 1.3 | `createBudgetPreCommitment` | `checkBudgetAvailability`, `createBudgetPreCommitment` | `BudgetPreCommitmentCreated` |
+| 1.3 | `verifyBudgetAvailability` | `checkBudgetAvailability` | — |
+| 1.4 | `requestBudgetFinancing` | — | `BudgetFinancingRequested` |
+| 1.5 | `issueBudgetAvailabilityCertificate` | `checkBudgetAvailability`, `requestSignature`, `confirmSignature` | `BudgetAvailabilityCertificateIssued` |
+| 1.6 | `createBudgetPreCommitment` | `createBudgetPreCommitment`, `registerPreObligation` | `BudgetPreCommitmentCreated` |
 | 2.1 | `recordDeepLinkClick` | — | — |
 | 2.2 | `syncQuoteId` | `validateQuoteId` | — |
 | 2.3 | `getQuoteSummary` | `getQuoteSummary` | — |

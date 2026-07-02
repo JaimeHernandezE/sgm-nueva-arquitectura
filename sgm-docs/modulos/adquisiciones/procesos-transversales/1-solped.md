@@ -71,7 +71,67 @@
 
 ---
 
-## 1.3 — Pre-afectación presupuestaria
+## 1.3 — Verificación de disponibilidad presupuestaria
+
+| Materia | Valor |
+|---|---|
+| Unidad municipal | DAF Finanzas |
+| Rol | Usuario |
+| Plataforma | SGM |
+| Optativo | Falso |
+
+**Detalle:** El formulador de DAF Finanzas consulta la disponibilidad presupuestaria de la SOLPED aprobada (QA ítem 8 P1). Muestra trazabilidad de saldo (disponible, comprometido por otras SOLPED, proyectado) y confirma o rechaza con justificación. Quien verifica aquí no es quien firma el CDP (segregación QA ítem 9).
+
+**Entidad(es) y campos:**
+- `PurchaseRequest.status` (enum, permanece en `pending_finance` hasta completar 1.6)
+- `BudgetAvailabilityCertificate.verified_by` (ref. `User`, se registra al confirmar verificación)
+
+**Borde de módulo:**
+
+| # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
+|---|---|---|---|---|---|
+| 1 | Dependencia | `checkBudgetAvailability` | Presupuestos | Síncrona bloqueante | Entrada: `budget_line_id`, `amount`, `fiscal_year` — Respuesta: `available_balance`, `committed_by_others`, `projected_balance` |
+| 2 | Operación | `verifyBudgetAvailability` | — (Adquisiciones) | — | Entrada: `decision` (`confirmed` \| `rejected`), `comments` si rechazo |
+
+**Edge cases:**
+- Sin disponibilidad presupuestaria → verificación rechazada; camino a 1.4 (solicitar financiamiento) o devolución al solicitante con justificación.
+- Proveedor Presupuestos no responde → `BUDGET_PROVIDER_UNAVAILABLE` (`severity: blocking`); SOLPED permanece en `pending_finance`.
+- Rechazo DAF con justificación → `PurchaseRequest` vuelve al solicitante; camino optativo a 1.4 (línea punteada BPMN).
+
+> ⚠ **Pendiente de definir:** gateway de disponibilidad presupuestaria — probablemente requiere campo calculado `available_balance` en `BudgetLine`.
+
+---
+
+## 1.4 — Solicitar financiamiento a DAF
+
+| Materia | Valor |
+|---|---|
+| Unidad municipal | Unidad Solicitante / DAF Finanzas |
+| Rol | Usuario |
+| Plataforma | SGM |
+| Optativo | Verdadero |
+
+**Detalle:** Paso optativo cuando en 1.3 no hay saldo disponible o Finanzas rechaza la verificación. El solicitante (o DAF en su nombre) registra la solicitud de financiamiento; el proceso deriva a **modificación o reasignación presupuestaria** (flujo externo a Adquisiciones). Tras resolver el presupuesto, el flujo retorna a 1.3.
+
+**Entidad(es) y campos:**
+- `PurchaseRequest.status` (enum, `pending_budget_financing` mientras el financiamiento está en trámite — valor propuesto)
+
+**Borde de módulo:**
+
+| # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
+|---|---|---|---|---|---|
+| 1 | Operación | `requestBudgetFinancing` | — (Adquisiciones) | — | Entrada: `justification` (texto) — sin avance de estado principal del ciclo de compra |
+| 2 | Evento | `BudgetFinancingRequested` | — (consumidores: Presupuestos, reportería) | Asíncrona | `purchase_request_id`, `requested_at`, `justification` |
+
+**Edge cases:**
+- Financiamiento aprobado externamente → SOLPED retoma en 1.3 para nueva verificación.
+- Financiamiento denegado → SOLPED permanece bloqueada; solicitante debe cancelar o reformular.
+
+> ⚠ **Pendiente de definir:** contrato del módulo Presupuestos para el flujo de modificación/reasignación presupuestaria disparado desde este paso.
+
+---
+
+## 1.5 — Emisión de CDP firmado
 
 | Materia | Valor |
 |---|---|
@@ -80,26 +140,57 @@
 | Plataforma | SGM |
 | Optativo | Falso |
 
-**Detalle:** Finanzas realiza la Pre-afectación presupuestaria sobre la SOLPED aprobada. El sistema queda a la espera de Mercado Público.
+**Detalle:** El aprobador de DAF Finanzas emite y firma el **Certificado de Disponibilidad Presupuestaria** (CDP) sobre la SOLPED con verificación confirmada en 1.3. Requiere firma electrónica del aprobador. El verificador (1.3) y el firmante del CDP deben ser personas distintas (QA ítem 9 P1).
 
 **Entidad(es) y campos:**
-- `BudgetPreCommitment` — `purchase_request_id` (ref. `PurchaseRequest`, 1:1), `budget_line_id` (ref. `BudgetLine`), `estimated_amount` (número), `fiscal_year` (número), `status` (enum: `active`)
+- `BudgetAvailabilityCertificate` — `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status` (enum: `issued`, `rejected`), `rejection_reason` (texto, obligatorio si `rejected`)
 
 **Borde de módulo:**
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Dependencia | `checkBudgetAvailability` | Presupuestos | Síncrona bloqueante | Entrada: `budget_line_id`, `amount`, `fiscal_year` — Respuesta: `available_balance`, `committed_by_others`, `projected_balance`, `certificate_ref` |
-| 2 | Dependencia | `createBudgetPreCommitment` | Presupuestos | Síncrona bloqueante | Entrada: `purchase_request_id`, `budget_line_id`, `estimated_amount` — Respuesta: `BudgetPreCommitment` (`id`, `status`) |
-| 3 | Evento | `BudgetPreCommitmentCreated` | — (consumidores: Contabilidad, reportería) | Asíncrona | `BudgetPreCommitment`, `PurchaseRequest.id` |
+| 1 | Dependencia | `checkBudgetAvailability` | Presupuestos | Síncrona bloqueante | Revalidación de saldo al emitir |
+| 2 | Dependencia | `requestSignature`, `confirmSignature` | FirmaGob | Síncrona bloqueante | Firma del CDP por aprobador DAF |
+| 3 | Operación | `issueBudgetAvailabilityCertificate` | — (Adquisiciones) | — | Respuesta: `BudgetAvailabilityCertificate` (`certificate_number`, `status = issued`) |
+| 4 | Evento | `BudgetAvailabilityCertificateIssued` | — (consumidores: auditoría, Contabilidad) | Asíncrona | `BudgetAvailabilityCertificate`, `PurchaseRequest.id` |
 
 **Edge cases:**
-- Sin disponibilidad presupuestaria → `createBudgetPreCommitment` rechazado con `BUDGET_UNAVAILABLE` (`severity: blocking`, QA ítems 8, 11 P0/P1). No se avanza a Modalidad de Compra.
-- Proveedor Presupuestos no responde (timeout/error 5xx) → operación no procede; retorna `BUDGET_PROVIDER_UNAVAILABLE` (`severity: blocking`). SOLPED permanece en `pending_finance`; reintento manual.
-- Proveedor rechaza pre-afectación (saldo insuficiente tras recálculo) → mismo que sin disponibilidad; usuario puede solicitar financiamiento a DAF (flujo fuera de Adquisiciones).
-- Usuario generador y aprobador del CDP son la misma persona → `createBudgetPreCommitment` rechazado con `SEGREGATION_OF_DUTIES_VIOLATION` (QA ítem 9 P1).
+- Verificador y firmante son la misma persona → `SEGREGATION_OF_DUTIES_VIOLATION` (QA ítem 9 P1).
+- Saldo insuficiente al revalidar → `BUDGET_UNAVAILABLE`; no se emite CDP; camino a 1.4.
+- FirmaGob no disponible → CDP queda `pending_signature`; reintento vía `confirmSignature`.
 
-> ⚠ **Pendiente de definir:** gateway de disponibilidad presupuestaria — probablemente requiere campo calculado `available_balance` en `BudgetLine`. Qué ocurre si se revierte la SOLPED tras pre-afectación activa.
+---
+
+## 1.6 — Generación de preobligación
+
+| Materia | Valor |
+|---|---|
+| Unidad municipal | DAF Finanzas |
+| Rol | Usuario |
+| Plataforma | SGM |
+| Optativo | Falso |
+
+**Detalle:** Tras el CDP vigente (1.5), DAF Finanzas registra la **preobligación** (pre-afectación presupuestaria). El registro se contabiliza en el módulo Contabilidad. Puede ejecutarse inmediatamente tras el CDP o en la misma transacción atómica — ver pendiente. Al completarse, la SOLPED queda lista para Modalidad de Compra.
+
+**Entidad(es) y campos:**
+- `BudgetPreCommitment` — `procurement_case_id`, `purchase_request_id`, `budget_availability_certificate_id` (ref. `BudgetAvailabilityCertificate`, **obligatorio**), `budget_line_id`, `estimated_amount`, `fiscal_year`, `status` (enum: `active`)
+
+**Borde de módulo:**
+
+| # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
+|---|---|---|---|---|---|
+| 1 | Dependencia | `createBudgetPreCommitment` | Presupuestos | Síncrona bloqueante | Entrada: `purchase_request_id`, `budget_line_id`, `estimated_amount` — Respuesta: `BudgetPreCommitment` (`id`, `status`) |
+| 2 | Dependencia | `registerPreObligation` | Contabilidad | Síncrona bloqueante | Entrada: `BudgetPreCommitment` — Respuesta: `accounting_entry_ref` |
+| 3 | Operación | `createBudgetPreCommitment` | — (Adquisiciones) | — | Requiere CDP vigente (`budget_availability_certificate_id`) |
+| 4 | Evento | `BudgetPreCommitmentCreated` | — (consumidores: Contabilidad, reportería) | Asíncrona | `BudgetPreCommitment`, `PurchaseRequest.id` |
+
+**Edge cases:**
+- Preobligación sin saldo contrastado → `BUDGET_UNAVAILABLE` (`severity: blocking`, QA ítem 11 P0).
+- CDP no vigente o ausente → operación rechazada con `CDP_REQUIRED`.
+- Contabilidad no disponible → `ACCOUNTING_PROVIDER_UNAVAILABLE`; preobligación no persiste (sin efecto parcial).
+- Proveedor Presupuestos rechaza → mismo que sin disponibilidad; camino optativo a 1.4.
+
+> ⚠ **Pendiente de definir:** secuencial estricto (CDP → preobligación en dos pasos) vs. transacción atómica única. Qué ocurre si se revierte la SOLPED tras preobligación activa.
 
 ---
 
@@ -111,7 +202,8 @@
 | `PurchaseRequestLine` | 1:N con `PurchaseRequest` | Ítems de la solicitud, con `unit_price` obligatorio |
 | `PriceReference` | N:1 con `PurchaseRequestLine` | Nueva — fuente de precio a definir |
 | `PurchaseRequestApproval` | 1:N con `PurchaseRequest` | Historial de decisiones (permite múltiples ciclos rechazo/reenvío) |
-| `BudgetPreCommitment` | 1:1 con `PurchaseRequest` | Pendiente definir qué ocurre si se rechaza tras esta etapa |
+| `BudgetAvailabilityCertificate` | 1:1 con `PurchaseRequest` | CDP firmado por aprobador DAF |
+| `BudgetPreCommitment` | 1:1 con `PurchaseRequest` | Preobligación; requiere CDP vigente |
 
 ## Resumen de bordes — Etapa 1
 
@@ -121,7 +213,12 @@
 | 1.1 | Dependencia *(propuesta)* | `checkStockAvailability` | Inventario |
 | 1.2 | Dependencia | `requestSignature`, `confirmSignature` | FirmaGob |
 | 1.2 | Evento | `PurchaseRequestApproved` | — |
-| 1.3 | Dependencia | `checkBudgetAvailability`, `createBudgetPreCommitment` | Presupuestos |
-| 1.3 | Evento | `BudgetPreCommitmentCreated` | — |
+| 1.3 | Dependencia | `checkBudgetAvailability` | Presupuestos |
+| 1.3 | Operación | `verifyBudgetAvailability` | — |
+| 1.4 | Operación / Evento | `requestBudgetFinancing`, `BudgetFinancingRequested` | Presupuestos *(externo)* |
+| 1.5 | Dependencia | `checkBudgetAvailability`, `requestSignature`, `confirmSignature` | Presupuestos, FirmaGob |
+| 1.5 | Operación / Evento | `issueBudgetAvailabilityCertificate`, `BudgetAvailabilityCertificateIssued` | — |
+| 1.6 | Dependencia | `createBudgetPreCommitment`, `registerPreObligation` | Presupuestos, Contabilidad |
+| 1.6 | Evento | `BudgetPreCommitmentCreated` | — |
 
 **Siguiente etapa:** 2. Modalidad de Compra — [Compra Ágil](../1.%20compra-agil/2-modalidad-compra.md)

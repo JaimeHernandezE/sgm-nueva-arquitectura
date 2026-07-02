@@ -97,15 +97,35 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `decision_date` | fecha | |
 | `comments` | texto | Obligatorio si `decision = rejected` |
 
-### `BudgetPreCommitment` (Pre-afectación)
-**Visibilidad:** expuesta — campos en contrato: `id`, `purchase_request_id`, `budget_line_id`, `estimated_amount`, `fiscal_year`, `status`
+### `BudgetAvailabilityCertificate` (CDP)
+**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status`
 
-1:1 con `PurchaseRequest`.
+1:1 con `PurchaseRequest` en esta etapa. Certificado de Disponibilidad Presupuestaria emitido y firmado por el aprobador DAF (sub-paso 1.5).
 
 | Campo | Tipo | Notas |
 |---|---|---|
 | `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
 | `purchase_request_id` | ref. `PurchaseRequest` | |
+| `certificate_number` | texto | Correlativo del CDP |
+| `budget_line_id` | ref. `BudgetLine` | |
+| `certified_amount` | número | |
+| `fiscal_year` | número | |
+| `verified_by` | ref. `User` | Formulador DAF (sub-paso 1.3) |
+| `signed_by` | ref. `User` | Aprobador DAF (sub-paso 1.5) |
+| `signed_at` | fecha/hora | |
+| `status` | enum | `issued`, `rejected` |
+| `rejection_reason` | texto | Obligatorio si `rejected` |
+
+### `BudgetPreCommitment` (Preobligación / Pre-afectación)
+**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `purchase_request_id`, `budget_availability_certificate_id`, `budget_line_id`, `estimated_amount`, `fiscal_year`, `status`
+
+1:1 con `PurchaseRequest`. **Preobligación** presupuestaria registrada tras CDP vigente (sub-paso 1.6). Los términos *preobligación* y *pre-afectación* son equivalentes en este modelo. La preobligación se contabiliza en el módulo Contabilidad vía borde de módulo (`registerPreObligation`).
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
+| `purchase_request_id` | ref. `PurchaseRequest` | |
+| `budget_availability_certificate_id` | ref. `BudgetAvailabilityCertificate` | **Obligatorio** — requiere CDP vigente |
 | `budget_line_id` | ref. `BudgetLine` | |
 | `estimated_amount` | número | |
 | `fiscal_year` | número | |

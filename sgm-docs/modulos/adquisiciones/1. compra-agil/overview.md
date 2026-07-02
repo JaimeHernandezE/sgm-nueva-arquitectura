@@ -50,7 +50,7 @@ Alineadas con [`plantilla-maestra-sgm.md`](../../../arquitectura/plantilla-maest
 
 ## Mapa de bordes del macroproceso
 
-Agregado de las secciones 3.5 de los 14 sub-pasos. Insumo directo de [`contracts.md`](../contracts.md).
+Agregado de las secciones 3.5 de los 17 sub-pasos. Insumo directo de [`contracts.md`](../contracts.md).
 
 | Sub-paso | Tipo | Contrato / Evento | Contraparte | Clasificación |
 |---|---|---|---|---|
@@ -58,8 +58,13 @@ Agregado de las secciones 3.5 de los 14 sub-pasos. Insumo directo de [`contracts
 | 1.1 | Dependencia *(propuesta)* | `checkStockAvailability` | Inventario | Síncrona bloqueante ⚠ |
 | 1.2 | Dependencia | `requestSignature`, `confirmSignature` | FirmaGob | Síncrona bloqueante |
 | 1.2 | Evento | `PurchaseRequestApproved` | — | Asíncrona |
-| 1.3 | Dependencia | `checkBudgetAvailability`, `createBudgetPreCommitment` | Presupuestos | Síncrona bloqueante |
-| 1.3 | Evento | `BudgetPreCommitmentCreated` | — | Asíncrona |
+| 1.3 | Dependencia | `checkBudgetAvailability` | Presupuestos | Síncrona bloqueante |
+| 1.3 | Operación | `verifyBudgetAvailability` | — | — |
+| 1.4 | Operación / Evento | `requestBudgetFinancing`, `BudgetFinancingRequested` | Presupuestos *(externo)* | — |
+| 1.5 | Dependencia | `checkBudgetAvailability`, `requestSignature`, `confirmSignature` | Presupuestos, FirmaGob | Síncrona bloqueante |
+| 1.5 | Operación / Evento | `issueBudgetAvailabilityCertificate`, `BudgetAvailabilityCertificateIssued` | — | — |
+| 1.6 | Dependencia | `createBudgetPreCommitment`, `registerPreObligation` | Presupuestos, Contabilidad | Síncrona bloqueante |
+| 1.6 | Evento | `BudgetPreCommitmentCreated` | — | Asíncrona |
 | 2.1 | Sistema externo | Deep link (sin API) | Mercado Público | — |
 | 2.2 | Sistema externo | `validateQuoteId` | Mercado Público | Síncrona bloqueante ⚠ |
 | 2.3 | Sistema externo | `getQuoteSummary` | Mercado Público | Asíncrona |

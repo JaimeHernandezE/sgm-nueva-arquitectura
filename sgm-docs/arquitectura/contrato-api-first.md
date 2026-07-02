@@ -60,14 +60,14 @@ Dos planos distintos, ambos exigibles en las bases:
 
 ## 6. Piloto: Compra Ágil
 
-Método para el primer `contracts.md`, aprovechando el macroproceso ya documentado (SOLPED → Pago, **14 sub-pasos**, 14 entidades):
+Método para el primer `contracts.md`, aprovechando el macroproceso ya documentado (SOLPED → Pago, **17 sub-pasos**, 15 entidades):
 
-1. Recorrer los 14 sub-pasos identificando **qué cruza el borde de Adquisiciones**. Primeros cruces conocidos:
+1. Recorrer los 17 sub-pasos identificando **qué cruza el borde de Adquisiciones**. Primeros cruces conocidos:
    - Disponibilidad presupuestaria → contrato de proveedor hacia Presupuestos.
    - Devengado / recepción conforme → contrato hacia Contabilidad.
    - Firma de documentos → contrato hacia servicio de firma (FirmaGob), especificado esta vez con el estándar "campo presente ≠ integración funcional": el contrato define el flujo completo, no la existencia del campo.
    - Mercado Público → **solo lectura**; deep links como navegación, sin escritura vía API (decisión ya asentada).
-2. Para cada entidad de las 14 que cruza el borde: derivar su esquema de payload desde la ficha de flujo ya existente.
+2. Para cada entidad expuesta que cruza el borde: derivar su esquema de payload desde la ficha de flujo ya existente.
 3. Catalogar eventos emitidos por sub-paso.
 4. Redactar el `contracts.md` de Adquisiciones y someterlo a la prueba de calidad de Etapa 1: **dos equipos independientes deberían poder construir consumidores equivalentes solo desde el contrato.**
 5. Replicar el método en las otras 3 modalidades de compra y luego en los demás módulos.
@@ -80,5 +80,5 @@ El modelo entidad-relación y las fichas de flujo de Compra Ágil son la materia
 
 1. ~~Crear `sgm-docs/arquitectura/estandares-api.md`~~ — **hecho**, ver [`estandares-api.md`](./estandares-api.md).
 2. Crear `sgm-docs/modulos/adquisiciones/contracts.md` con la plantilla de la sección 3. *(Hecho — piloto Compra Ágil.)*
-3. Ejecutar el recorrido de los 14 sub-pasos de Compra Ágil (sesión de trabajo dedicada). *(Hecho — bordes §3.5 en fichas.)*
+3. Ejecutar el recorrido de los 17 sub-pasos de Compra Ágil (sesión de trabajo dedicada). *(Hecho — bordes §3.5 en fichas.)*
 4. Resolver los pendientes estructurales antes del primer contrato definitivo: multitenancy en el contrato (**P-03**), plano M2M (**P-02**), política de deprecación (**P-04**).

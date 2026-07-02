@@ -1,13 +1,15 @@
-# Wireframe: Pre-afectación presupuestaria
+# Wireframe: Verificación de disponibilidad presupuestaria
 
-**Sub-paso:** 1.3 — Pre-afectación presupuestaria  
-**Operación:** `createBudgetPreCommitment`
+**Sub-paso:** 1.3 — Verificación de disponibilidad presupuestaria  
+**Operación:** `verifyBudgetAvailability`
 
 ## Layout
 
 ```
 +----------------------------------------------------------+
-| SOLPED #1234 — Pre-afectación presupuestaria              |
+| Expediente ADQ-2026-00142                    [En curso]   |
++----------------------------------------------------------+
+| SOLPED #1234 — Verificación presupuestaria                |
 +----------------------------------------------------------+
 | Línea presupuestaria *    [ Cuenta / Programa ...    v ]  |
 | Monto estimado *          [ $ ____________ ]              |
@@ -21,7 +23,9 @@
 | | Saldo proyectado:               $   450.000  [OK]    |  |
 | +------------------------------------------------------+  |
 +----------------------------------------------------------+
-| [ Cancelar ]                         [ Generar CDP ]      |
+| Comentarios (si rechazo)  [________________________]      |
++----------------------------------------------------------+
+| [ Rechazar ]    [ Solicitar financiamiento ]  [ Confirmar ]|
 +----------------------------------------------------------+
 ```
 
@@ -29,28 +33,30 @@
 
 | Campo UI | Entidad.campo |
 |---|---|
-| Línea presupuestaria | `BudgetPreCommitment.budget_line_id` |
-| Monto estimado | `BudgetPreCommitment.estimated_amount` |
-| Año fiscal | `BudgetPreCommitment.fiscal_year` |
+| Línea presupuestaria | `BudgetLine` (consulta) |
+| Monto estimado | entrada de verificación |
+| Panel saldo | respuesta `checkBudgetAvailability` |
+| Verificador | `BudgetAvailabilityCertificate.verified_by` (al confirmar) |
 
 ## Acciones
 
 | Botón | Operación contrato | Dependencia |
 |---|---|---|
-| Generar CDP | `createBudgetPreCommitment` | `checkBudgetAvailability` → `createBudgetPreCommitment` (Presupuestos) |
+| Confirmar | `verifyBudgetAvailability` (`decision = confirmed`) | `checkBudgetAvailability` (Presupuestos) |
+| Rechazar | `verifyBudgetAvailability` (`decision = rejected`) | — |
+| Solicitar financiamiento | navega a sub-paso 1.4 | — |
 
 ## Estados de pantalla
 
-- **Saldo insuficiente:** panel en rojo; botón deshabilitado; error `BUDGET_UNAVAILABLE` (QA 11 P0).
+- **Saldo insuficiente:** panel en rojo; «Confirmar» deshabilitado; «Solicitar financiamiento» habilitado.
 - **Presupuestos no disponible:** banner `BUDGET_PROVIDER_UNAVAILABLE`; reintento.
-- **Segregación roles:** si generador = aprobador → `SEGREGATION_OF_DUTIES_VIOLATION` (QA 9 P1).
-- **Éxito:** SOLPED lista para Modalidad de Compra; evento `BudgetPreCommitmentCreated`.
+- **Confirmado:** avance a 1.5 (emisión CDP).
 
 ## Validaciones visibles
 
 - Panel de trazabilidad siempre visible antes de confirmar (QA 8).
-- Mensajes de error específicos por campo bloqueado (QA 10 — no genéricos).
+- Comentarios obligatorios si se rechaza.
 
 ## Notas
 
-- ⚠ Pendiente: qué ocurre si se revierte SOLPED tras pre-afectación activa.
+- El formulador DAF que verifica aquí no puede firmar el CDP (1.5) — QA 9.

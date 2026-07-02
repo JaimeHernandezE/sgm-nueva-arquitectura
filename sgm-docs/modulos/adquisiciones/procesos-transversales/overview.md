@@ -6,7 +6,7 @@ Las etapas 2 (Modalidad de Compra) y 3 (Resolución de Compra) son las únicas c
 
 ## Etapas transversales
 
-1. [SOLPED](./1-solped.md) — creación, V°B° de jefatura, pre-afectación presupuestaria
+1. [SOLPED](./1-solped.md) — creación, V°B° de jefatura, verificación presupuestaria, CDP, preobligación (y solicitud de financiamiento optativa)
 4. [Recepción Conforme](./4-recepcion-conforme.md) — recepción física del bien/servicio
 5. [Pago](./5-pago.md) — cruce de 3 vías, devengo, decreto y ejecución de pago
 

@@ -1,0 +1,46 @@
+# Wireframe: Solicitar financiamiento a DAF
+
+**Sub-paso:** 1.4 — Solicitar financiamiento a DAF *(optativo)*  
+**Operación:** `requestBudgetFinancing`
+
+## Layout
+
+```
++----------------------------------------------------------+
+| Expediente ADQ-2026-00142                    [En curso]   |
++----------------------------------------------------------+
+| SOLPED #1234 — Solicitud de financiamiento presupuestario |
++----------------------------------------------------------+
+| Motivo / justificación *  [________________________]      |
+|                           [________________________]      |
++----------------------------------------------------------+
+| Estado: En trámite — modificación/reasignación presupuesto|
+| (proceso externo a Adquisiciones)                         |
++----------------------------------------------------------+
+| [ Cancelar ]                    [ Enviar solicitud ]      |
++----------------------------------------------------------+
+```
+
+## Campos ↔ entidad
+
+| Campo UI | Entidad.campo |
+|---|---|
+| Justificación | entrada `requestBudgetFinancing` |
+| Estado expediente | `PurchaseRequest.status` → `pending_budget_financing` *(propuesto)* |
+
+## Acciones
+
+| Botón | Operación contrato | Efecto |
+|---|---|---|
+| Enviar solicitud | `requestBudgetFinancing` | Evento `BudgetFinancingRequested`; sin avance del ciclo principal |
+
+## Estados de pantalla
+
+- **En trámite:** pantalla informativa; usuario espera resolución de Presupuestos.
+- **Resuelto:** notificación; retorno a sub-paso 1.3 para nueva verificación.
+- **Denegado:** SOLPED bloqueada; opción cancelar o reformular.
+
+## Notas
+
+- Sub-paso optativo — solo accesible desde 1.3 cuando no hay saldo o verificación rechazada.
+- ⚠ Pendiente: contrato del módulo Presupuestos para modificación/reasignación.
