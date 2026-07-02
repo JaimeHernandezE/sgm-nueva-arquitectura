@@ -42,6 +42,10 @@ Los archivos/documentos (evidencias, resoluciones, comprobantes) se almacenan se
 
 Toda regla de negocio bloqueante vive en el backend; el frontend solo la refleja. Las respuestas de error son verbosas y estructuradas según el esquema único definido en [`estandares-api.md`](./estandares-api.md) §3 — nunca un 400/422 sin cuerpo.
 
+## 8. Trazabilidad de extremo a extremo (patrón expediente)
+
+Toda compra se estructura como un **Expediente de Compra** (`ProcurementCase`) con folio único legible, creado al iniciar la solicitud y vigente hasta el pago. Toda entidad del ciclo de compra debe llevar referencia directa al expediente (`procurement_case_id` desnormalizado, además de sus FKs directas). Ninguna entidad futura del ciclo puede romper esta cadena. El folio debe ser visible en toda pantalla relacionada al proceso.
+
 ## Rol de un eventual apoyo externo de arquitectura
 
 Si SUBDERE no cuenta con la capacidad interna suficiente para definir estos principios en detalle técnico, la vía correcta es un contrato de asesoría acotado en el que un especialista ayuda a definir la arquitectura, mientras la propiedad de la decisión permanece en SUBDERE. Esto es distinto de delegar estas decisiones al proveedor que construye el sistema.

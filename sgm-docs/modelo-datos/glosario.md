@@ -4,6 +4,8 @@ Mapeo entre el término técnico usado en las entidades (`modelo-datos/entidades
 
 | Término técnico | Término funcional (ES) | Notas |
 |---|---|---|
+| `ProcurementCase` | Expediente de Compra | Raíz de trazabilidad del ciclo SOLPED→Pago; folio único |
+| `CaseStep` | Paso de Expediente | Instancia de cada etapa del expediente; estado, responsable y tiempos |
 | `PurchaseRequest` | SOLPED (Solicitud de Pedido) | |
 | `PurchaseRequestLine` | Línea de SOLPED | |
 | `BudgetPreCommitment` | Pre-afectación presupuestaria | |

@@ -139,6 +139,10 @@ Reglas:
 
 **Regla API-first:** el frontend base consume la API publicada sin privilegios. Por tanto, toda acción de un wireframe debe corresponder a una operación existente en el contrato del módulo (o en el de un módulo del que este depende). Si un botón no tiene operación de contrato que lo respalde, hay una inconsistencia que resolver — misma lógica que campos vs. entidades.
 
+### Patrón expediente como vista principal
+
+La vista principal de una compra es la **vista de expediente**: timeline vertical de pasos con estado, responsable, tiempo transcurrido y fecha de última modificación por paso (referencia: plataforma Transferencia de Competencias de SUBDERE). Las vistas por etapa son secciones dentro del expediente, no pestañas ni vistas independientes. El **folio** del expediente (`ProcurementCase.folio`) debe ser visible en toda pantalla del proceso.
+
 ### Ubicación
 `modulos/<módulo>/<macroproceso>/wireframes/` — un archivo por pantalla, nombrado `NN-nombre-pantalla.<ext>` donde `NN` correlaciona con el sub-paso que la motiva (ej. `11-creacion-solped.png` para el sub-paso 1.1).
 

@@ -12,6 +12,36 @@ Fuente única de las entidades del modelo de datos SGM. Los macroprocesos **refe
 
 ## Adquisiciones
 
+### `ProcurementCase` (Expediente de Compra)
+**Visibilidad:** interna
+
+Raíz de trazabilidad de todo el ciclo SOLPED → Pago. El estado del expediente es **distinto** del estado documental de sus entidades hijas (`PurchaseRequest.status`, `PurchaseOrder.status`, etc.) — no fusionar ambos conceptos.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `folio` | texto | Correlativo legible. Formato propuesto `ADQ-AAAA-NNNNN`. ⚠ **Pendiente de definir:** formato final del correlativo. |
+| `procurement_type` | enum | `compra_agil`, `convenio_marco`, `licitacion_publica`, `trato_directo` |
+| `current_step` | ref. `CaseStep` | Paso activo del expediente |
+| `status` | enum | `en_curso`, `finalizado`, `cancelado`, `desierto`. ⚠ **Pendiente de definir:** refinamiento de valores y transiciones. |
+| `created_at` | fecha/hora | |
+
+### `CaseStep` (Paso de Expediente)
+**Visibilidad:** interna
+
+1:N con `ProcurementCase`. La secuencia de pasos se instancia según `procurement_type`: Compra Ágil 5 pasos, Convenio Marco 4, Licitación Pública 6, Trato Directo 5. De aquí salen "tiempo transcurrido por etapa" y "responsable actual" sin joins.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | |
+| `step_number` | número | |
+| `name` | texto | |
+| `status` | enum | `pendiente`, `en_curso`, `finalizada` |
+| `responsible_unit` | ref. `OrganizationalUnit` | |
+| `started_at` | fecha/hora | |
+| `completed_at` | fecha/hora | |
+
+> `procurement_case_id` en cada entidad del ciclo es **desnormalización intencional** para trazabilidad y reportería directa (consultas por expediente sin recorrer la cadena de FKs). Se mantiene además de las FKs directas entre entidades.
+
 ### `PurchaseRequest` (SOLPED)
 **Visibilidad:** expuesta — campos en contrato: `id`, `requesting_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `status`
 
@@ -19,6 +49,7 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 
 | Campo | Tipo | Notas |
 |---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
 | `requesting_unit` | ref. `OrganizationalUnit` | |
 | `description` | texto | |
 | `justification` | texto | |
@@ -73,6 +104,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
 | `purchase_request_id` | ref. `PurchaseRequest` | |
 | `budget_line_id` | ref. `BudgetLine` | |
 | `estimated_amount` | número | |
@@ -86,6 +118,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
 | `purchase_request_id` | ref. `PurchaseRequest` | |
 | `deep_link_clicked_at` | fecha/hora | |
 | `mp_quote_id` | texto | Nulo hasta sincronización |
@@ -97,6 +130,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
 | `purchase_request_id` | ref. `PurchaseRequest` | |
 | `mp_oc_id` | texto | |
 | `supplier_rut` | texto | |
@@ -114,6 +148,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
 | `purchase_order_id` | ref. `PurchaseOrder` | |
 | `budget_pre_commitment_id` | ref. `BudgetPreCommitment` | |
 | `committed_amount` | número | Monto real desde MP — puede diferir del `estimated_amount` |
@@ -127,6 +162,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
 | `purchase_order_id` | ref. `PurchaseOrder` | |
 | `received_by` | ref. `User` | |
 | `received_date` | fecha | |
@@ -146,6 +182,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
 | `purchase_order_id` | ref. `PurchaseOrder` | |
 | `goods_receipt_id` | ref. `GoodsReceipt` | |
 | `invoice_id` | ref. `Invoice` (fuente SII) | |
@@ -159,6 +196,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
 | `three_way_match_id` | ref. `ThreeWayMatch` | |
 | `budget_commitment_id` | ref. `BudgetCommitment` | |
 | `accrual_amount` | número | |
@@ -171,6 +209,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
 | `accrual_id` | ref. `Accrual` | |
 | `decree_number` | texto | Correlativo |
 | `decree_date` | fecha | |
@@ -183,6 +222,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
 | `payment_decree_id` | ref. `PaymentDecree` | |
 | `payment_date` | fecha | |
 | `payment_method` | enum | |
