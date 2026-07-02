@@ -16,7 +16,7 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 
 | Entidad | Visibilidad | Campos expuestos | Sub-pasos origen |
 |---|---|---|---|
-| `PurchaseRequest` | Expuesta | `id`, `requesting_unit`, `description`, `justification`, `requested_date`, `status` | 1.1, 1.2, 2.2 |
+| `PurchaseRequest` | Expuesta | `id`, `requesting_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `status` | 1.1, 1.2, 2.1, 2.2 |
 | `PurchaseRequestLine` | Expuesta | `id`, `purchase_request_id`, `item_description`, `quantity`, `unit_of_measure`, `unit_price`, `price_source` | 1.1 |
 | `PurchaseRequestApproval` | Expuesta | `id`, `purchase_request_id`, `approver_id`, `decision`, `decision_date`, `comments` | 1.2 |
 | `BudgetPreCommitment` | Expuesta | `id`, `purchase_request_id`, `budget_line_id`, `estimated_amount`, `fiscal_year`, `status` | 1.3 |
@@ -50,11 +50,12 @@ Convenciones de error y paginación según [`estandares-api.md`](../../arquitect
   | `quantity > 0` en cada línea | blocking | 53 P0 | `INVALID_QUANTITY` |
   | `unit_price` con referencia válida | blocking | — | `PRICE_REFERENCE_UNAVAILABLE` |
   | Desviación precio vs referencia dentro de tolerancia | blocking ⚠ | — | `PRICE_DEVIATION_EXCEEDED` |
+  | Si `purchase_modality = direct_procurement`, `founded_resolution_attachment` presente | blocking | — | `FOUNDED_RESOLUTION_REQUIRED` |
 - **Dependencias invocadas:** `getPriceReference`, `checkStockAvailability` *(propuesta)*
 
 #### `POST /purchase-requests/{id}/submit` — `submitPurchaseRequest`
 - **Sub-pasos:** 1.1
-- **Reglas:** SOLPED completa → `status = pending_approval`
+- **Reglas:** SOLPED completa → `status = pending_approval`; si `purchase_modality = direct_procurement`, exige `founded_resolution_attachment` (`FOUNDED_RESOLUTION_REQUIRED`)
 
 #### `POST /purchase-requests/{id}/approve` — `approvePurchaseRequest`
 - **Sub-pasos:** 1.2

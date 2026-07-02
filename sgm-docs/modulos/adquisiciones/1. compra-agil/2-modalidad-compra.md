@@ -2,6 +2,8 @@
 
 *Macroproceso: [Compra Ágil](./overview.md) · Etapa anterior: [1. SOLPED](../procesos-transversales/1-solped.md) (transversal)*
 
+**Confirmación de modalidad:** Al iniciar esta etapa, el usuario confirma o modifica `PurchaseRequest.purchase_modality` indicado opcionalmente en 1.1. Si no se definió en la SOLPED, debe seleccionarse aquí antes de continuar. Si la modalidad es Trato Directo (`direct_procurement`), la Resolución Fundada (`founded_resolution_attachment`) debe estar adjunta — puede haberse cargado en 1.1 o agregarse en este paso.
+
 ## 2.1 — Inicio en MP vía Deep Link
 
 | Materia | Valor |
@@ -11,9 +13,11 @@
 | Plataforma | SGM → Mercado Público (deep link, sin escritura API) |
 | Optativo | Falso |
 
-**Detalle:** Tras la Pre-afectación, el usuario hace clic en "Gestionar en MP". Se abre el portal estatal donde se crea la solicitud de cotización (título, descripción técnica, cantidad, dirección de despacho, plazo de entrega, datos de contacto). Ver `arquitectura/integracion-mercado-publico.md` — este es un deep link puro, navegación sin escritura.
+**Detalle:** Tras la Pre-afectación, el usuario confirma la modalidad de compra (si aplica) y hace clic en "Gestionar en MP". Se abre el portal estatal donde se crea la solicitud de cotización (título, descripción técnica, cantidad, dirección de despacho, plazo de entrega, datos de contacto). Ver `arquitectura/integracion-mercado-publico.md` — este es un deep link puro, navegación sin escritura.
 
 **Entidad(es) y campos:**
+- `PurchaseRequest.purchase_modality` (enum, confirmado o actualizado respecto a 1.1)
+- `PurchaseRequest.founded_resolution_attachment` (ref. adjunto, si `purchase_modality = direct_procurement`)
 - `AgileQuoteProcess` (nueva) — `purchase_request_id` (ref. `PurchaseRequest`, 1:1), `deep_link_clicked_at` (fecha/hora), `mp_quote_id` (texto, nulo hasta 2.2)
 
 **Borde de módulo:**
@@ -23,6 +27,8 @@
 | 1 | Sistema externo | *(deep link — sin operación API)* | Mercado Público | — | URL de navegación; sin payload de escritura |
 
 **Edge cases:**
+- Modalidad cambiada respecto a 1.1 → actualización de `purchase_modality` registrada en auditoría; si pasa a Trato Directo, exige Resolución Fundada antes de continuar.
+- Trato Directo sin Resolución Fundada → no permite avanzar a sub-pasos de Compra Ágil; retorna `FOUNDED_RESOLUTION_REQUIRED`.
 - Usuario no completa la creación en MP → SOLPED queda indefinidamente en espera (sin timeout definido en la fuente).
 - MP no disponible al abrir deep link → error de navegación del navegador; SGM registra `deep_link_clicked_at` pero no avanza el flujo. Usuario reintenta manualmente.
 

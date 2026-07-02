@@ -30,13 +30,14 @@ Documento normativo del repositorio `sgm-docs`. Define la estructura obligatoria
 ## 2. Estructura obligatoria del `overview.md` de macroproceso
 
 1. **Título y descripción breve** (1-2 líneas: qué cubre, de dónde a dónde).
-2. **Fuente base**: documentos de los que se extrajo la información (con fecha de carga si aplica).
-3. **Nota metodológica**: aclarar qué etapas son organizador común y cuáles tienen contenido específico de esta modalidad/macroproceso.
-4. **Convenciones de la ficha** (tabla Unidad municipal / Rol / Plataforma / Optativo — puede referenciar esta plantilla en vez de repetirla).
-5. **Índice de etapas** con enlaces relativos a cada archivo.
-6. **Mapa de bordes del macroproceso:** tabla resumen de todos los cruces de borde de módulo identificados en los sub-pasos (sub-paso / contrato invocado o evento emitido / clasificación). Se construye agregando las secciones 3.5 de las fichas; es el insumo directo de `contracts.md`.
-7. **Patrones transversales pendientes de definir**: vacíos que aparecen en más de una etapa y son candidatos a regla única reutilizable.
-8. **Referencia al modelo de datos**: link a `modelo-datos/entidades-core.md`.
+2. **Contexto de la modalidad** (qué es, características legales clave, plazos, integración con Mercado Público, edge cases normativos — ver overviews de Adquisiciones como referencia).
+3. **Fuente base**: documentos de los que se extrajo la información (con fecha de carga si aplica).
+4. **Nota metodológica**: aclarar qué etapas son organizador común y cuáles tienen contenido específico de esta modalidad/macroproceso.
+5. **Convenciones de la ficha** (tabla Unidad municipal / Rol / Plataforma / Optativo — puede referenciar esta plantilla en vez de repetirla).
+6. **Índice de etapas** con enlaces relativos a cada archivo.
+7. **Mapa de bordes del macroproceso:** tabla resumen de todos los cruces de borde de módulo identificados en los sub-pasos (sub-paso / contrato invocado o evento emitido / clasificación). Se construye agregando las secciones 3.5 de las fichas; es el insumo directo de `contracts.md`.
+8. **Patrones transversales pendientes de definir**: vacíos que aparecen en más de una etapa y son candidatos a regla única reutilizable.
+9. **Referencia al modelo de datos**: link a `modelo-datos/entidades-core.md`.
 
 ---
 

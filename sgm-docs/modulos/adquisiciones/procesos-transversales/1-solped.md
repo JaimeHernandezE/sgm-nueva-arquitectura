@@ -11,10 +11,10 @@
 | Plataforma | SGM |
 | Optativo | Falso |
 
-**Detalle:** La Unidad Solicitante crea la SOLPED en el SGM.
+**Detalle:** La Unidad Solicitante crea la SOLPED en el SGM. Puede indicar opcionalmente la **modalidad de compra** prevista (`purchase_modality`): Compra Ágil, Convenio Marco, Licitación Pública o Trato Directo. Es una indicación provisional — puede confirmarse o cambiarse al inicio de la etapa 2 (Modalidad de Compra). Si se selecciona Trato Directo, es obligatorio adjuntar la **Resolución Fundada** (`founded_resolution_attachment`).
 
 **Entidad(es) y campos:**
-- `PurchaseRequest` — `requesting_unit` (ref. `OrganizationalUnit`), `description` (texto), `justification` (texto), `requested_date` (fecha), `status` (enum: `draft`)
+- `PurchaseRequest` — `requesting_unit` (ref. `OrganizationalUnit`), `description` (texto), `justification` (texto), `requested_date` (fecha), `purchase_modality` (enum, **opcional**: `agile_purchase` \| `framework_agreement` \| `public_tender` \| `direct_procurement`), `founded_resolution_attachment` (ref. adjunto, **obligatorio si** `purchase_modality = direct_procurement`), `status` (enum: `draft`)
 - `PurchaseRequestLine` (1 SOLPED → N líneas) — `item_description` (texto), `quantity` (número), `unit_of_measure` (ref. `UnitOfMeasure`), `unit_price` (número, **obligatorio**), `price_source` (ref. `PriceReference`)
 - `PriceReference` (nueva) — `item_code` / `item_description_hash`, `source` (enum: `SII`, `mercado_publico_historico`, `otro`), `reference_price` (número), `reference_date` (fecha), `currency` (enum)
 
@@ -29,6 +29,8 @@
 
 **Edge cases:**
 - SOLPED incompleta o sin justificación → sistema no permite avanzar a V°B° (`status` no transiciona a `pending_approval` sin campos obligatorios completos).
+- Modalidad Trato Directo sin Resolución Fundada adjunta → `submitPurchaseRequest` rechazado con `FOUNDED_RESOLUTION_REQUIRED` (`severity: blocking`).
+- Modalidad indicada en borrador pero corregida en etapa 2 → `purchase_modality` actualizable hasta confirmación en etapa 2; cambio registrado en auditoría.
 - Fuente de precios no disponible (API caída) → operación `createPurchaseRequest` retorna `PRICE_REFERENCE_UNAVAILABLE` (`severity: blocking`) hasta definir regla alternativa; ver pendiente.
 - Precio ingresado muy distinto al de referencia → sin % de desviación definido (patrón transversal, ver también 3.2 y 5.1).
 - Proveedor Inventario no disponible *(si se adopta ítem 4)* → `createPurchaseRequest` procede sin verificación de stock; se registra advertencia en log de auditoría.
@@ -105,7 +107,7 @@
 
 | Entidad | Tipo de relación | Notas |
 |---|---|---|
-| `PurchaseRequest` | Raíz de la etapa | 1 por SOLPED |
+| `PurchaseRequest` | Raíz de la etapa | 1 por SOLPED; incluye `purchase_modality` (opcional) y `founded_resolution_attachment` (condicional) |
 | `PurchaseRequestLine` | 1:N con `PurchaseRequest` | Ítems de la solicitud, con `unit_price` obligatorio |
 | `PriceReference` | N:1 con `PurchaseRequestLine` | Nueva — fuente de precio a definir |
 | `PurchaseRequestApproval` | 1:N con `PurchaseRequest` | Historial de decisiones (permite múltiples ciclos rechazo/reenvío) |

@@ -2,6 +2,23 @@
 
 Ficha de flujo SOLPED → Pago para la modalidad Compra Ágil. Documenta las etapas **específicas** de esta modalidad (2 y 3); las etapas transversales (1, 4 y 5) están en [`procesos-transversales/`](../procesos-transversales/overview.md).
 
+## Contexto de la modalidad
+
+**Qué es.** Mecanismo simplificado de compra para adquisiciones de **hasta 100 UTM** (umbral elevado por la Ley 21.634, en rigor desde fines de 2024). Es una de las modalidades más utilizadas por los organismos públicos.
+
+**Características legales clave:**
+- **No requiere Decreto ni Resolución para iniciarse**, ni contrato formal: el vínculo legal se perfecciona íntegramente con la emisión y **aceptación de la Orden de Compra** — ese clic del proveedor crea el contrato.
+- Requisito de competencia: mínimo 3 cotizaciones electrónicas.
+- **Filtro MiPyme:** en primera instancia, la solicitud se dirige automáticamente solo a Empresas de Menor Tamaño y proveedores locales del rubro. Si ninguna MiPyme cotiza, el comprador puede ampliar la convocatoria a empresas de cualquier tamaño en segunda ronda.
+- **Declaración de habilidad:** el proveedor acepta una declaración jurada automática al cotizar (sin deudas previsionales/tributarias ni condenas antisindicales). La habilidad se revalida al emitir la OC: si el proveedor se inhabilitó durante el proceso, el sistema de MP **bloquea la compra**.
+- Justificación obligatoria si el comprador no selecciona la oferta de menor precio.
+
+**Plazos característicos:** cotización abierta 2–5 días hábiles (los define el comprador); adjudicación usualmente en 24–48 horas tras el cierre; pago máximo 30 días corridos desde la recepción de la factura con recepción conforme.
+
+**Integración con Mercado Público** (unidireccional read-only, ver [`integracion-mercado-publico.md`](../../../arquitectura/integracion-mercado-publico.md)): 1 deep link (inicio de cotización, "Gestionar en MP") + 1 lectura API (OC Aceptada). **Hito contable crítico:** la lectura de "OC Aceptada" gatilla el paso de Pre-afectación a **Compromiso Cierto**. El usuario copia el ID de Cotización en el SGM al conectar; desde ese momento la SOLPED queda bloqueada en estado "En proceso de cotización".
+
+**Edge cases normativos que el proceso debe cubrir:** cancelación de la solicitud antes de emitir OC (con motivo); proceso desierto (nadie cotiza → reevaluar presupuesto/condiciones y republicar); rechazo de OC por el proveedor (→ emitir a la segunda mejor oferta o cancelar y republicar); proveedor inhábil al momento de emitir OC (bloqueo).
+
 **Fuente base:** *Guía de integración SGM – ChileCompra* (cargada julio 2026); Ficha QA Adquisiciones.
 
 ## Nota metodológica

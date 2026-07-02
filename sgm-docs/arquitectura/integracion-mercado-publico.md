@@ -31,6 +31,18 @@ SGM consulta o recibe notificación del estado de un proceso en MP (ej. "OC Acep
 
 El detalle de cada punto está documentado dentro del macroproceso correspondiente (`modulos/adquisiciones/<modalidad>/`).
 
+## Requerimientos a negociar con ChileCompra
+
+La *Guía de integración SGM – ChileCompra* registra además cinco requerimientos estratégicos a negociar en mesa técnica con ChileCompra:
+
+1. **APIs transaccionales completas** para las cuatro modalidades.
+2. **Sincronización diferencial del catálogo** de Convenio Marco (deltas diarios de productos, precios, quiebres de stock y cobertura regional).
+3. **Arquitectura de webhooks** para eventos críticos (OC Aceptada/Rechazada, Proveedor Inhábil) en reemplazo de polling.
+4. **Entorno sandbox** de certificación.
+5. **Acuerdo de rate limits** para fechas de alta demanda.
+
+Estos requerimientos no pertenecen a los overviews de modalidad; su resolución define el alcance futuro de esta integración más allá del diseño read-only actual.
+
 ## Fuente
 
 Este documento resume los hallazgos de la *Guía de integración SGM – ChileCompra* (cargada al proyecto en julio 2026). Ante cualquier discrepancia, la guía original y los mapeos de estado por modalidad documentados en cada macroproceso son la fuente de mayor detalle.

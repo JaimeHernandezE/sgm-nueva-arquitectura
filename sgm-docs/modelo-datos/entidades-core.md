@@ -13,7 +13,7 @@ Fuente única de las entidades del modelo de datos SGM. Los macroprocesos **refe
 ## Adquisiciones
 
 ### `PurchaseRequest` (SOLPED)
-**Visibilidad:** expuesta — campos en contrato: `id`, `requesting_unit`, `description`, `justification`, `requested_date`, `status`
+**Visibilidad:** expuesta — campos en contrato: `id`, `requesting_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `status`
 
 Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 
@@ -23,6 +23,8 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 | `description` | texto | |
 | `justification` | texto | |
 | `requested_date` | fecha | |
+| `purchase_modality` | enum, **opcional** | Indicación provisional de modalidad de compra. Valores: `agile_purchase` (Compra Ágil), `framework_agreement` (Convenio Marco), `public_tender` (Licitación Pública), `direct_procurement` (Trato Directo). Puede confirmarse o modificarse en etapa 2. |
+| `founded_resolution_attachment` | ref. adjunto | **Obligatorio** si `purchase_modality = direct_procurement`. Resolución Fundada que funda el Trato Directo. |
 | `status` | enum | `draft`, `pending_approval`, `pending_finance`, `quoting_in_progress`, `quote_void`, … |
 
 ### `PurchaseRequestLine`
