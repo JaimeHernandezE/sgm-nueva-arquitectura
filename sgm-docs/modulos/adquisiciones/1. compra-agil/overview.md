@@ -29,6 +29,38 @@ Cada sub-paso documenta: Unidad, Rol, Plataforma, Optativo, entidades y campos d
 | 4. Recepción Conforme | Transversal | [procesos-transversales/4-recepcion-conforme.md](../procesos-transversales/4-recepcion-conforme.md) |
 | 5. Pago | Transversal | [procesos-transversales/5-pago.md](../procesos-transversales/5-pago.md) |
 
+## Mapa de bordes del macroproceso
+
+Agregado de las secciones 3.5 de los 14 sub-pasos. Insumo directo de [`contracts.md`](../contracts.md).
+
+| Sub-paso | Tipo | Contrato / Evento | Contraparte | Clasificación |
+|---|---|---|---|---|
+| 1.1 | Sistema externo | `getPriceReference` | SII / Mercado Público | Cacheada |
+| 1.1 | Dependencia *(propuesta)* | `checkStockAvailability` | Inventario | Síncrona bloqueante ⚠ |
+| 1.2 | Dependencia | `requestSignature`, `confirmSignature` | FirmaGob | Síncrona bloqueante |
+| 1.2 | Evento | `PurchaseRequestApproved` | — | Asíncrona |
+| 1.3 | Dependencia | `checkBudgetAvailability`, `createBudgetPreCommitment` | Presupuestos | Síncrona bloqueante |
+| 1.3 | Evento | `BudgetPreCommitmentCreated` | — | Asíncrona |
+| 2.1 | Sistema externo | Deep link (sin API) | Mercado Público | — |
+| 2.2 | Sistema externo | `validateQuoteId` | Mercado Público | Síncrona bloqueante ⚠ |
+| 2.3 | Sistema externo | `getQuoteSummary` | Mercado Público | Asíncrona |
+| 2.4 | Sistema externo + Evento | `getPurchaseOrderFromMP`, `PurchaseOrderIssued` | Mercado Público | Asíncrona |
+| 3.1 | Sistema externo | `getPurchaseOrderStatus` | Mercado Público | Asíncrona |
+| 3.2 | Sistema externo | `syncPurchaseOrderAccepted` | Mercado Público | Asíncrona |
+| 3.2 | Dependencia | `convertPreCommitmentToCommitment` | Presupuestos | Síncrona bloqueante |
+| 3.2 | Dependencia | `registerBudgetCommitment` | Contabilidad | Asíncrona |
+| 3.2 | Evento | `PurchaseOrderAccepted`, `BudgetCommitmentCreated` | — | Asíncrona |
+| 4.1 | Dependencia *(opcional)* | `requestSignature` | FirmaGob | Síncrona bloqueante |
+| 4.1 | Evento | `GoodsReceiptConfirmed` | — | Asíncrona |
+| 5.1 | Dependencia | `getInvoiceForMatch` | SII / Contabilidad | Síncrona bloqueante |
+| 5.1 | Sistema externo | `getPurchaseOrderFromMP` | Mercado Público | Cacheada |
+| 5.1 | Evento | `ThreeWayMatchCompleted` | — | Asíncrona |
+| 5.2 | Dependencia + Evento | `registerAccrual`, `AccrualRegistered` | Contabilidad | Síncrona bloqueante |
+| 5.3 | Dependencia + Evento | `requestSignature`, `PaymentDecreeIssued` | FirmaGob | Síncrona bloqueante |
+| 5.4 | Dependencia + Evento | `executePayment`, `PaymentCompleted` | Tesorería | Síncrona bloqueante |
+
+Ver definición detallada de payload y edge cases en cada ficha de sub-paso.
+
 ## Patrones transversales pendientes de definir
 
 Estos puntos aparecen repetidos en más de una etapa y son candidatos a resolverse con una única regla de negocio reutilizable, en vez de definirse de forma independiente en cada punto:
@@ -37,4 +69,4 @@ Estos puntos aparecen repetidos en más de una etapa y son candidatos a resolver
 - **Fuente(s) API externas confiables** — `PriceReference` (1.1) queda sin fuente definida (SII, histórico Mercado Público, u otra).
 - **Manejo de fallas de sincronización/disponibilidad de API externa** — aparece en 2.1 (deep link sin completar) y 3.2 (falla de notificación MP).
 
-Ver también `modelo-datos/entidades-core.md` para la definición canónica de todas las entidades usadas en este macroproceso.
+Ver también [`contracts.md`](../contracts.md) para el contrato API del módulo, [`wireframes/`](./wireframes/README.md) para pantallas SGM prioritarias, y `modelo-datos/entidades-core.md` para la definición canónica de todas las entidades usadas en este macroproceso.

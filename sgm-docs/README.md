@@ -10,7 +10,8 @@ Este repo documenta, en Markdown versionado, los macroprocesos y modelo de datos
 
 ## Cómo navegar
 
-- **`arquitectura/`** — principios no negociables, decisiones de arquitectura (ADRs), y el diseño de integración con Mercado Público.
+- **`arquitectura/`** — principios no negociables ([`principios-no-negociables.md`](arquitectura/principios-no-negociables.md)), estándares API, seguridad, decisiones de arquitectura y el diseño de integración con Mercado Público. Pendientes de arquitectura centralizados en [`pendientes.md`](arquitectura/pendientes.md).
+<!-- REVISAR: la sección Convenciones más abajo dice que los pendientes viven incrustados en cada subproceso, sin backlog centralizado — eso aplica a fichas de proceso, pero ya no a documentos de arquitectura. -->
 - **`modelo-datos/`** — fuente única de las entidades del modelo de datos (`entidades-core.md`) y el glosario de términos de dominio. Los macroprocesos referencian estas entidades, no las redefinen.
 - **`modulos/`** — un subdirectorio por módulo funcional (Adquisiciones, Tesorería, Contabilidad, Presupuestos, RRHH). En Adquisiciones, los procesos transversales (SOLPED, Recepción Conforme, Pago) viven en `procesos-transversales/`; cada modalidad de compra tiene su propio subdirectorio con las etapas 2 y 3 específicas (ej. `adquisiciones/1. compra-agil/`).
 

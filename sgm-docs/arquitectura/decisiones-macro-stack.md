@@ -1,7 +1,7 @@
 # Decisiones macro: elección de stack para el nuevo SGM
 
 > Documento de trabajo — arquitectura / decisiones estratégicas
-> Estado: borrador para discusión interna. Pendientes marcados como **[PENDIENTE]**.
+> Estado: borrador para discusión interna. Pendientes registrados en [`pendientes.md`](./pendientes.md).
 > Contexto: decisión de julio 2026 de eliminar Odoo y licitar un ERP nuevo. Este documento registra las definiciones macro conversadas respecto del stack tecnológico del reemplazo.
 
 ---
@@ -26,21 +26,13 @@ Dos modos de consumo:
 - Municipios pequeños: alojados completamente en SUBDERE, nube incluida. La responsabilidad de tratamiento debe quedar jurídicamente clara (relevante para Ley 21.719).
 - Municipios grandes: absorben su data en sus propias nubes/sistemas, consumiendo el motor vía API.
 
-**[PENDIENTE]** Formalizar el instrumento jurídico (convenio tipo) que define responsable del tratamiento y encargado en cada modo, en línea con Ley 21.719.
+**[PENDIENTE P-01]** Formalizar el instrumento jurídico (convenio tipo) que define responsable del tratamiento y encargado en cada modo, en línea con Ley 21.719.
 
 ## 3. Principio rector para las bases: propiedades, no marcas
 
-**Decisión asentada.** Las bases de licitación **no exigirán un framework específico** (riesgo de impugnación por restricción de competencia). En su lugar, exigirán propiedades verificables:
+**Decisión asentada.** Las bases de licitación **no exigirán un framework específico** (riesgo de impugnación por restricción de competencia). En su lugar, exigirán propiedades verificables — stack-agnósticas, definidas por SUBDERE y nunca delegadas al adjudicatario.
 
-1. Stack open source con licencia permisiva.
-2. API REST documentada con OpenAPI como fuente de verdad, versionada.
-3. Multitenancy por schema con almacenamiento de objetos separado.
-4. Lenguaje/framework con mercado laboral local verificable (se puede exigir evidencia en la oferta).
-5. Código de propiedad del Estado y cláusulas de portabilidad.
-6. Cumplimiento DS N°4/2020 (normas técnicas Ley 21.180) y Ley 21.719.
-7. Validación fuerte del lado del servidor, con respuestas de error verbosas y estructuradas.
-
-Estas propiedades son stack-agnósticas y constituyen los no-negociables definidos por SUBDERE en las bases, nunca delegados al adjudicatario.
+El catálogo canónico de propiedades no negociables vive en [`principios-no-negociables.md`](./principios-no-negociables.md); este documento no lo duplica.
 
 ## 4. Evaluación de candidatos de stack backend
 
@@ -66,7 +58,7 @@ Cuando la API es el producto, el contrato es el activo central. Exigencias deriv
 
 - OpenAPI versionada como fuente de verdad, con política de deprecación publicada.
 - Errores estructurados: código de error de dominio, campo, regla infringida, referencia normativa cuando aplique. Nunca un 400 sin cuerpo.
-- Autenticación máquina-a-máquina (OAuth2 client credentials o equivalente) con scopes por módulo y por municipio, distinta de Clave Única (personas). **[PENDIENTE]** Hoy no existe en el diseño; debe especificarse.
+- Autenticación máquina-a-máquina (OAuth2 client credentials o equivalente) con scopes por módulo y por municipio, distinta de Clave Única (personas). **[PENDIENTE P-02]** Hoy no existe en el diseño; debe especificarse.
 - Criterio de aceptación en recepción: cada módulo pasa sus pruebas de integración consumiendo únicamente los contratos publicados de los demás módulos, con las bases de datos del resto inaccesibles.
 
 ## 7. Ecosistema abierto de terceros sobre SGM
@@ -101,10 +93,10 @@ El ecosistema solo existe si construir sobre la API es **económicamente viable 
 
 El proveedor del desarrollo original lanzó posteriormente un ERP municipal propio, construido sobre el conocimiento de dominio adquirido durante el contrato con SUBDERE, en ausencia de cláusulas robustas de propiedad intelectual. Con independencia de las acciones legales que se evalúen, el hecho fundamenta directamente varias decisiones de este documento:
 
-1. **Los no-negociables de la sección 3 son correctivos, no perfeccionismo.** Propiedad estatal del código, cláusulas de portabilidad y contratos verificables en recepción responden punto por punto a las debilidades del contrato anterior.
+1. **Los no-negociables en [`principios-no-negociables.md`](./principios-no-negociables.md) son correctivos, no perfeccionismo.** Propiedad estatal del código, cláusulas de portabilidad y contratos verificables en recepción responden punto por punto a las debilidades del contrato anterior.
 2. **El conocimiento de dominio financiado por el Estado debe quedar en activos del Estado.** Todo el levantamiento, especificación y documentación del nuevo SGM se versiona en repositorios de propiedad de SUBDERE (`sgm-docs/`). Nada del valor generado durante el contrato debe ser apropiable en exclusiva por el adjudicatario.
 3. **La especificación completa neutraliza ventajas informativas en la licitación.** Debe anticiparse que actores con conocimiento previo del dominio (incluido el proveedor anterior) se presenten a la licitación. La respuesta no es la inhabilitación —jurídicamente frágil— sino una especificación tan completa que la ventaja de conocimiento se diluya, más criterios de evaluación que exijan evidencia verificable de calidad en proyectos previos.
-4. **[PENDIENTE]** Revisión jurídica del contrato original completo (obligaciones de confidencialidad o de destino de los desarrollos que puedan sobrevivir aunque la PI no esté bien amarrada), previa a descartar acciones.
+4. **[PENDIENTE P-17]** Revisión jurídica del contrato original completo (obligaciones de confidencialidad o de destino de los desarrollos que puedan sobrevivir aunque la PI no esté bien amarrada), previa a descartar acciones.
 
 ## 9. Participación temprana del mercado en la definición de estándares
 
@@ -112,7 +104,7 @@ El proveedor del desarrollo original lanzó posteriormente un ERP municipal prop
 
 ### 9.1 Mecanismo: consulta al mercado, nunca reuniones informales
 
-Las conversaciones informales con empresas previas a una licitación exponen el proceso a impugnaciones (ventaja del participante, trato desigual hacia el no invitado) y a reproches de probidad. El instrumento correcto es la **consulta al mercado (RFI) vía Mercado Público**, formalizada por la reforma a la Ley 19.886 (Ley 21.634): convocatoria pública, participación abierta a cualquier interesado, registro íntegro de lo conversado, sin que participar inhabilite ni privilegie. Para instancias donde la solución deba construirse iterativamente con el mercado, la misma reforma contempla el **diálogo competitivo** como alternativa a evaluar. **[PENDIENTE]** Confirmación jurídica del encuadre exacto (RFI, diálogo competitivo u otro) antes de la primera convocatoria.
+Las conversaciones informales con empresas previas a una licitación exponen el proceso a impugnaciones (ventaja del participante, trato desigual hacia el no invitado) y a reproches de probidad. El instrumento correcto es la **consulta al mercado (RFI) vía Mercado Público**, formalizada por la reforma a la Ley 19.886 (Ley 21.634): convocatoria pública, participación abierta a cualquier interesado, registro íntegro de lo conversado, sin que participar inhabilite ni privilegie. Para instancias donde la solución deba construirse iterativamente con el mercado, la misma reforma contempla el **diálogo competitivo** como alternativa a evaluar. **[PENDIENTE P-18]** Confirmación jurídica del encuadre exacto (RFI, diálogo competitivo u otro) antes de la primera convocatoria.
 
 Regla operativa: todo intercambio con empresas sobre SGM es público, trazable y de convocatoria abierta. Sin excepciones.
 
@@ -135,12 +127,4 @@ En un mecanismo de convocatoria abierta, el proveedor anterior no puede ser excl
 
 ## 10. Pendientes abiertos
 
-1. **[PENDIENTE]** Instrumento jurídico de soberanía del dato por modo de consumo (Ley 21.719).
-2. **[PENDIENTE]** Especificación de autenticación M2M (scopes por módulo/municipio).
-3. **[PENDIENTE]** Decisión sobre exigencia de evidencia de mercado laboral local en las bases (formato verificable).
-4. **[PENDIENTE]** Nivel de soporte mínimo comprometido para el Odoo actual en los 5 pilotos durante el período de licitación y desarrollo (18–24 meses estimados).
-5. **[PENDIENTE]** Diseño del convenio tipo de acceso al ecosistema para empresas terceras (procedimiento, plazos, requisitos).
-6. **[PENDIENTE]** Especificación del ambiente sandbox (alcance, datos sintéticos, disponibilidad pública).
-7. **[PENDIENTE]** Revisión jurídica del contrato original con el proveedor Odoo (sección 8.4).
-8. **[PENDIENTE]** Encuadre jurídico de la consulta al mercado (RFI / diálogo competitivo, Ley 21.634) previo a la primera convocatoria.
-9. **[PENDIENTE]** Definición del borrador mínimo de estándares que gatilla la primera consulta al mercado (qué documentos de `sgm-docs/` deben estar cerrados antes de convocar).
+Los pendientes de este documento están registrados en [`pendientes.md`](./pendientes.md): P-01, P-02, P-13, P-14, P-15, P-16, P-17, P-18, P-19.

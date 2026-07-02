@@ -42,3 +42,7 @@ Ver `arquitectura/integracion-mercado-publico.md` para el principio general (uni
 ## Diagramas
 
 `diagramas/` — BPMN de cada macroproceso en formato `.drawio`, editable.
+
+## Contrato API
+
+[`contracts.md`](./contracts.md) — contrato del módulo (piloto Compra Ágil). Estándares transversales en [`arquitectura/estandares-api.md`](../../arquitectura/estandares-api.md).

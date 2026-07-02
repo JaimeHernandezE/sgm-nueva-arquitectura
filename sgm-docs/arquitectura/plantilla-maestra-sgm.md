@@ -4,7 +4,7 @@ Documento normativo del repositorio `sgm-docs`. Define la estructura obligatoria
 
 **Criterio de calidad general (heredado del estándar de Etapa 1):** la especificación debe ser suficiente para que dos equipos independientes puedan construir sistemas funcionalmente equivalentes a partir de ella sola.
 
-**Principio arquitectónico rector (mandato API):** cada módulo expone un contrato de entrada/salida versionado; ningún módulo accede a datos o funcionalidad de otro salvo a través de ese contrato. La documentación de procesos debe hacer visibles los bordes de módulo — cada vez que un flujo cruza de un módulo a otro, ahí vive un contrato. Detalle normativo en `arquitectura/estandares-api.md` y `contrato-api-first.md`.
+**Principio arquitectónico rector (mandato API):** cada módulo expone un contrato de entrada/salida versionado; ningún módulo accede a datos o funcionalidad de otro salvo a través de ese contrato. La documentación de procesos debe hacer visibles los bordes de módulo — cada vez que un flujo cruza de un módulo a otro, ahí vive un contrato. Detalle normativo en [`estandares-api.md`](./estandares-api.md) y [`contrato-api-first.md`](./contrato-api-first.md).
 
 ---
 
@@ -114,7 +114,7 @@ Documento único por módulo, en `modulos/<módulo>/contracts.md`. Es la vista d
 Reglas:
 - Nomenclatura inglesa técnica, consistente con el modelo de datos (`PascalCase` para eventos y entidades, `camelCase` para operaciones).
 - Cada operación, dependencia y evento indica en qué sub-paso(s) se origina (trazabilidad proceso ↔ contrato en ambas direcciones).
-- Los estándares transversales (esquema de error, versionamiento, paginación, idempotencia, autenticación) **no se repiten** en cada contrato: viven en `arquitectura/estandares-api.md` y los contratos los referencian.
+- Los estándares transversales (esquema de error, versionamiento, paginación, idempotencia, autenticación) **no se repiten** en cada contrato: viven en [`estandares-api.md`](./estandares-api.md) y los contratos los referencian.
 - Ante discrepancia entre una ficha de sub-paso y `contracts.md`, se resuelve la inconsistencia antes de dar por cerrado cualquiera de los dos — misma lógica que wireframe vs. entidades.
 
 ---
