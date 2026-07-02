@@ -4,9 +4,9 @@
 
 ## 1.1 — Creación de solicitud
 
-| Campo | Valor |
+| Materia | Valor |
 |---|---|
-| Unidad | Unidad Solicitante |
+| Unidad municipal | Unidad Solicitante |
 | Rol | Usuario |
 | Plataforma | SGM |
 | Optativo | Falso |
@@ -39,9 +39,9 @@
 
 ## 1.2 — Visto bueno de jefatura
 
-| Campo | Valor |
+| Materia | Valor |
 |---|---|
-| Unidad | Unidad Solicitante |
+| Unidad municipal | Unidad Solicitante |
 | Rol | Aprobador |
 | Plataforma | SGM |
 | Optativo | Falso |
@@ -71,9 +71,9 @@
 
 ## 1.3 — Pre-afectación presupuestaria
 
-| Campo | Valor |
+| Materia | Valor |
 |---|---|
-| Unidad | DAF Finanzas |
+| Unidad municipal | DAF Finanzas |
 | Rol | Aprobador |
 | Plataforma | SGM |
 | Optativo | Falso |

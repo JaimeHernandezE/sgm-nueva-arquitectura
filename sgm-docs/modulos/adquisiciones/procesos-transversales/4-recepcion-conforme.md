@@ -4,9 +4,9 @@
 
 ## 4.1 — Registro de recepción física
 
-| Campo | Valor |
+| Materia | Valor |
 |---|---|
-| Unidad | Unidad Solicitante |
+| Unidad municipal | Unidad Solicitante |
 | Rol | Usuario |
 | Plataforma | SGM |
 | Optativo | Falso |

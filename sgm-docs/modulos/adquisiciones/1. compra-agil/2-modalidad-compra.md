@@ -4,9 +4,9 @@
 
 ## 2.1 — Inicio en MP vía Deep Link
 
-| Campo | Valor |
+| Materia | Valor |
 |---|---|
-| Unidad | DAF Abastecimiento |
+| Unidad municipal | DAF Abastecimiento |
 | Rol | Usuario |
 | Plataforma | SGM → Mercado Público (deep link, sin escritura API) |
 | Optativo | Falso |
@@ -32,9 +32,9 @@
 
 ## 2.2 — Sincronización de ID de Cotización
 
-| Campo | Valor |
+| Materia | Valor |
 |---|---|
-| Unidad | DAF Abastecimiento |
+| Unidad municipal | DAF Abastecimiento |
 | Rol | Usuario |
 | Plataforma | SGM |
 | Optativo | Falso |
@@ -61,9 +61,9 @@
 
 ## 2.3 — Recepción de cotizaciones
 
-| Campo | Valor |
+| Materia | Valor |
 |---|---|
-| Unidad | — (sin unidad SGM interviniente) |
+| Unidad municipal | — |
 | Rol | N/A (proveedores externos) |
 | Plataforma | Mercado Público |
 | Optativo | Falso |
@@ -88,9 +88,9 @@
 
 ## 2.4 — Selección y emisión de OC
 
-| Campo | Valor |
+| Materia | Valor |
 |---|---|
-| Unidad | DAF Abastecimiento |
+| Unidad municipal | DAF Abastecimiento |
 | Rol | Aprobador |
 | Plataforma | Mercado Público |
 | Optativo | Falso |

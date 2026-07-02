@@ -8,16 +8,18 @@ Ficha de flujo SOLPED → Pago para la modalidad Compra Ágil. Documenta las eta
 
 El ciclo de compras se organiza en 5 etapas de alto nivel. Las etapas **1 (SOLPED), 4 (Recepción Conforme) y 5 (Pago)** son transversales — compartidas por las 4 modalidades. Las etapas **2 (Modalidad de Compra) y 3 (Resolución de Compra)** documentadas aquí son específicas de Compra Ágil.
 
-Cada sub-paso documenta: Unidad, Rol, Plataforma, Optativo, entidades y campos del modelo de datos, edge cases, y puntos marcados explícitamente como **pendientes de definir** cuando la fuente no resuelve una regla de negocio — candidatos directos para el levantamiento con DM y municipios piloto.
+Cada sub-paso documenta: Unidad municipal, Rol, Plataforma, Optativo, entidades y campos del modelo de datos, edge cases, y puntos marcados explícitamente como **pendientes de definir** cuando la fuente no resuelve una regla de negocio — candidatos directos para el levantamiento con DM y municipios piloto.
 
 ## Convenciones de la ficha
 
-| Campo | Valores | Notas |
+Alineadas con [`plantilla-maestra-sgm.md`](../../../arquitectura/plantilla-maestra-sgm.md) §3.2.
+
+| Materia | Valores | Notas |
 |---|---|---|
-| Unidad | Unidad Solicitante / DAF Finanzas / DAF Abastecimiento / Contabilidad / Tesorería | Área responsable del sub-paso |
-| Rol | Usuario / Aprobador | Nivel de intervención requerido |
-| Plataforma | SGM / Mercado Público / Otra | Dónde ocurre técnicamente la acción |
-| Optativo | Verdadero / Falso | Si el sub-paso puede omitirse |
+| Unidad municipal | Unidad Solicitante / DAF Finanzas / DAF Abastecimiento / Contabilidad / Tesorería / `—` | Departamento u oficina del municipio responsable del paso |
+| Rol | Usuario / Aprobador / N/A | Rol funcional según RBAC del módulo (`seguridad.md` §3; catálogo en P-24) |
+| Plataforma | SGM / Mercado Público / Otra | Sistema donde se ejecuta la acción principal del sub-paso |
+| Optativo | Verdadero / Falso | Si el sub-paso puede omitirse en el flujo (`Verdadero`) o es obligatorio (`Falso`) |
 
 ## Etapas del ciclo
 

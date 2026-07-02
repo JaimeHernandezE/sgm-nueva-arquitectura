@@ -32,7 +32,7 @@ Documento normativo del repositorio `sgm-docs`. Define la estructura obligatoria
 1. **Título y descripción breve** (1-2 líneas: qué cubre, de dónde a dónde).
 2. **Fuente base**: documentos de los que se extrajo la información (con fecha de carga si aplica).
 3. **Nota metodológica**: aclarar qué etapas son organizador común y cuáles tienen contenido específico de esta modalidad/macroproceso.
-4. **Convenciones de la ficha** (tabla Unidad/Rol/Plataforma/Optativo — puede referenciar esta plantilla en vez de repetirla).
+4. **Convenciones de la ficha** (tabla Unidad municipal / Rol / Plataforma / Optativo — puede referenciar esta plantilla en vez de repetirla).
 5. **Índice de etapas** con enlaces relativos a cada archivo.
 6. **Mapa de bordes del macroproceso:** tabla resumen de todos los cruces de borde de módulo identificados en los sub-pasos (sub-paso / contrato invocado o evento emitido / clasificación). Se construye agregando las secciones 3.5 de las fichas; es el insumo directo de `contracts.md`.
 7. **Patrones transversales pendientes de definir**: vacíos que aparecen en más de una etapa y son candidatos a regla única reutilizable.
@@ -47,14 +47,16 @@ Cada sub-paso se documenta con esta estructura, en este orden:
 ### 3.1 Encabezado
 `## N.N — Nombre del sub-paso`
 
-### 3.2 Tabla de ficha (obligatoria, 4 campos)
+### 3.2 Tabla de ficha (obligatoria, 4 materias)
 
-| Campo | Valores permitidos |
+Metadatos del sub-paso: quién del municipio actúa, con qué rol, en qué sistema, y si el paso puede omitirse en el flujo.
+
+| Materia | Valor |
 |---|---|
-| **Unidad** | Unidad Solicitante / DAF Finanzas / DAF Abastecimiento / Contabilidad / Tesorería / — (sin unidad SGM interviniente) |
-| **Rol** | Usuario / Aprobador / N/A (automático o actor externo) |
-| **Plataforma** | SGM / Mercado Público / Otra (especificar) / combinaciones explícitas (ej. "SGM → MP (deep link)") |
-| **Optativo** | Verdadero / Falso |
+| **Unidad municipal** | Departamento u oficina del municipio que ejecuta o es titular del paso. Valores típicos: Unidad Solicitante / DAF Finanzas / DAF Abastecimiento / Contabilidad / Tesorería / `—` (sin unidad municipal: paso automático o actor externo). |
+| **Rol** | Rol funcional del actor humano en este paso, según el catálogo RBAC del módulo ([`seguridad.md`](./seguridad.md) §3; catálogo en **[PENDIENTE P-24]**). Valores provisionales: Usuario / Aprobador / N/A (automático o actor externo). |
+| **Plataforma** | Sistema donde se realiza la acción principal de este sub-paso (no todos los sistemas tocados; las integraciones adicionales van en §3.5). Valores: SGM / Mercado Público / Otra (especificar) / secuencia explícita (ej. `SGM → MP (deep link)`). |
+| **Optativo** | `Verdadero` si el sub-paso puede omitirse en el flujo sin invalidar el proceso; `Falso` si es obligatorio para continuar. Si la omisión es condicional, documentar la condición en §3.3. |
 
 ### 3.3 Detalle
 Descripción funcional del sub-paso en prosa. Qué ocurre, quién lo hace, qué condiciones aplican, plazos si existen.
@@ -184,7 +186,7 @@ Todo cambio en `entidades-core.md` que afecte relaciones o entidades debe reflej
 ## 8. Criterios de completitud ("definition of done")
 
 Un **sub-paso** está completo cuando:
-- [ ] Tabla de ficha con los 4 campos llenos (sin celdas "por ver").
+- [ ] Tabla de ficha con las 4 materias llenas (sin celdas "por ver").
 - [ ] Todas las entidades referenciadas existen en `entidades-core.md`.
 - [ ] Sección de borde de módulo presente (aunque sea "Sin cruce"); si hay cruce, contrato/evento nombrado y existente en `contracts.md`, con clasificación declarada o marcada ⚠.
 - [ ] Todos los edge cases conocidos están documentados, incluidos los de falla de proveedor si hay borde.

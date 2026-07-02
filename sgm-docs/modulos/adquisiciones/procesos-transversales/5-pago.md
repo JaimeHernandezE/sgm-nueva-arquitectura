@@ -4,9 +4,9 @@
 
 ## 5.1 — Cruce de 3 vías (Match)
 
-| Campo | Valor |
+| Materia | Valor |
 |---|---|
-| Unidad | Contabilidad / Tesorería |
+| Unidad municipal | Contabilidad / Tesorería |
 | Rol | N/A / a definir |
 | Plataforma | SGM (cruce interno) + SII (factura) |
 | Optativo | Falso |
@@ -36,9 +36,9 @@
 
 ## 5.2 — Registro de Devengado
 
-| Campo | Valor |
+| Materia | Valor |
 |---|---|
-| Unidad | Contabilidad / Tesorería |
+| Unidad municipal | Contabilidad / Tesorería |
 | Rol | Aprobador |
 | Plataforma | SGM |
 | Optativo | Falso |
@@ -63,9 +63,9 @@
 
 ## 5.3 — Generación de Decreto de Pago
 
-| Campo | Valor |
+| Materia | Valor |
 |---|---|
-| Unidad | Contabilidad / Tesorería |
+| Unidad municipal | Contabilidad / Tesorería |
 | Rol | Aprobador |
 | Plataforma | SGM |
 | Optativo | Falso |
@@ -90,9 +90,9 @@
 
 ## 5.4 — Ejecución del pago
 
-| Campo | Valor |
+| Materia | Valor |
 |---|---|
-| Unidad | Tesorería |
+| Unidad municipal | Tesorería |
 | Rol | Aprobador |
 | Plataforma | SGM |
 | Optativo | Falso |

@@ -6,9 +6,9 @@
 
 ## 3.1 — Aceptación de OC por el proveedor
 
-| Campo | Valor |
+| Materia | Valor |
 |---|---|
-| Unidad | — (sin unidad SGM interviniente) |
+| Unidad municipal | — |
 | Rol | N/A (proveedor externo) |
 | Plataforma | Mercado Público |
 | Optativo | Falso |
@@ -35,9 +35,9 @@
 
 ## 3.2 — Lectura API y Compromiso Cierto
 
-| Campo | Valor |
+| Materia | Valor |
 |---|---|
-| Unidad | Contabilidad / Tesorería |
+| Unidad municipal | Contabilidad / Tesorería |
 | Rol | N/A (automático) |
 | Plataforma | SGM (lectura API desde MP) |
 | Optativo | Falso |
