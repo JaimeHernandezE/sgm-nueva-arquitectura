@@ -1,0 +1,21 @@
+stages:
+  - sync
+
+sync_from_github:
+  stage: sync
+  variables:
+    GIT_STRATEGY: none   # no necesitas el checkout del propio repo GitLab
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache git
+    - git config --global http.postBuffer 524288000
+    - git config --global http.version HTTP/1.1
+    - git config --global core.compression 0
+  script:
+    - git clone --mirror "https://$GITHUB_TOKEN@github.com/$GITHUB_PROJECT.git" repo.git
+    - cd repo.git
+    - git remote set-url --push origin "https://$GITLAB_SUBDERE_TOKEN_USER:$GITLAB_SUBDERE_TOKEN_PASS@gitlab.subdere.gob.cl/modernizacion/sgm/nueva-arquitectura.git"
+    - git push --mirror
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - when: manual
