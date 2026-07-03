@@ -1,0 +1,20 @@
+name: Mirror to GitLab
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # todos los días a las 3 AM UTC
+  push:
+    branches: [main]      # opcional: también en cada push
+  workflow_dispatch:       # permite ejecutarlo manualmente
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # historia completa, necesaria para mirror
+
+      - name: Push a GitLab
+        run: |
+          git push --mirror "https://oauth2:${{ secrets.GITLAB_TOKEN }}@gitlab.subdere.gob.cl/modernizacion/sgm/nueva-arquitectura.git"
