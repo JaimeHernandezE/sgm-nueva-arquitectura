@@ -48,7 +48,7 @@ Cada sub-paso se documenta con esta estructura, en este orden:
 ### 3.1 Encabezado
 `## N.N — Nombre del sub-paso`
 
-### 3.2 Tabla de ficha (obligatoria, 4 materias)
+### 3.2 Tabla de ficha (obligatoria, 4 materias; 5 si aplica MP)
 
 Metadatos del sub-paso: quién del municipio actúa, con qué rol, en qué sistema, y si el paso puede omitirse en el flujo.
 
@@ -58,6 +58,7 @@ Metadatos del sub-paso: quién del municipio actúa, con qué rol, en qué siste
 | **Rol** | Rol funcional del actor humano en este paso, según el catálogo RBAC del módulo ([`seguridad.md`](./seguridad.md) §3; catálogo en **[PENDIENTE P-24]**). Valores provisionales: Usuario / Aprobador / N/A (automático o actor externo). |
 | **Plataforma** | Sistema donde se realiza la acción principal de este sub-paso (no todos los sistemas tocados; las integraciones adicionales van en §3.5). Valores: SGM / Mercado Público / Otra (especificar) / secuencia explícita (ej. `SGM → MP (deep link)`). |
 | **Optativo** | `Verdadero` si el sub-paso puede omitirse en el flujo sin invalidar el proceso; `Falso` si es obligatorio para continuar. Si la omisión es condicional, documentar la condición en §3.3. |
+| **Interacción MP** *(solo si aplica)* | Obligatoria en todo sub-paso con Plataforma = Mercado Público o cuyo avance dependa de una lectura MP. Valores: Informativo / Gestión / Gestión condicional, según el estándar de §5.1. |
 
 ### 3.3 Detalle
 Descripción funcional del sub-paso en prosa. Qué ocurre, quién lo hace, qué condiciones aplican, plazos si existen.
@@ -122,7 +123,39 @@ Reglas:
 
 ---
 
-## 5. Reglas del modelo de datos
+## 5. Estándar de la relación Mercado Público ↔ SGM
+
+Aplica a todo sub-paso cuyo avance depende de un proceso en Mercado Público. Principio base (inmutable, ver [`integracion-mercado-publico.md`](./integracion-mercado-publico.md)): integración **unidireccional de solo lectura** — deep links para actuar (la persona opera en MP) y lecturas de estado para sincronizar; SGM jamás escribe hacia MP vía API.
+
+### 5.1 Clasificación obligatoria: Informativo / Gestión
+
+Cada sub-paso gobernado por un estado MP se clasifica según qué exige de SGM cuando el estado llega:
+
+| Clasificación | Criterio | Comportamiento en SGM |
+|---|---|---|
+| **Informativo** | El estado solo hace avanzar la línea de tiempo visible del expediente | Se actualiza el `CaseStep` (estado, timestamps); corren los timers; **nadie debe hacer nada** |
+| **Gestión** | El estado (a) tiene efecto presupuestario o contable, (b) exige una decisión de un usuario municipal para continuar, o (c) cambia responsabilidades en el expediente | Se dispara acción de sistema (ej. compromiso contable) y/o se crea tarea con responsable y notificación |
+| **Gestión condicional** | Informativo en el camino feliz; gestión solo si ocurre la condición (ej. bloqueo por proveedor inhábil) | Documentar ambos comportamientos y la condición que los separa |
+
+Las fichas declaran la clasificación como **quinta materia de la tabla de ficha** (`Interacción MP: Informativo / Gestión / Gestión condicional`) en todo sub-paso con Plataforma = Mercado Público o cuyo avance dependa de una lectura MP.
+
+### 5.2 Mecanismo de sincronización: push preferido, polling dirigido como respaldo
+
+- **Preferencia de diseño: push (webhooks MP → SGM).** MP notifica los cambios de estado a un endpoint de SGM. Es el mecanismo eficiente a escala y el que la guía de ChileCompra lista entre los requerimientos a negociar. **Su factibilidad está pendiente de conversación formal con ChileCompra** — ningún documento debe asumirlo como existente.
+- **Respaldo: polling activo dirigido.** Si el push no es factible, SGM consulta activamente, con estas reglas de diseño obligatorias:
+  1. **Filtro de estado:** se consulta **solo** el conjunto de expedientes con `mp_process_id` en estados no terminales que esperan cambio en MP — nunca un barrido del universo completo de expedientes, que a escala (miles de expedientes activos en cientos de municipios) es inviable y violaría cualquier rate limit.
+  2. **Frecuencia diferenciada por estado esperado:** un proceso en período de cotización de 5 días no se consulta con la misma frecuencia que una OC enviada esperando aceptación.
+  3. **Respeto de rate limits acordados con ChileCompra** y retroceso exponencial ante errores.
+- **Conmutabilidad:** el mecanismo (push o polling) es un detalle del servicio de sincronización. Hacia adentro de SGM, ambos producen el **mismo evento interno** (`MpStateChanged` o equivalente por estado); los módulos y fichas se especifican contra el evento interno, nunca contra el mecanismo. Cambiar de polling a push cuando ChileCompra lo habilite no debe tocar ningún contrato de módulo.
+
+### 5.3 Lecturas deseadas vs. confirmadas, y modo degradado
+
+- Cada ficha que dependa de una lectura MP indica si esa lectura está **confirmada** (existe en la API actual de MP) o es **deseada** (depende de la negociación con ChileCompra).
+- Todo sub-paso que dependa de una lectura *deseada* debe documentar su **modo degradado**: cómo avanza el flujo si la lectura no existe (típicamente, registro manual del usuario con menor granularidad de trazabilidad). La especificación no queda rehén de una API no negociada.
+
+---
+
+## 6. Reglas del modelo de datos
 
 1. **Fuente única:** todas las entidades se definen en `modelo-datos/entidades-core.md`. Los procesos las referencian, no las redefinen.
 2. **Nomenclatura:** inglés, estilo técnico, PascalCase para entidades (`PurchaseRequest`), snake_case para campos (`requesting_unit`).
@@ -133,7 +166,7 @@ Reglas:
 
 ---
 
-## 6. Estructura estándar de wireframes
+## 7. Estructura estándar de wireframes
 
 **Decisión de proyecto: se producen wireframes de baja fidelidad, no mockups.** El diseño visual (colores, tipografía, sistema de diseño) es entregable del adjudicatario de la licitación, no de esta especificación. Los wireframes especifican estructura y comportamiento, no estética.
 
@@ -161,7 +194,7 @@ Cada wireframe lleva un bloque de notas (en un `.md` hermano o dentro de la imag
 
 ---
 
-## 7. Estructura estándar de diagramas E-R
+## 8. Estructura estándar de diagramas E-R
 
 **Decisión de proyecto: un modelo lógico único, múltiples vistas.** No se produce un diagrama monolítico de todo el sistema.
 
@@ -188,13 +221,14 @@ Todo cambio en `entidades-core.md` que afecte relaciones o entidades debe reflej
 
 ---
 
-## 8. Criterios de completitud ("definition of done")
+## 9. Criterios de completitud ("definition of done")
 
 Un **sub-paso** está completo cuando:
 - [ ] Tabla de ficha con las 4 materias llenas (sin celdas "por ver").
 - [ ] Todas las entidades referenciadas existen en `entidades-core.md`.
 - [ ] Sección de borde de módulo presente (aunque sea "Sin cruce"); si hay cruce, contrato/evento nombrado y existente en `contracts.md`, con clasificación declarada o marcada ⚠.
 - [ ] Todos los edge cases conocidos están documentados, incluidos los de falla de proveedor si hay borde.
+- [ ] Si depende de estados MP: materia "Interacción MP" declarada (§5.1), lecturas marcadas como confirmadas o deseadas, y modo degradado documentado para toda lectura deseada (§5.3).
 - [ ] Ningún vacío de la fuente quedó como supuesto silencioso — todos marcados con ⚠.
 
 Una **etapa** está completa cuando:

@@ -1,12 +1,12 @@
 # Contrato del módulo: Adquisiciones
 
-> Piloto: macroproceso **Compra Ágil** (SOLPED → Pago, 17 sub-pasos).
+> Piloto: macroproceso **Compra Ágil** (SOLPED → Pago). Etapas 1 (SOLPED), 2 (Modalidad de Compra) y 4 (Recepción Conforme) son transversales a las 4 modalidades; etapa 3 (Resolución de Compra) es específica por modalidad.
 > Estado: borrador funcional derivado de fichas de flujo y ficha QA.
 > Estándares transversales: [`arquitectura/estandares-api.md`](../../arquitectura/estandares-api.md)
 > Metodología: [`arquitectura/contrato-api-first.md`](../../arquitectura/contrato-api-first.md)
 > Entidades canónicas: [`modelo-datos/entidades-core.md`](../../modelo-datos/entidades-core.md)
 
-**Alcance:** solo Compra Ágil. Otras modalidades se extenderán tras validar este piloto.
+**Alcance:** las etapas transversales (1, 2, 4) y la etapa 3 de Compra Ágil están cubiertas en profundidad. La etapa 3 de Licitación Pública ya tiene ficha de flujo (`3. licitacion-publica/3-resolucion-compra.md`, 14 sub-pasos) pero sus entidades y operaciones específicas (`TenderBases`, `Guarantee`, `Contract`, Comisión Evaluadora, etc.) aún no están completamente incorporadas a este contrato ni a `entidades-core.md` — solo se propagó aquí la concordancia de vinculación MP (§2.3 ↔ §3.5). Convenio Marco y Trato Directo se extenderán tras validar el piloto.
 
 ---
 
@@ -21,16 +21,20 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | `PurchaseRequestApproval` | Expuesta | `id`, `purchase_request_id`, `approver_id`, `decision`, `decision_date`, `comments` | 1.2 |
 | `BudgetAvailabilityCertificate` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status` | 1.5 |
 | `BudgetPreCommitment` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `budget_availability_certificate_id`, `budget_line_id`, `estimated_amount`, `fiscal_year`, `status` | 1.6 |
-| `AgileQuoteProcess` | Expuesta | `id`, `purchase_request_id`, `deep_link_clicked_at`, `mp_quote_id` | 2.1, 2.2 |
-| `PurchaseOrder` | Expuesta | `id`, `purchase_request_id`, `mp_oc_id`, `supplier_rut`, `total_amount`, `selection_justification`, `status`, `acceptance_date` | 2.4, 3.1, 3.2 |
-| `BudgetCommitment` | Expuesta | `id`, `purchase_order_id`, `budget_pre_commitment_id`, `committed_amount`, `commitment_date`, `source` | 3.2 |
-| `GoodsReceipt` | Expuesta | `id`, `purchase_order_id`, `received_by`, `received_date`, `conformity_status`, `observations` | 4.1 |
+| `AgileQuoteProcess` | Expuesta | `id`, `purchase_request_id`, `deep_link_clicked_at`, `mp_quote_id` | 2.1 *(CA)* — duplica `ProcurementCase.mp_process_id`, ver `entidades-core.md` <!-- REVISAR: consolidar AgileQuoteProcess --> |
+| `ModalityDecision` | Expuesta | `id`, `procurement_case_id`, `selected_modality`, `ratified`, `decided_by`, `decided_at` | 2.1 |
+| `ModalityDecisionApproval` | Expuesta | `id`, `modality_decision_id`, `approver_id`, `decision`, `decision_date` | 2.2 — existencia condicionada a **[PENDIENTE P-38]** |
+| `QuotationResult` | Expuesta | `id`, `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `entry_mode` | 3.2 *(CA)* |
+| `PurchaseOrder` | Expuesta | `id`, `purchase_request_id`, `mp_oc_id`, `supplier_rut`, `total_amount`, `selection_justification`, `status`, `acceptance_date`, `fulfillment_status`, `entry_mode` | 3.3, 3.4, 3.5 *(CA)* / 3.5, 3.14 *(LP)*, 4.1 |
+| `BudgetCommitment` | Expuesta | `id`, `purchase_order_id`, `budget_pre_commitment_id`, `committed_amount`, `commitment_date`, `source` | 3.4 *(CA)* / 3.14 *(LP)* |
+| `GoodsReceipt` | Expuesta | `id`, `purchase_order_id`, `received_by`, `received_date`, `receipt_type`, `receiving_unit`, `status`, `observations` | 4.1, 4.2 |
+| `ReceiptRejectionCase` | Expuesta | `id`, `goods_receipt_id`, `resolution_type`, `resolution_deadline`, `resolved_at`, `outcome` | 4.5 |
 | `ThreeWayMatch` | Expuesta | `id`, `purchase_order_id`, `goods_receipt_id`, `invoice_id`, `match_status`, `match_date` | 5.1 |
-| `Accrual` | Expuesta | `id`, `three_way_match_id`, `budget_commitment_id`, `accrual_amount`, `accrual_date` | 5.2 |
+| `Accrual` | Expuesta | `id`, `three_way_match_id`, `budget_commitment_id`, `accrual_amount`, `accrual_date` | 5.2 — ver también `recordAccrual` (4.4) <!-- REVISAR: dos eventos de devengado, ver §4 --> |
 | `PaymentDecree` | Expuesta | `id`, `accrual_id`, `decree_number`, `decree_date`, `approver_id` | 5.3 |
 | `Payment` | Expuesta | `id`, `payment_decree_id`, `payment_date`, `payment_method`, `payment_status` | 5.4 |
 
-**Internas (no expuestas en contrato):** `PriceReference` (dato de validación embebido en línea), `GoodsReceiptLine` *(sugerida)*.
+**Internas (no expuestas en contrato):** `PriceReference` (dato de validación embebido en línea), `GoodsReceiptLine` (confirmada, candidata a exposición futura), `MpProcessSnapshot` (bitácora de sincronización), `UtmValue` (obtenida vía dependencia `getUtmValue`), `NormativeParameter` (referencia global de plataforma, no administrada por este módulo).
 
 ---
 
@@ -114,53 +118,105 @@ Convenciones de error y paginación según [`estandares-api.md`](../../arquitect
 - **Dependencias:** `createBudgetPreCommitment` (Presupuestos), `registerPreObligation` (Contabilidad)
 - **Evento emitido:** `BudgetPreCommitmentCreated`
 
-### 2.2 Modalidad de Compra (Compra Ágil)
+### 2.2 Modalidad de Compra *(transversal — antes específica de Compra Ágil, ahora común a las 4 modalidades)*
 
-#### `POST /purchase-requests/{id}/agile-quote/deep-link` — `recordDeepLinkClick`
+#### `POST /procurement-cases/{id}/modality` — `confirmProcurementModality`
 - **Sub-pasos:** 2.1
-- **Respuesta:** URL deep link MP + `AgileQuoteProcess.deep_link_clicked_at`
+- **Entrada:** `selected_modality`, justificaciones condicionales (`catalog_bypass_justification`, `direct_procurement_cause`)
+- **Respuesta:** `ModalityDecision`, `CaseStep[]` instanciados
+- **Reglas:**
+  | Regla | Severidad | Error |
+  |---|---|---|
+  | V1 Monto ≤ 100 UTM para Compra Ágil | blocking | `MODALITY_AMOUNT_EXCEEDED` |
+  | V2 Catálogo CM es primera opción sin justificación | blocking | `FRAMEWORK_AGREEMENT_FIRST_OPTION` |
+  | V3 Trato Directo requiere causal + Resolución Fundada | blocking | `DIRECT_PROCUREMENT_CAUSE_REQUIRED` |
+  | V4/V5/V7/V8 sugerencias LP, Toma de Razón, tramo, garantías | advisory | `PUBLIC_TENDER_SUGGESTED`, `COMPTROLLER_REVIEW_REQUIRED`, `TENDER_TIER_INFO`, `TENDER_GUARANTEES_REQUIRED` |
+  | V6 *(propuesta)* fraccionamiento sospechado | advisory | `SPLITTING_SUSPECTED` |
+- **Dependencias:** `getUtmValue` (SII), `checkCatalogAvailability` (catálogo CM espejado)
+- **Evento emitido:** `ProcurementModalityConfirmed`
 
-#### `POST /purchase-requests/{id}/agile-quote/sync` — `syncQuoteId`
-- **Sub-pasos:** 2.2
-- **Entrada:** `mp_quote_id`
-- **Reglas:** ID válido → `status = quoting_in_progress`
-- **Dependencias:** `validateQuoteId` (MP)
+#### `POST /modality-decisions/{id}/approval` — *(operación no declarada explícitamente en la ficha; nombre inferido)* `approveModalityDecision`
+- **Sub-pasos:** 2.2 — existencia, alcance y nombre de operación pendientes de ratificar con la DM (**[PENDIENTE P-38]**)
+- **Dependencias:** `requestSignature`/`confirmSignature` (FirmaGob, condicional)
+- **Evento emitido:** `ProcurementModalityApproved`
 
-#### `GET /purchase-requests/{id}/agile-quote/summary` — `getQuoteSummary`
-- **Sub-pasos:** 2.3
-- **Dependencias:** `getQuoteSummary` (MP)
+#### `POST /procurement-cases/{id}/mp-link` — `linkMpProcess`
+- **Sub-pasos:** 2.3 (ejecución inmediata, Compra Ágil/Convenio Marco), 3.5 *(LP, ejecución diferida)*, subproceso de publicación *(Trato Directo, ejecución diferida)*
+- **Entrada:** `mp_process_id`
+- **Reglas:**
+  | Regla | Severidad | Error |
+  |---|---|---|
+  | Proceso MP existe | blocking | `MP_PROCESS_NOT_FOUND` |
+  | Organismo comprador coincide con el tenant | blocking | `MP_PROCESS_ORGANISM_MISMATCH` |
+  | Tipo de proceso MP coincide con la modalidad confirmada | blocking | `MP_PROCESS_TYPE_MISMATCH` |
+  | Código MP no vinculado previamente a otro expediente | blocking | `MP_PROCESS_ALREADY_LINKED` |
+- **Dependencias:** `readMpProcess` (Mercado Público, síncrona bloqueante solo en la vinculación)
+- **Evento emitido:** `MpProcessLinked`
 
-#### `POST /purchase-requests/{id}/purchase-orders` — `registerPurchaseOrder`
-- **Sub-pasos:** 2.4
-- **Entrada:** `mp_oc_id`, `supplier_rut`, `total_amount`, `selection_justification`
-- **Evento emitido:** `PurchaseOrderIssued`
+### 2.3 Resolución de Compra — Compra Ágil
 
-### 2.3 Resolución de Compra (Compra Ágil)
+#### *(sin operación declarada — solo lectura MP y evento)* 3.1 Período de cotización
+- **Dependencias:** `readMpProcess` (deseada)
+- **Evento emitido:** `MpStateChanged`
+
+#### *(sin operación declarada — registro de resultado en modo degradado, nombre inferido)* `recordQuotationResult`
+- **Sub-pasos:** 3.2
+- **Evento emitido:** `QuotationClosed`
+
+#### `POST /purchase-orders` — `registerPurchaseOrder` *(continúa el nombre usado antes de la reconciliación; cubre lectura MP o registro manual según `entry_mode`)*
+- **Sub-pasos:** 3.3
+- **Entrada:** `mp_oc_number`, `provider_rut`, `amount`, `entry_mode`
+- **Evento emitido:** `PurchaseOrderIssued` / `ProviderIneligibleBlocked`
 
 #### `POST /purchase-orders/{id}/sync-accepted` — `syncPurchaseOrderAccepted`
-- **Sub-pasos:** 3.2
+- **Sub-pasos:** 3.4 *(CA)* / 3.14 *(LP)*
 - **Reglas:**
   | Regla | Severidad | QA | Error |
   |---|---|---|---|
-  | Monto comprometido dentro de tolerancia vs pre-afectación | blocking ⚠ | 27 P0 | `AMOUNT_DEVIATION_EXCEEDED` |
-  | Saldo presupuestario al convertir compromiso | blocking | 11 P0 | `BUDGET_UNAVAILABLE` |
-- **Dependencias:** `syncPurchaseOrderAccepted` (MP), `convertPreCommitmentToCommitment` (Presupuestos), `registerBudgetCommitment` (Contabilidad)
+  | Saldo presupuestario al comprometer | blocking | 11 P0 | `BUDGET_UNAVAILABLE` |
+- **Dependencias:** `readMpProcess` — OC Aceptada, **confirmada** (MP), `commitBudget` (Presupuestos, síncrona bloqueante; reemplaza el par anterior `convertPreCommitmentToCommitment`+`registerBudgetCommitment` — simplificación aplicada en esta reconciliación)
 - **Eventos:** `PurchaseOrderAccepted`, `BudgetCommitmentCreated`
+
+#### *(sin operación declarada — reflejo de rechazo MP)*
+- **Sub-pasos:** 3.5
+- **Dependencias:** `readMpProcess` — OC Rechazada (deseada)
+- **Evento emitido:** `PurchaseOrderRejected`
+
+#### `POST /procurement-cases/{id}/release-pre-commitment` — `releasePreCommitment`
+- **Sub-pasos:** 3.6
+- **Dependencias:** `releasePreCommitment` (Presupuestos, síncrona bloqueante)
+- **Evento emitido:** `ProcurementProcessFailed`
 
 ### 2.4 Recepción Conforme
 
-#### `POST /purchase-orders/{id}/goods-receipts` — `createGoodsReceipt`
+#### `POST /purchase-orders/{id}/goods-receipts` — `registerReceipt`
 - **Sub-pasos:** 4.1
-- **Entrada:** `GoodsReceipt` + líneas
+- **Entrada:** `GoodsReceipt` + `GoodsReceiptLine[]`
+- **Reglas:**
+  | Regla | Severidad | Error |
+  |---|---|---|
+  | Cantidad recibida ≤ pendiente de la línea | blocking | `RECEIPT_EXCEEDS_ORDER` |
 
-#### `POST /goods-receipts/{id}/confirm` — `confirmGoodsReceipt`
-- **Sub-pasos:** 4.1
+#### `POST /goods-receipts/{id}/confirm` — *(operación de confirmación/rechazo no declarada explícitamente en la ficha; nombre inferido)* `confirmReceipt`
+- **Sub-pasos:** 4.2
 - **Reglas:**
   | Regla | Severidad | QA | Error |
   |---|---|---|---|
+  | Segregación: confirmante ≠ aprobador de la compra | blocking | 9 P1 | `SEGREGATION_OF_DUTIES_VIOLATION` |
   | Adjuntos obligatorios (factura, guía despacho) | blocking | 32 P1 | `MISSING_REQUIRED_ATTACHMENTS` |
-  | Firma si aplica | blocking | 7 P1 | `SIGNATURE_REQUIRED` |
 - **Evento emitido:** `GoodsReceiptConfirmed`
+
+#### `POST /goods-receipt-lines/{id}/inventory-entry` — `registerInventoryEntry` *(dependencia externa, ver §3)*
+- **Sub-pasos:** 4.3 — alcance pendiente de decisión de bases (**[PENDIENTE P-44]**)
+
+#### `POST /goods-receipts/{id}/accrual` — `recordAccrual`
+- **Sub-pasos:** 4.4
+- **Dependencias:** `recordAccrual` (Contabilidad, asíncrona) <!-- REVISAR: momento del devengado, ver §4 -->
+- **Evento emitido:** `AccrualRecorded`
+
+#### *(gestión del rechazo, sin operación de creación explícita — se genera desde `confirmReceipt` cuando hay líneas rechazadas)*
+- **Sub-pasos:** 4.5
+- **Evento emitido:** `ReceiptRejected`
 
 ### 2.5 Pago
 
@@ -204,22 +260,25 @@ Interfaces de proveedor — no llamadas a módulos concretos. El proveedor puede
 |---|---|---|---|
 | `checkBudgetAvailability` | 1.3, 1.5, 1.6 | Síncrona bloqueante | Error `BUDGET_PROVIDER_UNAVAILABLE`; operación no procede |
 | `createBudgetPreCommitment` | 1.6 | Síncrona bloqueante | Rechazo → `BUDGET_UNAVAILABLE`; sin efecto parcial |
-| `convertPreCommitmentToCommitment` | 3.2 | Síncrona bloqueante | Rechazo → `BUDGET_UNAVAILABLE`; OC queda `commitment_pending` |
+| `commitBudget` | 3.4 *(CA)*, 3.14 *(LP)* | Síncrona bloqueante | Rechazo → `BUDGET_UNAVAILABLE`; OC queda `commitment_pending` — regularización pendiente (**[PENDIENTE P-40]**). Reemplaza el par anterior `convertPreCommitmentToCommitment`+`registerBudgetCommitment`. |
+| `releasePreCommitment` | 3.6 | Síncrona bloqueante | Error `BUDGET_PROVIDER_UNAVAILABLE`; cancelación no se persiste sin liberación confirmada |
+| `adjustPreCommitment` | 3.10 *(LP)* | Síncrona bloqueante | Ajuste de la preobligación al monto adjudicado, antes del Compromiso Cierto (3.14) |
 
 ### 3.2 Contabilidad
 
 | Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
 |---|---|---|---|
-| `registerBudgetCommitment` | 3.2 | Asíncrona | Reintento; alerta operacional si persiste |
 | `registerPreObligation` | 1.6 | Síncrona bloqueante | `ACCOUNTING_PROVIDER_UNAVAILABLE`; preobligación no persiste |
 | `getInvoiceForMatch` | 5.1 | Síncrona bloqueante | `INVOICE_PROVIDER_UNAVAILABLE`; no habilita match |
-| `registerAccrual` | 5.2 | Síncrona bloqueante | `ACCOUNTING_PROVIDER_UNAVAILABLE`; no persiste devengado |
+| `registerAccrual` | 5.2 | Síncrona bloqueante | `ACCOUNTING_PROVIDER_UNAVAILABLE`; no persiste devengado <!-- REVISAR: momento del devengado, coexiste con `recordAccrual` de 4.4 — ver §4 --> |
+| `recordAccrual` | 4.4 | Asíncrona *(la conformidad procede; el devengado confirma o revierte)* | Estado intermedio "conforme, devengado pendiente"; idempotencia por `goods_receipt_id`. Error `ACCRUAL_EXCEEDS_COMMITMENT` si excede el compromiso. <!-- REVISAR: momento del devengado, coexiste con `registerAccrual` de 5.2 — ver §4 --> |
 
 ### 3.3 Tesorería
 
 | Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
 |---|---|---|---|
 | `executePayment` | 5.4 | Síncrona bloqueante | `TREASURY_PROVIDER_UNAVAILABLE` o `PAYMENT_REJECTED`; `payment_status = failed` |
+| `registerGuaranteeCustody` | 3.7, 3.12 *(LP)* | Asíncrona | Custodia de garantías de seriedad/fiel cumplimiento; nueva dependencia de módulo desde la ficha LP |
 
 ### 3.4 FirmaGob
 
@@ -230,15 +289,22 @@ Interfaces de proveedor — no llamadas a módulos concretos. El proveedor puede
 
 ### 3.5 Mercado Público (solo lectura)
 
-| Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
-|---|---|---|---|
-| `validateQuoteId` | 2.2 | Síncrona bloqueante ⚠ | `MP_PROVIDER_UNAVAILABLE`; reintento manual |
-| `getQuoteSummary` | 2.3 | Asíncrona | Muestra último estado en caché con advertencia de frescura |
-| `getPurchaseOrderFromMP` | 2.4, 5.1 | Asíncrona / Cacheada | Usa último sync; advertencia si antiguo |
-| `getPurchaseOrderStatus` | 3.1 | Asíncrona | Mantiene estado `issued`; reintento programado |
-| `syncPurchaseOrderAccepted` | 3.2 | Asíncrona | `pending_mp_sync`; reintento con backoff |
+Consolidado en torno a `readMpProcess`, operación única de lectura que atiende toda la etapa 2 (vinculación, §2.3) y toda la etapa 3 (período de cotización, cierre/selección, emisión/aceptación/rechazo de OC, desierto/fallido), agnóstica de modalidad. Reemplaza las filas granulares atadas a la numeración de sub-pasos anterior (`validateQuoteId`, `getQuoteSummary`, `getPurchaseOrderFromMP`, `getPurchaseOrderStatus`, `syncPurchaseOrderAccepted`).
 
-Ver [`integracion-mercado-publico.md`](../../arquitectura/integracion-mercado-publico.md): sin escritura API hacia MP.
+| Operación | Sub-pasos | Lectura MP (§5.3) | Clasificación | Comportamiento ante falla |
+|---|---|---|---|---|
+| `readMpProcess` — vinculación | 2.3, 3.5 *(LP, diferida)* | — | Síncrona bloqueante (solo en la vinculación) | `MP_PROCESS_NOT_FOUND` / `MP_PROCESS_ORGANISM_MISMATCH` / `MP_PROCESS_TYPE_MISMATCH` / `MP_PROCESS_ALREADY_LINKED`; `MP_PROVIDER_UNAVAILABLE` → **[PENDIENTE P-32]** |
+| `readMpProcess` — período de cotización | 3.1 | Deseada | Asíncrona | Sin efecto de gestión (informativo); retroceso exponencial |
+| `readMpProcess` — cierre y selección | 3.2 | Deseada | Asíncrona | Modo degradado: registro manual (`entry_mode = manual`) |
+| `readMpProcess` — OC enviada / bloqueo | 3.3 | Deseada | Asíncrona | Modo degradado: se infiere del registro manual + deep link |
+| `readMpProcess` — OC Aceptada | 3.4 *(CA)*, 3.14 *(LP)* | **Confirmada** | Asíncrona | Reintento con backoff; `PurchaseOrder` en `pending_mp_sync` |
+| `readMpProcess` — OC Rechazada | 3.5 | Deseada | Asíncrona | Modo degradado: registro manual del rechazo |
+| `readMpProcess` — desierto | 3.6 | Deseada | Asíncrona | Presunción de desierto vencido el plazo, confirmación manual |
+| `readMpProcess` — foro/apertura/adjudicación *(LP)* | 3.6, 3.8, 3.10 | Deseada | Asíncrona | Modo degradado: registro manual del hito |
+| `getUtmValue` | 2.1 | — | Cacheada (frescura mensual) | `UTM_VALUE_UNAVAILABLE` |
+| `checkCatalogAvailability` | 2.1 | — | Cacheada (frescura diaria) | Advertencia `CATALOG_STALE` |
+
+Ver [`integracion-mercado-publico.md`](../../arquitectura/integracion-mercado-publico.md): sin escritura API hacia MP; tabla de momento de vinculación por modalidad (inmediata CA/CM, diferida LP/TD).
 
 ### 3.6 SII / facturación
 
@@ -265,14 +331,28 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 | `BudgetFinancingRequested` | 1.4 | `purchase_request_id`, `requested_at`, `justification` |
 | `BudgetAvailabilityCertificateIssued` | 1.5 | `certificate_id`, `purchase_request_id`, `certificate_number`, `signed_at` |
 | `BudgetPreCommitmentCreated` | 1.6 | `budget_pre_commitment_id`, `purchase_request_id`, `estimated_amount` |
-| `PurchaseOrderIssued` | 2.4 | `purchase_order_id`, `mp_oc_id`, `total_amount`, `supplier_rut` |
-| `PurchaseOrderAccepted` | 3.2 | `purchase_order_id`, `acceptance_date`, `total_amount` |
-| `BudgetCommitmentCreated` | 3.2 | `budget_commitment_id`, `committed_amount`, `commitment_date` |
-| `GoodsReceiptConfirmed` | 4.1 | `goods_receipt_id`, `purchase_order_id`, `conformity_status` |
+| `PurchaseOrderIssued` | 3.3 *(antes 2.4 — renumerado tras la reconciliación)* | `purchase_order_id`, `mp_oc_id`, `total_amount`, `supplier_rut` |
+| `PurchaseOrderAccepted` | 3.4 *(CA)* / 3.14 *(LP)* | `purchase_order_id`, `acceptance_date`, `total_amount` |
+| `BudgetCommitmentCreated` | 3.4 *(CA)* / 3.14 *(LP)* | `budget_commitment_id`, `committed_amount`, `commitment_date` |
+| `ProcurementModalityConfirmed` | 2.1 | `modality_decision_id`, `procurement_case_id`, `procurement_type` |
+| `ProcurementModalityApproved` | 2.2 | `modality_decision_approval_id`, `procurement_case_id` — **[PENDIENTE P-38]** |
+| `NormativeParameterChanged` | 2.1 (gobernanza) | `parameter_code`, `value`, `valid_from`, `approved_by` |
+| `MpProcessLinked` | 2.3, 3.5 *(LP)* | `procurement_case_id`, `mp_process_id`, `procurement_type` |
+| `MpStateChanged` | 3.1 | `mp_process_snapshot_ref` |
+| `QuotationClosed` | 3.2 | `quotation_result_id`, `procurement_case_id` |
+| `ProviderIneligibleBlocked` | 3.3 | `purchase_order_id`, `provider_rut` |
+| `PurchaseOrderRejected` | 3.5 | `purchase_order_id`, `rejection_reason` |
+| `ProcurementProcessFailed` | 3.6 | `procurement_case_id`, causa (`deserted`/`all_rejected`), decisión |
+| `GoodsReceiptConfirmed` | 4.2 *(antes 4.1 — renumerado)* | `goods_receipt_id`, `purchase_order_id`, `status` |
+| `ReceiptRejected` | 4.5 | `receipt_rejection_case_id`, `goods_receipt_line_ids` |
 | `ThreeWayMatchCompleted` | 5.1 | `three_way_match_id`, `match_status`, `match_date` |
-| `AccrualRegistered` | 5.2 | `accrual_id`, `accrual_amount`, `accrual_date` |
+| `AccrualRegistered` | 5.2 | `accrual_id`, `accrual_amount`, `accrual_date` — <!-- REVISAR: momento del devengado, coexiste con `AccrualRecorded` de 4.4, ver nota abajo --> |
+| `AccrualRecorded` | 4.4 | `accrual_ref`, `procurement_case_id` — <!-- REVISAR: momento del devengado, coexiste con `AccrualRegistered` de 5.2 --> |
 | `PaymentDecreeIssued` | 5.3 | `payment_decree_id`, `decree_number`, `decree_date` |
 | `PaymentCompleted` | 5.4 | `payment_id`, `payment_date`, `payment_status` |
+
+> <!-- REVISAR: `AccrualRegistered` (5.2, disparado por `ThreeWayMatch`) y `AccrualRecorded` (4.4, disparado por conformidad de recepción) coexisten como dos eventos de devengado distintos — no se fusionan aquí. Ver **[PENDIENTE P-46]** momento del devengado. -->
+> <!-- REVISAR: frontera Pago/Tesorería — los eventos de la sección 2.5 (Pago) asumen que Pago es una etapa propia de Adquisiciones (`procesos-transversales/5-pago.md`), mientras la ficha de Recepción Conforme (4.4) asume que Pago pertenece a un módulo Tesorería separado. Ver **[PENDIENTE P-47]**. -->
 
 ---
 
@@ -286,13 +366,13 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 | 7 | P1 | Firma electrónica SOLPED | `approvePurchaseRequest`, `confirmGoodsReceipt` | `SIGNATURE_REQUIRED` |
 | 8 | P1 | Trazabilidad disponibilidad | `verifyBudgetAvailability`, `issueBudgetAvailabilityCertificate` | Respuesta incluye desglose de saldo |
 | 9 | P1 | Segregación CDP | `issueBudgetAvailabilityCertificate` | `SEGREGATION_OF_DUTIES_VIOLATION` |
-| 11 | P0 | Preobligación sin saldo | `createBudgetPreCommitment`, `syncPurchaseOrderAccepted` | `BUDGET_UNAVAILABLE` |
-| 27 | P0 | Obligación excede saldo | `syncPurchaseOrderAccepted` | `AMOUNT_DEVIATION_EXCEEDED` / `BUDGET_UNAVAILABLE` |
+| 11 | P0 | Preobligación sin saldo | `createBudgetPreCommitment`, `commitBudget` | `BUDGET_UNAVAILABLE` |
+| 27 | P0 | Obligación excede saldo | `commitBudget` | `BUDGET_UNAVAILABLE` |
 | 31 | P0 | Devengado sin recepción | `performThreeWayMatch`, `registerAccrual` | `GOODS_RECEIPT_REQUIRED`, `THREE_WAY_MATCH_REQUIRED` |
-| 32 | P1 | Recepción sin adjuntos | `confirmGoodsReceipt` | `MISSING_REQUIRED_ATTACHMENTS` |
+| 32 | P1 | Recepción sin adjuntos | `confirmReceipt` | `MISSING_REQUIRED_ATTACHMENTS` |
 | 53 | P0 | Cantidad cero | `createPurchaseRequest` | `INVALID_QUANTITY` |
 
-Ítems QA de otras modalidades (Comisión Evaluadora, etc.) **excluidos** del alcance actual.
+Ítems QA de otras modalidades (Comisión Evaluadora, etc.) **excluidos** del alcance del piloto Compra Ágil; la ficha de Licitación Pública (`3. licitacion-publica/3-resolucion-compra.md`) ya documenta Comisión Evaluadora (3.9) pero sus ítems QA e integración a esta sección quedan pendientes de una pasada dedicada a esa modalidad.
 
 ---
 
@@ -306,14 +386,28 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 | 1.4 | `requestBudgetFinancing` | — | `BudgetFinancingRequested` |
 | 1.5 | `issueBudgetAvailabilityCertificate` | `checkBudgetAvailability`, `requestSignature`, `confirmSignature` | `BudgetAvailabilityCertificateIssued` |
 | 1.6 | `createBudgetPreCommitment` | `createBudgetPreCommitment`, `registerPreObligation` | `BudgetPreCommitmentCreated` |
-| 2.1 | `recordDeepLinkClick` | — | — |
-| 2.2 | `syncQuoteId` | `validateQuoteId` | — |
-| 2.3 | `getQuoteSummary` | `getQuoteSummary` | — |
-| 2.4 | `registerPurchaseOrder` | `getPurchaseOrderFromMP` | `PurchaseOrderIssued` |
-| 3.1 | — *(lectura MP)* | `getPurchaseOrderStatus` | — |
-| 3.2 | `syncPurchaseOrderAccepted` | MP, Presupuestos, Contabilidad | `PurchaseOrderAccepted`, `BudgetCommitmentCreated` |
-| 4.1 | `createGoodsReceipt`, `confirmGoodsReceipt` | `requestSignature` | `GoodsReceiptConfirmed` |
+| 2.1 | `confirmProcurementModality` | `getUtmValue`, `checkCatalogAvailability` | `ProcurementModalityConfirmed` |
+| 2.2 | `approveModalityDecision` *(inferido)* | `requestSignature`, `confirmSignature` (condicional) | `ProcurementModalityApproved` — **[PENDIENTE P-38]** |
+| 2.3 | `linkMpProcess` | `readMpProcess` | `MpProcessLinked` |
+| 3.1 *(CA)* | — *(lectura MP)* | `readMpProcess` | `MpStateChanged` |
+| 3.2 *(CA)* | `recordQuotationResult` *(inferido)* | `readMpProcess` | `QuotationClosed` |
+| 3.3 *(CA)* | `registerPurchaseOrder` | `readMpProcess` | `PurchaseOrderIssued`, `ProviderIneligibleBlocked` |
+| 3.4 *(CA)* | `syncPurchaseOrderAccepted` | MP, `commitBudget` (Presupuestos) | `PurchaseOrderAccepted`, `BudgetCommitmentCreated` |
+| 3.5 *(CA)* | — *(lectura MP)* | `readMpProcess` | `PurchaseOrderRejected` |
+| 3.6 *(CA)* | `releasePreCommitment` | `readMpProcess`, `releasePreCommitment` (Presupuestos) | `ProcurementProcessFailed` |
+| 3.1–3.3 *(LP)* | — *(bases, revisión jurídica, acto aprobatorio — sin cruce salvo firma)* | `requestSignature`/`confirmSignature` (3.3) | `LegalReviewCompleted` (3.2), `AdministrativeActSigned` (3.3) |
+| 3.4, 3.11 *(LP)* | — *(registro manual, sin API)* | Contraloría (sin integración asumida) | — |
+| 3.5 *(LP)* | `linkMpProcess` *(reutiliza 2.3, vinculación diferida)* | `readMpProcess` | `MpProcessLinked` |
+| 3.6–3.9 *(LP)* | — | `readMpProcess` (foro, apertura), `registerGuaranteeCustody` (3.7), FirmaGob (3.9 condicional) | `GuaranteeRegistered` (3.7), `EvaluationCompleted` (3.9) |
+| 3.10 *(LP)* | — *(resolución de adjudicación/deserción/revocación)* | `adjustPreCommitment` (Presupuestos) | — |
+| 3.12–3.13 *(LP)* | — | `registerGuaranteeCustody`, FirmaGob (3.13) | — |
+| 3.14 *(LP)* | `syncPurchaseOrderAccepted` | MP, `commitBudget` (Presupuestos) | `PurchaseOrderAccepted`, `BudgetCommitmentCreated` |
+| 4.1 | `registerReceipt` | — | — |
+| 4.2 | `confirmReceipt` *(inferido)* | `requestSignature` (condicional) | `GoodsReceiptConfirmed` |
+| 4.3 | — | `registerInventoryEntry` (proveedor de inventario) | — |
+| 4.4 | `recordAccrual` | Contabilidad | `AccrualRecorded` — **[PENDIENTE P-46]** |
+| 4.5 | — *(gestión de rechazo, ver 4.2)* | — | `ReceiptRejected` |
 | 5.1 | `performThreeWayMatch` | `getInvoiceForMatch`, MP | `ThreeWayMatchCompleted` |
-| 5.2 | `registerAccrual` | `registerAccrual` | `AccrualRegistered` |
+| 5.2 | `registerAccrual` | `registerAccrual` | `AccrualRegistered` — **[PENDIENTE P-46]** |
 | 5.3 | `issuePaymentDecree` | `requestSignature` | `PaymentDecreeIssued` |
 | 5.4 | `executePayment` | `executePayment` | `PaymentCompleted` |
