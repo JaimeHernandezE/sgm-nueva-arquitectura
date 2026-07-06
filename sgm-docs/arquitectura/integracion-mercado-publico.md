@@ -22,14 +22,14 @@ SGM consulta o recibe notificación del estado de un proceso en MP (ej. "OC Acep
 
 ## Puntos de integración por modalidad (resumen)
 
-| Modalidad | Deep links | Lecturas API |
-|---|---|---|
-| Compra Ágil | 1 (inicio de cotización) | 1 (OC Aceptada) |
-| Convenio Marco | 1-2 (carro de compras / Gran Compra) | 1 (OC Aceptada) |
-| Licitación Pública | 0 (SGM en modo monitor desde el inicio) | 3 (hitos de publicación, Resolución de Adjudicación, OC Aceptada) |
-| Trato Directo | 0 (fase inicial 100% interna) | 1 (doble validación: Publicado + OC Aceptada) |
+| Modalidad | Deep links | Lecturas API | Momento de vinculación (`mp_process_id`) |
+|---|---|---|---|
+| Compra Ágil | 1 (inicio de cotización) | 1 (OC Aceptada) | Inmediato — cierre de etapa 2 |
+| Convenio Marco | 1-2 (carro de compras / Gran Compra) | 1 (OC Aceptada) | Inmediato — cierre de etapa 2 |
+| Licitación Pública | 0 (SGM en modo monitor desde la publicación) | 3 (hitos de publicación, Resolución de Adjudicación, OC Aceptada) | **Diferido** — sub-paso 3.5 de su etapa 3, tras bases aprobadas |
+| Trato Directo | 0 (fase inicial 100% interna) | 1 (doble validación: Publicado + OC Aceptada) | **Diferido** — en su subproceso, al momento de la publicación |
 
-El detalle de cada punto está documentado dentro del macroproceso correspondiente (`modulos/adquisiciones/<modalidad>/`).
+La etapa 2 (`modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md` §2.3) cierra siempre con la modalidad confirmada; la vinculación con Mercado Público ocurre en el momento que cada modalidad define, reutilizando la misma operación (`linkMpProcess`) sea inmediata o diferida. El detalle de cada punto está documentado dentro del macroproceso correspondiente (`modulos/adquisiciones/<modalidad>/`).
 
 ## Requerimientos a negociar con ChileCompra
 

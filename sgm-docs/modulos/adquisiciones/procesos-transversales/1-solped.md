@@ -221,4 +221,4 @@
 | 1.6 | Dependencia | `createBudgetPreCommitment`, `registerPreObligation` | Presupuestos, Contabilidad |
 | 1.6 | Evento | `BudgetPreCommitmentCreated` | — |
 
-**Siguiente etapa:** 2. Modalidad de Compra — [Compra Ágil](../1.%20compra-agil/2-modalidad-compra.md)
+**Siguiente etapa:** [2. Modalidad de Compra](./2-modalidad-compra.md) *(transversal)*

@@ -1,16 +1,17 @@
 # Procesos transversales de Adquisiciones
 
-Estos tres procesos son **compartidos por las 4 modalidades** de compra (Compra Ágil, Convenio Marco, Licitación Pública y Trato Directo). El contenido documentado aquí aplica igual sin importar la modalidad seleccionada.
+Estos cuatro procesos son **compartidos por las 4 modalidades** de compra (Compra Ágil, Convenio Marco, Licitación Pública y Trato Directo). El contenido documentado aquí aplica igual sin importar la modalidad seleccionada.
 
-Las etapas 2 (Modalidad de Compra) y 3 (Resolución de Compra) son las únicas con documentación específica por modalidad.
+Solo la etapa 3 (Resolución de Compra) tiene documentación específica por modalidad. *(La etapa 2 se documentó originalmente como específica de Compra Ágil y se reconcilió como transversal — ver nota metodológica en `1. compra-agil/overview.md`.)*
 
 ## Etapas transversales
 
 1. [SOLPED](./1-solped.md) — creación, V°B° de jefatura, verificación presupuestaria, CDP, preobligación (y solicitud de financiamiento optativa)
-4. [Recepción Conforme](./4-recepcion-conforme.md) — recepción física del bien/servicio
+2. [Modalidad de Compra](./2-modalidad-compra.md) — ratificación/selección de modalidad legal (gateway de validación), aprobación de jefatura (condicional), vinculación con Mercado Público (inmediata en CA/CM, diferida en LP/TD)
+4. [Recepción Conforme](./4-recepcion-conforme.md) — recepción física del bien/servicio, verificación de conformidad, alta en inventario/activo fijo (condicional), devengado
 5. [Pago](./5-pago.md) — cruce de 3 vías, devengo, decreto y ejecución de pago
 
-## Modalidades (etapas 2 y 3 específicas)
+## Modalidades (etapa 3 específica)
 
 - [Compra Ágil](../1.%20compra-agil/overview.md)
 - [Convenio Marco](../2.%20convenio-marco/overview.md)
