@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expedientes — Adquisiciones</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <h1>Expedientes de compra</h1>
+        <p class="subtitle">Listado de ejemplo — un expediente por modalidad</p>
+
+        <div class="form-card">
+          <div class="form-card__body" style="padding:0;">
+            <table class="expedientes-table">
+              <thead>
+                <tr>
+                  <th>Folio</th>
+                  <th>Glosa</th>
+                  <th>Modalidad</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="expedientes-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderAdqBreadcrumb, siteUrl } from '../../shared/app-shell.js';
+    import { expedientesDemo, getExpedienteDetailUrl } from '../../shared/expedientes-demo.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+
+    document.getElementById('breadcrumb').innerHTML = renderAdqBreadcrumb({
+      items: [
+        { label: 'Adquisiciones', href: 'modulos/adquisiciones/index.html' },
+        { label: 'Expedientes' },
+      ],
+    });
+
+    const tbody = document.getElementById('expedientes-tbody');
+    tbody.innerHTML = expedientesDemo
+      .map(
+        (exp) => `
+        <tr data-href="${siteUrl(getExpedienteDetailUrl(exp.id))}" tabindex="0" role="link">
+          <td class="folio-cell">${exp.id}</td>
+          <td>${exp.glosa}</td>
+          <td>${exp.modality}</td>
+          <td><span class="badge">${exp.globalStatus}</span></td>
+        </tr>
+      `,
+      )
+      .join('');
+
+    tbody.querySelectorAll('tr').forEach((row) => {
+      const go = () => {
+        window.location.href = row.dataset.href;
+      };
+      row.addEventListener('click', go);
+      row.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          go();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

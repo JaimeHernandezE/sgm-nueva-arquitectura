@@ -7,9 +7,11 @@ alwaysApply: false
 # Prototipos HTML SGM
 
 - Assets compartidos en `sgm-prototipos/shared/` (CSS, JS, manifiesto).
+- Toda pantalla usa `initAppShell()` desde `app-shell.js` (sidebar derecho de módulos).
 - Numeración `NN-nombre.html` donde `NN` = etapa×10 + sub-paso.
 - Sin frameworks; vanilla HTML/CSS/JS con `type="module"`.
+- Enlaces entre módulos vía `siteUrl()` en `app-shell.js` (compatible GitHub Pages y local).
 - Tintes azul/rojizo solo vía clases en `origin.css` (`form-panel--module`, chips).
-- Breadcrumb con `form-shell.js` → enlace retorno al expediente shell.
+- Breadcrumb con `form-shell.js` → Adquisiciones › Expedientes › expediente.
+- Perfiles demo en `expedientes-demo.js`; query `?expediente=` para contexto.
 - Acciones demo: `demoAction('nombreOperacion')` — sin backend.
-- Rutas relativas entre pantallas del mismo módulo; query `?expediente=` para contexto.

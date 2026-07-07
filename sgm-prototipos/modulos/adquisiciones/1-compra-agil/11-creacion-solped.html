@@ -6,11 +6,14 @@
   <title>1.1 — Creación de SOLPED</title>
   <link rel="stylesheet" href="../../../shared/tokens.css" />
   <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
   <link rel="stylesheet" href="../../../shared/origin.css" />
   <link rel="stylesheet" href="../../../shared/forms.css" />
 </head>
 <body>
-  <div class="page">
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
     <div id="breadcrumb"></div>
 
     <div class="form-card">
@@ -102,6 +105,9 @@
         <button class="btn btn--primary" type="button" id="submit">Enviar a aprobación</button>
       </div>
     </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
   </div>
 
   <div class="modal-overlay" id="balance-modal">
@@ -139,7 +145,10 @@
   </div>
 
   <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
     import { getExpedienteId, renderBreadcrumb, demoAction, initBalancePanel, initModalityToggle } from '../../../shared/form-shell.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
     const expedienteId = getExpedienteId();
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({

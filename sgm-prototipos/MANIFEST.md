@@ -17,6 +17,17 @@ contracts.md                 →  operaciones API que respaldan botones
 entidades-core.md            →  campos de formulario
 ```
 
+## Navegación del prototipo
+
+```
+index.html → modulos/adquisiciones/index.html (bienvenida)
+           → 01-listado-expedientes.html
+           → 00-expediente/index.html?expediente=<id>
+```
+
+- Sidebar derecho: módulos SGM (`shared/app-shell.js`, `shared/modules-registry.js`).
+- Perfiles de expediente: [`shared/expedientes-demo.js`](./shared/expedientes-demo.js) — solo Compra Ágil (`ADQ-2026-00123`) tiene detalle completo de etapas.
+
 ## Checklist obligatoria
 
 Antes de modificar un sub-paso `N.M`:
@@ -43,6 +54,8 @@ Antes de modificar un sub-paso `N.M`:
 Ficha transversal: [`sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md`](../sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md)
 
 Shell expediente: [`modulos/adquisiciones/00-expediente/index.html`](./modulos/adquisiciones/00-expediente/index.html)
+
+Listado: [`modulos/adquisiciones/01-listado-expedientes.html`](./modulos/adquisiciones/01-listado-expedientes.html)
 
 ## Reglas de tinte (resumen)
 

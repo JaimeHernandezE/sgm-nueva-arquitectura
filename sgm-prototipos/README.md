@@ -22,10 +22,24 @@ Los prototipos se publican en **GitHub Pages** al hacer push a `main` (workflow 
 https://jaimehernandeze.github.io/sgm-nueva-arquitectura/
 ```
 
-Redirige al expediente de demo. Enlace directo:
+Redirige al módulo Adquisiciones. Flujo de navegación:
 
 ```
-https://jaimehernandeze.github.io/sgm-nueva-arquitectura/modulos/adquisiciones/00-expediente/index.html
+/ → modulos/adquisiciones/ (bienvenida)
+  → 01-listado-expedientes.html
+  → 00-expediente/index.html?expediente=...
+```
+
+**URL pública:**
+
+```
+https://jaimehernandeze.github.io/sgm-nueva-arquitectura/
+```
+
+Listado de expedientes:
+
+```
+https://jaimehernandeze.github.io/sgm-nueva-arquitectura/modulos/adquisiciones/01-listado-expedientes.html
 ```
 
 ### Activar GitHub Pages (una sola vez)
@@ -47,12 +61,20 @@ npx serve sgm-prototipos
 
 ```
 sgm-prototipos/
-├── MANIFEST.md           # Mapa de conexiones entre artefactos
-├── shared/               # CSS, JS y manifiesto de pasos
+├── index.html              # Redirige a Adquisiciones
+├── MANIFEST.md
+├── shared/
+│   ├── app-shell.js        # Sidebar módulos + siteUrl()
+│   ├── shell.css
+│   ├── modules-registry.js
+│   ├── expedientes-demo.js # Perfiles de expediente demo
+│   └── ...
 └── modulos/
     └── adquisiciones/
-        ├── 00-expediente/    # Shell del expediente (wireframe 01)
-        └── 1-compra-agil/    # Formularios por sub-paso (NN-nombre.html)
+        ├── index.html                  # Bienvenida del módulo
+        ├── 01-listado-expedientes.html # Listado (4 modalidades)
+        ├── 00-expediente/              # Detalle (wireframe 01)
+        └── 1-compra-agil/              # Formularios NN-nombre.html
 ```
 
 ## Convención de numeración

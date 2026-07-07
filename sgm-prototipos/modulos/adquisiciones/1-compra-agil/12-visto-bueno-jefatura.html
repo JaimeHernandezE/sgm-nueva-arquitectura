@@ -6,11 +6,14 @@
   <title>1.2 — Visto bueno de jefatura</title>
   <link rel="stylesheet" href="../../../shared/tokens.css" />
   <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
   <link rel="stylesheet" href="../../../shared/origin.css" />
   <link rel="stylesheet" href="../../../shared/forms.css" />
 </head>
 <body>
-  <div class="page">
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
     <div id="breadcrumb"></div>
 
     <div class="form-card">
@@ -56,6 +59,9 @@
         <button class="btn btn--primary" type="button" id="approve">Aprobar y firmar</button>
       </div>
     </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
   </div>
 
   <div class="modal-overlay" id="balance-modal">
@@ -80,7 +86,10 @@
   </div>
 
   <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
     import { getExpedienteId, renderBreadcrumb, demoAction, initBalancePanel } from '../../../shared/form-shell.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
     const expedienteId = getExpedienteId();
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({

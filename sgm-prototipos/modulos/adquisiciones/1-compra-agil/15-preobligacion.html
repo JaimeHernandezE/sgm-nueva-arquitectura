@@ -6,11 +6,14 @@
   <title>1.6 — Preobligación presupuestaria</title>
   <link rel="stylesheet" href="../../../shared/tokens.css" />
   <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
   <link rel="stylesheet" href="../../../shared/origin.css" />
   <link rel="stylesheet" href="../../../shared/forms.css" />
 </head>
 <body>
-  <div class="page">
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
 
@@ -48,10 +51,16 @@
         <button class="btn btn--primary" type="button" id="submit">Generar preobligación</button>
       </div>
     </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
   </div>
 
   <script type="module">
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
     const expedienteId = getExpedienteId();
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
@@ -65,7 +74,7 @@
       label: 'Presupuestos',
       mode: 'dependencia',
     });
-    document.getElementById('cancel-link').href = `../00-expediente/index.html?expediente=${encodeURIComponent(expedienteId)}`;
+    document.getElementById('cancel-link').href = getExpedienteUrl(expedienteId);
     document.getElementById('submit').addEventListener('click', () => demoAction('createBudgetPreCommitment'));
   </script>
 </body>

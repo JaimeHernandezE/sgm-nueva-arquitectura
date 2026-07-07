@@ -3,52 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wireframe 01 — Expediente detallado (Compra Ágil)</title>
+  <title>Expediente detallado — Adquisiciones</title>
   <link rel="stylesheet" href="../../../shared/tokens.css" />
   <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
   <link rel="stylesheet" href="../../../shared/origin.css" />
   <link rel="stylesheet" href="../../../shared/forms.css" />
 </head>
 <body>
-  <div class="page">
-    <h1>Wireframe 01 — Vista de Expediente detallada</h1>
-    <p class="subtitle">Compra Ágil · Prototipo interactivo para validación del equipo</p>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <h1>Vista de expediente detallada</h1>
+        <p class="subtitle">Wireframe 01 — etapas y sub-pasos</p>
 
-    <div class="demo-panel">
-      <label>
-        Ver como:
-        <select id="viewer-role">
-          <option value="responsible">Responsable habilitado</option>
-          <option value="other">Otro usuario</option>
-        </select>
-      </label>
-    </div>
+        <div class="demo-panel" id="demo-panel">
+          <label>
+            Ver como:
+            <select id="viewer-role">
+              <option value="responsible">Responsable habilitado</option>
+              <option value="other">Otro usuario</option>
+            </select>
+          </label>
+        </div>
 
-    <div id="app"></div>
+        <div id="app"></div>
 
-    <div class="legend">
-      <div class="legend__row">
-        <span>Acciones:</span>
-        <button class="btn btn--primary" type="button" disabled>Completar formulario</button>
-        <span>(acción requerida)</span>
-        <button class="btn btn--secondary" type="button" disabled>Ver formulario</button>
-        <span>(consulta)</span>
-        <span class="badge">Badge</span>
-        <span>(estado)</span>
+        <div class="legend" id="expediente-legend">
+          <div class="legend__row">
+            <span>Acciones:</span>
+            <button class="btn btn--primary" type="button" disabled>Completar formulario</button>
+            <span>(acción requerida)</span>
+            <button class="btn btn--secondary" type="button" disabled>Ver formulario</button>
+            <span>(consulta)</span>
+            <span class="badge">Badge</span>
+            <span>(estado)</span>
+          </div>
+          <div class="legend__row">
+            <span class="legend__swatch legend__swatch--external"></span>
+            <span>Plataforma externa (azul)</span>
+          </div>
+          <div class="legend__row">
+            <span class="legend__swatch legend__swatch--module"></span>
+            <span>Módulo SGM (rojizo)</span>
+          </div>
+        </div>
       </div>
-      <div class="legend__row">
-        <span class="legend__swatch legend__swatch--external"></span>
-        <span>Plataforma externa (azul) — SGM refleja, nunca escribe hacia MP, FirmaGob, Contraloría…</span>
-      </div>
-      <div class="legend__row">
-        <span class="legend__swatch legend__swatch--module"></span>
-        <span>Módulo SGM (rojizo) — borde hacia Presupuestos, Contabilidad, Tesorería… según §3.5 de la ficha</span>
-      </div>
-    </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
   </div>
 
   <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
     import { initExpediente } from '../../../shared/expediente.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
     initExpediente();
   </script>
 </body>

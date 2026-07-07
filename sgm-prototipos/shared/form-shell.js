@@ -1,23 +1,23 @@
-const EXPEDIENTE_SHELL = '../00-expediente/index.html';
-const DEFAULT_EXPEDIENTE_ID = 'ADQ-2026-00123';
+import { siteUrl, renderAdqBreadcrumb } from './app-shell.js';
+import { getExpedienteIdFromUrl, getExpedienteDetailUrl } from './expedientes-demo.js';
 
 export function getExpedienteId() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get('expediente') || DEFAULT_EXPEDIENTE_ID;
+  return getExpedienteIdFromUrl();
 }
 
 export function getExpedienteUrl(expedienteId) {
-  return `${EXPEDIENTE_SHELL}?expediente=${encodeURIComponent(expedienteId)}`;
+  return siteUrl(getExpedienteDetailUrl(expedienteId));
 }
 
 export function renderBreadcrumb({ expedienteId, stageName, stepName, stepId }) {
-  const shellUrl = getExpedienteUrl(expedienteId);
-  const parts = [
-    `<a href="${shellUrl}">Expediente ${expedienteId}</a>`,
-    stageName,
-    stepId ? `${stepId} — ${stepName}` : stepName,
-  ];
-  return `<nav class="breadcrumb" aria-label="Ruta">${parts.join(' › ')}</nav>`;
+  return renderAdqBreadcrumb({
+    items: [
+      { label: 'Adquisiciones', href: 'modulos/adquisiciones/index.html' },
+      { label: 'Expedientes', href: 'modulos/adquisiciones/01-listado-expedientes.html' },
+      { label: `Expediente ${expedienteId}`, href: getExpedienteDetailUrl(expedienteId) },
+      { label: stepId ? `${stepId} — ${stepName}` : stageName },
+    ],
+  });
 }
 
 export function renderOriginBanner(origin) {

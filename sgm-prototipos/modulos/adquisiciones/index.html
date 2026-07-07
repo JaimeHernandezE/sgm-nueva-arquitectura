@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Módulo Adquisiciones — SGM</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div class="welcome-card">
+          <h1>Módulo Adquisiciones</h1>
+          <p>
+            Ciclo de compras públicas municipales: desde la solicitud interna (SOLPED)
+            hasta el pago al proveedor, en cuatro modalidades según la Ley 19.886.
+          </p>
+          <p><strong>Modalidades:</strong></p>
+          <ul>
+            <li>Compra Ágil</li>
+            <li>Convenio Marco</li>
+            <li>Licitación Pública</li>
+            <li>Trato Directo</li>
+          </ul>
+          <p>
+            Las etapas transversales (SOLPED, Recepción Conforme y Pago) son compartidas;
+            las etapas 2 y 3 varían según la modalidad.
+          </p>
+          <p>
+            <a class="btn btn--primary" href="01-listado-expedientes.html">Ver expedientes</a>
+          </p>
+        </div>
+        <p class="subtitle">Prototipo interactivo para validación UX — no es diseño visual de licitación.</p>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell } from '../../shared/app-shell.js';
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'home' });
+  </script>
+</body>
+</html>

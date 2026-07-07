@@ -1,10 +1,13 @@
-import { expediente, stages } from './demo-data.js';
+import { stages } from './demo-data.js';
 import stepsManifest from './steps-manifest.js';
+import { getExpedienteIdFromUrl, getExpedienteProfile } from './expedientes-demo.js';
+import { renderAdqBreadcrumb } from './app-shell.js';
 
 export function getFormUrl(stepId) {
   const entry = stepsManifest.steps.find((s) => s.stepId === stepId);
   if (!entry?.formPath) return null;
-  return `${entry.formPath}?expediente=${encodeURIComponent(expediente.id)}`;
+  const id = getExpedienteIdFromUrl();
+  return `${entry.formPath}?expediente=${encodeURIComponent(id)}`;
 }
 
 export function resolveOrigin(step) {
@@ -103,20 +106,45 @@ function renderStage(stage, viewerRole) {
   `;
 }
 
-export function renderExpediente(viewerRole) {
-  const header = `
+function renderHeader(profile) {
+  return `
     <header class="expediente-header">
       <div>
-        <div class="folio">${expediente.id}</div>
-        <div class="glosa">${expediente.glosa}</div>
-        <div class="meta">Modalidad: ${expediente.modality} · Unidad de origen: ${expediente.unit}</div>
+        <div class="folio">${profile.id}</div>
+        <div class="glosa">${profile.glosa}</div>
+        <div class="meta">Modalidad: ${profile.modality} · Unidad de origen: ${profile.unit}</div>
       </div>
-      <div class="global-badge">${expediente.globalStatus}</div>
+      <div class="global-badge">${profile.globalStatus}</div>
     </header>
   `;
+}
+
+function renderStubBody(profile) {
+  return `
+    <div class="banner banner--info" style="margin-top:16px;">
+      Prototipo pendiente — solo <strong>Compra Ágil</strong> tiene detalle de etapas en esta versión.
+      Las etapas 2 y 3 de <strong>${profile.modality}</strong> se documentarán en iteraciones posteriores.
+    </div>
+  `;
+}
+
+export function renderExpediente(viewerRole) {
+  const profile = getExpedienteProfile(getExpedienteIdFromUrl());
+  const demoPanel = document.getElementById('demo-panel');
+  const legend = document.getElementById('expediente-legend');
+
+  if (!profile.fullDetail) {
+    if (demoPanel) demoPanel.classList.add('hidden');
+    if (legend) legend.classList.add('hidden');
+    document.getElementById('app').innerHTML = renderHeader(profile) + renderStubBody(profile);
+    return;
+  }
+
+  if (demoPanel) demoPanel.classList.remove('hidden');
+  if (legend) legend.classList.remove('hidden');
 
   const stagesHtml = stages.map((s) => renderStage(s, viewerRole)).join('');
-  document.getElementById('app').innerHTML = header + stagesHtml;
+  document.getElementById('app').innerHTML = renderHeader(profile) + stagesHtml;
 
   document.querySelectorAll('.stage__header').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -130,7 +158,23 @@ export function renderExpediente(viewerRole) {
   });
 }
 
+export function renderExpedienteBreadcrumb() {
+  const profile = getExpedienteProfile(getExpedienteIdFromUrl());
+  const el = document.getElementById('breadcrumb');
+  if (!el) return;
+
+  el.innerHTML = renderAdqBreadcrumb({
+    items: [
+      { label: 'Adquisiciones', href: 'modulos/adquisiciones/index.html' },
+      { label: 'Expedientes', href: 'modulos/adquisiciones/01-listado-expedientes.html' },
+      { label: profile.id },
+    ],
+  });
+}
+
 export function initExpediente() {
+  renderExpedienteBreadcrumb();
+
   const roleSelect = document.getElementById('viewer-role');
   const viewerRole = roleSelect?.value || 'responsible';
 
