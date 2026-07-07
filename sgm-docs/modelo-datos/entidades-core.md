@@ -48,7 +48,7 @@ Raíz de trazabilidad de todo el ciclo SOLPED → Pago. El estado del expediente
 > `procurement_case_id` en cada entidad del ciclo es **desnormalización intencional** para trazabilidad y reportería directa (consultas por expediente sin recorrer la cadena de FKs). Se mantiene además de las FKs directas entre entidades.
 
 ### `PurchaseRequest` (SOLPED)
-**Visibilidad:** expuesta — campos en contrato: `id`, `requesting_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `status`
+**Visibilidad:** expuesta — campos en contrato: `id`, `requesting_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status`
 
 Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 
@@ -61,6 +61,8 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 | `requested_date` | fecha | |
 | `purchase_modality` | enum, **opcional** | Indicación provisional de modalidad de compra. Valores: `agile_purchase` (Compra Ágil), `framework_agreement` (Convenio Marco), `public_tender` (Licitación Pública), `direct_procurement` (Trato Directo). Puede confirmarse o modificarse en etapa 2. |
 | `founded_resolution_attachment` | ref. adjunto | **Obligatorio** si `purchase_modality = direct_procurement`. Resolución Fundada que funda el Trato Directo. |
+| `proposed_budget_line_id` | ref. `BudgetLine` | **Opcional** — indicación del solicitante para autoconsulta de saldo (1.1, 1.2); no sustituye verificación en 1.3 |
+| `proposed_fiscal_year` | número | **Opcional** — año fiscal asociado a la línea propuesta |
 | `status` | enum | `draft`, `pending_approval`, `pending_finance`, `quoting_in_progress`, `quote_void`, … |
 
 ### `PurchaseRequestLine`
@@ -103,7 +105,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `comments` | texto | Obligatorio si `decision = rejected` |
 
 ### `BudgetAvailabilityCertificate` (CDP)
-**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status`
+**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status`, `signature_mode`
 
 1:1 con `PurchaseRequest` en esta etapa. Certificado de Disponibilidad Presupuestaria emitido y firmado por el aprobador DAF (sub-paso 1.5).
 
@@ -118,8 +120,10 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `verified_by` | ref. `User` | Formulador DAF (sub-paso 1.3) |
 | `signed_by` | ref. `User` | Aprobador DAF (sub-paso 1.5) |
 | `signed_at` | fecha/hora | |
-| `status` | enum | `issued`, `rejected` |
+| `status` | enum | `issued`, `rejected`, `pending_signature` |
 | `rejection_reason` | texto | Obligatorio si `rejected` |
+| `signature_mode` | enum | `electronic`, `scanned` — distingue firma FirmaGob de CDP escaneado con firmas (sub-paso 1.5) |
+| `scanned_certificate_attachment` | ref. almacenamiento | Obligatorio si `signature_mode = scanned` |
 
 ### `BudgetPreCommitment` (Preobligación / Pre-afectación)
 **Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `purchase_request_id`, `budget_availability_certificate_id`, `budget_line_id`, `estimated_amount`, `fiscal_year`, `status`

@@ -58,13 +58,15 @@ Agregado de las secciones 3.5 de los 17 sub-pasos. Insumo directo de [`contracts
 |---|---|---|---|---|
 | 1.1 | Sistema externo | `getPriceReference` | SII / Mercado Público | Cacheada |
 | 1.1 | Dependencia *(propuesta)* | `checkStockAvailability` | Inventario | Síncrona bloqueante ⚠ |
+| 1.1 | Dependencia | `previewBudgetAvailability` | Presupuestos | Cacheada / informativa |
 | 1.2 | Dependencia | `requestSignature`, `confirmSignature` | FirmaGob | Síncrona bloqueante |
+| 1.2 | Dependencia | `previewBudgetAvailability` | Presupuestos | Cacheada / informativa |
 | 1.2 | Evento | `PurchaseRequestApproved` | — | Asíncrona |
 | 1.3 | Dependencia | `checkBudgetAvailability` | Presupuestos | Síncrona bloqueante |
 | 1.3 | Operación | `verifyBudgetAvailability` | — | — |
 | 1.4 | Operación / Evento | `requestBudgetFinancing`, `BudgetFinancingRequested` | Presupuestos *(externo)* | — |
 | 1.5 | Dependencia | `checkBudgetAvailability`, `requestSignature`, `confirmSignature` | Presupuestos, FirmaGob | Síncrona bloqueante |
-| 1.5 | Operación / Evento | `issueBudgetAvailabilityCertificate`, `BudgetAvailabilityCertificateIssued` | — | — |
+| 1.5 | Operación / Evento | `issueBudgetAvailabilityCertificate`, `registerScannedBudgetAvailabilityCertificate`, `BudgetAvailabilityCertificateIssued` | Presupuestos, FirmaGob *(condicional)* | — |
 | 1.6 | Dependencia | `createBudgetPreCommitment`, `registerPreObligation` | Presupuestos, Contabilidad | Síncrona bloqueante |
 | 1.6 | Evento | `BudgetPreCommitmentCreated` | — | Asíncrona |
 | 2.1 | Sistema externo | `getUtmValue` | SII / fuente oficial | Cacheada |

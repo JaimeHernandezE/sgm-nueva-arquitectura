@@ -8,7 +8,7 @@ Wireframes de **baja fidelidad** (borrador). Especifican estructura y comportami
 | [12-visto-bueno-jefatura.md](./12-visto-bueno-jefatura.md) | 1.2 | `approvePurchaseRequest` |
 | [13-verificacion-disponibilidad.md](./13-verificacion-disponibilidad.md) | 1.3 | `verifyBudgetAvailability` |
 | [16-solicitar-financiamiento.md](./16-solicitar-financiamiento.md) | 1.4 *(optativo)* | `requestBudgetFinancing` |
-| [14-emision-cdp.md](./14-emision-cdp.md) | 1.5 | `issueBudgetAvailabilityCertificate` |
+| [14-emision-cdp.md](./14-emision-cdp.md) | 1.5 | `issueBudgetAvailabilityCertificate`, `registerScannedBudgetAvailabilityCertificate` |
 | [15-preobligacion.md](./15-preobligacion.md) | 1.6 | `createBudgetPreCommitment` |
 | [22-sincronizacion-cotizacion.md](./22-sincronizacion-cotizacion.md) | 2.2 | `syncQuoteId` |
 | [41-recepcion-conforme.md](./41-recepcion-conforme.md) | 4.1 | `confirmGoodsReceipt` |

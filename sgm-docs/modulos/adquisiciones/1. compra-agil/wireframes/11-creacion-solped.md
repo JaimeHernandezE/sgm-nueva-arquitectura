@@ -1,7 +1,7 @@
 # Wireframe: Creación de SOLPED
 
 **Sub-paso:** 1.1 — Creación de solicitud  
-**Operaciones:** `createPurchaseRequest`, `submitPurchaseRequest`
+**Operaciones:** `createPurchaseRequest`, `submitPurchaseRequest`, `previewBudgetAvailability` *(informativa)*
 
 ## Layout
 
@@ -29,6 +29,8 @@
 | [+ Agregar línea]                                         |
 +----------------------------------------------------------+
 | Documentos adjuntos        [ Subir archivo ]              |
+| Línea presupuestaria       [ (opcional) Cuenta/Programa v ]|
+| [ Consultar saldo en línea presupuestaria ]  (enlace → panel)|
 +----------------------------------------------------------+
 | [ Guardar borrador ]              [ Enviar a aprobación ] |
 +----------------------------------------------------------+
@@ -44,6 +46,8 @@
 | Fecha solicitada | `PurchaseRequest.requested_date` | Sí |
 | Modalidad de compra | `PurchaseRequest.purchase_modality` | No (indicación provisional; confirmable en etapa 2) |
 | Resolución Fundada | `PurchaseRequest.founded_resolution_attachment` | Sí si modalidad = Trato Directo |
+| Línea presupuestaria (opcional) | `PurchaseRequest.proposed_budget_line_id` | No |
+| Año fiscal propuesto | `PurchaseRequest.proposed_fiscal_year` | No |
 | Líneas tabla | `PurchaseRequestLine` | ≥1 línea |
 | Precio unitario | `PurchaseRequestLine.unit_price` | Sí |
 | Referencia precio | `PriceReference` (vía `getPriceReference`) | Sí |
@@ -54,6 +58,30 @@
 |---|---|---|
 | Guardar borrador | `createPurchaseRequest` / `PATCH` | `status = draft` |
 | Enviar a aprobación | `submitPurchaseRequest` | `status = pending_approval` |
+
+## Panel — autoconsulta de saldo (enlace informativo)
+
+```
++----------------------------------------------------------+
+| Consulta de saldo (informativa)                    [ X ] |
++----------------------------------------------------------+
+| Línea presupuestaria *  [ Cuenta / Programa ...    v ]   |
+| Año fiscal *              [ 2026 ]                        |
+| Monto estimado SOLPED     [ $ 1.250.000 ] (precargado)   |
++----------------------------------------------------------+
+| Disponible: $ 2.100.000 | Comprometido otros: $ 800.000  |
+| Saldo proyectado: $ 1.300.000                             |
++----------------------------------------------------------+
+| Aviso: consulta orientativa — la verificación formal      |
+|        ocurre en Finanzas (paso 1.3).                     |
++----------------------------------------------------------+
+| [ Cerrar ]                                                |
++----------------------------------------------------------+
+```
+
+| Acción panel | Operación | Notas |
+|---|---|---|
+| Consultar | `previewBudgetAvailability` | No bloquea el borrador ni la aprobación |
 
 ## Estados de pantalla
 
@@ -72,4 +100,5 @@
 ## Notas
 
 - Si `checkStockAvailability` se adopta (QA 4): banner informativo "Stock disponible en bodega — ¿retirar en lugar de comprar?"
+- El enlace de autoconsulta presupuestaria es **opcional** y **no sustituye** 1.3.
 - ⚠ Pendiente: fuente concreta de `PriceReference` y % tolerancia de desviación.

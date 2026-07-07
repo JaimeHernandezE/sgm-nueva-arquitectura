@@ -16,10 +16,10 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 
 | Entidad | Visibilidad | Campos expuestos | Sub-pasos origen |
 |---|---|---|---|
-| `PurchaseRequest` | Expuesta | `id`, `requesting_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `status` | 1.1, 1.2, 2.1, 2.2 |
+| `PurchaseRequest` | Expuesta | `id`, `requesting_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status` | 1.1, 1.2, 2.1, 2.2 |
 | `PurchaseRequestLine` | Expuesta | `id`, `purchase_request_id`, `item_description`, `quantity`, `unit_of_measure`, `unit_price`, `price_source` | 1.1 |
 | `PurchaseRequestApproval` | Expuesta | `id`, `purchase_request_id`, `approver_id`, `decision`, `decision_date`, `comments` | 1.2 |
-| `BudgetAvailabilityCertificate` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status` | 1.5 |
+| `BudgetAvailabilityCertificate` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status`, `signature_mode` | 1.5 |
 | `BudgetPreCommitment` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `budget_availability_certificate_id`, `budget_line_id`, `estimated_amount`, `fiscal_year`, `status` | 1.6 |
 | `AgileQuoteProcess` | Expuesta | `id`, `purchase_request_id`, `deep_link_clicked_at`, `mp_quote_id` | 2.1 *(CA)* — duplica `ProcurementCase.mp_process_id`, ver `entidades-core.md` <!-- REVISAR: consolidar AgileQuoteProcess --> |
 | `ModalityDecision` | Expuesta | `id`, `procurement_case_id`, `selected_modality`, `ratified`, `decided_by`, `decided_at` | 2.1 |
@@ -56,7 +56,15 @@ Convenciones de error y paginación según [`estandares-api.md`](../../arquitect
   | `unit_price` con referencia válida | blocking | — | `PRICE_REFERENCE_UNAVAILABLE` |
   | Desviación precio vs referencia dentro de tolerancia | blocking ⚠ | — | `PRICE_DEVIATION_EXCEEDED` |
   | Si `purchase_modality = direct_procurement`, `founded_resolution_attachment` presente | blocking | — | `FOUNDED_RESOLUTION_REQUIRED` |
-- **Dependencias invocadas:** `getPriceReference`, `checkStockAvailability` *(propuesta)*
+- **Dependencias invocadas:** `getPriceReference`, `checkStockAvailability` *(propuesta)*, `previewBudgetAvailability` *(informativa, bajo demanda desde enlace UI)*
+
+#### `GET /budget-lines/{id}/preview-availability` — `previewBudgetAvailability`
+- **Sub-pasos:** 1.1, 1.2 *(autoconsulta informativa; no avanza el flujo)*
+- **Entrada:** `budget_line_id`, `fiscal_year`, `amount` (opcional — monto estimado de la SOLPED)
+- **Respuesta:** `available_balance`, `committed_by_others`, `projected_balance` (misma forma que `checkBudgetAvailability`)
+- **Reglas:** solo lectura; no persiste verificación ni afecta `PurchaseRequest.status`; requiere RBAC de consulta sobre la línea
+- **Dependencias:** Presupuestos (cacheada)
+- **Comportamiento ante falla:** error en panel/modal; la pantalla de creación o aprobación continúa operativa
 
 #### `POST /purchase-requests/{id}/submit` — `submitPurchaseRequest`
 - **Sub-pasos:** 1.1
@@ -95,15 +103,23 @@ Convenciones de error y paginación según [`estandares-api.md`](../../arquitect
 
 #### `POST /purchase-requests/{id}/budget-availability-certificate` — `issueBudgetAvailabilityCertificate`
 - **Sub-pasos:** 1.5
-- **Entrada:** `budget_line_id`, `certified_amount`, `fiscal_year`
+- **Entrada:** `budget_line_id`, `certified_amount`, `fiscal_year`, `signature_mode` (`electronic` \| `scanned`)
 - **Reglas:**
   | Regla | Severidad | QA | Error |
   |---|---|---|---|
   | Verificación confirmada en 1.3 | blocking | — | `VERIFICATION_REQUIRED` |
   | Verificador ≠ firmante CDP | blocking | 9 P1 | `SEGREGATION_OF_DUTIES_VIOLATION` |
   | Saldo disponible al revalidar | blocking | 8, 11 P0/P1 | `BUDGET_UNAVAILABLE` |
-  | Firma electrónica válida (FirmaGob) | blocking | 5, 7 P1 | `SIGNATURE_REQUIRED` |
-- **Dependencias:** `checkBudgetAvailability`, `requestSignature`, `confirmSignature`
+  | Firma electrónica válida (FirmaGob) si `signature_mode = electronic` | blocking | 5, 7 P1 | `SIGNATURE_REQUIRED` |
+  | Adjunto escaneado válido si `signature_mode = scanned` | blocking | — | `SCANNED_CDP_INVALID` |
+- **Dependencias:** `checkBudgetAvailability`; si `electronic`: `requestSignature`, `confirmSignature`
+- **Evento emitido:** `BudgetAvailabilityCertificateIssued`
+
+#### `POST /purchase-requests/{id}/budget-availability-certificate/scanned` — `registerScannedBudgetAvailabilityCertificate`
+- **Sub-pasos:** 1.5 *(modo degradado)*
+- **Entrada:** mismos metadatos que emisión + `scanned_certificate_attachment` (archivo PDF/imagen del CDP firmado)
+- **Reglas:** mismas que emisión, excepto FirmaGob; fija `signature_mode = scanned`
+- **Dependencias:** `checkBudgetAvailability`
 - **Evento emitido:** `BudgetAvailabilityCertificateIssued`
 
 #### `POST /purchase-requests/{id}/budget-pre-commitment` — `createBudgetPreCommitment`
@@ -259,6 +275,7 @@ Interfaces de proveedor — no llamadas a módulos concretos. El proveedor puede
 | Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
 |---|---|---|---|
 | `checkBudgetAvailability` | 1.3, 1.5, 1.6 | Síncrona bloqueante | Error `BUDGET_PROVIDER_UNAVAILABLE`; operación no procede |
+| `previewBudgetAvailability` | 1.1, 1.2 | Cacheada / informativa | Error en panel de autoconsulta; no bloquea creación ni aprobación |
 | `createBudgetPreCommitment` | 1.6 | Síncrona bloqueante | Rechazo → `BUDGET_UNAVAILABLE`; sin efecto parcial |
 | `commitBudget` | 3.4 *(CA)*, 3.14 *(LP)* | Síncrona bloqueante | Rechazo → `BUDGET_UNAVAILABLE`; OC queda `commitment_pending` — regularización pendiente (**[PENDIENTE P-40]**). Reemplaza el par anterior `convertPreCommitmentToCommitment`+`registerBudgetCommitment`. |
 | `releasePreCommitment` | 3.6 | Síncrona bloqueante | Error `BUDGET_PROVIDER_UNAVAILABLE`; cancelación no se persiste sin liberación confirmada |
@@ -380,11 +397,11 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 
 | Sub-paso | Operaciones ofrecidas | Dependencias | Eventos |
 |---|---|---|---|
-| 1.1 | `createPurchaseRequest`, `submitPurchaseRequest` | `getPriceReference`, `checkStockAvailability` | — |
-| 1.2 | `approvePurchaseRequest`, `rejectPurchaseRequest` | `requestSignature`, `confirmSignature` | `PurchaseRequestApproved` |
+| 1.1 | `createPurchaseRequest`, `submitPurchaseRequest` | `getPriceReference`, `checkStockAvailability`, `previewBudgetAvailability` | — |
+| 1.2 | `approvePurchaseRequest`, `rejectPurchaseRequest` | `requestSignature`, `confirmSignature`, `previewBudgetAvailability` | `PurchaseRequestApproved` |
 | 1.3 | `verifyBudgetAvailability` | `checkBudgetAvailability` | — |
 | 1.4 | `requestBudgetFinancing` | — | `BudgetFinancingRequested` |
-| 1.5 | `issueBudgetAvailabilityCertificate` | `checkBudgetAvailability`, `requestSignature`, `confirmSignature` | `BudgetAvailabilityCertificateIssued` |
+| 1.5 | `issueBudgetAvailabilityCertificate`, `registerScannedBudgetAvailabilityCertificate` | `checkBudgetAvailability`, `requestSignature`, `confirmSignature` *(solo electronic)* | `BudgetAvailabilityCertificateIssued` |
 | 1.6 | `createBudgetPreCommitment` | `createBudgetPreCommitment`, `registerPreObligation` | `BudgetPreCommitmentCreated` |
 | 2.1 | `confirmProcurementModality` | `getUtmValue`, `checkCatalogAvailability` | `ProcurementModalityConfirmed` |
 | 2.2 | `approveModalityDecision` *(inferido)* | `requestSignature`, `confirmSignature` (condicional) | `ProcurementModalityApproved` — **[PENDIENTE P-38]** |

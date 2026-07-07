@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 1340" font-family="Arial, Helvetica, sans-serif">
-  <rect width="840" height="1340" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 1354" font-family="Arial, Helvetica, sans-serif">
+  <rect width="840" height="1354" fill="#ffffff"/>
 
   <!-- ═══════════ ENCABEZADO DEL EXPEDIENTE (siempre visible) ═══════════ -->
   <rect x="30" y="30" width="780" height="110" rx="8" fill="#f5f5f5" stroke="#999999"/>
@@ -10,7 +10,7 @@
   <text x="695" y="65" font-size="13" fill="#333333" text-anchor="middle">En curso — etapa 3 de 5</text>
 
   <!-- ═══════════ ETAPA 1 — SOLPED (desplegada, finalizada) ═══════════ -->
-  <rect x="30" y="170" width="780" height="452" rx="8" fill="#ffffff" stroke="#999999"/>
+  <rect x="30" y="170" width="780" height="482" rx="8" fill="#ffffff" stroke="#999999"/>
   <rect x="30" y="170" width="780" height="46" rx="8" fill="#efefef" stroke="#999999"/>
   <text x="52" y="199" font-size="14" fill="#333333">▾</text>
   <text x="78" y="199" font-size="15" fill="#222222" font-weight="bold">1 · SOLPED</text>
@@ -45,131 +45,137 @@
   <text x="54" y="380" font-size="11" fill="#999999">Tiempo transcurrido: 0 d 5 h · Última modificación: 25-06-2026</text>
   <line x1="46" y1="400" x2="794" y2="400" stroke="#e5e5e5"/>
 
-  <!-- 1.4 (optativo, omitido) -->
-  <text x="54" y="418" font-size="13" fill="#aaaaaa" font-weight="bold">1.4 — Solicitar financiamiento a DAF</text>
-  <text x="400" y="418" font-size="12" fill="#bbbbbb">Unidad Solicitante / Usuario / —</text>
-  <rect x="662" y="402" width="128" height="24" rx="12" fill="#ffffff" stroke="#bbbbbb"/>
-  <text x="726" y="419" font-size="11" fill="#999999" text-anchor="middle">Omitido (optativo)</text>
-  <text x="54" y="438" font-size="11" fill="#bbbbbb">No requerido: disponibilidad verificada en 1.3</text>
-  <line x1="46" y1="450" x2="794" y2="450" stroke="#e5e5e5"/>
+  <!-- 1.4 (optativo, omitido; módulo SGM: Presupuestos) -->
+  <rect x="42" y="404" width="758" height="58" fill="#f8ece9" opacity="0.65"/>
+  <rect x="620" y="444" width="170" height="17" rx="8" fill="#ffffff" stroke="#ae6b6b" opacity="0.75"/>
+  <text x="705" y="456" font-size="10" fill="#8c3333" text-anchor="middle" opacity="0.75">Presupuestos · observado</text>
+  <text x="54" y="428" font-size="13" fill="#aaaaaa" font-weight="bold">1.4 — Solicitar financiamiento a DAF</text>
+  <text x="400" y="428" font-size="12" fill="#bbbbbb">Unidad Solicitante / Usuario / —</text>
+  <rect x="662" y="412" width="128" height="24" rx="12" fill="#ffffff" stroke="#bbbbbb"/>
+  <text x="726" y="429" font-size="11" fill="#999999" text-anchor="middle">Omitido (optativo)</text>
+  <text x="54" y="448" font-size="11" fill="#bbbbbb">No requerido: disponibilidad verificada en 1.3</text>
+  <line x1="46" y1="468" x2="794" y2="468" stroke="#e5e5e5"/>
 
-  <!-- 1.5 -->
-  <text x="54" y="476" font-size="13" fill="#222222" font-weight="bold">1.5 — Emisión de CDP firmado</text>
-  <text x="400" y="476" font-size="12" fill="#555555">DAF Finanzas / Aprobador / Pedro Soto</text>
-  <rect x="668" y="460" width="122" height="24" rx="4" fill="#ffffff" stroke="#777777"/>
-  <text x="729" y="477" font-size="12" fill="#333333" text-anchor="middle">Ver CDP</text>
-  <text x="54" y="496" font-size="11" fill="#999999">Tiempo transcurrido: 1 d 0 h · Última modificación: 26-06-2026 · Firmado vía FirmaGob</text>
-  <line x1="46" y1="508" x2="794" y2="508" stroke="#e5e5e5"/>
+  <!-- 1.5 (módulo SGM: Presupuestos) -->
+  <rect x="42" y="472" width="758" height="58" fill="#f8ece9"/>
+  <rect x="620" y="512" width="170" height="17" rx="8" fill="#ffffff" stroke="#ae6b6b"/>
+  <text x="705" y="524" font-size="10" fill="#8c3333" text-anchor="middle">Presupuestos · dependencia</text>
+  <text x="54" y="496" font-size="13" fill="#222222" font-weight="bold">1.5 — Emisión de CDP firmado</text>
+  <text x="400" y="496" font-size="12" fill="#555555">DAF Finanzas / Aprobador / Pedro Soto</text>
+  <rect x="668" y="480" width="122" height="24" rx="4" fill="#ffffff" stroke="#777777"/>
+  <text x="729" y="497" font-size="12" fill="#333333" text-anchor="middle">Ver CDP</text>
+  <text x="54" y="516" font-size="11" fill="#999999">Tiempo transcurrido: 1 d 0 h · Última modificación: 26-06-2026 · Firma electrónica (FirmaGob) · Revalidación Presupuestos</text>
+  <line x1="46" y1="536" x2="794" y2="536" stroke="#e5e5e5"/>
 
   <!-- 1.6 (módulo SGM: Presupuestos + Contabilidad) -->
-  <rect x="42" y="510" width="758" height="66" fill="#f8ece9"/>
-  <rect x="620" y="556" width="170" height="17" rx="8" fill="#ffffff" stroke="#ae6b6b"/>
-  <text x="705" y="568" font-size="10" fill="#8c3333" text-anchor="middle">Presupuestos · dependencia</text>
-  <text x="54" y="534" font-size="13" fill="#222222" font-weight="bold">1.6 — Generación de preobligación</text>
-  <text x="400" y="534" font-size="12" fill="#555555">DAF Finanzas / Usuario / Carla Fuentes</text>
-  <rect x="690" y="518" width="100" height="24" rx="12" fill="#e8e8e8" stroke="#888888"/>
-  <text x="740" y="535" font-size="12" fill="#333333" text-anchor="middle">Finalizado</text>
-  <text x="54" y="554" font-size="11" fill="#999999">Tiempo transcurrido: 0 d 1 h · Última modificación: 26-06-2026 · Monto preobligado: $[monto] · También: Contabilidad</text>
-  <text x="54" y="596" font-size="11" fill="#888888" font-style="italic">Total etapa: 2 d 6 h (24-06 → 26-06)</text>
+  <rect x="42" y="540" width="758" height="66" fill="#f8ece9"/>
+  <rect x="620" y="586" width="170" height="17" rx="8" fill="#ffffff" stroke="#ae6b6b"/>
+  <text x="705" y="598" font-size="10" fill="#8c3333" text-anchor="middle">Presupuestos · dependencia</text>
+  <text x="54" y="564" font-size="13" fill="#222222" font-weight="bold">1.6 — Generación de preobligación</text>
+  <text x="400" y="564" font-size="12" fill="#555555">DAF Finanzas / Usuario / Carla Fuentes</text>
+  <rect x="690" y="548" width="100" height="24" rx="12" fill="#e8e8e8" stroke="#888888"/>
+  <text x="740" y="565" font-size="12" fill="#333333" text-anchor="middle">Finalizado</text>
+  <text x="54" y="584" font-size="11" fill="#999999">Tiempo transcurrido: 0 d 1 h · Última modificación: 26-06-2026 · Monto preobligado: $[monto] · También: Contabilidad</text>
+  <text x="54" y="626" font-size="11" fill="#888888" font-style="italic">Total etapa: 2 d 6 h (24-06 → 26-06)</text>
 
   <!-- ═══════════ ETAPA 2 — MODALIDAD (plegada, finalizada) ═══════════ -->
-  <rect x="30" y="638" width="780" height="52" rx="8" fill="#efefef" stroke="#999999"/>
-  <text x="52" y="662" font-size="14" fill="#333333">▸</text>
-  <text x="78" y="662" font-size="15" fill="#222222" font-weight="bold">2 · Modalidad de Compra</text>
-  <text x="78" y="680" font-size="11" fill="#888888">Compra Ágil ratificada (gateway OK) · Vinculada a MP · ID Cotización: 4021-33-COT26 · Total etapa: 0 d 4 h</text>
-  <rect x="690" y="652" width="100" height="24" rx="12" fill="#e8e8e8" stroke="#888888"/>
-  <text x="740" y="669" font-size="12" fill="#333333" text-anchor="middle">Finalizada</text>
+  <rect x="30" y="652" width="780" height="52" rx="8" fill="#efefef" stroke="#999999"/>
+  <text x="52" y="676" font-size="14" fill="#333333">▸</text>
+  <text x="78" y="676" font-size="15" fill="#222222" font-weight="bold">2 · Modalidad de Compra</text>
+  <text x="78" y="694" font-size="11" fill="#888888">Compra Ágil ratificada (gateway OK) · Vinculada a MP · ID Cotización: 4021-33-COT26 · Total etapa: 0 d 4 h</text>
+  <rect x="690" y="666" width="100" height="24" rx="12" fill="#e8e8e8" stroke="#888888"/>
+  <text x="740" y="683" font-size="12" fill="#333333" text-anchor="middle">Finalizada</text>
 
   <!-- ═══════════ ETAPA 3 — RESOLUCIÓN DE COMPRA (desplegada, en curso) ═══════════ -->
-  <rect x="30" y="706" width="780" height="372" rx="8" fill="#fafafa" stroke="#333333" stroke-width="2"/>
-  <rect x="30" y="706" width="780" height="46" rx="8" fill="#e2e2e2" stroke="#333333"/>
-  <text x="52" y="735" font-size="14" fill="#333333">▾</text>
-  <text x="78" y="735" font-size="15" fill="#222222" font-weight="bold">3 · Resolución de Compra</text>
-  <rect x="690" y="717" width="100" height="24" rx="12" fill="#bbbbbb" stroke="#444444"/>
-  <text x="740" y="734" font-size="12" fill="#111111" text-anchor="middle">En curso</text>
+  <rect x="30" y="720" width="780" height="372" rx="8" fill="#fafafa" stroke="#333333" stroke-width="2"/>
+  <rect x="30" y="720" width="780" height="46" rx="8" fill="#e2e2e2" stroke="#333333"/>
+  <text x="52" y="749" font-size="14" fill="#333333">▾</text>
+  <text x="78" y="749" font-size="15" fill="#222222" font-weight="bold">3 · Resolución de Compra</text>
+  <rect x="690" y="731" width="100" height="24" rx="12" fill="#bbbbbb" stroke="#444444"/>
+  <text x="740" y="748" font-size="12" fill="#111111" text-anchor="middle">En curso</text>
 
   <!-- 3.1 (plataforma externa: MP) -->
-  <rect x="42" y="760" width="758" height="50" fill="#e9f1f8"/>
-  <rect x="640" y="790" width="150" height="17" rx="8" fill="#ffffff" stroke="#6b8cae"/>
-  <text x="715" y="802" font-size="10" fill="#33608c" text-anchor="middle">Mercado Público · solo lectura</text>
-  <text x="54" y="780" font-size="13" fill="#222222" font-weight="bold">3.1 — Período de cotización</text>
-  <text x="400" y="780" font-size="12" fill="#555555">Mercado Público / — / (proceso externo)</text>
-  <rect x="690" y="764" width="100" height="24" rx="12" fill="#e8e8e8" stroke="#888888"/>
-  <text x="740" y="781" font-size="12" fill="#333333" text-anchor="middle">Finalizado</text>
-  <text x="54" y="800" font-size="11" fill="#999999">Tiempo transcurrido: 3 d 0 h · Cierre: 30-06-2026 · 4 cotizaciones recibidas (1ª ronda MiPyme)</text>
-  <line x1="46" y1="812" x2="794" y2="812" stroke="#dddddd"/>
+  <rect x="42" y="774" width="758" height="50" fill="#e9f1f8"/>
+  <rect x="640" y="804" width="150" height="17" rx="8" fill="#ffffff" stroke="#6b8cae"/>
+  <text x="715" y="816" font-size="10" fill="#33608c" text-anchor="middle">Mercado Público · solo lectura</text>
+  <text x="54" y="794" font-size="13" fill="#222222" font-weight="bold">3.1 — Período de cotización</text>
+  <text x="400" y="794" font-size="12" fill="#555555">Mercado Público / — / (proceso externo)</text>
+  <rect x="690" y="778" width="100" height="24" rx="12" fill="#e8e8e8" stroke="#888888"/>
+  <text x="740" y="795" font-size="12" fill="#333333" text-anchor="middle">Finalizado</text>
+  <text x="54" y="814" font-size="11" fill="#999999">Tiempo transcurrido: 3 d 0 h · Cierre: 30-06-2026 · 4 cotizaciones recibidas (1ª ronda MiPyme)</text>
+  <line x1="46" y1="826" x2="794" y2="826" stroke="#dddddd"/>
 
   <!-- 3.2 (acción del usuario en plataforma externa: MP) -->
-  <rect x="42" y="818" width="758" height="50" fill="#e9f1f8"/>
-  <rect x="640" y="848" width="150" height="17" rx="8" fill="#ffffff" stroke="#6b8cae"/>
-  <text x="715" y="860" font-size="10" fill="#33608c" text-anchor="middle">Mercado Público · solo lectura</text>
-  <text x="54" y="838" font-size="13" fill="#222222" font-weight="bold">3.2 — Cierre y selección de oferta</text>
-  <text x="400" y="838" font-size="12" fill="#555555">DAF Abastecimiento / Usuario / Rodrigo Muñoz</text>
-  <rect x="668" y="822" width="122" height="24" rx="4" fill="#ffffff" stroke="#777777"/>
-  <text x="729" y="839" font-size="12" fill="#333333" text-anchor="middle">Ver selección</text>
-  <text x="54" y="858" font-size="11" fill="#999999">Tiempo transcurrido: 0 d 6 h · 01-07-2026 · Registro manual (modo degradado) — MP prevalece si difiere</text>
-  <line x1="46" y1="870" x2="794" y2="870" stroke="#dddddd"/>
+  <rect x="42" y="832" width="758" height="50" fill="#e9f1f8"/>
+  <rect x="640" y="862" width="150" height="17" rx="8" fill="#ffffff" stroke="#6b8cae"/>
+  <text x="715" y="874" font-size="10" fill="#33608c" text-anchor="middle">Mercado Público · solo lectura</text>
+  <text x="54" y="852" font-size="13" fill="#222222" font-weight="bold">3.2 — Cierre y selección de oferta</text>
+  <text x="400" y="852" font-size="12" fill="#555555">DAF Abastecimiento / Usuario / Rodrigo Muñoz</text>
+  <rect x="668" y="836" width="122" height="24" rx="4" fill="#ffffff" stroke="#777777"/>
+  <text x="729" y="853" font-size="12" fill="#333333" text-anchor="middle">Ver selección</text>
+  <text x="54" y="872" font-size="11" fill="#999999">Tiempo transcurrido: 0 d 6 h · 01-07-2026 · Registro manual (modo degradado) — MP prevalece si difiere</text>
+  <line x1="46" y1="884" x2="794" y2="884" stroke="#dddddd"/>
 
   <!-- 3.3 (acción del usuario en plataforma externa: MP) -->
-  <rect x="42" y="876" width="758" height="50" fill="#e9f1f8"/>
-  <rect x="640" y="906" width="150" height="17" rx="8" fill="#ffffff" stroke="#6b8cae"/>
-  <text x="715" y="918" font-size="10" fill="#33608c" text-anchor="middle">Mercado Público · solo lectura</text>
-  <text x="54" y="896" font-size="13" fill="#222222" font-weight="bold">3.3 — Emisión de la OC</text>
-  <text x="400" y="896" font-size="12" fill="#555555">DAF Abastecimiento / Usuario / Rodrigo Muñoz</text>
-  <rect x="668" y="880" width="122" height="24" rx="4" fill="#ffffff" stroke="#777777"/>
-  <text x="729" y="897" font-size="12" fill="#333333" text-anchor="middle">Ver OC</text>
-  <text x="54" y="916" font-size="11" fill="#999999">Tiempo transcurrido: 0 d 2 h · 02-07-2026 · OC N° 4021-33-SE26 · Habilidad revalidada</text>
-  <line x1="46" y1="928" x2="794" y2="928" stroke="#dddddd"/>
+  <rect x="42" y="890" width="758" height="50" fill="#e9f1f8"/>
+  <rect x="640" y="920" width="150" height="17" rx="8" fill="#ffffff" stroke="#6b8cae"/>
+  <text x="715" y="932" font-size="10" fill="#33608c" text-anchor="middle">Mercado Público · solo lectura</text>
+  <text x="54" y="910" font-size="13" fill="#222222" font-weight="bold">3.3 — Emisión de la OC</text>
+  <text x="400" y="910" font-size="12" fill="#555555">DAF Abastecimiento / Usuario / Rodrigo Muñoz</text>
+  <rect x="668" y="894" width="122" height="24" rx="4" fill="#ffffff" stroke="#777777"/>
+  <text x="729" y="911" font-size="12" fill="#333333" text-anchor="middle">Ver OC</text>
+  <text x="54" y="930" font-size="11" fill="#999999">Tiempo transcurrido: 0 d 2 h · 02-07-2026 · OC N° 4021-33-SE26 · Habilidad revalidada</text>
+  <line x1="46" y1="942" x2="794" y2="942" stroke="#dddddd"/>
 
   <!-- 3.4 (en curso, destacado; plataforma externa: MP) -->
-  <rect x="40" y="938" width="762" height="82" rx="6" fill="#e9f1f8" stroke="#33608c" stroke-width="2"/>
-  <rect x="40" y="938" width="6" height="82" fill="#33608c"/>
-  <rect x="640" y="996" width="150" height="17" rx="8" fill="#ffffff" stroke="#6b8cae"/>
-  <text x="715" y="1008" font-size="10" fill="#33608c" text-anchor="middle">Mercado Público · solo lectura</text>
-  <text x="60" y="964" font-size="13" fill="#222222" font-weight="bold">3.4 — Aceptación de la OC</text>
-  <text x="400" y="964" font-size="12" fill="#555555">Proveedor (MP) / Externo / Comercial Sur SpA</text>
-  <rect x="690" y="948" width="100" height="24" rx="12" fill="#bbbbbb" stroke="#444444"/>
-  <text x="740" y="965" font-size="12" fill="#111111" text-anchor="middle">En curso</text>
-  <text x="60" y="986" font-size="11" fill="#999999">Tiempo transcurrido: 5 d 1 h (desde emisión de OC)</text>
-  <text x="60" y="1006" font-size="12" fill="#444444">Condición pendiente: lectura MP «OC Aceptada» (confirmada) → gatilla Compromiso Cierto por monto real</text>
+  <rect x="40" y="952" width="762" height="82" rx="6" fill="#e9f1f8" stroke="#33608c" stroke-width="2"/>
+  <rect x="40" y="952" width="6" height="82" fill="#33608c"/>
+  <rect x="640" y="1010" width="150" height="17" rx="8" fill="#ffffff" stroke="#6b8cae"/>
+  <text x="715" y="1022" font-size="10" fill="#33608c" text-anchor="middle">Mercado Público · solo lectura</text>
+  <text x="60" y="978" font-size="13" fill="#222222" font-weight="bold">3.4 — Aceptación de la OC</text>
+  <text x="400" y="978" font-size="12" fill="#555555">Proveedor (MP) / Externo / Comercial Sur SpA</text>
+  <rect x="690" y="962" width="100" height="24" rx="12" fill="#bbbbbb" stroke="#444444"/>
+  <text x="740" y="979" font-size="12" fill="#111111" text-anchor="middle">En curso</text>
+  <text x="60" y="1000" font-size="11" fill="#999999">Tiempo transcurrido: 5 d 1 h (desde emisión de OC)</text>
+  <text x="60" y="1020" font-size="12" fill="#444444">Condición pendiente: lectura MP «OC Aceptada» (confirmada) → gatilla Compromiso Cierto por monto real</text>
 
   <!-- Nota caminos alternativos -->
-  <text x="54" y="1052" font-size="11" fill="#888888" font-style="italic">Caminos alternativos 3.5 (rechazo de OC) y 3.6 (proceso desierto): no se listan como pendientes — aparecen en el</text>
-  <text x="54" y="1066" font-size="11" fill="#888888" font-style="italic">timeline solo si ocurren, como intento registrado en la historia del paso.</text>
+  <text x="54" y="1066" font-size="11" fill="#888888" font-style="italic">Caminos alternativos 3.5 (rechazo de OC) y 3.6 (proceso desierto): no se listan como pendientes — aparecen en el</text>
+  <text x="54" y="1080" font-size="11" fill="#888888" font-style="italic">timeline solo si ocurren, como intento registrado en la historia del paso.</text>
 
   <!-- ═══════════ ETAPA 4 — RECEPCIÓN CONFORME (plegada, pendiente) ═══════════ -->
-  <rect x="30" y="1094" width="780" height="52" rx="8" fill="#ffffff" stroke="#cccccc" stroke-dasharray="5 4"/>
-  <text x="52" y="1118" font-size="14" fill="#aaaaaa">▸</text>
-  <text x="78" y="1118" font-size="15" fill="#999999" font-weight="bold">4 · Recepción Conforme</text>
-  <text x="78" y="1136" font-size="11" fill="#bbbbbb">Responsable previsto: Bodega / Unidad Solicitante · Perfil: bien físico, entrega única</text>
-  <rect x="690" y="1108" width="100" height="24" rx="12" fill="#ffffff" stroke="#bbbbbb"/>
-  <text x="740" y="1125" font-size="12" fill="#999999" text-anchor="middle">Pendiente</text>
+  <rect x="30" y="1108" width="780" height="52" rx="8" fill="#ffffff" stroke="#cccccc" stroke-dasharray="5 4"/>
+  <text x="52" y="1132" font-size="14" fill="#aaaaaa">▸</text>
+  <text x="78" y="1132" font-size="15" fill="#999999" font-weight="bold">4 · Recepción Conforme</text>
+  <text x="78" y="1150" font-size="11" fill="#bbbbbb">Responsable previsto: Bodega / Unidad Solicitante · Perfil: bien físico, entrega única</text>
+  <rect x="690" y="1122" width="100" height="24" rx="12" fill="#ffffff" stroke="#bbbbbb"/>
+  <text x="740" y="1139" font-size="12" fill="#999999" text-anchor="middle">Pendiente</text>
 
   <!-- ═══════════ ETAPA 5 — PAGO (plegada, pendiente, observada) ═══════════ -->
-  <rect x="30" y="1162" width="780" height="52" rx="8" fill="#ffffff" stroke="#cccccc" stroke-dasharray="5 4"/>
-  <text x="52" y="1186" font-size="14" fill="#aaaaaa">▸</text>
-  <text x="78" y="1186" font-size="15" fill="#999999" font-weight="bold">5 · Pago</text>
-  <text x="78" y="1204" font-size="11" fill="#bbbbbb">Etapa observada · Tesorería · El reloj legal de pago (30 días) se mostrará aquí al recibirse la factura</text>
-  <rect x="690" y="1176" width="100" height="24" rx="12" fill="#ffffff" stroke="#bbbbbb"/>
-  <text x="740" y="1193" font-size="12" fill="#999999" text-anchor="middle">Pendiente</text>
+  <rect x="30" y="1176" width="780" height="52" rx="8" fill="#ffffff" stroke="#cccccc" stroke-dasharray="5 4"/>
+  <text x="52" y="1200" font-size="14" fill="#aaaaaa">▸</text>
+  <text x="78" y="1200" font-size="15" fill="#999999" font-weight="bold">5 · Pago</text>
+  <text x="78" y="1218" font-size="11" fill="#bbbbbb">Etapa observada · Tesorería · El reloj legal de pago (30 días) se mostrará aquí al recibirse la factura</text>
+  <rect x="690" y="1190" width="100" height="24" rx="12" fill="#ffffff" stroke="#bbbbbb"/>
+  <text x="740" y="1207" font-size="12" fill="#999999" text-anchor="middle">Pendiente</text>
 
   <!-- ═══════════ LEYENDA ═══════════ -->
-  <text x="34" y="1248" font-size="11" fill="#888888">Acciones:</text>
-  <rect x="96" y="1234" width="140" height="22" rx="4" fill="#555555"/>
-  <text x="166" y="1249" font-size="11" fill="#ffffff" text-anchor="middle">Completar formulario</text>
-  <text x="244" y="1249" font-size="10" fill="#888888">(acción requerida del usuario actual)</text>
-  <rect x="432" y="1234" width="110" height="22" rx="4" fill="#ffffff" stroke="#777777"/>
-  <text x="487" y="1249" font-size="11" fill="#333333" text-anchor="middle">Ver formulario</text>
-  <text x="552" y="1249" font-size="10" fill="#888888">(consulta)</text>
-  <rect x="622" y="1234" width="90" height="22" rx="11" fill="#e8e8e8" stroke="#888888"/>
-  <text x="667" y="1249" font-size="11" fill="#333333" text-anchor="middle">Badge</text>
-  <text x="722" y="1249" font-size="10" fill="#888888">(estado, sin acción)</text>
+  <text x="34" y="1262" font-size="11" fill="#888888">Acciones:</text>
+  <rect x="96" y="1248" width="140" height="22" rx="4" fill="#555555"/>
+  <text x="166" y="1263" font-size="11" fill="#ffffff" text-anchor="middle">Completar formulario</text>
+  <text x="244" y="1263" font-size="10" fill="#888888">(acción requerida del usuario actual)</text>
+  <rect x="432" y="1248" width="110" height="22" rx="4" fill="#ffffff" stroke="#777777"/>
+  <text x="487" y="1263" font-size="11" fill="#333333" text-anchor="middle">Ver formulario</text>
+  <text x="552" y="1263" font-size="10" fill="#888888">(consulta)</text>
+  <rect x="622" y="1248" width="90" height="22" rx="11" fill="#e8e8e8" stroke="#888888"/>
+  <text x="667" y="1263" font-size="11" fill="#333333" text-anchor="middle">Badge</text>
+  <text x="722" y="1263" font-size="10" fill="#888888">(estado, sin acción)</text>
 
-  <rect x="96" y="1266" width="26" height="16" fill="#e9f1f8" stroke="#6b8cae"/>
-  <text x="132" y="1279" font-size="10" fill="#888888">Plataforma externa (azul) — la etiqueta indica el origen y el modo de integración</text>
-  <text x="132" y="1293" font-size="10" fill="#888888">(«solo lectura»: SGM refleja, nunca escribe). Aplica a MP, FirmaGob, Contraloría según la ficha del sub-paso.</text>
+  <rect x="96" y="1280" width="26" height="16" fill="#e9f1f8" stroke="#6b8cae"/>
+  <text x="132" y="1293" font-size="10" fill="#888888">Plataforma externa (azul) — la etiqueta indica el origen y el modo de integración</text>
+  <text x="132" y="1307" font-size="10" fill="#888888">(«solo lectura»: SGM refleja, nunca escribe). Aplica a MP, FirmaGob, Contraloría según la ficha del sub-paso.</text>
 
-  <rect x="96" y="1304" width="26" height="16" fill="#f8ece9" stroke="#ae6b6b"/>
-  <text x="132" y="1317" font-size="10" fill="#888888">Módulo SGM (rojizo) — la etiqueta indica el módulo contraparte y el modo del borde</text>
-  <text x="132" y="1331" font-size="10" fill="#888888">(«dependencia», «observado», «consulta»). Aplica a Presupuestos, Contabilidad, Tesorería, etc. según §3.5 de la ficha.</text>
+  <rect x="96" y="1318" width="26" height="16" fill="#f8ece9" stroke="#ae6b6b"/>
+  <text x="132" y="1331" font-size="10" fill="#888888">Módulo SGM (rojizo) — la etiqueta indica el módulo contraparte y el modo del borde</text>
+  <text x="132" y="1345" font-size="10" fill="#888888">(«dependencia», «observado», «consulta»). Aplica a Presupuestos, Contabilidad, Tesorería, etc. según §3.5 de la ficha.</text>
 </svg>

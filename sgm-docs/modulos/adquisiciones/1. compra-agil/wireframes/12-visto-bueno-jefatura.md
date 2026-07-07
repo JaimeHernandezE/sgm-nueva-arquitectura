@@ -1,7 +1,7 @@
 # Wireframe: Visto bueno de jefatura
 
 **Sub-paso:** 1.2 — Visto bueno de jefatura  
-**Operaciones:** `approvePurchaseRequest`, `rejectPurchaseRequest`
+**Operaciones:** `approvePurchaseRequest`, `rejectPurchaseRequest`, `previewBudgetAvailability` *(informativa)*
 
 ## Layout
 
@@ -11,6 +11,8 @@
 +----------------------------------------------------------+
 | [Datos SOLPED — solo lectura]                             |
 | Unidad: ... | Monto total: $XXX | Líneas: 3               |
+| Línea presup. indicada: Cuenta 22.01.03 (opcional)        |
+| [ Consultar saldo en línea presupuestaria ]  (enlace)     |
 +----------------------------------------------------------+
 | Seguimiento de firmas                                     |
 | +------------------+--------+-------------+               |
@@ -40,6 +42,7 @@
 |---|---|---|
 | Aprobar y firmar | `approvePurchaseRequest` | `requestSignature` → `confirmSignature` (FirmaGob) |
 | Rechazar | `rejectPurchaseRequest` | — |
+| Consultar saldo (panel) | `previewBudgetAvailability` | Informativa — mismo panel que 1.1 |
 
 ## Estados de pantalla
 
@@ -56,3 +59,4 @@
 
 - QA ítems 5, 7 P1: aprobación sin firma real no debe ser posible.
 - Medida transitoria piloto: adjunto de visación manual si FirmaGob no disponible (propuesta QA 7).
+- La autoconsulta de saldo ayuda al aprobador a decidir; no reemplaza la verificación DAF en 1.3.
