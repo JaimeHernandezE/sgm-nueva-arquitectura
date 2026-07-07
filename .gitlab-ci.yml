@@ -13,6 +13,13 @@ sync_from_github:
     - git config --global http.version HTTP/1.1
     - git config --global core.compression 0
   script:
+    - |
+      if [ -z "$GITHUB_PROJECT" ] || [ -z "$GITHUB_TOKEN" ]; then
+        echo "ERROR: Configura en Settings → CI/CD → Variables:"
+        echo "  GITHUB_PROJECT = org/repo   (ej. JaimeHernandezE/sgm-nueva-arquitectura)"
+        echo "  GITHUB_TOKEN   = token con acceso de lectura al repo"
+        exit 1
+      fi
     - git clone --mirror "https://$GITHUB_TOKEN@github.com/$GITHUB_PROJECT.git" repo.git
     - cd repo.git
     - git remote set-url --push origin "https://$GITLAB_SUBDERE_TOKEN_USER:$GITLAB_SUBDERE_TOKEN_PASS@gitlab.subdere.gob.cl/modernizacion/sgm/nueva-arquitectura.git"
@@ -31,3 +38,4 @@ pages:
       - public
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - when: manual
