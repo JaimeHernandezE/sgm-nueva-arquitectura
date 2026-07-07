@@ -12,35 +12,36 @@ Prototipos de validación UX para el Sistema de Gestión Municipal (SGM). Comple
 
 Antes de editar cualquier pantalla, consultar [`MANIFEST.md`](./MANIFEST.md) y [`shared/steps-manifest.json`](./shared/steps-manifest.json) (espejo ejecutable: `steps-manifest.js`).
 
-## Cómo abrir (desarrollo local)
+## Compartir con quien no usa consola
 
-Requiere un servidor HTTP (los módulos ES no funcionan abriendo el archivo directo con doble clic):
+Los prototipos se publican en **GitHub Pages** al hacer push a `main` (workflow [`.github/workflows/pages-prototipos.yml`](../.github/workflows/pages-prototipos.yml)).
+
+**URL pública** (tras el primer deploy exitoso):
+
+```
+https://jaimehernandeze.github.io/sgm-nueva-arquitectura/
+```
+
+Redirige al expediente de demo. Enlace directo:
+
+```
+https://jaimehernandeze.github.io/sgm-nueva-arquitectura/modulos/adquisiciones/00-expediente/index.html
+```
+
+### Activar GitHub Pages (una sola vez)
+
+1. En GitHub: **Settings → Pages**
+2. **Build and deployment → Source:** `GitHub Actions`
+3. Push a `main` o ejecutar manualmente **Actions → Deploy prototipos → Run workflow**
+4. Cuando termine en verde: **Settings → Pages** muestra la URL
+
+### Desarrollo local
+
+Requiere servidor HTTP (los módulos ES no funcionan con doble clic en el archivo):
 
 ```bash
 npx serve sgm-prototipos
 ```
-
-Luego abrir: `http://localhost:3000/` (redirige al expediente de demo).
-
-## Compartir con quien no usa consola
-
-La forma más simple para el equipo es **publicar `sgm-prototipos/` como sitio estático** y compartir un enlace HTTPS. Opciones:
-
-| Opción | Quién configura | Para el destinatario |
-|---|---|---|
-| **GitLab Pages** (recomendado) | Una vez, quien administra el repo en `gitlab.subdere.gob.cl` | Solo abrir el enlace en el navegador |
-| **GitHub Pages** | Si el repo fuente está en GitHub | Igual — enlace en el navegador |
-| **Netlify Drop** | Arrastrar la carpeta `sgm-prototipos/` a [app.netlify.com/drop](https://app.netlify.com/drop) | Enlace temporal sin consola ni CI |
-
-Enlace de entrada una vez publicado:
-
-```
-https://<tu-dominio>/sgm-prototipos/
-```
-
-(o la URL que asigne GitLab Pages / Netlify)
-
-El spec en [`01-vista-expediente-detalle-ca.md`](../sgm-docs/modulos/adquisiciones/01-vista-expediente-detalle-ca.md) puede enlazar a esa URL pública en lugar de la ruta local del repo.
 
 ## Estructura
 

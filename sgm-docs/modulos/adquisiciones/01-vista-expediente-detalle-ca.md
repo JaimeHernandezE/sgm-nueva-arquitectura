@@ -1,6 +1,6 @@
 # Wireframe 01 — Vista de Expediente detallada (Compra Ágil)
 
-[Mockup interactivo](../../../sgm-prototipos/modulos/adquisiciones/00-expediente/index.html)
+[Mockup interactivo](https://jaimehernandeze.github.io/sgm-nueva-arquitectura/modulos/adquisiciones/00-expediente/index.html) · [repo local](../../../sgm-prototipos/modulos/adquisiciones/00-expediente/index.html)
 
 **Pantalla:** Vista principal del expediente con etapas desplegables y sub-pasos en formato fila.
 **Sub-paso(s) que la motivan:** Transversal — profundiza el wireframe `00-vista-expediente` con el detalle intra-etapa. Compra Ágil como ejemplo (etapas 1–5 según fichas vigentes).
