@@ -1,5 +1,6 @@
 stages:
   - sync
+  - deploy
 
 sync_from_github:
   stage: sync
@@ -19,3 +20,14 @@ sync_from_github:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
     - when: manual
+
+pages:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - cp -r sgm-prototipos public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
