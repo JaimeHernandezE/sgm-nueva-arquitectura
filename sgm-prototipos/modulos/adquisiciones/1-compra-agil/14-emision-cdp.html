@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1.5 — Emisión de CDP</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
+
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>SOLPED #1234 — Certificado de Disponibilidad (CDP)</span>
+        <span class="badge">En curso</span>
+      </div>
+      <div class="form-card__body">
+        <div class="mode-toggle">
+          <button type="button" id="mode-electronic" class="is-active">Firma electrónica</button>
+          <button type="button" id="mode-scanned">CDP escaneado (papel)</button>
+        </div>
+
+        <div id="panel-electronic">
+          <div class="form-row form-row--readonly">
+            Verificado por: María López (1.3)
+          </div>
+          <div class="form-row">
+            <label>Línea presupuestaria</label>
+            <select><option>22.01.03 — Insumos oficina</option></select>
+          </div>
+          <div class="form-row">
+            <label>Monto certificado <span class="required">*</span></label>
+            <input type="text" value="1250000" />
+          </div>
+          <div class="form-row">
+            <label>Año fiscal <span class="required">*</span></label>
+            <input type="number" value="2026" />
+          </div>
+        </div>
+
+        <div id="panel-scanned" class="hidden">
+          <div class="banner banner--info">
+            Modo: CDP escaneado — el documento físico firmado es la fuente de verdad; SGM registra metadatos + archivo.
+          </div>
+          <div class="form-row">
+            <label>Nº correlativo CDP <span class="required">*</span></label>
+            <input type="text" value="CDP-2026-00891" />
+          </div>
+          <div class="form-row">
+            <label>Monto certificado <span class="required">*</span></label>
+            <input type="text" value="1250000" />
+          </div>
+          <div class="form-row">
+            <label>Fecha del documento <span class="required">*</span></label>
+            <input type="date" value="2026-06-26" />
+          </div>
+          <div class="form-row">
+            <label>Adjunto CDP firmado <span class="required">*</span></label>
+            <button class="btn btn--secondary" type="button">Seleccionar PDF o imagen…</button>
+            <small style="display:block;margin-top:4px;color:var(--text-muted);">(firmas manuscritas visibles)</small>
+          </div>
+        </div>
+
+        <div class="info-panel info-panel--ok">
+          <strong>Panel: Revalidación de saldo</strong><br />
+          Saldo proyectado: $ 450.000 [OK]
+        </div>
+      </div>
+      <div class="form-actions">
+        <a class="btn btn--secondary" id="cancel-link" href="../00-expediente/index.html">Cancelar</a>
+        <button class="btn btn--primary" type="button" id="submit-electronic">Emitir y firmar CDP</button>
+        <button class="btn btn--primary hidden" type="button" id="submit-scanned">Registrar CDP escaneado</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, initCdpModeToggle } from '../../../shared/form-shell.js';
+
+    const expedienteId = getExpedienteId();
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 1 · SOLPED',
+      stepName: 'Emisión de CDP firmado',
+      stepId: '1.5',
+    });
+    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
+      kind: 'module',
+      label: 'Presupuestos',
+      mode: 'dependencia',
+    });
+    document.getElementById('cancel-link').href = `../00-expediente/index.html?expediente=${encodeURIComponent(expedienteId)}`;
+
+    const btnElectronic = document.getElementById('mode-electronic');
+    const btnScanned = document.getElementById('mode-scanned');
+    const submitElectronic = document.getElementById('submit-electronic');
+    const submitScanned = document.getElementById('submit-scanned');
+
+    initCdpModeToggle('mode-electronic', 'mode-scanned', 'panel-electronic', 'panel-scanned');
+
+    btnElectronic.addEventListener('click', () => {
+      submitElectronic.classList.remove('hidden');
+      submitScanned.classList.add('hidden');
+    });
+    btnScanned.addEventListener('click', () => {
+      submitElectronic.classList.add('hidden');
+      submitScanned.classList.remove('hidden');
+    });
+
+    submitElectronic.addEventListener('click', () => demoAction('issueBudgetAvailabilityCertificate'));
+    submitScanned.addEventListener('click', () => demoAction('registerScannedBudgetAvailabilityCertificate'));
+  </script>
+</body>
+</html>

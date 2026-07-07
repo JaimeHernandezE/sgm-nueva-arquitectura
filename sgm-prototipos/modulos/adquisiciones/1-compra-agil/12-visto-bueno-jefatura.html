@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1.2 — Visto bueno de jefatura</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="page">
+    <div id="breadcrumb"></div>
+
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>SOLPED #1234 — Revisión jefatura</span>
+        <span class="badge badge--active">Pendiente V°B°</span>
+      </div>
+      <div class="form-card__body">
+        <div class="info-panel">
+          <strong>Datos SOLPED — solo lectura</strong><br />
+          Unidad: Unidad Solicitante · Monto total: $1.250.000 · Líneas: 1<br />
+          Línea presup. indicada: Cuenta 22.01.03 (opcional)
+        </div>
+        <p>
+          <button class="btn btn--link" type="button" id="balance-trigger">Consultar saldo en línea presupuestaria</button>
+        </p>
+
+        <h3 style="font-size:14px;margin:16px 0 8px;">Seguimiento de firmas</h3>
+        <table class="form-table">
+          <thead>
+            <tr>
+              <th>Interviniente</th>
+              <th>Tipo</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Jefatura Unidad</td>
+              <td>FirmaGob</td>
+              <td><span class="badge badge--active">Pendiente</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="form-row">
+          <label>Comentarios (obligatorio si rechazo)</label>
+          <textarea placeholder="Comentarios de la decisión…"></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn--secondary" type="button" id="reject">Rechazar</button>
+        <button class="btn btn--primary" type="button" id="approve">Aprobar y firmar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="balance-modal">
+    <div class="modal" role="dialog">
+      <div class="modal__header">
+        <span>Consulta de saldo (informativa)</span>
+        <button class="btn btn--link" type="button" id="balance-close">✕</button>
+      </div>
+      <div class="modal__body">
+        <div class="info-panel info-panel--ok">
+          Disponible: $ 2.100.000 · Saldo proyectado: $ 1.300.000
+        </div>
+        <div class="banner banner--info">
+          Aviso: consulta orientativa — la verificación formal ocurre en Finanzas (paso 1.3).
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--secondary" type="button" id="balance-consult">Consultar</button>
+        <button class="btn btn--primary" type="button" id="balance-close-footer">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { getExpedienteId, renderBreadcrumb, demoAction, initBalancePanel } from '../../../shared/form-shell.js';
+
+    const expedienteId = getExpedienteId();
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 1 · SOLPED',
+      stepName: 'Visto bueno de jefatura',
+      stepId: '1.2',
+    });
+
+    initBalancePanel({
+      triggerId: 'balance-trigger',
+      modalId: 'balance-modal',
+      closeId: 'balance-close',
+      consultId: 'balance-consult',
+    });
+    document.getElementById('balance-close-footer')?.addEventListener('click', () => {
+      document.getElementById('balance-modal').classList.remove('is-open');
+    });
+
+    document.getElementById('reject').addEventListener('click', () => demoAction('rejectPurchaseRequest'));
+    document.getElementById('approve').addEventListener('click', () => demoAction('approvePurchaseRequest'));
+  </script>
+</body>
+</html>

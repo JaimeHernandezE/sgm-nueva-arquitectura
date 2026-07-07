@@ -1,0 +1,15 @@
+---
+description: Convenciones HTML para prototipos sgm-prototipos
+globs: sgm-prototipos/**/*.html,sgm-prototipos/shared/**
+alwaysApply: false
+---
+
+# Prototipos HTML SGM
+
+- Assets compartidos en `sgm-prototipos/shared/` (CSS, JS, manifiesto).
+- Numeración `NN-nombre.html` donde `NN` = etapa×10 + sub-paso.
+- Sin frameworks; vanilla HTML/CSS/JS con `type="module"`.
+- Tintes azul/rojizo solo vía clases en `origin.css` (`form-panel--module`, chips).
+- Breadcrumb con `form-shell.js` → enlace retorno al expediente shell.
+- Acciones demo: `demoAction('nombreOperacion')` — sin backend.
+- Rutas relativas entre pantallas del mismo módulo; query `?expediente=` para contexto.

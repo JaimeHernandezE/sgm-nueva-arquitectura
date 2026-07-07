@@ -1,0 +1,13 @@
+---
+description: Wireframes spec en sgm-docs — sincronía con prototipos
+globs: sgm-docs/**/wireframes/**/*.md
+alwaysApply: false
+---
+
+# Wireframes spec (sgm-docs)
+
+- Wireframes `.md` son baja fidelidad (plantilla §7); no mover a `sgm-prototipos/`.
+- Cada pantalla enlaza a prototipo HTML vía `sgm-prototipos/shared/steps-manifest.json`.
+- Al editar layout, campos o acciones: actualizar el `.html` correspondiente en `sgm-prototipos/`.
+- Mantener nombres de operación alineados con `contracts.md` del módulo.
+- Ruta canónica Compra Ágil: `sgm-docs/modulos/adquisiciones/wireframes/`.

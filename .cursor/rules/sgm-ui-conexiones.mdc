@@ -1,0 +1,23 @@
+---
+description: Checklist de conexiones antes de editar UI SGM (docs + prototipos)
+globs: sgm-prototipos/**,sgm-docs/**/wireframes/**,sgm-docs/modulos/adquisiciones/01-*,sgm-docs/modulos/adquisiciones/procesos-transversales/**
+alwaysApply: false
+---
+
+# Conexiones UI — no editar en aislamiento
+
+Antes de cambiar un sub-paso, pantalla o fila del expediente:
+
+1. Leer `sgm-prototipos/MANIFEST.md` y la entrada en `sgm-prototipos/shared/steps-manifest.json` (`stepId`).
+2. Abrir el wireframe spec (`.md`) y la ficha de proceso referenciados.
+3. Verificar operaciones en `sgm-docs/modulos/adquisiciones/contracts.md`.
+4. Verificar campos en `sgm-docs/modelo-datos/entidades-core.md`.
+5. Si cambia tinte/origen: reglas 2a/2b en `01-vista-expediente-detalle-ca.md`.
+
+## Reglas
+
+- Ningún botón sin operación publicada en contrato.
+- Ningún campo sin entidad.campo en el modelo.
+- Cambio en wireframe `.md` → actualizar prototipo HTML enlazado (y viceversa).
+- Cambio en fila del expediente → actualizar `demo-data.js` y `steps-manifest.json` + `.js`.
+- Specs `.md`/`.svg` permanecen en `sgm-docs/`; HTML solo en `sgm-prototipos/`.

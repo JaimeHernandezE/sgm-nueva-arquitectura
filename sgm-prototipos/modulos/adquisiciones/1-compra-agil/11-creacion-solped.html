@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1.1 — Creación de SOLPED</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="page">
+    <div id="breadcrumb"></div>
+
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>SOLPED — Nueva solicitud</span>
+        <span class="badge badge--draft">Borrador</span>
+      </div>
+      <div class="form-card__body">
+        <div class="form-row">
+          <label>Unidad solicitante <span class="required">*</span></label>
+          <select>
+            <option>Unidad X</option>
+            <option>DAF Abastecimiento</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Descripción <span class="required">*</span></label>
+          <input type="text" value="Adquisición de insumos de oficina" />
+        </div>
+        <div class="form-row">
+          <label>Justificación <span class="required">*</span></label>
+          <textarea>Reposición de stock según plan anual.</textarea>
+        </div>
+        <div class="form-row">
+          <label>Fecha solicitada <span class="required">*</span></label>
+          <input type="date" value="2026-06-24" />
+        </div>
+        <div class="form-row">
+          <label>Modalidad de compra</label>
+          <select id="purchase-modality">
+            <option value="">(sin indicar)</option>
+            <option value="compra_agil" selected>Compra Ágil</option>
+            <option value="convenio_marco">Convenio Marco</option>
+            <option value="licitacion_publica">Licitación Pública</option>
+            <option value="trato_directo">Trato Directo</option>
+          </select>
+        </div>
+        <div id="resolution-row" class="form-row hidden">
+          <label>Resolución Fundada <span class="required">*</span></label>
+          <button class="btn btn--secondary" type="button">Subir archivo</button>
+        </div>
+
+        <h3 style="font-size:14px;margin:20px 0 8px;">Líneas de bienes/servicios</h3>
+        <table class="form-table">
+          <thead>
+            <tr>
+              <th>Descr.</th>
+              <th>Cantidad</th>
+              <th>UM</th>
+              <th>Precio</th>
+              <th>Ref.</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="text" value="Resma papel carta" /></td>
+              <td><input type="number" value="50" /></td>
+              <td><select><option>Un</option></select></td>
+              <td><input type="text" value="4500" /></td>
+              <td>SII 42k</td>
+              <td><button class="btn btn--secondary" type="button">Eliminar</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <button class="btn btn--secondary" type="button">+ Agregar línea</button>
+
+        <div class="form-row" style="margin-top:16px;">
+          <label>Documentos adjuntos</label>
+          <button class="btn btn--secondary" type="button">Subir archivo</button>
+        </div>
+        <div class="form-row">
+          <label>Línea presupuestaria (opcional)</label>
+          <select>
+            <option value="">(opcional) Cuenta/Programa</option>
+            <option>22.01.03 — Insumos oficina</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Año fiscal propuesto (opcional)</label>
+          <input type="number" value="2026" />
+        </div>
+        <p>
+          <button class="btn btn--link" type="button" id="balance-trigger">Consultar saldo en línea presupuestaria</button>
+        </p>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn--secondary" type="button" id="save-draft">Guardar borrador</button>
+        <button class="btn btn--primary" type="button" id="submit">Enviar a aprobación</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="balance-modal">
+    <div class="modal" role="dialog" aria-labelledby="balance-title">
+      <div class="modal__header">
+        <span id="balance-title">Consulta de saldo (informativa)</span>
+        <button class="btn btn--link" type="button" id="balance-close">✕</button>
+      </div>
+      <div class="modal__body">
+        <div class="form-row">
+          <label>Línea presupuestaria <span class="required">*</span></label>
+          <select><option>22.01.03 — Insumos oficina</option></select>
+        </div>
+        <div class="form-row">
+          <label>Año fiscal <span class="required">*</span></label>
+          <input type="number" value="2026" />
+        </div>
+        <div class="form-row">
+          <label>Monto estimado SOLPED</label>
+          <input type="text" value="$ 1.250.000" readonly />
+        </div>
+        <div class="info-panel info-panel--ok">
+          Disponible: $ 2.100.000 · Comprometido otros: $ 800.000<br />
+          Saldo proyectado: $ 1.300.000
+        </div>
+        <div class="banner banner--info">
+          Aviso: consulta orientativa — la verificación formal ocurre en Finanzas (paso 1.3).
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--secondary" type="button" id="balance-consult">Consultar</button>
+        <button class="btn btn--primary" type="button" id="balance-close-footer">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { getExpedienteId, renderBreadcrumb, demoAction, initBalancePanel, initModalityToggle } from '../../../shared/form-shell.js';
+
+    const expedienteId = getExpedienteId();
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 1 · SOLPED',
+      stepName: 'Creación de solicitud',
+      stepId: '1.1',
+    });
+
+    initModalityToggle('purchase-modality', 'resolution-row');
+    initBalancePanel({
+      triggerId: 'balance-trigger',
+      modalId: 'balance-modal',
+      closeId: 'balance-close',
+      consultId: 'balance-consult',
+    });
+    document.getElementById('balance-close-footer')?.addEventListener('click', () => {
+      document.getElementById('balance-modal').classList.remove('is-open');
+    });
+
+    document.getElementById('save-draft').addEventListener('click', () => demoAction('createPurchaseRequest'));
+    document.getElementById('submit').addEventListener('click', () => demoAction('submitPurchaseRequest'));
+  </script>
+</body>
+</html>

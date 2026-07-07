@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1.4 — Solicitar financiamiento</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
+
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>SOLPED #1234 — Solicitud de financiamiento presupuestario</span>
+        <span class="badge badge--omitted">Optativo</span>
+      </div>
+      <div class="form-card__body">
+        <div class="form-row">
+          <label>Motivo / justificación <span class="required">*</span></label>
+          <textarea placeholder="Justificación de la solicitud de financiamiento…">Saldo insuficiente en línea 22.01.03 para cubrir el monto estimado de la SOLPED.</textarea>
+        </div>
+
+        <div class="info-panel info-panel--warning">
+          Estado: En trámite — modificación/reasignación presupuesto<br />
+          (proceso externo a Adquisiciones · evento hacia Presupuestos)
+        </div>
+      </div>
+      <div class="form-actions">
+        <a class="btn btn--secondary" id="cancel-link" href="13-verificacion-disponibilidad.html">Cancelar</a>
+        <button class="btn btn--primary" type="button" id="submit">Enviar solicitud</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+
+    const expedienteId = getExpedienteId();
+    const qs = `?expediente=${encodeURIComponent(expedienteId)}`;
+
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 1 · SOLPED',
+      stepName: 'Solicitar financiamiento a DAF',
+      stepId: '1.4',
+    });
+    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
+      kind: 'module',
+      label: 'Presupuestos',
+      mode: 'observado',
+    });
+
+    document.getElementById('cancel-link').href = `13-verificacion-disponibilidad.html${qs}`;
+    document.getElementById('submit').addEventListener('click', () => demoAction('requestBudgetFinancing'));
+  </script>
+</body>
+</html>
