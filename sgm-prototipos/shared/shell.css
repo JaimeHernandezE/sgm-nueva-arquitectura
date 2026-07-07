@@ -22,6 +22,7 @@
 .app-sidebar {
   width: 200px;
   flex-shrink: 0;
+  order: -1;
   position: sticky;
   top: 24px;
   padding: 16px;
@@ -161,12 +162,13 @@
 
 @media (max-width: 768px) {
   .app-layout {
-    flex-direction: column-reverse;
+    flex-direction: column;
     padding: 16px;
   }
 
   .app-sidebar {
     width: 100%;
     position: static;
+    order: -1;
   }
 }
