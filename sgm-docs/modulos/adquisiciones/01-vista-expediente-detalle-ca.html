@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wireframe 01 — Expediente detallado (Compra Ágil)</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f5f5f5;
+      --border: #999999;
+      --border-light: #e5e5e5;
+      --text: #222222;
+      --text-muted: #888888;
+      --text-secondary: #555555;
+
+      --tint-external-bg: #e9f1f8;
+      --tint-external-border: #6b8cae;
+      --tint-external-accent: #33608c;
+
+      --tint-module-bg: #f8ece9;
+      --tint-module-border: #ae6b6b;
+      --tint-module-accent: #8c3333;
+
+      --btn-primary-bg: #555555;
+      --btn-primary-fg: #ffffff;
+      --badge-bg: #e8e8e8;
+      --badge-active-bg: #bbbbbb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .page {
+      max-width: 840px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 18px;
+      margin: 0 0 4px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .demo-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    .demo-panel label { display: flex; align-items: center; gap: 8px; }
+
+    .demo-panel select {
+      padding: 4px 8px;
+      font-size: 13px;
+    }
+
+    .expediente-header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      padding: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .folio {
+      font-family: monospace;
+      font-size: 13px;
+      color: #666666;
+      margin-bottom: 4px;
+    }
+
+    .glosa {
+      font-size: 19px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .meta { font-size: 13px; color: var(--text-secondary); }
+
+    .global-badge {
+      align-self: start;
+      padding: 6px 16px;
+      border-radius: 15px;
+      background: #dddddd;
+      border: 1px solid var(--border);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .stage {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .stage--active { border-color: #333333; border-width: 2px; }
+    .stage--pending {
+      border-style: dashed;
+      border-color: #cccccc;
+      opacity: 0.85;
+    }
+
+    .stage__header {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 16px;
+      background: #efefef;
+      border: none;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      font: inherit;
+      color: inherit;
+    }
+
+    .stage--active .stage__header { background: #e2e2e2; }
+    .stage--pending .stage__header {
+      background: #ffffff;
+      color: #999999;
+    }
+
+    .stage__toggle { font-size: 14px; width: 16px; }
+
+    .stage__title {
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .stage__summary {
+      display: block;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: normal;
+      margin-top: 2px;
+    }
+
+    .stage--pending .stage__summary { color: #bbbbbb; }
+
+    .stage__badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      border: 1px solid #888888;
+      background: var(--badge-bg);
+      white-space: nowrap;
+    }
+
+    .stage__badge--active {
+      background: var(--badge-active-bg);
+      border-color: #444444;
+      color: #111111;
+    }
+
+    .stage--pending .stage__badge {
+      background: #ffffff;
+      border-color: #bbbbbb;
+      color: #999999;
+    }
+
+    .stage__body { padding: 8px 12px 12px; }
+
+    .step {
+      position: relative;
+      padding: 10px 12px 10px 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .step:last-of-type { border-bottom: none; }
+
+    .step--external { background: var(--tint-external-bg); }
+    .step--module { background: var(--tint-module-bg); }
+
+    .step--current {
+      border: 2px solid var(--tint-external-accent);
+      border-radius: 6px;
+      margin: 4px 0;
+    }
+
+    .step--current.step--module {
+      border-color: var(--tint-module-accent);
+    }
+
+    .step--current::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: var(--tint-external-accent);
+      border-radius: 4px 0 0 4px;
+    }
+
+    .step--current.step--module::before {
+      background: var(--tint-module-accent);
+    }
+
+    .step--omitted { opacity: 0.65; }
+    .step--omitted .step__name,
+    .step--omitted .step__responsible { color: #aaaaaa; }
+
+    .step__row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 12px;
+      align-items: start;
+    }
+
+    @media (max-width: 700px) {
+      .step__row { grid-template-columns: 1fr; }
+    }
+
+    .step__name {
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .step__responsible {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .step__action { justify-self: end; }
+
+    .btn {
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+
+    .btn--primary {
+      background: var(--btn-primary-bg);
+      color: var(--btn-primary-fg);
+    }
+
+    .btn--secondary {
+      background: #ffffff;
+      border-color: #777777;
+      color: #333333;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      border: 1px solid #888888;
+      background: var(--badge-bg);
+    }
+
+    .badge--active {
+      background: var(--badge-active-bg);
+      border-color: #444444;
+      color: #111111;
+    }
+
+    .badge--omitted {
+      border-color: #bbbbbb;
+      color: #999999;
+      background: #ffffff;
+    }
+
+    .step__secondary {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #999999;
+    }
+
+    .step--omitted .step__secondary { color: #bbbbbb; }
+
+    .step__pending-condition {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #444444;
+    }
+
+    .origin-chip {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 2px 10px;
+      border-radius: 8px;
+      font-size: 10px;
+      background: #ffffff;
+    }
+
+    .origin-chip--external {
+      border: 1px solid var(--tint-external-border);
+      color: var(--tint-external-accent);
+    }
+
+    .origin-chip--module {
+      border: 1px solid var(--tint-module-border);
+      color: var(--tint-module-accent);
+    }
+
+    .stage__footer {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .stage__note {
+      padding: 0 16px 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .legend {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-light);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .legend__row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .legend__swatch {
+      width: 26px;
+      height: 16px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .legend__swatch--external {
+      background: var(--tint-external-bg);
+      border: 1px solid var(--tint-external-border);
+    }
+
+    .legend__swatch--module {
+      background: var(--tint-module-bg);
+      border: 1px solid var(--tint-module-border);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Wireframe 01 — Vista de Expediente detallada</h1>
+    <p class="subtitle">Compra Ágil · Mockup interactivo para validación del equipo</p>
+
+    <div class="demo-panel">
+      <label>
+        Ver como:
+        <select id="viewer-role">
+          <option value="responsible">Responsable habilitado</option>
+          <option value="other">Otro usuario</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="app"></div>
+
+    <div class="legend">
+      <div class="legend__row">
+        <span>Acciones:</span>
+        <button class="btn btn--primary" type="button" disabled>Completar formulario</button>
+        <span>(acción requerida)</span>
+        <button class="btn btn--secondary" type="button" disabled>Ver formulario</button>
+        <span>(consulta)</span>
+        <span class="badge">Badge</span>
+        <span>(estado)</span>
+      </div>
+      <div class="legend__row">
+        <span class="legend__swatch legend__swatch--external"></span>
+        <span>Plataforma externa (azul) — SGM refleja, nunca escribe hacia MP, FirmaGob, Contraloría…</span>
+      </div>
+      <div class="legend__row">
+        <span class="legend__swatch legend__swatch--module"></span>
+        <span>Módulo SGM (rojizo) — borde hacia Presupuestos, Contabilidad, Tesorería… según §3.5 de la ficha</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const expediente = {
+      id: 'ADQ-2026-00123',
+      glosa: '[Nombre / glosa de la compra]',
+      modality: 'Compra Ágil',
+      unit: '[Unidad Solicitante]',
+      globalStatus: 'En curso — etapa 3 de 5',
+    };
+
+    const stages = [
+      {
+        id: 1,
+        name: 'SOLPED',
+        status: 'Finalizada',
+        summary: '6 sub-pasos · 5 ejecutados · 1 omitido',
+        expanded: true,
+        state: 'done',
+        totalTime: 'Total etapa: 2 d 6 h (24-06 → 26-06)',
+        steps: [
+          {
+            id: '1.1',
+            name: 'Creación de solicitud',
+            responsible: { unit: 'Unidad Solicitante', role: 'Usuario', name: 'Juan Astorga' },
+            status: 'done',
+            action: { type: 'secondary', label: 'Ver formulario' },
+            secondaryLine: 'Tiempo transcurrido: 0 d 3 h · Última modificación: 24-06-2026',
+          },
+          {
+            id: '1.2',
+            name: 'Visto bueno de jefatura',
+            responsible: { unit: 'Unidad Solicitante', role: 'Aprobador', name: 'María Rojas' },
+            status: 'done',
+            action: { type: 'secondary', label: 'Ver aprobación' },
+            secondaryLine: 'Tiempo transcurrido: 1 d 2 h · Última modificación: 25-06-2026',
+          },
+          {
+            id: '1.3',
+            name: 'Verificación de disponibilidad presupuestaria',
+            responsible: { unit: 'DAF Finanzas', role: 'Usuario', name: 'Carla Fuentes' },
+            status: 'done',
+            action: { type: 'badge', label: 'Finalizado' },
+            secondaryLine: 'Tiempo transcurrido: 0 d 5 h · Última modificación: 25-06-2026',
+            origin: { kind: 'module', label: 'Presupuestos', mode: 'dependencia' },
+            borderModules: ['Presupuestos'],
+          },
+          {
+            id: '1.4',
+            name: 'Solicitar financiamiento a DAF',
+            responsible: { unit: 'Unidad Solicitante', role: 'Usuario', name: '—' },
+            status: 'omitted',
+            action: { type: 'badge', label: 'Omitido (optativo)' },
+            secondaryLine: 'No requerido: disponibilidad verificada en 1.3',
+            omitted: true,
+          },
+          {
+            id: '1.5',
+            name: 'Emisión de CDP firmado',
+            responsible: { unit: 'DAF Finanzas', role: 'Aprobador', name: 'Pedro Soto' },
+            status: 'done',
+            action: { type: 'secondary', label: 'Ver CDP' },
+            secondaryLine: 'Tiempo transcurrido: 1 d 0 h · Última modificación: 26-06-2026 · Firmado vía FirmaGob',
+          },
+          {
+            id: '1.6',
+            name: 'Generación de preobligación',
+            responsible: { unit: 'DAF Finanzas', role: 'Usuario', name: 'Carla Fuentes' },
+            status: 'done',
+            action: { type: 'badge', label: 'Finalizado' },
+            secondaryLine: 'Tiempo transcurrido: 0 d 1 h · Última modificación: 26-06-2026 · Monto preobligado: $[monto] · También: Contabilidad',
+            origin: { kind: 'module', label: 'Presupuestos', mode: 'dependencia', also: ['Contabilidad'] },
+            borderModules: ['Presupuestos', 'Contabilidad'],
+          },
+        ],
+      },
+      {
+        id: 2,
+        name: 'Modalidad de Compra',
+        status: 'Finalizada',
+        summary: 'Compra Ágil ratificada (gateway OK) · Vinculada a MP · ID Cotización: 4021-33-COT26 · Total etapa: 0 d 4 h',
+        expanded: true,
+        state: 'done',
+        totalTime: 'Total etapa: 0 d 4 h (26-06 → 27-06)',
+        steps: [
+          {
+            id: '2.1',
+            name: 'Ratificación o selección de modalidad',
+            responsible: { unit: 'DAF Finanzas', role: 'Usuario', name: 'Carla Fuentes' },
+            status: 'done',
+            action: { type: 'secondary', label: 'Ver decisión' },
+            secondaryLine: 'Tiempo transcurrido: 0 d 2 h · 26-06-2026 · Compra Ágil ratificada (gateway V1–V8 OK) · CaseStep de etapa 3 instanciados',
+          },
+          {
+            id: '2.2',
+            name: 'Aprobación de modalidad por jefatura',
+            responsible: { unit: 'DAF Finanzas', role: 'Aprobador', name: '—' },
+            status: 'omitted',
+            action: { type: 'badge', label: 'Omitido (optativo)' },
+            secondaryLine: 'No requerido en piloto Compra Ágil — sub-paso pendiente de ratificación DM',
+            omitted: true,
+          },
+          {
+            id: '2.3',
+            name: 'Vinculación del proceso en Mercado Público',
+            responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+            status: 'done',
+            action: { type: 'secondary', label: 'Ver vínculo MP' },
+            secondaryLine: 'Tiempo transcurrido: 0 d 2 h · 27-06-2026 · ID Cotización: 4021-33-COT26 · SOLPED bloqueada «En proceso de cotización»',
+            origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+          },
+        ],
+      },
+      {
+        id: 3,
+        name: 'Resolución de Compra',
+        status: 'En curso',
+        expanded: true,
+        state: 'active',
+        note: 'Caminos alternativos 3.5 (rechazo de OC) y 3.6 (proceso desierto): no se listan como pendientes — aparecen en el timeline solo si ocurren.',
+        steps: [
+          {
+            id: '3.1',
+            name: 'Período de cotización',
+            responsible: { unit: 'Mercado Público', role: '—', name: '(proceso externo)' },
+            status: 'done',
+            action: { type: 'badge', label: 'Finalizado' },
+            secondaryLine: 'Tiempo transcurrido: 3 d 0 h · Cierre: 30-06-2026 · 4 cotizaciones recibidas (1ª ronda MiPyme)',
+            origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+          },
+          {
+            id: '3.2',
+            name: 'Cierre y selección de oferta',
+            responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+            status: 'done',
+            action: { type: 'secondary', label: 'Ver selección' },
+            secondaryLine: 'Tiempo transcurrido: 0 d 6 h · 01-07-2026 · Registro manual (modo degradado) — MP prevalece si difiere',
+            origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+          },
+          {
+            id: '3.3',
+            name: 'Emisión de la OC',
+            responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+            status: 'done',
+            action: { type: 'secondary', label: 'Ver OC' },
+            secondaryLine: 'Tiempo transcurrido: 0 d 2 h · 02-07-2026 · OC N° 4021-33-SE26 · Habilidad revalidada',
+            origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+          },
+          {
+            id: '3.4',
+            name: 'Aceptación de la OC',
+            responsible: { unit: 'Proveedor (MP)', role: 'Externo', name: 'Comercial Sur SpA' },
+            status: 'in_progress',
+            current: true,
+            action: { type: 'badge', label: 'En curso' },
+            secondaryLine: 'Tiempo transcurrido: 5 d 1 h (desde emisión de OC)',
+            pendingCondition: 'Condición pendiente: lectura MP «OC Aceptada» (confirmada) → gatilla Compromiso Cierto por monto real',
+            origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+          },
+        ],
+      },
+      {
+        id: 4,
+        name: 'Recepción Conforme',
+        status: 'Pendiente',
+        summary: 'Responsable previsto: Bodega / Unidad Solicitante · Perfil: bien físico, entrega única',
+        expanded: true,
+        state: 'pending',
+        note: 'Perfil de recepción: bien físico, entrega única. Camino 4.5 (no conforme) no se lista como pendiente — aparece solo si hay rechazo.',
+        steps: [
+          {
+            id: '4.1',
+            name: 'Registro de la recepción',
+            responsible: { unit: 'Bodega', role: 'Usuario', name: 'Ana Pérez' },
+            status: 'pending',
+            action: { type: 'primary', label: 'Registrar recepción' },
+            secondaryLine: 'Pendiente de entrega del proveedor · Contra líneas de OC N° 4021-33-SE26',
+          },
+          {
+            id: '4.2',
+            name: 'Verificación de conformidad',
+            responsible: { unit: 'Unidad Solicitante', role: 'Aprobador', name: 'Juan Astorga' },
+            status: 'pending',
+            action: { type: 'badge', label: 'Pendiente' },
+            secondaryLine: 'Requiere recepción registrada (4.1) · Doble conformidad: unidad requirente valida entrega de Bodega',
+          },
+          {
+            id: '4.3',
+            name: 'Alta en inventario / activo fijo',
+            responsible: { unit: 'Bodega', role: 'Usuario', name: 'Ana Pérez' },
+            status: 'pending',
+            action: { type: 'badge', label: 'Pendiente' },
+            secondaryLine: 'Condicional (optativo): solo bienes físicos aceptados · Proveedor de inventario por configurar',
+          },
+          {
+            id: '4.4',
+            name: 'Devengado',
+            responsible: { unit: 'Contabilidad', role: 'N/A', name: '(automático)' },
+            status: 'pending',
+            action: { type: 'badge', label: 'Pendiente' },
+            secondaryLine: 'Gatillado por conformidad (4.2) · Contra compromiso de 3.4 · Arranca reloj legal de pago (30 días)',
+            origin: { kind: 'module', label: 'Contabilidad', mode: 'dependencia' },
+            borderModules: ['Contabilidad'],
+          },
+        ],
+      },
+      {
+        id: 5,
+        name: 'Pago',
+        status: 'Pendiente',
+        summary: 'Etapa observada · Tesorería · El reloj legal de pago (30 días) se mostrará aquí al recibirse la factura',
+        expanded: true,
+        state: 'pending',
+        note: 'Etapa observada — los sub-pasos reflejan eventos de Contabilidad y Tesorería; el reloj legal de pago (30 días) se activa al recibirse la factura.',
+        steps: [
+          {
+            id: '5.1',
+            name: 'Cruce de 3 vías (Match)',
+            responsible: { unit: 'Contabilidad', role: 'N/A', name: '(automático)' },
+            status: 'pending',
+            action: { type: 'badge', label: 'Pendiente' },
+            secondaryLine: 'Requiere OC (MP) + recepción conforme (SGM) + factura (SII) · También: Contabilidad',
+            origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+          },
+          {
+            id: '5.2',
+            name: 'Registro de Devengado',
+            responsible: { unit: 'Contabilidad', role: 'Aprobador', name: '—' },
+            status: 'pending',
+            action: { type: 'badge', label: 'Pendiente' },
+            secondaryLine: 'Requiere match validado (5.1)',
+            origin: { kind: 'module', label: 'Contabilidad', mode: 'dependencia' },
+            borderModules: ['Contabilidad'],
+          },
+          {
+            id: '5.3',
+            name: 'Generación de Decreto de Pago',
+            responsible: { unit: 'Contabilidad', role: 'Aprobador', name: '—' },
+            status: 'pending',
+            action: { type: 'badge', label: 'Pendiente' },
+            secondaryLine: 'Requiere devengado registrado (5.2) · Firma vía FirmaGob al emitir',
+          },
+          {
+            id: '5.4',
+            name: 'Ejecución del pago',
+            responsible: { unit: 'Tesorería', role: 'Aprobador', name: '—' },
+            status: 'pending',
+            action: { type: 'badge', label: 'Pendiente' },
+            secondaryLine: 'Plazo legal: 30 días corridos desde factura',
+            origin: { kind: 'module', label: 'Tesorería', mode: 'observado' },
+            borderModules: ['Tesorería'],
+          },
+        ],
+      },
+    ];
+
+    function resolveOrigin(step) {
+      if (step.origin?.kind === 'external') {
+        return { tint: 'external', chip: `${step.origin.label} · ${step.origin.mode}` };
+      }
+      if (step.origin?.kind === 'module') {
+        return { tint: 'module', chip: `${step.origin.label} · ${step.origin.mode}` };
+      }
+      return { tint: null, chip: null };
+    }
+
+    function formatResponsible(r) {
+      return `${r.unit} / ${r.role} / ${r.name}`;
+    }
+
+    function resolveAction(step, viewerRole) {
+      if (step.action?.type === 'primary' && viewerRole === 'other') {
+        return { type: 'badge', label: 'En curso', active: true };
+      }
+      return step.action;
+    }
+
+    function renderAction(action) {
+      if (!action) return '';
+      if (action.type === 'primary') {
+        return `<button class="btn btn--primary" type="button">${action.label}</button>`;
+      }
+      if (action.type === 'secondary') {
+        return `<button class="btn btn--secondary" type="button">${action.label}</button>`;
+      }
+      const classes = ['badge'];
+      if (action.active) classes.push('badge--active');
+      if (action.label === 'Omitido (optativo)') classes.push('badge--omitted');
+      return `<span class="${classes.join(' ')}">${action.label}</span>`;
+    }
+
+    function renderStep(step, viewerRole) {
+      const origin = resolveOrigin(step);
+      const action = resolveAction(step, viewerRole);
+      const classes = ['step'];
+      if (origin.tint === 'external') classes.push('step--external');
+      if (origin.tint === 'module') classes.push('step--module');
+      if (step.current) classes.push('step--current');
+      if (step.omitted) classes.push('step--omitted');
+
+      const chipClass = origin.tint === 'module' ? 'origin-chip--module' : 'origin-chip--external';
+
+      return `
+        <div class="${classes.join(' ')}">
+          <div class="step__row">
+            <div class="step__name">${step.id} — ${step.name}</div>
+            <div class="step__responsible">${formatResponsible(step.responsible)}</div>
+            <div class="step__action">${renderAction(action)}</div>
+          </div>
+          <div class="step__secondary">${step.secondaryLine || ''}</div>
+          ${step.pendingCondition ? `<div class="step__pending-condition">${step.pendingCondition}</div>` : ''}
+          ${origin.chip ? `<span class="origin-chip ${chipClass}">${origin.chip}</span>` : ''}
+        </div>
+      `;
+    }
+
+    function renderStage(stage, viewerRole) {
+      const stageClasses = ['stage'];
+      if (stage.state === 'active') stageClasses.push('stage--active');
+      if (stage.state === 'pending') stageClasses.push('stage--pending');
+
+      const badgeClasses = ['stage__badge'];
+      if (stage.state === 'active') badgeClasses.push('stage__badge--active');
+
+      const isExpanded = stage.expanded;
+      const steps = stage.steps;
+
+      return `
+        <section class="${stageClasses.join(' ')}">
+          <button class="stage__header" type="button" data-stage="${stage.id}" aria-expanded="${isExpanded}">
+            <span class="stage__toggle">${isExpanded ? '▾' : '▸'}</span>
+            <span>
+              <span class="stage__title">${stage.id} · ${stage.name}</span>
+              ${!isExpanded && stage.summary ? `<span class="stage__summary">${stage.summary}</span>` : ''}
+            </span>
+            <span class="${badgeClasses.join(' ')}">${stage.status}</span>
+          </button>
+          ${isExpanded ? `
+            <div class="stage__body">
+              ${steps.map((s) => renderStep(s, viewerRole)).join('')}
+            </div>
+            ${stage.totalTime ? `<div class="stage__footer">${stage.totalTime}</div>` : ''}
+            ${stage.note ? `<div class="stage__note">${stage.note}</div>` : ''}
+          ` : ''}
+        </section>
+      `;
+    }
+
+    function render(viewerRole) {
+      const header = `
+        <header class="expediente-header">
+          <div>
+            <div class="folio">${expediente.id}</div>
+            <div class="glosa">${expediente.glosa}</div>
+            <div class="meta">Modalidad: ${expediente.modality} · Unidad de origen: ${expediente.unit}</div>
+          </div>
+          <div class="global-badge">${expediente.globalStatus}</div>
+        </header>
+      `;
+
+      const stagesHtml = stages.map((s) => renderStage(s, viewerRole)).join('');
+      document.getElementById('app').innerHTML = header + stagesHtml;
+
+      document.querySelectorAll('.stage__header').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const id = Number(btn.dataset.stage);
+          const stage = stages.find((s) => s.id === id);
+          if (stage) {
+            stage.expanded = !stage.expanded;
+            render(viewerRole);
+          }
+        });
+      });
+    }
+
+    document.getElementById('viewer-role').addEventListener('change', (e) => {
+      render(e.target.value);
+    });
+
+    render('responsible');
+  </script>
+</body>
+</html>
