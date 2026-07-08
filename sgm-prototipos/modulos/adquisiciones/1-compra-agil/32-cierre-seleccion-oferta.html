@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3.2 — Cierre y selección de oferta</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
+
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>SOLPED #1234 — Cierre y selección de oferta</span>
+        <span class="badge badge--active" id="header-badge">Pendiente</span>
+      </div>
+      <div class="form-card__body">
+        <div class="info-panel">
+          <strong>Período de cotización — solo lectura</strong><br />
+          Cerrado: 30-06-2026 · 4 cotizaciones recibidas (demo)
+        </div>
+
+        <div class="form-row">
+          <label>RUT proveedor seleccionado <span class="required">*</span></label>
+          <input type="text" id="provider-rut" value="76.123.456-7" />
+        </div>
+        <div class="form-row">
+          <label>Nombre proveedor seleccionado <span class="required">*</span></label>
+          <input type="text" id="provider-name" value="Comercial Sur SpA" />
+        </div>
+        <div class="form-row">
+          <label>Monto ofertado (CLP) <span class="required">*</span></label>
+          <input type="text" id="offered-amount" value="1240000" />
+        </div>
+
+        <div class="form-row">
+          <label>
+            <input type="checkbox" id="lowest-price" style="width:auto;display:inline-block;margin-right:6px;" checked />
+            ¿Es la oferta de menor precio?
+          </label>
+        </div>
+
+        <div class="form-row hidden" id="justification-row">
+          <label>Justificación (obligatoria si NO es la de menor precio) <span class="required">*</span></label>
+          <textarea id="justification" placeholder="Motivo por el que no se eligió la oferta de menor precio…"></textarea>
+        </div>
+
+        <div class="banner banner--info">
+          Modo de registro: <strong>Manual (modo degradado)</strong> — MP prevalece si la lectura llega después y difiere.
+        </div>
+
+        <div class="info-panel hidden" id="next-step-panel">
+          Selección confirmada.
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.3</a>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn--secondary" type="button" id="cancel">Cancelar</button>
+        <button class="btn btn--primary" type="button" id="confirm">Confirmar selección</button>
+      </div>
+    </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+
+  <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+
+    const expedienteId = getExpedienteId();
+    const qs = `?expediente=${encodeURIComponent(expedienteId)}`;
+
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 3 · Resolución de Compra',
+      stepName: 'Cierre y selección de oferta',
+      stepId: '3.2',
+    });
+
+    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
+      kind: 'external',
+      label: 'Mercado Público',
+      mode: 'solo lectura',
+    });
+
+    const rutInput = document.getElementById('provider-rut');
+    const nameInput = document.getElementById('provider-name');
+    const amountInput = document.getElementById('offered-amount');
+    const lowestPriceCheck = document.getElementById('lowest-price');
+    const justificationRow = document.getElementById('justification-row');
+    const justification = document.getElementById('justification');
+    const cancelBtn = document.getElementById('cancel');
+    const confirmBtn = document.getElementById('confirm');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepLink = document.getElementById('next-step-link');
+
+    nextStepLink.href = `33-emision-oc.html${qs}`;
+
+    function toggleJustification() {
+      justificationRow.classList.toggle('hidden', lowestPriceCheck.checked);
+    }
+    lowestPriceCheck.addEventListener('change', toggleJustification);
+    toggleJustification();
+
+    cancelBtn.addEventListener('click', () => {
+      window.location.href = getExpedienteUrl(expedienteId);
+    });
+
+    confirmBtn.addEventListener('click', () => {
+      if (!rutInput.value.trim() || !nameInput.value.trim() || !amountInput.value.trim()) {
+        alert('Complete RUT, nombre y monto (demo).');
+        return;
+      }
+      if (!lowestPriceCheck.checked && !justification.value.trim()) {
+        alert('Justificación obligatoria si no es la oferta de menor precio (demo).');
+        return;
+      }
+      demoAction('recordQuotationResult');
+      document.getElementById('header-badge').textContent = 'Confirmada';
+      [rutInput, nameInput, amountInput, lowestPriceCheck, justification, confirmBtn].forEach((el) => { el.disabled = true; });
+      nextStepPanel.classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>

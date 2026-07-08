@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3.5 — Rechazo de la OC</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
+
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>SOLPED #1234 — Rechazo de la OC</span>
+        <span class="badge badge--active">Rechazada</span>
+      </div>
+      <div class="form-card__body">
+        <div class="info-panel">
+          <strong>OC rechazada — registro manual (modo degradado)</strong><br />
+          OC N° 4021-33-SE26 · Proveedor: Comercial Sur SpA
+        </div>
+
+        <div class="form-row">
+          <label>Motivo (si MP lo trae)</label>
+          <input type="text" id="reason" placeholder="Motivo del rechazo…" />
+        </div>
+
+        <h3 style="font-size:14px;margin:16px 0 8px;">Tarea de decisión</h3>
+        <div class="form-row">
+          <label>
+            <input type="radio" name="decision" value="reselect" style="width:auto;display:inline-block;margin-right:6px;" checked />
+            Emitir OC a la segunda mejor oferta
+          </label>
+          <label>
+            <input type="radio" name="decision" value="cancel" style="width:auto;display:inline-block;margin-right:6px;" />
+            Cancelar y republicar (nueva cotización, re-vinculación 2.3)
+          </label>
+        </div>
+      </div>
+      <div class="form-actions">
+        <span></span>
+        <button class="btn btn--primary" type="button" id="continue">Continuar con la decisión</button>
+      </div>
+    </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+
+  <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner } from '../../../shared/form-shell.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+
+    const expedienteId = getExpedienteId();
+    const qs = `?expediente=${encodeURIComponent(expedienteId)}`;
+
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 3 · Resolución de Compra',
+      stepName: 'Rechazo de la OC',
+      stepId: '3.5',
+    });
+
+    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
+      kind: 'external',
+      label: 'Mercado Público',
+      mode: 'solo lectura',
+    });
+
+    document.getElementById('continue').addEventListener('click', () => {
+      const decision = document.querySelector('input[name="decision"]:checked').value;
+      if (decision === 'reselect') {
+        window.location.href = `32-cierre-seleccion-oferta.html${qs}`;
+      } else {
+        window.location.href = `../procesos-transversales/23-vinculacion-mp.html${qs}`;
+      }
+    });
+  </script>
+</body>
+</html>

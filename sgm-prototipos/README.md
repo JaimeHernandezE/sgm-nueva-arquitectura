@@ -74,8 +74,11 @@ sgm-prototipos/
         ├── index.html                  # Bienvenida del módulo
         ├── 01-listado-expedientes.html # Listado (4 modalidades)
         ├── 00-expediente/              # Detalle (wireframe 01)
-        └── 1-compra-agil/              # Formularios NN-nombre.html
+        ├── procesos-transversales/     # Etapas 1, 2, 4, 5 — comunes a las 4 modalidades
+        └── 1-compra-agil/              # (aún vacía) etapa 3, específica de Compra Ágil
 ```
+
+La carpeta de cada prototipo **espeja** la de `sgm-docs/modulos/adquisiciones/`: los formularios de una etapa transversal (SOLPED, Modalidad de Compra, Recepción Conforme, Pago) viven en `procesos-transversales/`, aunque el piloto solo ejercite el camino de Compra Ágil; los formularios de una etapa específica de modalidad (Resolución de Compra) viven en la carpeta de esa modalidad (`1-compra-agil/`, `2-convenio-marco/`, etc.).
 
 ## Convención de numeración
 
