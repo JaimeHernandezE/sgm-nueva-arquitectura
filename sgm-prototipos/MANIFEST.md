@@ -44,7 +44,7 @@ Antes de modificar un sub-paso `N.M`:
 
 | stepId | Wireframe | Prototipo | Operaciones principales |
 |---|---|---|---|
-| 1.1 | `sgm-docs/.../wireframes/11-creacion-solped.md` | `1-compra-agil/11-creacion-solped.html` | `createPurchaseRequest`, `submitPurchaseRequest`, `previewBudgetAvailability` |
+| 1.1 | `sgm-docs/.../wireframes/11-creacion-solped.md` | `procesos-transversales/11-creacion-solped.html` | `createPurchaseRequest`, `submitPurchaseRequest`, `previewBudgetAvailability` |
 | 1.2 | `12-visto-bueno-jefatura.md` | `12-visto-bueno-jefatura.html` | `approvePurchaseRequest`, `rejectPurchaseRequest` |
 | 1.3 | `13-verificacion-disponibilidad.md` | `13-verificacion-disponibilidad.html` | `verifyBudgetAvailability` |
 | 1.4 | `16-solicitar-financiamiento.md` | `16-solicitar-financiamiento.html` | `requestBudgetFinancing` |
@@ -57,9 +57,9 @@ Ficha transversal: [`sgm-docs/modulos/adquisiciones/procesos-transversales/1-sol
 
 | stepId | Wireframe | Prototipo | Operaciones principales |
 |---|---|---|---|
-| 2.1 | `21-ratificacion-modalidad.md` | `1-compra-agil/21-ratificacion-modalidad.html` | `confirmProcurementModality` (dependencias: `getUtmValue`, `checkCatalogAvailability`) |
-| 2.2 | `22-aprobacion-jefatura.md` | `1-compra-agil/22-aprobacion-jefatura.html` | `approveModalityDecision`, `rejectModalityDecision` — condicional a `ModalityDecision.requires_jefatura_approval` (marcado en 2.1); existencia formal pendiente de ratificar con la DM (**[PENDIENTE P-38]**) |
-| 2.3 | `23-vinculacion-mp.md` | `1-compra-agil/23-vinculacion-mp.html` | `linkMpProcess` (dependencia: `readMpProcess`) |
+| 2.1 | `21-ratificacion-modalidad.md` | `procesos-transversales/21-ratificacion-modalidad.html` | `confirmProcurementModality` (dependencias: `getUtmValue`, `checkCatalogAvailability`) |
+| 2.2 | `22-aprobacion-jefatura.md` | `procesos-transversales/22-aprobacion-jefatura.html` | `approveModalityDecision`, `rejectModalityDecision` — condicional a `ModalityDecision.requires_jefatura_approval` (marcado en 2.1); existencia formal pendiente de ratificar con la DM (**[PENDIENTE P-38]**) |
+| 2.3 | `23-vinculacion-mp.md` | `procesos-transversales/23-vinculacion-mp.html` | `linkMpProcess` (dependencia: `readMpProcess`) |
 
 Ficha transversal: [`sgm-docs/modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md`](../sgm-docs/modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md)
 

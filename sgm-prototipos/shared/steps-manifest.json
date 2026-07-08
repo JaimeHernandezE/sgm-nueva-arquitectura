@@ -11,8 +11,8 @@
       "stepName": "Creación de solicitud",
       "wireframeSpec": "sgm-docs/modulos/adquisiciones/wireframes/11-creacion-solped.md",
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md",
-      "prototypeHtml": "modulos/adquisiciones/1-compra-agil/11-creacion-solped.html",
-      "formPath": "../1-compra-agil/11-creacion-solped.html",
+      "prototypeHtml": "modulos/adquisiciones/procesos-transversales/11-creacion-solped.html",
+      "formPath": "../procesos-transversales/11-creacion-solped.html",
       "operations": ["createPurchaseRequest", "submitPurchaseRequest", "previewBudgetAvailability"],
       "origin": null
     },
@@ -22,8 +22,8 @@
       "stepName": "Visto bueno de jefatura",
       "wireframeSpec": "sgm-docs/modulos/adquisiciones/wireframes/12-visto-bueno-jefatura.md",
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md",
-      "prototypeHtml": "modulos/adquisiciones/1-compra-agil/12-visto-bueno-jefatura.html",
-      "formPath": "../1-compra-agil/12-visto-bueno-jefatura.html",
+      "prototypeHtml": "modulos/adquisiciones/procesos-transversales/12-visto-bueno-jefatura.html",
+      "formPath": "../procesos-transversales/12-visto-bueno-jefatura.html",
       "operations": ["approvePurchaseRequest", "rejectPurchaseRequest", "previewBudgetAvailability"],
       "origin": null
     },
@@ -33,8 +33,8 @@
       "stepName": "Verificación de disponibilidad presupuestaria",
       "wireframeSpec": "sgm-docs/modulos/adquisiciones/wireframes/13-verificacion-disponibilidad.md",
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md",
-      "prototypeHtml": "modulos/adquisiciones/1-compra-agil/13-verificacion-disponibilidad.html",
-      "formPath": "../1-compra-agil/13-verificacion-disponibilidad.html",
+      "prototypeHtml": "modulos/adquisiciones/procesos-transversales/13-verificacion-disponibilidad.html",
+      "formPath": "../procesos-transversales/13-verificacion-disponibilidad.html",
       "operations": ["verifyBudgetAvailability"],
       "origin": { "kind": "module", "label": "Presupuestos", "mode": "dependencia" }
     },
@@ -44,8 +44,8 @@
       "stepName": "Solicitar financiamiento a DAF",
       "wireframeSpec": "sgm-docs/modulos/adquisiciones/wireframes/16-solicitar-financiamiento.md",
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md",
-      "prototypeHtml": "modulos/adquisiciones/1-compra-agil/16-solicitar-financiamiento.html",
-      "formPath": "../1-compra-agil/16-solicitar-financiamiento.html",
+      "prototypeHtml": "modulos/adquisiciones/procesos-transversales/16-solicitar-financiamiento.html",
+      "formPath": "../procesos-transversales/16-solicitar-financiamiento.html",
       "operations": ["requestBudgetFinancing"],
       "origin": { "kind": "module", "label": "Presupuestos", "mode": "observado" }
     },
@@ -55,8 +55,8 @@
       "stepName": "Emisión de CDP firmado",
       "wireframeSpec": "sgm-docs/modulos/adquisiciones/wireframes/14-emision-cdp.md",
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md",
-      "prototypeHtml": "modulos/adquisiciones/1-compra-agil/14-emision-cdp.html",
-      "formPath": "../1-compra-agil/14-emision-cdp.html",
+      "prototypeHtml": "modulos/adquisiciones/procesos-transversales/14-emision-cdp.html",
+      "formPath": "../procesos-transversales/14-emision-cdp.html",
       "operations": ["issueBudgetAvailabilityCertificate", "registerScannedBudgetAvailabilityCertificate"],
       "origin": { "kind": "module", "label": "Presupuestos", "mode": "dependencia" }
     },
@@ -66,8 +66,8 @@
       "stepName": "Generación de preobligación",
       "wireframeSpec": "sgm-docs/modulos/adquisiciones/wireframes/15-preobligacion.md",
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md",
-      "prototypeHtml": "modulos/adquisiciones/1-compra-agil/15-preobligacion.html",
-      "formPath": "../1-compra-agil/15-preobligacion.html",
+      "prototypeHtml": "modulos/adquisiciones/procesos-transversales/15-preobligacion.html",
+      "formPath": "../procesos-transversales/15-preobligacion.html",
       "operations": ["createBudgetPreCommitment"],
       "origin": { "kind": "module", "label": "Presupuestos", "mode": "dependencia" }
     },
@@ -77,8 +77,8 @@
       "stepName": "Ratificación o selección de modalidad",
       "wireframeSpec": "sgm-docs/modulos/adquisiciones/wireframes/21-ratificacion-modalidad.md",
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md",
-      "prototypeHtml": "modulos/adquisiciones/1-compra-agil/21-ratificacion-modalidad.html",
-      "formPath": "../1-compra-agil/21-ratificacion-modalidad.html",
+      "prototypeHtml": "modulos/adquisiciones/procesos-transversales/21-ratificacion-modalidad.html",
+      "formPath": "../procesos-transversales/21-ratificacion-modalidad.html",
       "operations": ["confirmProcurementModality"],
       "origin": null
     },
@@ -88,8 +88,8 @@
       "stepName": "Aprobación de modalidad por jefatura",
       "wireframeSpec": "sgm-docs/modulos/adquisiciones/wireframes/22-aprobacion-jefatura.md",
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md",
-      "prototypeHtml": "modulos/adquisiciones/1-compra-agil/22-aprobacion-jefatura.html",
-      "formPath": "../1-compra-agil/22-aprobacion-jefatura.html",
+      "prototypeHtml": "modulos/adquisiciones/procesos-transversales/22-aprobacion-jefatura.html",
+      "formPath": "../procesos-transversales/22-aprobacion-jefatura.html",
       "operations": ["approveModalityDecision", "rejectModalityDecision"],
       "origin": null
     },
@@ -99,8 +99,8 @@
       "stepName": "Vinculación del proceso en Mercado Público",
       "wireframeSpec": "sgm-docs/modulos/adquisiciones/wireframes/23-vinculacion-mp.md",
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md",
-      "prototypeHtml": "modulos/adquisiciones/1-compra-agil/23-vinculacion-mp.html",
-      "formPath": "../1-compra-agil/23-vinculacion-mp.html",
+      "prototypeHtml": "modulos/adquisiciones/procesos-transversales/23-vinculacion-mp.html",
+      "formPath": "../procesos-transversales/23-vinculacion-mp.html",
       "operations": ["linkMpProcess"],
       "origin": { "kind": "external", "label": "Mercado Público", "mode": "solo lectura" }
     }
