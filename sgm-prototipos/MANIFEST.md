@@ -53,6 +53,16 @@ Antes de modificar un sub-paso `N.M`:
 
 Ficha transversal: [`sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md`](../sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md)
 
+## Etapa 2 — Modalidad de Compra (transversal a las 4 modalidades)
+
+| stepId | Wireframe | Prototipo | Operaciones principales |
+|---|---|---|---|
+| 2.1 | `21-ratificacion-modalidad.md` | `1-compra-agil/21-ratificacion-modalidad.html` | `confirmProcurementModality` (dependencias: `getUtmValue`, `checkCatalogAvailability`) |
+
+Ficha transversal: [`sgm-docs/modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md`](../sgm-docs/modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md)
+
+Pendiente: 2.2 (aprobación de jefatura, condicionada a **[PENDIENTE P-38]**) y 2.3 (vinculación MP) aún no tienen prototipo HTML.
+
 Shell expediente: [`modulos/adquisiciones/00-expediente/index.html`](./modulos/adquisiciones/00-expediente/index.html)
 
 Listado: [`modulos/adquisiciones/01-listado-expedientes.html`](./modulos/adquisiciones/01-listado-expedientes.html)

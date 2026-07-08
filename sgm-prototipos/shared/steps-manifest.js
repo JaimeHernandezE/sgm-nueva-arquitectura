@@ -72,5 +72,16 @@ export default {
       operations: ['createBudgetPreCommitment'],
       origin: { kind: 'module', label: 'Presupuestos', mode: 'dependencia' },
     },
+    {
+      stepId: '2.1',
+      stageName: 'Modalidad de Compra',
+      stepName: 'Ratificación o selección de modalidad',
+      wireframeSpec: 'sgm-docs/modulos/adquisiciones/wireframes/21-ratificacion-modalidad.md',
+      processFicha: 'sgm-docs/modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md',
+      prototypeHtml: 'modulos/adquisiciones/1-compra-agil/21-ratificacion-modalidad.html',
+      formPath: '../1-compra-agil/21-ratificacion-modalidad.html',
+      operations: ['confirmProcurementModality'],
+      origin: null,
+    },
   ],
 };
