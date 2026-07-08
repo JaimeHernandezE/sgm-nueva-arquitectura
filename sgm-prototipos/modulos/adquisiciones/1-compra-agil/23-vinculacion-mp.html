@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2.3 — Vinculación con Mercado Público</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
+
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>SOLPED #1234 — Vinculación con Mercado Público</span>
+        <span class="badge badge--active" id="header-badge">Pendiente vinculación</span>
+      </div>
+      <div class="form-card__body">
+        <div class="info-panel">
+          <strong>Decisión de modalidad — solo lectura</strong><br />
+          Modalidad confirmada: <strong>Compra Ágil</strong> · Gateway V1–V8: OK
+        </div>
+
+        <p>
+          <button class="btn btn--secondary" type="button" id="deep-link-btn">Gestionar en MP</button>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Deep link — navegación pura, sin escritura API (ver <code>integracion-mercado-publico.md</code>)</span>
+        </p>
+
+        <div class="form-row">
+          <label>Código / ID del proceso en Mercado Público <span class="required">*</span></label>
+          <input type="text" id="mp-code" value="4021-33-COT26" />
+        </div>
+
+        <div class="form-row">
+          <label>Simular resultado de validación <em>(solo demo — no existe en la ficha)</em></label>
+          <select id="simulate-result">
+            <option value="ok" selected>OK — vincula correctamente</option>
+            <option value="not_found">MP_PROCESS_NOT_FOUND</option>
+            <option value="organism_mismatch">MP_PROCESS_ORGANISM_MISMATCH</option>
+            <option value="type_mismatch">MP_PROCESS_TYPE_MISMATCH</option>
+            <option value="already_linked">MP_PROCESS_ALREADY_LINKED</option>
+            <option value="provider_unavailable">MP_PROVIDER_UNAVAILABLE</option>
+          </select>
+        </div>
+
+        <div class="banner hidden" id="result-banner"></div>
+
+        <div class="info-panel hidden" id="next-step-panel">
+          Vínculo registrado. SOLPED bloqueada «En proceso de cotización» — arranca la sincronización de estados MP.<br />
+          Etapa 3 (Resolución de Compra) aún no tiene prototipo HTML.
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Volver al expediente</a>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn--secondary" type="button" id="cancel-link-btn">Cancelar</button>
+        <button class="btn btn--primary" type="button" id="validate">Validar y vincular</button>
+      </div>
+    </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+
+  <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+
+    const expedienteId = getExpedienteId();
+
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 2 · Modalidad de Compra',
+      stepName: 'Vinculación del proceso en Mercado Público',
+      stepId: '2.3',
+    });
+
+    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
+      kind: 'external',
+      label: 'Mercado Público',
+      mode: 'solo lectura',
+    });
+
+    const ERROR_MESSAGES = {
+      not_found: 'MP_PROCESS_NOT_FOUND — código MP inexistente o con formato inválido; no se persiste el vínculo.',
+      organism_mismatch: 'MP_PROCESS_ORGANISM_MISMATCH — el organismo comprador del proceso MP no coincide con el municipio (tenant).',
+      type_mismatch: 'MP_PROCESS_TYPE_MISMATCH — el tipo de proceso MP no coincide con la modalidad confirmada.',
+      already_linked: 'MP_PROCESS_ALREADY_LINKED — el código ya está vinculado a otro expediente del mismo tenant.',
+      provider_unavailable: 'MP_PROVIDER_UNAVAILABLE — Mercado Público no disponible al validar; el vínculo no se persiste sin validación (PENDIENTE P-32).',
+    };
+
+    const deepLinkBtn = document.getElementById('deep-link-btn');
+    const mpCodeInput = document.getElementById('mp-code');
+    const simulateSelect = document.getElementById('simulate-result');
+    const resultBanner = document.getElementById('result-banner');
+    const validateBtn = document.getElementById('validate');
+    const cancelBtn = document.getElementById('cancel-link-btn');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepLink = document.getElementById('next-step-link');
+
+    deepLinkBtn.addEventListener('click', () => {
+      demoAction('Deep link a Mercado Público (navegación, sin payload de escritura)');
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      window.location.href = getExpedienteUrl(expedienteId);
+    });
+
+    nextStepLink.href = getExpedienteUrl(expedienteId);
+
+    validateBtn.addEventListener('click', () => {
+      const scenario = simulateSelect.value;
+
+      resultBanner.classList.remove('hidden', 'banner--info');
+      resultBanner.classList.add('banner--info');
+
+      if (scenario === 'ok') {
+        demoAction('linkMpProcess');
+        resultBanner.textContent = `Vínculo validado: código ${mpCodeInput.value} — existencia, organismo y tipo de proceso verificados en MP.`;
+        document.getElementById('header-badge').textContent = 'Vinculado';
+        [mpCodeInput, simulateSelect, validateBtn, deepLinkBtn].forEach((el) => { el.disabled = true; });
+        nextStepPanel.classList.remove('hidden');
+      } else {
+        resultBanner.textContent = ERROR_MESSAGES[scenario];
+        resultBanner.style.color = '#a33333';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -42,7 +42,12 @@
 | Justificación bypass catálogo CM * (solo si aplica V2) [oculto] |
 | [________________________________________________]              |
 +----------------------------------------------------------------+
+| [ ] ¿Solicitar aprobación de jefatura antes de continuar?        |
+|     (sub-paso 2.2 — optativo, ver nota)                          |
++----------------------------------------------------------------+
 | [ Cancelar ]                          [ Confirmar modalidad ]    |
++----------------------------------------------------------------+
+| Tras confirmar → Continuar a 2.2 (si se marcó) o a 2.3            |
 +----------------------------------------------------------------+
 ```
 
@@ -57,6 +62,7 @@
 | Resultado del gateway (tabla V1–V8) | `ModalityDecision.validation_results` (JSON) |
 | Valor UTM del mes | `UtmValue.value_clp` |
 | Umbrales V1/V5/V7/V8 | `NormativeParameter` (`AGILE_PURCHASE_UTM_LIMIT`, `COMPTROLLER_REVIEW_UTM_LIMIT`, `TENDER_TIER_THRESHOLDS`, `GUARANTEE_THRESHOLDS`) |
+| ¿Solicitar aprobación de jefatura? | `ModalityDecision.requires_jefatura_approval` |
 
 ## Acciones
 
@@ -72,7 +78,7 @@
 - **Bloqueado (V1/V2/V3):** botón "Confirmar modalidad" deshabilitado y fila de la regla en rojo con `error_code`.
 - **UTM no disponible:** banner `UTM_VALUE_UNAVAILABLE`; gateway no puede evaluar V1 (bloqueante) — ver edge case en la ficha.
 - **Catálogo desactualizado:** advertencia `CATALOG_STALE` con fecha del último delta (no bloquea).
-- **Confirmado:** pantalla pasa a solo lectura, muestra `CaseStep[]` instanciados para la modalidad.
+- **Confirmado:** pantalla pasa a solo lectura, muestra `CaseStep[]` instanciados para la modalidad, y ofrece un enlace "Continuar" hacia 2.2 (si se marcó la casilla de aprobación) o directo a 2.3 (si no).
 
 ## Validaciones visibles
 
@@ -88,3 +94,4 @@
 - **[PENDIENTE P-34]** Este formulario no expone edición de una `ModalityDecision` ya confirmada — la reversión post-confirmación requiere flujo aparte, aún sin definir.
 - **[PENDIENTE P-37]** Los valores exactos de `NormativeParameter` (tramos LP, umbrales de garantía) mostrados aquí son ilustrativos — pendientes de carga inicial verificada contra norma vigente.
 - Al confirmar, el sistema instancia dinámicamente los `CaseStep` del subproceso de la modalidad seleccionada (visible en el expediente, no en este formulario).
+- La casilla "¿Solicitar aprobación de jefatura?" operacionaliza como decisión por expediente el sub-paso 2.2, mientras su existencia formal no se ratifique con la DM (**[PENDIENTE P-38]**) — no reemplaza esa ratificación, solo permite ejercitar ambos caminos del flujo hoy.

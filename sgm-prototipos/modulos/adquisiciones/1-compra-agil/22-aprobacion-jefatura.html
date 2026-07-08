@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2.2 — Aprobación de modalidad por jefatura</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+    <div id="breadcrumb"></div>
+
+    <div class="banner banner--info">
+      Sub-paso condicional: se ejecuta porque en 2.1 se marcó "Solicitar aprobación de jefatura". Existencia formal de este paso aún pendiente de ratificar con la DM (<a href="../../../../sgm-docs/arquitectura/pendientes.md" target="_blank" rel="noopener">P-38</a>).
+    </div>
+
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>SOLPED #1234 — Aprobación de modalidad</span>
+        <span class="badge badge--active" id="header-badge">Pendiente V°B°</span>
+      </div>
+      <div class="form-card__body">
+        <div class="info-panel">
+          <strong>Decisión de modalidad — solo lectura</strong><br />
+          Modalidad seleccionada: <strong>Compra Ágil</strong> · Monto estimado: $ 1.250.000 (19,21 UTM) · Gateway V1–V8: OK<br />
+          Solicitada por: Carla Fuentes (DAF Finanzas) · 26-06-2026
+        </div>
+
+        <h3 style="font-size:14px;margin:16px 0 8px;">Seguimiento de firmas <em>(si la DM exige firma)</em></h3>
+        <table class="form-table">
+          <thead>
+            <tr>
+              <th>Interviniente</th>
+              <th>Tipo</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Jefatura DAF Finanzas</td>
+              <td>FirmaGob</td>
+              <td><span class="badge badge--active">Pendiente</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="form-row">
+          <label>Comentarios (obligatorio si rechazo)</label>
+          <textarea id="comments" placeholder="Comentarios de la decisión…"></textarea>
+        </div>
+
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn--secondary" type="button" id="reject">Rechazar</button>
+        <button class="btn btn--primary" type="button" id="approve">Aprobar y firmar</button>
+      </div>
+    </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+
+  <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, renderBreadcrumb, demoAction } from '../../../shared/form-shell.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+
+    const expedienteId = getExpedienteId();
+    const qs = `?expediente=${encodeURIComponent(expedienteId)}`;
+
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 2 · Modalidad de Compra',
+      stepName: 'Aprobación de modalidad por jefatura',
+      stepId: '2.2',
+    });
+
+    const commentsEl = document.getElementById('comments');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    const nextStepLink = document.getElementById('next-step-link');
+    const rejectBtn = document.getElementById('reject');
+    const approveBtn = document.getElementById('approve');
+
+    function finish() {
+      [rejectBtn, approveBtn, commentsEl].forEach((el) => { el.disabled = true; });
+      nextStepPanel.classList.remove('hidden');
+    }
+
+    rejectBtn.addEventListener('click', () => {
+      if (!commentsEl.value.trim()) {
+        alert('Comentario obligatorio para rechazar (demo).');
+        return;
+      }
+      demoAction('rejectModalityDecision');
+      document.getElementById('header-badge').textContent = 'Rechazada';
+      nextStepText.textContent = 'Modalidad rechazada — los CaseStep instanciados en 2.1 se anulan (auditados). Vuelve a 2.1 para una nueva selección.';
+      nextStepLink.href = `21-ratificacion-modalidad.html${qs}`;
+      finish();
+    });
+
+    approveBtn.addEventListener('click', () => {
+      demoAction('approveModalityDecision');
+      document.getElementById('header-badge').textContent = 'Aprobada';
+      nextStepText.textContent = 'Modalidad aprobada por jefatura.';
+      nextStepLink.href = `23-vinculacion-mp.html${qs}`;
+      finish();
+    });
+  </script>
+</body>
+</html>

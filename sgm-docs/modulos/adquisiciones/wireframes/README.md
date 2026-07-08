@@ -11,7 +11,8 @@ Wireframes de **baja fidelidad** (borrador). Especifican estructura y comportami
 | [14-emision-cdp.md](./14-emision-cdp.md) | 1.5 | `issueBudgetAvailabilityCertificate`, `registerScannedBudgetAvailabilityCertificate` |
 | [15-preobligacion.md](./15-preobligacion.md) | 1.6 | `createBudgetPreCommitment` |
 | [21-ratificacion-modalidad.md](./21-ratificacion-modalidad.md) | 2.1 | `confirmProcurementModality` |
-| [22-sincronizacion-cotizacion.md](./22-sincronizacion-cotizacion.md) | 2.2 *(⚠ desactualizado — sub-paso y operación de una numeración anterior a la reconciliación de `2-modalidad-compra.md`; no corregido en esta pasada)* | `syncQuoteId` |
+| [22-aprobacion-jefatura.md](./22-aprobacion-jefatura.md) | 2.2 *(condicional, ver **[PENDIENTE P-38]**)* | `approveModalityDecision`, `rejectModalityDecision` |
+| [23-vinculacion-mp.md](./23-vinculacion-mp.md) | 2.3 | `linkMpProcess` |
 | [41-recepcion-conforme.md](./41-recepcion-conforme.md) | 4.1 | `confirmGoodsReceipt` |
 | [51-cruce-tres-vias.md](./51-cruce-tres-vias.md) | 5.1 | `performThreeWayMatch` |
 

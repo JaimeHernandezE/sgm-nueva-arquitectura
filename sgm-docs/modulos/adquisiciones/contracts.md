@@ -22,7 +22,7 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | `BudgetAvailabilityCertificate` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status`, `signature_mode` | 1.5 |
 | `BudgetPreCommitment` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `budget_availability_certificate_id`, `budget_line_id`, `estimated_amount`, `fiscal_year`, `status` | 1.6 |
 | `AgileQuoteProcess` | Expuesta | `id`, `purchase_request_id`, `deep_link_clicked_at`, `mp_quote_id` | 2.1 *(CA)* — duplica `ProcurementCase.mp_process_id`, ver `entidades-core.md` <!-- REVISAR: consolidar AgileQuoteProcess --> |
-| `ModalityDecision` | Expuesta | `id`, `procurement_case_id`, `selected_modality`, `ratified`, `decided_by`, `decided_at` | 2.1 |
+| `ModalityDecision` | Expuesta | `id`, `procurement_case_id`, `selected_modality`, `ratified`, `requires_jefatura_approval`, `decided_by`, `decided_at` | 2.1 |
 | `ModalityDecisionApproval` | Expuesta | `id`, `modality_decision_id`, `approver_id`, `decision`, `decision_date` | 2.2 — existencia condicionada a **[PENDIENTE P-38]** |
 | `QuotationResult` | Expuesta | `id`, `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `entry_mode` | 3.2 *(CA)* |
 | `PurchaseOrder` | Expuesta | `id`, `purchase_request_id`, `mp_oc_id`, `supplier_rut`, `total_amount`, `selection_justification`, `status`, `acceptance_date`, `fulfillment_status`, `entry_mode` | 3.3, 3.4, 3.5 *(CA)* / 3.5, 3.14 *(LP)*, 4.1 |
@@ -151,8 +151,11 @@ Convenciones de error y paginación según [`estandares-api.md`](../../arquitect
 - **Dependencias:** `getUtmValue` (SII), `checkCatalogAvailability` (catálogo CM espejado)
 - **Evento emitido:** `ProcurementModalityConfirmed`
 
-#### `POST /modality-decisions/{id}/approval` — *(operación no declarada explícitamente en la ficha; nombre inferido)* `approveModalityDecision`
-- **Sub-pasos:** 2.2 — existencia, alcance y nombre de operación pendientes de ratificar con la DM (**[PENDIENTE P-38]**)
+#### `POST /modality-decisions/{id}/approval` — *(operaciones no declaradas explícitamente en la ficha; nombres inferidos)* `approveModalityDecision`, `rejectModalityDecision`
+- **Sub-pasos:** 2.2 — existencia, alcance y nombres de operación pendientes de ratificar con la DM (**[PENDIENTE P-38]**); ejecución condicionada a `ModalityDecision.requires_jefatura_approval` (capturado en 2.1)
+- **Entrada (`approveModalityDecision`):** `comments` (opcional)
+- **Entrada (`rejectModalityDecision`):** `comments` (obligatorio)
+- **Reglas:** rechazo → `ModalityDecision` sin efecto, `CaseStep[]` de 2.1 anulados con auditoría, retorna a 2.1
 - **Dependencias:** `requestSignature`/`confirmSignature` (FirmaGob, condicional)
 - **Evento emitido:** `ProcurementModalityApproved`
 
@@ -404,7 +407,7 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 | 1.5 | `issueBudgetAvailabilityCertificate`, `registerScannedBudgetAvailabilityCertificate` | `checkBudgetAvailability`, `requestSignature`, `confirmSignature` *(solo electronic)* | `BudgetAvailabilityCertificateIssued` |
 | 1.6 | `createBudgetPreCommitment` | `createBudgetPreCommitment`, `registerPreObligation` | `BudgetPreCommitmentCreated` |
 | 2.1 | `confirmProcurementModality` | `getUtmValue`, `checkCatalogAvailability` | `ProcurementModalityConfirmed` |
-| 2.2 | `approveModalityDecision` *(inferido)* | `requestSignature`, `confirmSignature` (condicional) | `ProcurementModalityApproved` — **[PENDIENTE P-38]** |
+| 2.2 | `approveModalityDecision`, `rejectModalityDecision` *(inferidos)* | `requestSignature`, `confirmSignature` (condicional) | `ProcurementModalityApproved` — **[PENDIENTE P-38]** |
 | 2.3 | `linkMpProcess` | `readMpProcess` | `MpProcessLinked` |
 | 3.1 *(CA)* | — *(lectura MP)* | `readMpProcess` | `MpStateChanged` |
 | 3.2 *(CA)* | `recordQuotationResult` *(inferido)* | `readMpProcess` | `QuotationClosed` |

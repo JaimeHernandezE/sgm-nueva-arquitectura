@@ -129,6 +129,18 @@
         <div class="banner banner--info hidden" id="utm-unavailable-banner">
           <strong>UTM_VALUE_UNAVAILABLE</strong> — fuente UTM no disponible y sin valor cacheado del mes en curso; el gateway no puede evaluar V1 hasta restablecerse.
         </div>
+
+        <div class="form-row">
+          <label>
+            <input type="checkbox" id="jefatura-approval-check" style="width:auto;display:inline-block;margin-right:6px;" />
+            ¿Solicitar aprobación de jefatura antes de continuar? <em>(sub-paso 2.2, optativo — existencia formal pendiente de ratificar con la DM, <a href="../../../../sgm-docs/arquitectura/pendientes.md" target="_blank" rel="noopener">P-38</a>)</em>
+          </label>
+        </div>
+
+        <div class="info-panel hidden" id="next-step-panel">
+          Modalidad confirmada. <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
+        </div>
       </div>
       <div class="form-actions">
         <button class="btn btn--secondary" type="button" id="simulate-utm-down">Simular caída de UTM (demo)</button>
@@ -280,12 +292,27 @@
       recompute();
     });
 
+    const jefaturaApprovalCheck = document.getElementById('jefatura-approval-check');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    const nextStepLink = document.getElementById('next-step-link');
+    const qs = `?expediente=${encodeURIComponent(expedienteId)}`;
+
     confirmBtn.addEventListener('click', () => {
       demoAction('confirmProcurementModality');
       document.getElementById('header-badge').textContent = 'Confirmada';
-      [montoInput, modalitySelect, catalogCheck, tdCause, cmJustification].forEach((el) => { el.disabled = true; });
+      [montoInput, modalitySelect, catalogCheck, tdCause, cmJustification, jefaturaApprovalCheck].forEach((el) => { el.disabled = true; });
       confirmBtn.disabled = true;
       simulateUtmDownBtn.disabled = true;
+
+      if (jefaturaApprovalCheck.checked) {
+        nextStepText.textContent = 'Se solicitó aprobación de jefatura (2.2) antes de continuar.';
+        nextStepLink.href = `22-aprobacion-jefatura.html${qs}`;
+      } else {
+        nextStepText.textContent = 'No se solicitó aprobación de jefatura — continúa directo a la vinculación con Mercado Público (2.3).';
+        nextStepLink.href = `23-vinculacion-mp.html${qs}`;
+      }
+      nextStepPanel.classList.remove('hidden');
     });
 
     recompute();
