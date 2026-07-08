@@ -300,6 +300,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `catalog_bypass_justification` | texto | **Obligatorio si** aplica la regla de primera-opción-catálogo (V2) y se elige otra modalidad |
 | `direct_procurement_cause` | ref. catálogo de causales | **Obligatorio si** `selected_modality = direct_procurement`. Catálogo estructurado pendiente — **[PENDIENTE P-36]** |
 | `validation_results` | JSON | Resultado de las reglas de validación (V1–V8) y valores de `NormativeParameter` aplicados al momento de confirmar, para auditoría retrospectiva |
+| `requires_jefatura_approval` | booleano | Capturado por el usuario en 2.1: si es verdadero, el expediente pasa por 2.2 antes de continuar a la vinculación MP; si es falso, 2.2 se omite. Operacionaliza como decisión por expediente el sub-paso 2.2, mientras su existencia formal siga pendiente de ratificación con la DM — **[PENDIENTE P-38]** (no se cierra con este campo, solo se hace exigible/omitible por decisión operativa). |
 | `decided_by` | ref. `User` | |
 | `decided_at` | fecha | |
 

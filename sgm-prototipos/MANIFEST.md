@@ -53,6 +53,20 @@ Antes de modificar un sub-paso `N.M`:
 
 Ficha transversal: [`sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md`](../sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md)
 
+## Etapa 2 — Modalidad de Compra (transversal a las 4 modalidades)
+
+| stepId | Wireframe | Prototipo | Operaciones principales |
+|---|---|---|---|
+| 2.1 | `21-ratificacion-modalidad.md` | `1-compra-agil/21-ratificacion-modalidad.html` | `confirmProcurementModality` (dependencias: `getUtmValue`, `checkCatalogAvailability`) |
+| 2.2 | `22-aprobacion-jefatura.md` | `1-compra-agil/22-aprobacion-jefatura.html` | `approveModalityDecision`, `rejectModalityDecision` — condicional a `ModalityDecision.requires_jefatura_approval` (marcado en 2.1); existencia formal pendiente de ratificar con la DM (**[PENDIENTE P-38]**) |
+| 2.3 | `23-vinculacion-mp.md` | `1-compra-agil/23-vinculacion-mp.html` | `linkMpProcess` (dependencia: `readMpProcess`) |
+
+Ficha transversal: [`sgm-docs/modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md`](../sgm-docs/modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md)
+
+Navegación entre 2.1→2.2/2.3 y 2.2→2.3 es condicional: 2.1 captura `requires_jefatura_approval` y enruta a 2.2 (si verdadero) o directo a 2.3 (si falso); 2.2 aprobado enruta a 2.3, rechazado vuelve a 2.1.
+
+Etapa 3 (Resolución de Compra, específica de Compra Ágil) aún no tiene prototipo HTML — el flujo de 2.3 vuelve al expediente al finalizar.
+
 Shell expediente: [`modulos/adquisiciones/00-expediente/index.html`](./modulos/adquisiciones/00-expediente/index.html)
 
 Listado: [`modulos/adquisiciones/01-listado-expedientes.html`](./modulos/adquisiciones/01-listado-expedientes.html)

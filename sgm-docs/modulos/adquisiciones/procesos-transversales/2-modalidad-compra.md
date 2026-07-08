@@ -38,6 +38,7 @@
 - `ProcurementCase.procurement_type` (enum, se fija aquí; **nullable hasta este sub-paso**)
 - `CaseStep` — instancias creadas dinámicamente según la modalidad confirmada
 - `UtmValue` (nueva, referencia) — `month`, `year`, `value_clp`, `source`
+- `ModalityDecision.requires_jefatura_approval` (booleano) — control capturado en este mismo sub-paso: si el usuario lo marca, el expediente pasa por 2.2 antes de continuar a 2.3; si no, 2.2 se omite. Ver nota en 2.2.
 
 **Borde de módulo:**
 
@@ -72,9 +73,9 @@
 | Unidad municipal | DAF Finanzas |
 | Rol | Aprobador |
 | Plataforma | SGM |
-| Optativo | ⚠ Por confirmar con DM |
+| Optativo | Condicional a `ModalityDecision.requires_jefatura_approval` (capturado en 2.1) — ⚠ existencia formal aún por confirmar con DM |
 
-**Detalle:** Aprobación de la decisión de modalidad por jefatura DAF antes de la vinculación con Mercado Público. **La existencia misma de este sub-paso está pendiente de ratificación con la DM**: podría exigirse siempre, solo para modalidades sensibles (Trato Directo con seguridad; ¿Licitación Pública?), o no existir como aprobación separada (bastando la decisión registrada de 2.1). Se documenta la estructura para no bloquear la especificación, con el gatillo por definir.
+**Detalle:** Aprobación de la decisión de modalidad por jefatura DAF antes de la vinculación con Mercado Público. **La existencia misma de este sub-paso está pendiente de ratificación con la DM**: podría exigirse siempre, solo para modalidades sensibles (Trato Directo con seguridad; ¿Licitación Pública?), o no existir como aprobación separada (bastando la decisión registrada de 2.1). Mientras esa ratificación no ocurra, la especificación lo modela como **decisión operativa por expediente**: el usuario marca en 2.1 si quiere solicitar esta aprobación (`requires_jefatura_approval`); si la marca, este sub-paso se ejecuta; si no, se omite y el flujo continúa directo a 2.3. Se documenta la estructura completa para no bloquear la especificación, con el gatillo definitivo (¿siempre obligatorio?, ¿solo por modalidad o monto?) aún pendiente — **[PENDIENTE P-38]**.
 
 **Entidad(es) y campos:**
 - `ModalityDecisionApproval` *(sugerida, no confirmada en fuente)* — `modality_decision_id` (ref. `ModalityDecision`), `approver_id` (ref. `User`), `decision` (enum: `approved`, `rejected`), `comments` (texto, obligatorio si `rejected`), `decision_date` (fecha)
@@ -90,7 +91,7 @@
 - Rechazo de jefatura → `ModalityDecision` queda sin efecto; el flujo retorna a 2.1 para nueva selección (los `CaseStep` instanciados se anulan con auditoría).
 - Quien aprueba es quien decidió en 2.1 → evaluar si aplica segregación (`SEGREGATION_OF_DUTIES_VIOLATION`) — por confirmar con DM junto con la existencia del paso.
 
-> **[PENDIENTE P-38]** Si esta aprobación existe, para qué modalidades, si exige firma electrónica, y si aplica segregación decisor/aprobador. Mientras no se ratifique, el sub-paso se considera **Optativo = Verdadero** de forma provisional.
+> **[PENDIENTE P-38]** Si esta aprobación existe siempre, para qué modalidades, si exige firma electrónica, y si aplica segregación decisor/aprobador. Mientras no se ratifique, el sub-paso queda condicionado a la decisión operativa que el usuario capture en 2.1 (`requires_jefatura_approval`), no a un valor fijo.
 
 ---
 
