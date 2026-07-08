@@ -65,7 +65,22 @@ Ficha transversal: [`sgm-docs/modulos/adquisiciones/procesos-transversales/2-mod
 
 Navegación entre 2.1→2.2/2.3 y 2.2→2.3 es condicional: 2.1 captura `requires_jefatura_approval` y enruta a 2.2 (si verdadero) o directo a 2.3 (si falso); 2.2 aprobado enruta a 2.3, rechazado vuelve a 2.1.
 
-Etapa 3 (Resolución de Compra, específica de Compra Ágil) aún no tiene prototipo HTML — el flujo de 2.3 vuelve al expediente al finalizar.
+## Etapa 3 — Resolución de Compra (específica de Compra Ágil)
+
+| stepId | Wireframe | Prototipo | Operaciones principales |
+|---|---|---|---|
+| 3.1 | `31-periodo-cotizacion.md` | `1-compra-agil/31-periodo-cotizacion.html` | — (sin operación, solo lectura MP) |
+| 3.2 | `32-cierre-seleccion-oferta.md` | `1-compra-agil/32-cierre-seleccion-oferta.html` | `recordQuotationResult` |
+| 3.3 | `33-emision-oc.md` | `1-compra-agil/33-emision-oc.html` | `registerPurchaseOrder` |
+| 3.4 | `34-aceptacion-oc.md` | `1-compra-agil/34-aceptacion-oc.html` | `syncPurchaseOrderAccepted` (hito crítico) |
+| 3.5 | `35-rechazo-oc.md` | `1-compra-agil/35-rechazo-oc.html` | — (reflejo de lectura MP, excluyente con 3.4) |
+| 3.6 | `36-proceso-desierto-fallido.md` | `1-compra-agil/36-proceso-desierto-fallido.html` | `releasePreCommitment` (optativo, camino alternativo) |
+
+Ficha específica: [`sgm-docs/modulos/adquisiciones/1. compra-agil/3-resolucion-compra.md`](<../sgm-docs/modulos/adquisiciones/1. compra-agil/3-resolucion-compra.md>)
+
+Navegación condicional: 3.2→3.3→3.4 (camino feliz); 3.3 inhábil → vuelve a 3.2 o va a 3.6; 3.4 rechazada → 3.5 → segunda oferta (3.2) o re-vinculación (2.3); 3.6 → republicar (2.3), reevaluar (bloqueado, **[PENDIENTE P-34]**) o cancelar (vuelve al expediente). 3.5 y 3.6 no aparecen en la fila del expediente demo salvo que ocurran — son caminos alternativos, no el flujo principal.
+
+Etapa 4 (Recepción Conforme, transversal) aún no tiene prototipo HTML — el flujo de 3.4 vuelve al expediente al finalizar.
 
 Shell expediente: [`modulos/adquisiciones/00-expediente/index.html`](./modulos/adquisiciones/00-expediente/index.html)
 

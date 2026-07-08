@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3.1 — Período de cotización</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
+
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>SOLPED #1234 — Período de cotización</span>
+        <span class="badge badge--active" id="header-badge">En curso</span>
+      </div>
+      <div class="form-card__body">
+        <div class="info-panel">
+          <strong>Vínculo MP — solo lectura</strong><br />
+          ID de Cotización: 4021-33-COT26 · Vinculado: 27-06-2026
+        </div>
+
+        <div class="info-panel info-panel--warning">
+          Plazo declarado al vincular (2.3): cierre estimado 30-06-2026<br />
+          Timer: <strong>2 d 14 h restantes</strong> — modo degradado (sin lectura de estado ni n° de cotizaciones; el detalle vive en MP)
+        </div>
+
+        <div class="info-panel hidden" id="next-step-panel">
+          Período cerrado (demo). <span id="next-step-text">4 cotizaciones recibidas (1ª ronda MiPyme).</span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.2</a>
+        </div>
+      </div>
+      <div class="form-actions">
+        <span></span>
+        <button class="btn btn--secondary" type="button" id="simulate-close">Simular cierre del período (demo)</button>
+      </div>
+    </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+
+  <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner } from '../../../shared/form-shell.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+
+    const expedienteId = getExpedienteId();
+    const qs = `?expediente=${encodeURIComponent(expedienteId)}`;
+
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 3 · Resolución de Compra',
+      stepName: 'Período de cotización',
+      stepId: '3.1',
+    });
+
+    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
+      kind: 'external',
+      label: 'Mercado Público',
+      mode: 'solo lectura',
+    });
+
+    const simulateBtn = document.getElementById('simulate-close');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepLink = document.getElementById('next-step-link');
+
+    nextStepLink.href = `32-cierre-seleccion-oferta.html${qs}`;
+
+    simulateBtn.addEventListener('click', () => {
+      document.getElementById('header-badge').textContent = 'Cerrado';
+      simulateBtn.disabled = true;
+      nextStepPanel.classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>

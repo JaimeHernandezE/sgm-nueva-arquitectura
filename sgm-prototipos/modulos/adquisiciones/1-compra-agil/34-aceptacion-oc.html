@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3.4 — Aceptación de la OC</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
+
+    <div class="banner banner--info">
+      Hito crítico de la etapa — perfecciona el vínculo legal (Compra Ágil no requiere contrato ni resolución). Rol N/A: no hay acción de usuario, solo monitoreo.
+    </div>
+
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>SOLPED #1234 — Aceptación de la OC</span>
+        <span class="badge badge--active" id="header-badge">En espera</span>
+      </div>
+      <div class="form-card__body">
+        <div class="info-panel">
+          <strong>OC emitida — solo lectura</strong><br />
+          OC N° 4021-33-SE26 · Proveedor: Comercial Sur SpA · $ 1.240.000<br />
+          Esperando aceptación del proveedor en MP…
+        </div>
+
+        <div class="form-row">
+          <label>Simular lectura MP <em>(solo demo — no existe en la ficha)</em></label>
+          <select id="simulate-result">
+            <option value="accepted_ok" selected>OC Aceptada — compromiso OK</option>
+            <option value="accepted_budget_unavailable">OC Aceptada — BUDGET_UNAVAILABLE (monto real sin saldo)</option>
+            <option value="accepted_provider_down">OC Aceptada — Presupuestos no disponible (reintento)</option>
+            <option value="rejected">OC Rechazada por el proveedor</option>
+          </select>
+        </div>
+
+        <div class="banner hidden" id="result-banner"></div>
+
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
+        </div>
+      </div>
+      <div class="form-actions">
+        <span></span>
+        <button class="btn btn--primary" type="button" id="execute">Ejecutar</button>
+      </div>
+    </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+
+  <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+
+    const expedienteId = getExpedienteId();
+    const qs = `?expediente=${encodeURIComponent(expedienteId)}`;
+
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 3 · Resolución de Compra',
+      stepName: 'Aceptación de la OC',
+      stepId: '3.4',
+    });
+
+    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
+      kind: 'external',
+      label: 'Mercado Público',
+      mode: 'solo lectura',
+    });
+
+    const simulateSelect = document.getElementById('simulate-result');
+    const resultBanner = document.getElementById('result-banner');
+    const executeBtn = document.getElementById('execute');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    const nextStepLink = document.getElementById('next-step-link');
+
+    executeBtn.addEventListener('click', () => {
+      const scenario = simulateSelect.value;
+      resultBanner.classList.remove('hidden');
+      resultBanner.style.color = '';
+      resultBanner.className = 'banner';
+
+      if (scenario === 'accepted_ok') {
+        demoAction('syncPurchaseOrderAccepted');
+        resultBanner.classList.add('banner--info');
+        resultBanner.textContent = 'OC Aceptada (confirmada) · commitBudget OK · Compromiso Cierto registrado por monto real.';
+        document.getElementById('header-badge').textContent = 'Aceptada';
+        nextStepText.textContent = 'Expediente avanza a Recepción Conforme (etapa 4, transversal — aún sin prototipo). Vuelve al expediente.';
+        nextStepLink.href = getExpedienteUrl(expedienteId);
+        executeBtn.disabled = true;
+        simulateSelect.disabled = true;
+        nextStepPanel.classList.remove('hidden');
+      } else if (scenario === 'accepted_budget_unavailable') {
+        demoAction('syncPurchaseOrderAccepted (commitBudget: BUDGET_UNAVAILABLE)');
+        resultBanner.style.color = '#a33333';
+        resultBanner.textContent = 'BUDGET_UNAVAILABLE — la OC ya está aceptada (vínculo legal existe) pero el compromiso contable no puede registrarse. Tarea urgente a DAF Finanzas para regularización presupuestaria (PENDIENTE P-40). El sistema no la resuelve solo, pero no pasa silenciosamente.';
+        document.getElementById('header-badge').textContent = 'Aceptada — compromiso pendiente';
+      } else if (scenario === 'accepted_provider_down') {
+        demoAction('syncPurchaseOrderAccepted (Presupuestos no disponible)');
+        resultBanner.classList.add('banner--info');
+        resultBanner.textContent = 'Presupuestos no disponible — reintento con retroceso exponencial. Estado intermedio visible: "aceptada, compromiso pendiente". Idempotencia por purchase_order_ref: nunca se pierde el hito ni se duplica el compromiso.';
+        document.getElementById('header-badge').textContent = 'Aceptada — compromiso pendiente';
+      } else if (scenario === 'rejected') {
+        demoAction('PurchaseOrderRejected');
+        resultBanner.style.color = '#a33333';
+        resultBanner.textContent = 'OC Rechazada por el proveedor — excluyente con la aceptación.';
+        document.getElementById('header-badge').textContent = 'Rechazada';
+        nextStepText.textContent = 'Continuar a 3.5 (Rechazo de la OC).';
+        nextStepLink.href = `35-rechazo-oc.html${qs}`;
+        executeBtn.disabled = true;
+        simulateSelect.disabled = true;
+        nextStepPanel.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
