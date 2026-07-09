@@ -1,0 +1,47 @@
+fixture: ADQ-2026-00123
+tenant: municipio-demo-norte
+module: adquisiciones
+title: Compra Ágil con modalidad confirmada, resolución pendiente
+business_state: >
+  Expediente post etapa 2: SOLPED aprobada, modalidad Compra Ágil confirmada,
+  vinculación MP completada, etapa 3-CA (período de cotización) en curso.
+seeds:
+  - entity: ProcurementCase
+    id: ADQ-2026-00123
+    key_fields:
+      procurement_type: agile_purchase
+      status: in_progress
+  - entity: PurchaseRequest
+    id: PR-2026-00123
+    key_fields:
+      status: approved
+  - entity: ModalityDecision
+    id: MD-2026-00123
+    key_fields:
+      selected_modality: agile_purchase
+      ratified: true
+operations:
+  - operationId: getProcurementCase
+    request:
+      method: GET
+      path: /procurement-cases/ADQ-2026-00123
+    response:
+      status: 200
+      example_ref: adquisiciones.openapi.yaml#/components/examples/ProcurementCaseAgile
+  - operationId: listProcurementCaseSteps
+    request:
+      method: GET
+      path: /procurement-cases/ADQ-2026-00123/steps
+    response:
+      status: 200
+      example_ref: adquisiciones.openapi.yaml#/components/examples/ProcurementCaseStepsAgile
+  - operationId: confirmProcurementModality
+    request:
+      method: POST
+      path: /procurement-cases/ADQ-2026-00123/modality
+      body:
+        selected_modality: public_tender
+    response:
+      status: 422
+      error_code: MODALITY_ALREADY_CONFIRMED
+reset: nightly

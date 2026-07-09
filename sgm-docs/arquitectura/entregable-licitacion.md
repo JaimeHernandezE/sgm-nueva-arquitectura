@@ -2,7 +2,7 @@
 
 > Documento de trabajo — arquitectura / licitación
 > Estado: borrador para discusión interna, **v2** (julio 2026).
-> Origen: conversación de arquitectura sobre el modelo «API como producto», el ambiente sandbox y la paridad contrato ↔ implementación. La v2 incorpora: el criterio de nivel de detalle de la especificación (§3), el core de plataforma como parte del entregable (§4), y la adopción del estándar OpenAPI + fixtures ([`estandar-openapi-fixtures.md`](./estandar-openapi-fixtures.md)).
+> Origen: conversación de arquitectura sobre el modelo «API como producto», el ambiente sandbox y la paridad contrato ↔ implementación. La v2 incorpora: el criterio de nivel de detalle de la especificación (§3), el core de plataforma como parte del entregable (§4), y la adopción del estándar OpenAPI + fixtures ([`estandares-api.md`](./estandares-api.md)).
 > Pendientes relacionados registrados en [`pendientes.md`](./pendientes.md).
 
 ---
@@ -44,7 +44,7 @@ Decisiones estructurales que, mal resueltas, no se corrigen con un fix menor. Se
 |---|---|
 | Multitenancy por schema y aislamiento de datos | `principios-no-negociables.md` §2, `musts-arquitectura.md` §3 |
 | Frontend base sin privilegios (paridad de acceso) | `principios-no-negociables.md` §1 |
-| Contratos versionados con OpenAPI como fuente de verdad | `estandares-api.md` §1–§2, `estandar-openapi-fixtures.md` |
+| Contratos versionados con OpenAPI como fuente de verdad | `estandares-api.md` §1–§2, `estandares-api.md` |
 | Paridad sandbox ↔ producción | §5 de este documento |
 | Validación bloqueante en servidor; errores estructurados | `principios-no-negociables.md` §7, `estandares-api.md` §3 |
 | Ausencia de orquestador central; coordinación por contratos y eventos | `plataforma-core.md` §1 |
@@ -105,7 +105,7 @@ flowchart TB
 |---|---|---|
 | Principios no negociables | `arquitectura/principios-no-negociables.md` | Cláusulas de bases no delegables |
 | Estándares API transversales | `arquitectura/estandares-api.md` | Errores, paginación, idempotencia, auth |
-| Estándar OpenAPI y fixtures | `arquitectura/estandar-openapi-fixtures.md` | Formato de specs y catálogo sandbox |
+| Estándar OpenAPI y fixtures | `arquitectura/estandares-api.md` | Formato de specs y catálogo sandbox |
 | Metodología contract-first | `arquitectura/contrato-api-first.md` | Estructura de `contracts.md`, criterio de recepción |
 | **Core de plataforma** | `arquitectura/plataforma-core.md` | Servicios transversales, entidades de plataforma, consolas admin |
 | Musts NFR | `arquitectura/musts-arquitectura.md` | SLOs, carga, observabilidad, flujos consultables |
@@ -142,7 +142,7 @@ El implementador debe construir, como mínimo:
 | Pruebas de carga | SLOs bajo perfil de pico (`musts-arquitectura.md` §6–7) |
 | Trazabilidad BPMN | Comportamiento demostrable contra especificación de flujo |
 | **Sandbox público** | Tercero integra sin convenio previo; misma API que producción |
-| **Fixtures documentados** | Request `{a}` → response `{b}` reproducible en IDs conocidos; reproducidos por la contraparte en recepción (`estandar-openapi-fixtures.md` §6.3) |
+| **Fixtures documentados** | Request `{a}` → response `{b}` reproducible en IDs conocidos; reproducidos por la contraparte en recepción (`estandares-api.md` §6.3) |
 
 ---
 
@@ -154,7 +154,7 @@ En [`decisiones-macro-stack.md`](./decisiones-macro-stack.md) §7.2, el sandbox 
 
 > *Ambiente sandbox con datos sintéticos. Cualquier empresa debe poder desarrollar y demostrar su servicio sin convenio previo, contra un ambiente de prueba públicamente accesible.*
 
-Hoy está registrado como **[PENDIENTE P-16]**; este documento es el marco y el formato de fixtures ya está normado; falta el detalle operativo (`sandbox-desarrolladores.md`).
+Hoy está registrado como **[PENDIENTE P-16]**; detalle operativo en [`sandbox-desarrolladores.md`](./sandbox-desarrolladores.md).
 
 ### 5.2 Lo que el sandbox NO es
 
@@ -171,7 +171,7 @@ Hoy está registrado como **[PENDIENTE P-16]**; este documento es el marco y el 
 2. **Mismos endpoints, esquemas y errores** que OpenAPI publicada — incluido el contrato del core (autenticación, consulta de identidad y roles, auditoría), necesario para que un integrador pruebe el flujo completo.
 3. **Credenciales M2M de prueba** obtenibles sin convenio (self-service o registro simple), alineado con **[P-02]** y **[P-15]**.
 4. **Datos sintéticos** — nunca datos reales de municipios (Ley 21.719).
-5. **Catálogo de fixtures versionado** según [`estandar-openapi-fixtures.md`](./estandar-openapi-fixtures.md) §6 — expedientes y escenarios con IDs estables y respuestas documentadas.
+5. **Catálogo de fixtures versionado** según [`estandares-api.md`](./estandares-api.md) §6 — expedientes y escenarios con IDs estables y respuestas documentadas.
 6. **Portal de desarrollador** — OpenAPI navegable, guías de inicio, ejemplos `{a}`/`{b}` por operación.
 7. **Stubs controlados** de dependencias externas (Mercado Público, FirmaGob) con comportamiento documentado.
 
@@ -195,7 +195,7 @@ Cada operación publicada define:
 - **Response `{b}`:** código HTTP, body de éxito o error estructurado (`error_code`, `rule`, `severity`, etc.).
 - **Reglas:** qué validaciones bloquean, qué dependencias se invocan, qué eventos se emiten.
 
-El sandbox debe permitir ejecutar esa operación y obtener `{b}` conforme a OpenAPI. Los fixtures publican **ejemplos canónicos** para operaciones de lectura y para errores de dominio frecuentes. El formato técnico de ambos está normado en [`estandar-openapi-fixtures.md`](./estandar-openapi-fixtures.md) §4 y §6.
+El sandbox debe permitir ejecutar esa operación y obtener `{b}` conforme a OpenAPI. Los fixtures publican **ejemplos canónicos** para operaciones de lectura y para errores de dominio frecuentes. El formato técnico de ambos está normado en [`estandares-api.md`](./estandares-api.md) §4 y §6.
 
 ### 6.2 Estado actual del piloto Adquisiciones
 
@@ -211,7 +211,7 @@ El sandbox debe permitir ejecutar esa operación y obtener `{b}` conforme a Open
 | Casi no hay operaciones `GET` | Falta lectura de expedientes y recursos | Abierto — prioridad 1 (§10) |
 | `ProcurementCase` y `CaseStep` marcados internos | El expediente no está en entidades expuestas de `contracts.md` §1 | Abierto — prioridad 1 (§10) |
 | Vista de expediente sin operación API | `musts-arquitectura.md` §10.2 exige estado vía API; el contrato no cierra la operación | Abierto — prioridad 1 (§10) |
-| Prototipos desacoplados de contrato | IDs demo en cliente sin fixture API equivalente | **Regla de alineación definida** (`estandar-openapi-fixtures.md` §6.2.5); catálogo por crear |
+| Prototipos desacoplados de contrato | IDs demo en cliente sin fixture API equivalente | **Regla de alineación definida** (`estandares-api.md` §6.2.5); catálogo por crear |
 | Sin contrato del core | Los módulos asumen identidad/roles/auditoría sin interfaz declarada | **Nuevo — [P-48]**, marco en `plataforma-core.md` |
 
 ### 6.3 Operaciones de lectura pendientes de modelar (propuesta de trabajo)
@@ -274,7 +274,7 @@ flowchart LR
 | ¿Qué entidades y campos existen? | `entidades-core.md` (+ `entidades-plataforma.md`) | En curso |
 | ¿Qué operaciones expone el módulo? | `contracts.md` | Piloto CA; lecturas incompletas |
 | **¿Qué hay debajo de los módulos (identidad, roles, tenants, admin)?** | [`plataforma-core.md`](./plataforma-core.md) | **Marco definido; contrato P-48** |
-| ¿Cuál es el JSON exacto de request/response? | OpenAPI según `estandar-openapi-fixtures.md` | Estándar definido; specs por crear |
+| ¿Cuál es el JSON exacto de request/response? | OpenAPI según `estandares-api.md` | Estándar definido; specs por crear |
 | ¿Cómo se ve la pantalla? | Wireframes + prototipos | Adquisiciones transversal avanzado; consolas admin P-52 |
 | ¿Cómo pruebo sin producción? | Sandbox | Marco en §5; detalle operativo P-16 |
 | ¿Qué SLOs y pruebas de carga? | `musts-arquitectura.md` | Definido |
@@ -284,7 +284,7 @@ flowchart LR
 
 ## 8. Catálogo de fixtures sandbox
 
-El formato y las reglas del catálogo están normados en [`estandar-openapi-fixtures.md`](./estandar-openapi-fixtures.md) §6. Los cuatro fixtures iniciales propuestos (IDs alineados con `sgm-prototipos/shared/expedientes-demo.js`):
+El formato y las reglas del catálogo están normados en [`estandares-api.md`](./estandares-api.md) §6. Los cuatro fixtures iniciales propuestos (IDs alineados con `sgm-prototipos/shared/expedientes-demo.js`):
 
 | Fixture ID | Tenant demo | Estado de negocio | Uso principal |
 |---|---|---|---|
@@ -311,7 +311,7 @@ Lista consolidada para traducir a cláusulas de licitación. Detalle normativo e
 
 ### 9.1 Especificación y contrato
 
-- [ ] OpenAPI versionada por módulo **y por el core** en repositorio estatal, según `estandar-openapi-fixtures.md`; código validado contra spec.
+- [ ] OpenAPI versionada por módulo **y por el core** en repositorio estatal, según `estandares-api.md`; código validado contra spec.
 - [ ] `contracts.md` por módulo con las cuatro secciones de [`contrato-api-first.md`](./contrato-api-first.md) §3; ídem para el core (**[P-48]**).
 - [ ] Política de deprecación publicada (**[P-04]**).
 - [ ] Multitenancy explícita en contrato (**[P-03]**).
@@ -331,7 +331,7 @@ Lista consolidada para traducir a cláusulas de licitación. Detalle normativo e
 
 - [ ] Sandbox públicamente accesible con datos sintéticos (**[P-16]** — este documento es insumo).
 - [ ] Registro o emisión de credenciales M2M de prueba sin convenio de producción.
-- [ ] Catálogo de fixtures con IDs estables y ejemplos `{a}`/`{b}` según `estandar-openapi-fixtures.md` §6.
+- [ ] Catálogo de fixtures con IDs estables y ejemplos `{a}`/`{b}` según `estandares-api.md` §6.
 - [ ] Portal de desarrollador con OpenAPI interactiva.
 - [ ] Paridad sandbox ↔ producción en contrato; sin endpoints exclusivos de sandbox.
 - [ ] Procedimiento de acceso a producción publicado (**[P-15]**).
@@ -342,7 +342,7 @@ Lista consolidada para traducir a cláusulas de licitación. Detalle normativo e
 - [ ] Pruebas de carga con perfil de pico y SLOs medibles.
 - [ ] Demostración de trazabilidad contra BPMN de especificación.
 - [ ] Evidencia de migraciones multi-tenant a escala de referencia.
-- [ ] Reproducción de fixtures por la contraparte técnica contra el ambiente de recepción (`estandar-openapi-fixtures.md` §6.3).
+- [ ] Reproducción de fixtures por la contraparte técnica contra el ambiente de recepción (`estandares-api.md` §6.3).
 
 ### 9.5 Propiedad y portabilidad
 
@@ -357,7 +357,7 @@ Orden sugerido de trabajo en el repositorio (sin implementar código aún):
 | Prioridad | Trabajo | Desbloquea |
 |---|---|---|
 | **1** | Completar operaciones de lectura en `contracts.md` (expediente, steps, listados) | Integradores y frontend paritario |
-| **2** | Crear OpenAPI del módulo Adquisiciones según `estandar-openapi-fixtures.md` | Validación automática, portal dev |
+| **2** | Crear OpenAPI del módulo Adquisiciones según `estandares-api.md` | Validación automática, portal dev |
 | **3** | Redactar `plataforma/contracts.md` (**[P-48]**) | Dependencias de módulos hacia el core como interfaces |
 | **4** | Redactar `sandbox-desarrolladores.md` (especificación operativa P-16) | Bases y consulta al mercado (**[P-19]**) |
 | **5** | Catálogo de fixtures alineado con prototipos demo | Sandbox demostrable |
@@ -388,7 +388,7 @@ La mesa técnica de estándares (API, contratos, sandbox, convenio de acceso) es
 | D-08 *(v2)* | El nivel de detalle de la especificación se decide por **reversibilidad** (§3): lo estructural se especifica completo; el *cómo* se recibe contra propiedades; lo aditivo tolera corrección post-recepción con mecanismo especificado. |
 | D-09 *(v2)* | El core de plataforma es parte del entregable licitado, con contrato y OpenAPI propios y el mismo estándar de recepción que un módulo ([`plataforma-core.md`](./plataforma-core.md)). |
 | D-10 *(v2)* | No existe orquestador central de procesos de negocio; la coordinación entre módulos es por contratos y eventos. |
-| D-11 *(v2)* | El formato de OpenAPI y fixtures queda normado en [`estandar-openapi-fixtures.md`](./estandar-openapi-fixtures.md); las brechas 2 y 4 de la v1 pasan de «sin estándar» a «estándar definido, artefactos por crear». |
+| D-11 *(v2)* | El formato de OpenAPI y fixtures queda normado en [`estandares-api.md`](./estandares-api.md); las brechas 2 y 4 de la v1 pasan de «sin estándar» a «estándar definido, artefactos por crear». |
 
 ---
 
@@ -411,7 +411,7 @@ La mesa técnica de estándares (API, contratos, sandbox, convenio de acceso) es
 
 - [`decisiones-macro-stack.md`](./decisiones-macro-stack.md)
 - [`plataforma-core.md`](./plataforma-core.md)
-- [`estandar-openapi-fixtures.md`](./estandar-openapi-fixtures.md)
+- [`estandares-api.md`](./estandares-api.md)
 - [`contrato-api-first.md`](./contrato-api-first.md)
 - [`estandares-api.md`](./estandares-api.md)
 - [`musts-arquitectura.md`](./musts-arquitectura.md)
@@ -423,12 +423,12 @@ La mesa técnica de estándares (API, contratos, sandbox, convenio de acceso) es
 
 ## 14. Próximo paso acordado
 
-Tras aprobación de esta v2:
+Pasos 1–5 del piloto Adquisiciones (**completados en repo**, julio 2026):
 
-1. Completar `contracts.md` de Adquisiciones (capa de lectura + entidades expediente).
-2. Generar OpenAPI inicial del piloto según el estándar.
-3. Redactar `plataforma/contracts.md` (**P-48**).
-4. Redactar especificación operativa del sandbox (`sandbox-desarrolladores.md`).
-5. Crear catálogo de fixtures con los IDs demo existentes.
+1. ~~Completar `contracts.md` de Adquisiciones (capa de lectura + entidades expediente).~~
+2. ~~Generar OpenAPI inicial del piloto según el estándar.~~
+3. ~~Redactar `plataforma/contracts.md` (**P-48** borrador mínimo).~~
+4. ~~Redactar especificación operativa del sandbox (`sandbox-desarrolladores.md`).~~
+5. ~~Crear catálogo de fixtures con los IDs demo existentes.~~
 
-Hasta entonces, **no se considera cerrado el modelo de entregable exigible** para el módulo piloto.
+Siguiente iteración: extender contrato y fixtures a modalidades LP/CM/TD en profundidad; OpenAPI del core; CI **P-53**; cerrar **P-02**, **P-03**.

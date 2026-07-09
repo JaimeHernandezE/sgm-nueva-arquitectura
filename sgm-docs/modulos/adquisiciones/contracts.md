@@ -5,6 +5,8 @@
 > Estándares transversales: [`arquitectura/estandares-api.md`](../../arquitectura/estandares-api.md)
 > Metodología: [`arquitectura/contrato-api-first.md`](../../arquitectura/contrato-api-first.md)
 > Entidades canónicas: [`modelo-datos/entidades-core.md`](../../modelo-datos/entidades-core.md)
+> OpenAPI: [`openapi/adquisiciones.openapi.yaml`](./openapi/adquisiciones.openapi.yaml)
+> Fixtures sandbox: [`fixtures/catalogo.md`](./fixtures/catalogo.md)
 
 **Alcance:** las etapas transversales (1, 2, 4) y la etapa 3 de Compra Ágil están cubiertas en profundidad. La etapa 3 de Licitación Pública ya tiene ficha de flujo (`3. licitacion-publica/3-resolucion-compra.md`, 14 sub-pasos) pero sus entidades y operaciones específicas (`TenderBases`, `Guarantee`, `Contract`, Comisión Evaluadora, etc.) aún no están completamente incorporadas a este contrato ni a `entidades-core.md` — solo se propagó aquí la concordancia de vinculación MP (§2.3 ↔ §3.5). Convenio Marco y Trato Directo se extenderán tras validar el piloto.
 
@@ -16,7 +18,11 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 
 | Entidad | Visibilidad | Campos expuestos | Sub-pasos origen |
 |---|---|---|---|
-| `PurchaseRequest` | Expuesta | `id`, `requesting_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status` | 1.1, 1.2, 2.1, 2.2 |
+| `ProcurementCase` | Expuesta | `id`, `folio`, `description`, `requesting_unit_id`, `procurement_type`, `status`, `current_step_id`, `created_at`, `mp_process_id`, `mp_linked_at`, `mp_process_type` | 1.1 (creación implícita), 2.1, 2.3 |
+| `ProcurementCaseSummary` | Expuesta (DTO lectura) | `id`, `folio`, `description`, `procurement_type`, `status`, `current_step_name`, `requesting_unit_id`, `created_at` | — |
+| `ProcurementCaseDetail` | Expuesta (DTO lectura) | `ProcurementCase` + `current_step` (`CaseStep` resumido) | — |
+| `CaseStep` | Expuesta | `id`, `procurement_case_id`, `step_number`, `name`, `status`, `responsible_unit_id`, `responsible_role`, `responsible_user_id`, `started_at`, `completed_at`, `elapsed_display` | 2.1 (instanciación), todas las etapas |
+| `PurchaseRequest` | Expuesta | `id`, `procurement_case_id`, `requesting_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status` | 1.1, 1.2, 2.1, 2.2 |
 | `PurchaseRequestLine` | Expuesta | `id`, `purchase_request_id`, `item_description`, `quantity`, `unit_of_measure`, `unit_price`, `price_source` | 1.1 |
 | `PurchaseRequestApproval` | Expuesta | `id`, `purchase_request_id`, `approver_id`, `decision`, `decision_date`, `comments` | 1.2 |
 | `BudgetAvailabilityCertificate` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status`, `signature_mode` | 1.5 |
@@ -25,7 +31,7 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | `ModalityDecision` | Expuesta | `id`, `procurement_case_id`, `selected_modality`, `ratified`, `requires_jefatura_approval`, `decided_by`, `decided_at` | 2.1 |
 | `ModalityDecisionApproval` | Expuesta | `id`, `modality_decision_id`, `approver_id`, `decision`, `decision_date` | 2.2 — existencia condicionada a **[PENDIENTE P-38]** |
 | `QuotationResult` | Expuesta | `id`, `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `entry_mode` | 3.2 *(CA)* |
-| `PurchaseOrder` | Expuesta | `id`, `purchase_request_id`, `mp_oc_id`, `supplier_rut`, `total_amount`, `selection_justification`, `status`, `acceptance_date`, `fulfillment_status`, `entry_mode` | 3.3, 3.4, 3.5 *(CA)* / 3.5, 3.14 *(LP)*, 4.1 |
+| `PurchaseOrder` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `mp_oc_id`, `supplier_rut`, `total_amount`, `selection_justification`, `status`, `acceptance_date`, `fulfillment_status`, `entry_mode` | 3.3, 3.4, 3.5 *(CA)* / 3.5, 3.14 *(LP)*, 4.1 |
 | `BudgetCommitment` | Expuesta | `id`, `purchase_order_id`, `budget_pre_commitment_id`, `committed_amount`, `commitment_date`, `source` | 3.4 *(CA)* / 3.14 *(LP)* |
 | `GoodsReceipt` | Expuesta | `id`, `purchase_order_id`, `received_by`, `received_date`, `receipt_type`, `receiving_unit`, `status`, `observations` | 4.1, 4.2 |
 | `ReceiptRejectionCase` | Expuesta | `id`, `goods_receipt_id`, `resolution_type`, `resolution_deadline`, `resolved_at`, `outcome` | 4.5 |
@@ -41,6 +47,55 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 ## 2. Operaciones que ofrece
 
 Convenciones de error y paginación según [`estandares-api.md`](../../arquitectura/estandares-api.md). Rutas sin prefijo de tenant hasta resolver multitenancy (**[PENDIENTE P-03]**).
+
+### 2.0 Expediente (lecturas)
+
+Operaciones de consulta del expediente y recursos asociados. Requisito de [`musts-arquitectura.md`](../../arquitectura/musts-arquitectura.md) §10.2 y [`entregable-licitacion.md`](../../arquitectura/entregable-licitacion.md) §6.3.
+
+**Autorización (placeholder hasta P-02):** scope `adquisiciones:read` (personas) / `adquisiciones.read` (M2M).
+
+#### `GET /procurement-cases` — `listProcurementCases`
+- **Sub-pasos:** — *(consulta transversal)*
+- **Entrada:** query `page`, `page_size`, `sort`, `order`; filtros `procurement_type`, `status`, `requesting_unit_id`, `folio`
+- **Respuesta:** colección paginada de `ProcurementCaseSummary`
+- **Reglas:** solo lectura; sin efectos colaterales
+
+#### `GET /procurement-cases/{case_id}` — `getProcurementCase`
+- **Sub-pasos:** — *(vista expediente)*
+- **Entrada:** `case_id` (= folio `ADQ-AAAA-NNNNN`)
+- **Respuesta:** `ProcurementCaseDetail`
+- **Reglas:**
+  | Regla | Severidad | Error |
+  |---|---|---|
+  | Expediente existe en el tenant del token | blocking | `PROCUREMENT_CASE_NOT_FOUND` |
+
+#### `GET /procurement-cases/{case_id}/steps` — `listProcurementCaseSteps`
+- **Sub-pasos:** — *(timeline del expediente)*
+- **Entrada:** `case_id`
+- **Respuesta:** `CaseStep[]` ordenados por `step_number`
+- **Reglas:** `PROCUREMENT_CASE_NOT_FOUND` si no existe
+
+#### `GET /purchase-requests` — `listPurchaseRequests`
+- **Sub-pasos:** — *(consulta)*
+- **Entrada:** query paginación; filtro `procurement_case_id`
+- **Respuesta:** colección paginada de `PurchaseRequest`
+
+#### `GET /purchase-requests/{id}` — `getPurchaseRequest`
+- **Sub-pasos:** — *(detalle SOLPED)*
+- **Entrada:** `id`
+- **Respuesta:** `PurchaseRequest` + `lines` (`PurchaseRequestLine[]`)
+- **Reglas:** `PURCHASE_REQUEST_NOT_FOUND` si no existe
+
+#### `GET /purchase-orders` — `listPurchaseOrders`
+- **Sub-pasos:** — *(consulta)*
+- **Entrada:** query paginación; filtro `procurement_case_id`
+- **Respuesta:** colección paginada de `PurchaseOrder`
+
+#### `GET /purchase-orders/{id}` — `getPurchaseOrder`
+- **Sub-pasos:** — *(detalle OC)*
+- **Entrada:** `id`
+- **Respuesta:** `PurchaseOrder`
+- **Reglas:** `PURCHASE_ORDER_NOT_FOUND` si no existe
 
 ### 2.1 SOLPED
 
@@ -146,18 +201,24 @@ Convenciones de error y paginación según [`estandares-api.md`](../../arquitect
   | V1 Monto ≤ 100 UTM para Compra Ágil | blocking | `MODALITY_AMOUNT_EXCEEDED` |
   | V2 Catálogo CM es primera opción sin justificación | blocking | `FRAMEWORK_AGREEMENT_FIRST_OPTION` |
   | V3 Trato Directo requiere causal + Resolución Fundada | blocking | `DIRECT_PROCUREMENT_CAUSE_REQUIRED` |
+  | Modalidad ya confirmada | blocking | `MODALITY_ALREADY_CONFIRMED` |
   | V4/V5/V7/V8 sugerencias LP, Toma de Razón, tramo, garantías | advisory | `PUBLIC_TENDER_SUGGESTED`, `COMPTROLLER_REVIEW_REQUIRED`, `TENDER_TIER_INFO`, `TENDER_GUARANTEES_REQUIRED` |
   | V6 *(propuesta)* fraccionamiento sospechado | advisory | `SPLITTING_SUSPECTED` |
 - **Dependencias:** `getUtmValue` (SII), `checkCatalogAvailability` (catálogo CM espejado)
 - **Evento emitido:** `ProcurementModalityConfirmed`
 
-#### `POST /modality-decisions/{id}/approval` — *(operaciones no declaradas explícitamente en la ficha; nombres inferidos)* `approveModalityDecision`, `rejectModalityDecision`
-- **Sub-pasos:** 2.2 — existencia, alcance y nombres de operación pendientes de ratificar con la DM (**[PENDIENTE P-38]**); ejecución condicionada a `ModalityDecision.requires_jefatura_approval` (capturado en 2.1)
-- **Entrada (`approveModalityDecision`):** `comments` (opcional)
-- **Entrada (`rejectModalityDecision`):** `comments` (obligatorio)
-- **Reglas:** rechazo → `ModalityDecision` sin efecto, `CaseStep[]` de 2.1 anulados con auditoría, retorna a 2.1
+#### `POST /modality-decisions/{id}/approve` — `approveModalityDecision`
+- **Sub-pasos:** 2.2 — existencia y alcance pendientes de ratificar con la DM (**[PENDIENTE P-38]**); ejecución condicionada a `ModalityDecision.requires_jefatura_approval`
+- **Entrada:** `comments` (opcional)
+- **Respuesta:** `ModalityDecisionApproval`
 - **Dependencias:** `requestSignature`/`confirmSignature` (FirmaGob, condicional)
 - **Evento emitido:** `ProcurementModalityApproved`
+
+#### `POST /modality-decisions/{id}/reject` — `rejectModalityDecision`
+- **Sub-pasos:** 2.2
+- **Entrada:** `comments` (obligatorio)
+- **Reglas:** rechazo → `ModalityDecision` sin efecto, `CaseStep[]` de 2.1 anulados con auditoría, retorna a 2.1
+- **Dependencias:** `requestSignature`/`confirmSignature` (FirmaGob, condicional)
 
 #### `POST /procurement-cases/{id}/mp-link` — `linkMpProcess`
 - **Sub-pasos:** 2.3 (ejecución inmediata, Compra Ágil/Convenio Marco), 3.5 *(LP, ejecución diferida)*, subproceso de publicación *(Trato Directo, ejecución diferida)*
@@ -178,8 +239,11 @@ Convenciones de error y paginación según [`estandares-api.md`](../../arquitect
 - **Dependencias:** `readMpProcess` (deseada)
 - **Evento emitido:** `MpStateChanged`
 
-#### *(sin operación declarada — registro de resultado en modo degradado, nombre inferido)* `recordQuotationResult`
-- **Sub-pasos:** 3.2
+#### `POST /procurement-cases/{id}/quotation-result` — `recordQuotationResult`
+- **Sub-pasos:** 3.2 *(modo degradado — registro manual)*
+- **Entrada:** `QuotationResult` (`selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `entry_mode`)
+- **Respuesta:** `QuotationResult`
+- **Dependencias:** `readMpProcess` (deseada)
 - **Evento emitido:** `QuotationClosed`
 
 #### `POST /purchase-orders` — `registerPurchaseOrder` *(continúa el nombre usado antes de la reconciliación; cubre lectura MP o registro manual según `entry_mode`)*
@@ -216,14 +280,18 @@ Convenciones de error y paginación según [`estandares-api.md`](../../arquitect
   |---|---|---|
   | Cantidad recibida ≤ pendiente de la línea | blocking | `RECEIPT_EXCEEDS_ORDER` |
 
-#### `POST /goods-receipts/{id}/confirm` — *(operación de confirmación/rechazo no declarada explícitamente en la ficha; nombre inferido)* `confirmReceipt`
+#### `POST /goods-receipts/{id}/confirm` — `confirmReceipt`
 - **Sub-pasos:** 4.2
+- **Entrada:** `decision` (`confirmed` \| `rejected`), `comments`, `signature_mode` (condicional)
+- **Respuesta:** `GoodsReceipt`
 - **Reglas:**
   | Regla | Severidad | QA | Error |
   |---|---|---|---|
   | Segregación: confirmante ≠ aprobador de la compra | blocking | 9 P1 | `SEGREGATION_OF_DUTIES_VIOLATION` |
   | Adjuntos obligatorios (factura, guía despacho) | blocking | 32 P1 | `MISSING_REQUIRED_ATTACHMENTS` |
-- **Evento emitido:** `GoodsReceiptConfirmed`
+  | Firma electrónica válida si aplica | blocking | 7 P1 | `SIGNATURE_REQUIRED` |
+- **Dependencias:** `requestSignature` (condicional)
+- **Evento emitido:** `GoodsReceiptConfirmed`, `ReceiptRejected` (si rechazo parcial)
 
 #### `POST /goods-receipt-lines/{id}/inventory-entry` — `registerInventoryEntry` *(dependencia externa, ver §3)*
 - **Sub-pasos:** 4.3 — alcance pendiente de decisión de bases (**[PENDIENTE P-44]**)
@@ -400,6 +468,7 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 
 | Sub-paso | Operaciones ofrecidas | Dependencias | Eventos |
 |---|---|---|---|
+| — | `listProcurementCases`, `getProcurementCase`, `listProcurementCaseSteps`, `listPurchaseRequests`, `getPurchaseRequest`, `listPurchaseOrders`, `getPurchaseOrder` | — | — |
 | 1.1 | `createPurchaseRequest`, `submitPurchaseRequest` | `getPriceReference`, `checkStockAvailability`, `previewBudgetAvailability` | — |
 | 1.2 | `approvePurchaseRequest`, `rejectPurchaseRequest` | `requestSignature`, `confirmSignature`, `previewBudgetAvailability` | `PurchaseRequestApproved` |
 | 1.3 | `verifyBudgetAvailability` | `checkBudgetAvailability` | — |

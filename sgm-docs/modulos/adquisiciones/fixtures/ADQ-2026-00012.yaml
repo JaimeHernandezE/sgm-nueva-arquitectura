@@ -1,0 +1,36 @@
+fixture: ADQ-2026-00012
+tenant: municipio-demo-sur
+module: adquisiciones
+title: Trato Directo — post etapa 2, etapa 3 pendiente
+business_state: >
+  Expediente TD con resolución fundada y modalidad confirmada; etapa 3-TD
+  (publicación / registro) pendiente.
+seeds:
+  - entity: ProcurementCase
+    id: ADQ-2026-00012
+    key_fields:
+      procurement_type: direct_procurement
+      status: in_progress
+  - entity: PurchaseRequest
+    id: PR-2026-0012
+    key_fields:
+      status: approved
+      purchase_modality: direct_procurement
+operations:
+  - operationId: getProcurementCase
+    request:
+      method: GET
+      path: /procurement-cases/ADQ-2026-00012
+    response:
+      status: 200
+      example_ref: adquisiciones.openapi.yaml#/components/examples/ProcurementCaseAgile
+  - operationId: confirmProcurementModality
+    request:
+      method: POST
+      path: /procurement-cases/ADQ-2026-00012/modality
+      body:
+        selected_modality: agile_purchase
+    response:
+      status: 422
+      error_code: MODALITY_ALREADY_CONFIRMED
+reset: nightly

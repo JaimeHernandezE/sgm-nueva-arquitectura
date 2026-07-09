@@ -1,0 +1,62 @@
+# Escenarios transaccionales — Adquisiciones (sandbox)
+
+Operaciones de escritura y errores de dominio no atados a un expediente fixture único.
+
+scenarios:
+  - id: create-solped-valid
+    title: Crear SOLPED válida
+    tenant: municipio-demo-norte
+    operationId: createPurchaseRequest
+    request:
+      method: POST
+      path: /purchase-requests
+      body:
+        purchase_request:
+          requesting_unit: unit-solicitante
+          description: Adquisición de insumos de oficina
+          justification: Reposición de stock según plan anual.
+          requested_date: '2026-06-24'
+          purchase_modality: agile_purchase
+          proposed_budget_line_id: bl-2210-001
+          proposed_fiscal_year: 2026
+        lines:
+          - item_description: Resma papel carta
+            quantity: 50
+            unit_of_measure: unit
+            unit_price: 4500
+            price_source: price-ref-001
+    response:
+      status: 201
+      example_ref: adquisiciones.openapi.yaml#/components/examples/CreatePurchaseRequestSuccess
+
+  - id: budget-unavailable
+    title: Verificación presupuestaria sin saldo
+    tenant: municipio-demo-norte
+    operationId: verifyBudgetAvailability
+    request:
+      method: POST
+      path: /purchase-requests/PR-FIXTURE-NO-SALDO/budget-verification
+      body:
+        budget_line_id: bl-2210-999
+        amount: 999999999
+        fiscal_year: 2026
+        decision: confirmed
+    response:
+      status: 422
+      error_code: BUDGET_UNAVAILABLE
+      example_ref: adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
+
+  - id: modality-amount-exceeded
+    title: Modalidad Compra Ágil con monto excedido
+    tenant: municipio-demo-norte
+    operationId: confirmProcurementModality
+    request:
+      method: POST
+      path: /procurement-cases/ADQ-FIXTURE-MONTO-ALTO/modality
+      body:
+        selected_modality: agile_purchase
+    response:
+      status: 422
+      error_code: MODALITY_AMOUNT_EXCEEDED
+
+reset: nightly

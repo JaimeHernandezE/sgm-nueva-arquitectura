@@ -1,0 +1,33 @@
+fixture: ADQ-2026-00045
+tenant: municipio-demo-sur
+module: adquisiciones
+title: Licitación Pública — showcase transversal finalizado
+business_state: >
+  Expediente LP con etapas transversales 1, 2, 4 y 5 completadas; etapa 3
+  documentada como finalizada en showcase de prototipos.
+seeds:
+  - entity: ProcurementCase
+    id: ADQ-2026-00045
+    key_fields:
+      procurement_type: public_tender
+      status: completed
+  - entity: PurchaseRequest
+    id: PR-2026-0045
+    key_fields:
+      status: approved
+operations:
+  - operationId: getProcurementCase
+    request:
+      method: GET
+      path: /procurement-cases/ADQ-2026-00045
+    response:
+      status: 200
+      example_ref: adquisiciones.openapi.yaml#/components/examples/ProcurementCaseLicitacionCompleted
+  - operationId: listProcurementCaseSteps
+    request:
+      method: GET
+      path: /procurement-cases/ADQ-2026-00045/steps
+    response:
+      status: 200
+      example_ref: adquisiciones.openapi.yaml#/components/examples/ProcurementCaseStepsAgile
+reset: nightly

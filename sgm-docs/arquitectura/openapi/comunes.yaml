@@ -1,0 +1,86 @@
+openapi: 3.1.0
+info:
+  title: SGM — Componentes OpenAPI comunes
+  version: 0.1.0
+  description: >
+    Esquemas transversales referenciados por las specs de módulos.
+    Norma: estandares-api.md Parte I §3, §4, §8.
+components:
+  securitySchemes:
+    bearerPersonas:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Plano personas (Clave Única). P-02 pendiente.
+    bearerM2M:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Plano sistemas M2M (OAuth2 client credentials). P-02 pendiente.
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    Sort:
+      name: sort
+      in: query
+      schema:
+        type: string
+    Order:
+      name: order
+      in: query
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: asc
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    Severity:
+      type: string
+      enum: [blocking, advisory]
+    ErrorResponse:
+      type: object
+      required: [error_code, rule, severity]
+      properties:
+        error_code:
+          type: string
+        field:
+          type: string
+          nullable: true
+        rule:
+          type: string
+        legal_reference:
+          type: string
+          nullable: true
+        severity:
+          $ref: '#/components/schemas/Severity'
+    PaginationMeta:
+      type: object
+      required: [page, page_size, total_items, total_pages]
+      properties:
+        page:
+          type: integer
+        page_size:
+          type: integer
+        total_items:
+          type: integer
+        total_pages:
+          type: integer

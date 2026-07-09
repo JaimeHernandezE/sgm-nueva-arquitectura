@@ -25,23 +25,26 @@ Si el campo aparece en un formulario, la marca debe coincidir con la tabla Campo
 ## Adquisiciones
 
 ### `ProcurementCase` (Expediente de Compra)
-**Visibilidad:** interna
+**Visibilidad:** expuesta — campos en contrato: `id` (= `folio`), `procurement_type`, `status`, `current_step_id`, `description`, `requesting_unit_id`, `created_at`, `mp_process_id`, `mp_linked_at`, `mp_process_type`
 
 Raíz de trazabilidad de todo el ciclo SOLPED → Pago. El estado del expediente es **distinto** del estado documental de sus entidades hijas (`PurchaseRequest.status`, `PurchaseOrder.status`, etc.) — no fusionar ambos conceptos.
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `folio` | texto | **Obligatorio** (generado por sistema). Correlativo legible. Formato propuesto `ADQ-AAAA-NNNNN`. ⚠ **Pendiente de definir:** formato final del correlativo. |
+| `id` | texto | **Obligatorio** (generado por sistema). Igual al `folio` legible. Formato `ADQ-AAAA-NNNNN`. |
+| `folio` | texto | **Obligatorio** (generado por sistema). Correlativo legible. Duplica `id` — expuesto como `id` en API. |
+| `description` | texto | **Obligatorio** — glosa resumen del expediente (listado y cabecera). |
+| `requesting_unit_id` | ref. `OrganizationalUnit` | **Obligatorio** — unidad solicitante de la SOLPED origen. |
 | `procurement_type` | enum | **Opcional** hasta etapa 2.1; **Obligatorio** desde confirmación de modalidad. Valores: `agile_purchase`, `framework_agreement`, `public_tender`, `direct_procurement`. |
-| `current_step` | ref. `CaseStep` | **Obligatorio** |
-| `status` | enum | **Obligatorio**. Valores: `en_curso`, `finalizado`, `cancelado`, `desierto`. ⚠ **Pendiente de definir:** refinamiento de valores y transiciones. |
+| `current_step_id` | ref. `CaseStep` | **Obligatorio** |
+| `status` | enum | **Obligatorio**. Valores API: `in_progress`, `completed`, `cancelled`, `deserted`. |
 | `created_at` | fecha/hora | **Obligatorio** (generado por sistema) |
 | `mp_process_id` | texto | **Opcional** hasta vinculación MP; **Obligatorio si** vinculación completada (salvo Trato Directo en fase inicial). Origen: ficha `2-modalidad-compra.md` §2.3. |
 | `mp_linked_at` | fecha/hora | **Opcional** hasta vinculación; **Obligatorio si** `mp_process_id` presente. Origen: ficha `2-modalidad-compra.md` §2.3. |
 | `mp_process_type` | enum | **Opcional** hasta vinculación; **Obligatorio si** `mp_process_id` presente. Coherente con `procurement_type`. Origen: ficha `2-modalidad-compra.md` §2.3. |
 
 ### `CaseStep` (Paso de Expediente)
-**Visibilidad:** interna
+**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `step_number`, `name`, `status`, `responsible_unit_id`, `responsible_role`, `responsible_user_id`, `started_at`, `completed_at`, `elapsed_display`
 
 1:N con `ProcurementCase`. La secuencia de pasos se instancia según `procurement_type`: Compra Ágil 5 pasos, Convenio Marco 4, Licitación Pública 6, Trato Directo 5. De aquí salen "tiempo transcurrido por etapa" y "responsable actual" sin joins.
 
@@ -52,10 +55,13 @@ Raíz de trazabilidad de todo el ciclo SOLPED → Pago. El estado del expediente
 | `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio** |
 | `step_number` | número | **Obligatorio** |
 | `name` | texto | **Obligatorio** |
-| `status` | enum | **Obligatorio**. Valores: `pendiente`, `en_curso`, `finalizada` |
-| `responsible_unit` | ref. `OrganizationalUnit` | **Opcional** hasta asignación de responsable |
+| `status` | enum | **Obligatorio**. Valores API: `pending`, `in_progress`, `completed`, `omitted`. |
+| `responsible_unit_id` | ref. `OrganizationalUnit` | **Opcional** hasta asignación de responsable |
+| `responsible_role` | texto | **Opcional** — rol del responsable (ej. `Usuario`, `Aprobador`). |
+| `responsible_user_id` | ref. `User` | **Opcional** — funcionario asignado. |
 | `started_at` | fecha/hora | **Opcional** hasta inicio del paso |
 | `completed_at` | fecha/hora | **Opcional** hasta cierre del paso |
+| `elapsed_display` | texto | **Opcional** — derivado en lectura (ej. `2 d 6 h`); no persistido. |
 
 > `procurement_case_id` en cada entidad del ciclo es **desnormalización intencional** para trazabilidad y reportería directa (consultas por expediente sin recorrer la cadena de FKs). Se mantiene además de las FKs directas entre entidades.
 

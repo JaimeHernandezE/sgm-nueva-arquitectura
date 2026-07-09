@@ -1,0 +1,33 @@
+fixture: ADQ-2026-00089
+tenant: municipio-demo-norte
+module: adquisiciones
+title: Convenio Marco — post etapa 2, etapa 3 pendiente
+business_state: >
+  Expediente con modalidad Convenio Marco confirmada; preobligación activa;
+  etapa 3-CM sin iniciar (ruta gran compra / compra directa por definir en etapa 3).
+seeds:
+  - entity: ProcurementCase
+    id: ADQ-2026-00089
+    key_fields:
+      procurement_type: framework_agreement
+      status: in_progress
+  - entity: PurchaseRequest
+    id: PR-2026-0089
+    key_fields:
+      status: approved
+operations:
+  - operationId: getProcurementCase
+    request:
+      method: GET
+      path: /procurement-cases/ADQ-2026-00089
+    response:
+      status: 200
+      example_ref: adquisiciones.openapi.yaml#/components/examples/ProcurementCaseAgile
+  - operationId: listProcurementCaseSteps
+    request:
+      method: GET
+      path: /procurement-cases/ADQ-2026-00089/steps
+    response:
+      status: 200
+      example_ref: adquisiciones.openapi.yaml#/components/examples/ProcurementCaseStepsAgile
+reset: nightly

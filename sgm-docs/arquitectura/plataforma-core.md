@@ -29,7 +29,7 @@ Regla derivada del mandato general (`contrato-api-first.md` §1), aplicable text
 Consecuencias:
 
 - **Toda acción administrativa es una operación de API auditada** (ya exigido para roles en `seguridad.md` §3.3; aquí se generaliza a tenants, parámetros y credenciales).
-- El core tiene su propio `contracts.md` con las cuatro secciones de `contrato-api-first.md` §3. **[PENDIENTE P-48]** Redactarlo — es prerequisito para que los `contracts.md` de módulos declaren sus dependencias hacia el core como interfaces y no como supuestos.
+- El core tiene su propio `contracts.md` con las cuatro secciones de `contrato-api-first.md` §3. Borrador mínimo en [`plataforma/contracts.md`](../plataforma/contracts.md) — **[PENDIENTE P-48]** extender a ciclo de vida completo de tenants.
 - Las entidades del core (§4) se definen en el modelo de datos canónico con la misma regla de visibilidad interna/expuesta (`plantilla-maestra-sgm.md` §6.6).
 
 ## 3. Inventario de servicios del core
