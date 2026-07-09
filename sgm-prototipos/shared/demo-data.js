@@ -218,9 +218,10 @@ export const stages = [
         name: 'Cruce de 3 vías (Match)',
         responsible: { unit: 'Contabilidad', role: 'N/A', name: '(automático)' },
         status: 'pending',
-        action: { type: 'badge', label: 'Pendiente' },
-        secondaryLine: 'Requiere OC (MP) + recepción conforme (SGM) + factura (SII) · También: Contabilidad',
-        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+        action: { type: 'primary', label: 'Ejecutar match' },
+        secondaryLine: 'Requiere OC (MP) + recepción conforme (SGM) + factura (SII)',
+        origin: { kind: 'module', label: 'Contabilidad', mode: 'dependencia' },
+        borderModules: ['Contabilidad'],
       },
       {
         id: '5.2',

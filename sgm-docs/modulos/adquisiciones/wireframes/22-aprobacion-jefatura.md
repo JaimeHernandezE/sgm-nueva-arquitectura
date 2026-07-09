@@ -33,13 +33,13 @@
 
 ## Campos ↔ entidad
 
-| Campo UI | Entidad.campo |
-|---|---|
-| Decisión | `ModalityDecisionApproval.decision` |
-| Comentarios | `ModalityDecisionApproval.comments` |
-| Aprobador | `ModalityDecisionApproval.approver_id` |
-| Fecha decisión | `ModalityDecisionApproval.decision_date` |
-| Resumen de modalidad (solo lectura) | `ModalityDecision.selected_modality`, `.validation_results` |
+| Campo UI | Entidad.campo | Obligatorio |
+|---|---|---|
+| Decisión | `ModalityDecisionApproval.decision` | Sí |
+| Comentarios | `ModalityDecisionApproval.comments` | Sí si rechazo |
+| Aprobador | `ModalityDecisionApproval.approver_id` | Sí (generado) |
+| Fecha decisión | `ModalityDecisionApproval.decision_date` | Sí (generado) |
+| Resumen de modalidad | `ModalityDecision.selected_modality` | No (solo lectura) |
 
 ## Acciones
 

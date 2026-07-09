@@ -16,7 +16,7 @@
 |   Estado:       Conforme     Fecha: 15/07/2026            |
 +----------------------------------------------------------+
 | Fuente 3: Factura (SII)                                   |
-|   N° factura:   [ 12345 ]    [ Buscar en SII ]            |
+|   N° factura:   [ 12345 ] *  [ Buscar en SII ]            |
 |   Monto factura: $ 450.000                                |
 +----------------------------------------------------------+
 | Resultado del cruce                                       |
@@ -33,11 +33,13 @@
 
 ## Campos ↔ entidad
 
-| Campo UI | Entidad.campo |
-|---|---|
-| Resultado cruce | `ThreeWayMatch.match_status` |
-| Fecha match | `ThreeWayMatch.match_date` |
-| Referencia factura | `ThreeWayMatch.invoice_id` |
+| Campo UI | Entidad.campo | Obligatorio |
+|---|---|---|
+| N° factura (entrada) | entrada `getInvoiceForMatch` | Sí |
+| Resultado cruce | `ThreeWayMatch.match_status` | Sí (generado) |
+| Fecha match | `ThreeWayMatch.match_date` | Sí (generado) |
+| Referencia factura | `ThreeWayMatch.invoice_id` | Sí (tras búsqueda SII) |
+| Fuentes OC / Recepción | `PurchaseOrder`, `GoodsReceipt` | No (solo lectura) |
 
 ## Acciones
 
@@ -55,6 +57,7 @@
 
 ## Validaciones visibles
 
+- N° factura obligatorio para buscar en SII.
 - Las tres fuentes deben mostrarse lado a lado antes de confirmar.
 - Tolerancia de discrepancia ⚠ pendiente — mostrar diferencia absoluta y porcentaje.
 

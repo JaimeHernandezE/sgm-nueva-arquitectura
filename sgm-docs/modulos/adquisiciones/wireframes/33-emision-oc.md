@@ -27,13 +27,13 @@
 
 ## Campos ↔ entidad
 
-| Campo UI | Entidad.campo |
-|---|---|
-| N° de OC en MP | `PurchaseOrder.mp_oc_number` |
-| Proveedor (heredado de 3.2) | `PurchaseOrder.provider_rut` |
-| Monto (heredado de 3.2, sujeto a corrección en 3.4) | `PurchaseOrder.amount` |
-| Estado tras emitir | `PurchaseOrder.status = issued` |
-| Modo de registro | `PurchaseOrder.entry_mode` |
+| Campo UI | Entidad.campo | Obligatorio |
+|---|---|---|
+| N° de OC en MP | `PurchaseOrder.mp_oc_id` | Sí |
+| Proveedor (heredado) | `PurchaseOrder.supplier_rut` | No (solo lectura) |
+| Monto (heredado) | `PurchaseOrder.total_amount` | No (solo lectura) |
+| Estado tras emitir | `PurchaseOrder.status` | Sí (generado: `issued`) |
+| Modo de registro | `PurchaseOrder.entry_mode` | Sí |
 
 ## Acciones
 

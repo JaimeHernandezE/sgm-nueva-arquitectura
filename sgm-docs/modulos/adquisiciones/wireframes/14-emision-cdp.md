@@ -12,7 +12,7 @@
 | SOLPED #1234 — Certificado de Disponibilidad (CDP)        |
 +----------------------------------------------------------+
 | Verificado por:  María López (1.3)                        |
-| Línea presupuestaria    [ Cuenta / Programa ...        ]  |
+| Línea presupuestaria (solo lectura) [ Cuenta / Programa ... ]  |
 | Monto certificado *     [ $ ____________ ]                |
 | Año fiscal *            [ 2026 ]                          |
 +----------------------------------------------------------+
@@ -47,14 +47,16 @@ Visible cuando FirmaGob no está disponible o el usuario elige «Registrar CDP f
 
 ## Campos ↔ entidad
 
-| Campo UI | Entidad.campo |
-|---|---|
-| Nº correlativo CDP | `BudgetAvailabilityCertificate.certificate_number` |
-| Monto certificado | `BudgetAvailabilityCertificate.certified_amount` |
-| Firmante | `BudgetAvailabilityCertificate.signed_by` |
-| Fecha firma | `BudgetAvailabilityCertificate.signed_at` |
-| Modo de firma | `BudgetAvailabilityCertificate.signature_mode` |
-| Archivo escaneado | `BudgetAvailabilityCertificate.scanned_certificate_attachment` |
+| Campo UI | Entidad.campo | Obligatorio |
+|---|---|---|
+| Línea presupuestaria | `BudgetAvailabilityCertificate.budget_line_id` | No (solo lectura, heredada de 1.3) |
+| Monto certificado | `BudgetAvailabilityCertificate.certified_amount` | Sí |
+| Año fiscal | `BudgetAvailabilityCertificate.fiscal_year` | Sí |
+| Nº correlativo CDP | `BudgetAvailabilityCertificate.certificate_number` | Sí (modo escaneado) |
+| Fecha del documento | `BudgetAvailabilityCertificate.signed_at` | Sí (modo escaneado) |
+| Adjunto CDP firmado | `BudgetAvailabilityCertificate.scanned_certificate_attachment` | Sí si modo escaneado |
+| Firmante | `BudgetAvailabilityCertificate.signed_by` | Sí (generado al firmar) |
+| Modo de firma | `BudgetAvailabilityCertificate.signature_mode` | Sí |
 
 ## Acciones
 
@@ -69,6 +71,12 @@ Visible cuando FirmaGob no está disponible o el usuario elige «Registrar CDP f
 - **Firma pendiente:** estado `pending_signature`; reintento FirmaGob u oferta de camino escaneado.
 - **CDP escaneado inválido:** adjunto sin firmas legibles o metadatos inconsistentes → `SCANNED_CDP_INVALID`.
 - **Éxito:** CDP `issued`; evento `BudgetAvailabilityCertificateIssued`; avance a 1.6. La fila del expediente muestra el modo en línea secundaria (`Firma electrónica` / `CDP escaneado`).
+
+## Validaciones visibles
+
+- Asterisco en monto certificado y año fiscal (ambos modos).
+- Modo escaneado: asterisco en correlativo, fecha y adjunto.
+- Segregación verificador ≠ firmante (`SEGREGATION_OF_DUTIES_VIOLATION`).
 
 ## Notas
 

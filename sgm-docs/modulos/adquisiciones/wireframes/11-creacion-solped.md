@@ -13,7 +13,7 @@
 | Descripción *         [________________________]          |
 | Justificación *       [________________________]          |
 | Fecha solicitada *    [ __ / __ / ____ ]                  |
-| Modalidad de compra   [ (sin indicar)        v ]          |
+| Modalidad de compra (opcional) [ (sin indicar)        v ]          |
 |                       Compra Ágil / Convenio Marco /      |
 |                       Licitación Pública / Trato Directo  |
 +----------------------------------------------------------+
@@ -22,13 +22,13 @@
 +----------------------------------------------------------+
 | Líneas de bienes/servicios                                |
 | +--------+----------+----+-------+--------+-------------+ |
-| | Descr. | Cantidad | UM | Precio| Ref.   | [Eliminar]  | |
+| | Descr. *| Cant. *| UM *| Precio*| Ref.   | [Eliminar]  | |
 | +--------+----------+----+-------+--------+-------------+ |
 | | [....] | [    ]   |[v]| [    ]| SII 42k|             | |
 | +--------+----------+----+-------+--------+-------------+ |
 | [+ Agregar línea]                                         |
 +----------------------------------------------------------+
-| Documentos adjuntos        [ Subir archivo ]              |
+| Documentos adjuntos (opcional) [ Subir archivo ]              |
 | Línea presupuestaria       [ (opcional) Cuenta/Programa v ]|
 | [ Consultar saldo en línea presupuestaria ]  (enlace → panel)|
 +----------------------------------------------------------+
@@ -49,8 +49,11 @@
 | Línea presupuestaria (opcional) | `PurchaseRequest.proposed_budget_line_id` | No |
 | Año fiscal propuesto | `PurchaseRequest.proposed_fiscal_year` | No |
 | Líneas tabla | `PurchaseRequestLine` | ≥1 línea |
+| Descripción línea | `PurchaseRequestLine.item_description` | Sí |
+| Cantidad línea | `PurchaseRequestLine.quantity` | Sí |
 | Precio unitario | `PurchaseRequestLine.unit_price` | Sí |
 | Referencia precio | `PriceReference` (vía `getPriceReference`) | Sí |
+| Documentos adjuntos (opcional) | — | No |
 
 ## Acciones
 

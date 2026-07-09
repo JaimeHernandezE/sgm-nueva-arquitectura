@@ -30,11 +30,12 @@
 
 ## Campos ↔ entidad
 
-| Campo UI | Entidad.campo |
-|---|---|
-| Decisión | `PurchaseRequestApproval.decision` |
-| Comentarios | `PurchaseRequestApproval.comments` |
-| Estado firma | respuesta `confirmSignature` |
+| Campo UI | Entidad.campo | Obligatorio |
+|---|---|---|
+| Decisión (aprobar/rechazar) | `PurchaseRequestApproval.decision` | Sí |
+| Comentarios | `PurchaseRequestApproval.comments` | Sí si rechazo |
+| Estado firma | respuesta `confirmSignature` | Sí (camino aprobación) |
+| Línea presup. indicada | `PurchaseRequest.proposed_budget_line_id` | No (solo lectura) |
 
 ## Acciones
 

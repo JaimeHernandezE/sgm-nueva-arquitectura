@@ -42,7 +42,7 @@
           <input type="date" value="2026-06-24" />
         </div>
         <div class="form-row">
-          <label>Modalidad de compra</label>
+          <label>Modalidad de compra (opcional)</label>
           <select id="purchase-modality">
             <option value="">(sin indicar)</option>
             <option value="compra_agil" selected>Compra Ágil</option>
@@ -52,7 +52,7 @@
           </select>
         </div>
         <div id="resolution-row" class="form-row hidden">
-          <label>Resolución Fundada <span class="required">*</span></label>
+          <label>Resolución Fundada (obligatorio si Trato Directo) <span class="required">*</span></label>
           <button class="btn btn--secondary" type="button">Subir archivo</button>
         </div>
 
@@ -60,10 +60,10 @@
         <table class="form-table">
           <thead>
             <tr>
-              <th>Descr.</th>
-              <th>Cantidad</th>
-              <th>UM</th>
-              <th>Precio</th>
+              <th>Descr. <span class="required">*</span></th>
+              <th>Cant. <span class="required">*</span></th>
+              <th>UM <span class="required">*</span></th>
+              <th>Precio <span class="required">*</span></th>
               <th>Ref.</th>
               <th></th>
             </tr>
@@ -82,7 +82,7 @@
         <button class="btn btn--secondary" type="button">+ Agregar línea</button>
 
         <div class="form-row" style="margin-top:16px;">
-          <label>Documentos adjuntos</label>
+          <label>Documentos adjuntos (opcional)</label>
           <button class="btn btn--secondary" type="button">Subir archivo</button>
         </div>
         <div class="form-row">

@@ -30,13 +30,14 @@
 
 ## Campos ↔ entidad
 
-| Campo UI | Entidad.campo |
-|---|---|
-| Fecha recepción | `GoodsReceipt.received_date` |
-| Recibido por | `GoodsReceipt.received_by` |
-| Conformidad | `GoodsReceipt.conformity_status` |
-| Observaciones | `GoodsReceipt.observations` |
-| Cant. recibida | `GoodsReceipt.received_quantity` / `GoodsReceiptLine` |
+| Campo UI | Entidad.campo | Obligatorio |
+|---|---|---|
+| Fecha recepción | `GoodsReceipt.received_date` | Sí |
+| Recibido por | `GoodsReceipt.received_by` | Sí |
+| Conformidad | `GoodsReceipt.status` (vía conformidad) | Sí |
+| Observaciones | `GoodsReceipt.observations` | Sí si no conforme |
+| Cant. recibida | `GoodsReceiptLine.quantity_received` | Sí |
+| Documentos adjuntos | almacenamiento de objetos | Sí al confirmar |
 
 ## Acciones
 
@@ -53,8 +54,9 @@
 
 ## Validaciones visibles
 
-- Adjuntos obligatorios marcados con asterisco.
-- Firma electrónica si aplica (dependencia FirmaGob en `confirmGoodsReceipt`).
+- Asterisco en fecha recepción, conformidad y adjuntos.
+- Observaciones obligatorias si no conforme.
+- Cantidad recibida obligatoria por línea.
 
 ## Notas
 

@@ -33,9 +33,9 @@
 > La conversión CLP ↔ UTM usa el valor UTM del mes en curso, obtenido de fuente oficial (ver borde). El monto evaluado es el total estimado de la SOLPED (`estimated_amount` de la preobligación).
 
 **Entidad(es) y campos:**
-- `ModalityDecision` (nueva) — `procurement_case_id` (ref. `ProcurementCase`), `selected_modality` (enum: `agile_purchase` \| `framework_agreement` \| `public_tender` \| `direct_procurement`), `ratified` (booleano: verdadero si coincide con `PurchaseRequest.purchase_modality`), `catalog_bypass_justification` (texto, **obligatorio si** aplica V2), `direct_procurement_cause` (ref. catálogo de causales, **obligatorio si** TD), `validation_results` (JSON: resultado de V1–V8 y valores de parámetros aplicados al momento de confirmar, para auditoría retrospectiva), `decided_by` (ref. `User`), `decided_at` (fecha)
-- `NormativeParameter` (nueva) — `parameter_code` (ej. `AGILE_PURCHASE_UTM_LIMIT`, `COMPTROLLER_REVIEW_UTM_LIMIT`, `TENDER_TIER_THRESHOLDS`, `GUARANTEE_THRESHOLDS`), `value` (JSON: número o estructura de tramos), `valid_from` (fecha), `created_by` / `approved_by` (ref. `User`, **personas distintas** — doble control), `legal_reference` (texto: norma que motiva el valor)
-- `ProcurementCase.procurement_type` (enum, se fija aquí; **nullable hasta este sub-paso**)
+- `ModalityDecision` — `procurement_case_id` (ref., **obligatorio**), `selected_modality` (enum, **obligatorio**), `ratified` (booleano, **obligatorio**), `catalog_bypass_justification` (texto, **obligatorio si** aplica V2), `direct_procurement_cause` (ref., **obligatorio si** TD), `validation_results` (JSON, **obligatorio**), `requires_jefatura_approval` (booleano, **opcional**), `decided_by` (ref., **obligatorio**), `decided_at` (fecha, **obligatorio**)
+- Pantalla: `estimated_amount` (número CLP, **obligatorio** — entrada para gateway V1–V8)
+- `ProcurementCase.procurement_type` (enum, **obligatorio** desde este sub-paso)
 - `CaseStep` — instancias creadas dinámicamente según la modalidad confirmada
 - `UtmValue` (nueva, referencia) — `month`, `year`, `value_clp`, `source`
 - `ModalityDecision.requires_jefatura_approval` (booleano) — control capturado en este mismo sub-paso: si el usuario lo marca, el expediente pasa por 2.2 antes de continuar a 2.3; si no, 2.2 se omite. Ver nota en 2.2.
@@ -78,7 +78,7 @@
 **Detalle:** Aprobación de la decisión de modalidad por jefatura DAF antes de la vinculación con Mercado Público. **La existencia misma de este sub-paso está pendiente de ratificación con la DM**: podría exigirse siempre, solo para modalidades sensibles (Trato Directo con seguridad; ¿Licitación Pública?), o no existir como aprobación separada (bastando la decisión registrada de 2.1). Mientras esa ratificación no ocurra, la especificación lo modela como **decisión operativa por expediente**: el usuario marca en 2.1 si quiere solicitar esta aprobación (`requires_jefatura_approval`); si la marca, este sub-paso se ejecuta; si no, se omite y el flujo continúa directo a 2.3. Se documenta la estructura completa para no bloquear la especificación, con el gatillo definitivo (¿siempre obligatorio?, ¿solo por modalidad o monto?) aún pendiente — **[PENDIENTE P-38]**.
 
 **Entidad(es) y campos:**
-- `ModalityDecisionApproval` *(sugerida, no confirmada en fuente)* — `modality_decision_id` (ref. `ModalityDecision`), `approver_id` (ref. `User`), `decision` (enum: `approved`, `rejected`), `comments` (texto, obligatorio si `rejected`), `decision_date` (fecha)
+- `ModalityDecisionApproval` *(sugerida)* — `modality_decision_id` (ref., **obligatorio**), `approver_id` (ref., **obligatorio**), `decision` (enum, **obligatorio**), `comments` (texto, **obligatorio si** `rejected`), `decision_date` (fecha, **obligatorio**)
 
 **Borde de módulo:**
 
@@ -116,8 +116,9 @@
 Registrado y validado el código — sea la ejecución inmediata o diferida —, el expediente queda bloqueado en estado "vinculado" y **arranca en ese momento** la sincronización de estados (no al cierre de la etapa 2); el seguimiento pasa a las lecturas de estado documentadas en `arquitectura/integracion-mercado-publico.md`.
 
 **Entidad(es) y campos:**
-- `ProcurementCase.mp_process_id` (texto, **obligatorio al completar este sub-paso**, salvo TD), `ProcurementCase.mp_linked_at` (fecha), `ProcurementCase.mp_process_type` (enum, coherente con `procurement_type`)
-- `PurchaseRequest.status` (enum, transiciona al estado bloqueado propio de la modalidad)
+- `ProcurementCase.mp_process_id` (texto, **obligatorio** al completar, salvo TD), `ProcurementCase.mp_linked_at` (fecha, **obligatorio si** `mp_process_id` presente), `ProcurementCase.mp_process_type` (enum, **obligatorio si** `mp_process_id` presente)
+- Pantalla: código/ID proceso MP (texto, **obligatorio**)
+- `PurchaseRequest.status` (enum, **obligatorio** — transiciona al estado de la modalidad)
 
 **Borde de módulo:**
 

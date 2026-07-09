@@ -11,9 +11,9 @@
 +----------------------------------------------------------------+
 | [OC rechazada — solo lectura / registro manual]                 |
 | OC N° 4021-33-SE26 · Proveedor: Comercial Sur SpA                |
-| Motivo (si MP lo trae): [________________________]              |
+| Motivo (opcional — si MP lo trae) [________________________]              |
 +----------------------------------------------------------------+
-| Tarea de decisión                                                |
+| Tarea de decisión *                                              |
 | ( ) Emitir OC a la segunda mejor oferta (vuelve a 3.2/3.3)       |
 | ( ) Cancelar y republicar (nueva cotización, re-vinculación 2.3) |
 +----------------------------------------------------------------+
@@ -23,10 +23,11 @@
 
 ## Campos ↔ entidad
 
-| Campo UI | Entidad.campo |
-|---|---|
-| Motivo del rechazo | `PurchaseOrder.rejection_reason` |
-| Estado OC | `PurchaseOrder.status = rejected_by_supplier`, `.rejected_at` |
+| Campo UI | Entidad.campo | Obligatorio |
+|---|---|---|
+| Motivo del rechazo | `PurchaseOrder.cancellation_reason` | No (opcional) |
+| Decisión (radios) | navegación a 3.2/3.3 o 2.3 | Sí |
+| Estado OC | `PurchaseOrder.status` | No (generado: `rejected_by_supplier`) |
 
 ## Acciones
 
@@ -42,7 +43,8 @@
 
 ## Validaciones visibles
 
-- Ninguna bloqueante propia — el rechazo es un hecho reflejado, no una decisión del usuario.
+- Decisión obligatoria (elegir una opción antes de continuar).
+- Motivo opcional (solo si MP lo entrega).
 
 ## Notas
 

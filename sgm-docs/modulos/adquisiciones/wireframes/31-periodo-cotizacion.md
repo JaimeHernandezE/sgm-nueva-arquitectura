@@ -24,10 +24,11 @@
 
 ## Campos ↔ entidad
 
-| Campo UI | Entidad.campo |
-|---|---|
-| Timer / plazo declarado | `CaseStep.started_at`, plazo registrado en 2.3 |
-| Bitácora de sincronización (no visible en UI, referencial) | `MpProcessSnapshot` |
+| Campo UI | Entidad.campo | Obligatorio |
+|---|---|---|
+| ID de Cotización | `ProcurementCase.mp_process_id` | No (solo lectura) |
+| Timer / plazo declarado | `CaseStep.started_at` | No (solo lectura) |
+| Bitácora sincronización | `MpProcessSnapshot` | No (referencial) |
 
 ## Acciones
 

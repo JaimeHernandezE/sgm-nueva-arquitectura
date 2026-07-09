@@ -18,6 +18,7 @@ Antes de cambiar un sub-paso, pantalla o fila del expediente:
 
 - Ningún botón sin operación publicada en contrato.
 - Ningún campo sin entidad.campo en el modelo.
+- Toda obligatoriedad explícita en modelo, wireframe (columna Obligatorio) y prototipo (`*`, `(opcional)`, `(obligatorio si …)`).
 - Cambio en wireframe `.md` → actualizar prototipo HTML enlazado (y viceversa).
 - Cambio en fila del expediente → actualizar `demo-data.js` y `steps-manifest.json` + `.js`.
 - Specs `.md`/`.svg` permanecen en `sgm-docs/`; HTML solo en `sgm-prototipos/`.

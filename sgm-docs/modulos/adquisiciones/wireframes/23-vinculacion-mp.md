@@ -33,12 +33,12 @@ Este wireframe cubre la **ejecución inmediata** (Compra Ágil / Convenio Marco,
 
 ## Campos ↔ entidad
 
-| Campo UI | Entidad.campo |
-|---|---|
-| Código / ID del proceso MP | `ProcurementCase.mp_process_id` |
-| Fecha de vinculación (solo lectura tras vincular) | `ProcurementCase.mp_linked_at` |
-| Tipo de proceso MP (derivado de la modalidad) | `ProcurementCase.mp_process_type` |
-| Estado SOLPED tras vincular | `PurchaseRequest.status` (transición al estado bloqueado de la modalidad) |
+| Campo UI | Entidad.campo | Obligatorio |
+|---|---|---|
+| Código / ID del proceso MP | `ProcurementCase.mp_process_id` | Sí |
+| Fecha de vinculación | `ProcurementCase.mp_linked_at` | Sí (generado al vincular) |
+| Tipo de proceso MP | `ProcurementCase.mp_process_type` | Sí (generado) |
+| Modalidad confirmada | `ProcurementCase.procurement_type` | No (solo lectura) |
 
 ## Acciones
 
@@ -56,6 +56,9 @@ Este wireframe cubre la **ejecución inmediata** (Compra Ágil / Convenio Marco,
 - **MP no disponible:** banner `MP_PROVIDER_UNAVAILABLE` — **[PENDIENTE P-32]** (resiliencia ante servicios externos), sin registro provisional definido.
 
 ## Validaciones visibles
+
+- Asterisco en código / ID del proceso MP.
+- Código MP obligatorio para «Validar y vincular».
 
 | Regla | Error | Severidad |
 |---|---|---|

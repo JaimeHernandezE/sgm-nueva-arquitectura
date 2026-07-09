@@ -4,6 +4,18 @@ Fuente única de las entidades del modelo de datos SGM. Los macroprocesos **refe
 
 **Convención de nombres:** inglés, estilo técnico (`PurchaseRequest`, no `SolicitudCompra`).
 
+**Leyenda de obligatoriedad** (cada campo en las tablas siguientes declara uno de estos valores en **Tipo** o **Notas**):
+
+| Valor | Significado |
+|---|---|
+| `Obligatorio` | Requerido al persistir o enviar |
+| `**Opcional**` | Puede omitirse o ser nulo |
+| `**Obligatorio si** <condición>` | Condicional explícita |
+| `Obligatorio (generado por sistema)` | Asignado por el motor (timestamps, correlativos, FKs auto) |
+| `**Opcional** (derivado)` | Calculado o agregado; no ingreso de usuario |
+
+Si el campo aparece en un formulario, la marca debe coincidir con la tabla Campos ↔ entidad del wireframe y con la etiqueta del prototipo HTML (ver `plantilla-maestra-sgm.md` §6.7 y §7).
+
 **Visibilidad de borde:** cada entidad indica si es **interna** al módulo o **expuesta** en el contrato API ([`modulos/adquisiciones/contracts.md`](../modulos/adquisiciones/contracts.md)). Por defecto toda entidad es interna; la exposición se declara explícitamente.
 
 **Estado de esta lista:** poblada a partir del macroproceso Compra Ágil (Adquisiciones). Se irá extendiendo a medida que se documenten otras modalidades tras validar el piloto.
@@ -19,14 +31,14 @@ Raíz de trazabilidad de todo el ciclo SOLPED → Pago. El estado del expediente
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `folio` | texto | Correlativo legible. Formato propuesto `ADQ-AAAA-NNNNN`. ⚠ **Pendiente de definir:** formato final del correlativo. |
-| `procurement_type` | enum | `agile_purchase`, `framework_agreement`, `public_tender`, `direct_procurement` — unificado a inglés (antes en castellano: `compra_agil`, `convenio_marco`, `licitacion_publica`, `trato_directo`), consistente con `PurchaseRequest.purchase_modality`. Origen: reconciliación de fichas de etapa 2/3 (Compra Ágil). |
-| `current_step` | ref. `CaseStep` | Paso activo del expediente |
-| `status` | enum | `en_curso`, `finalizado`, `cancelado`, `desierto`. ⚠ **Pendiente de definir:** refinamiento de valores y transiciones. |
-| `created_at` | fecha/hora | |
-| `mp_process_id` | texto | Vínculo genérico con el proceso en Mercado Público, válido para las 4 modalidades. Obligatorio al completar la vinculación MP, salvo Trato Directo. Nulos hasta la vinculación, cuyo momento depende de la modalidad (inmediata en Compra Ágil/Convenio Marco; diferida en Licitación Pública — sub-paso 3.5 de su etapa 3 — y en Trato Directo, al momento de la publicación). Origen: ficha `procesos-transversales/2-modalidad-compra.md` §2.3. |
-| `mp_linked_at` | fecha/hora | Nula hasta la vinculación — mismo momento condicional por modalidad que `mp_process_id`. Origen: ficha `2-modalidad-compra.md` §2.3. |
-| `mp_process_type` | enum | Coherente con `procurement_type`. Origen: ficha `2-modalidad-compra.md` §2.3. |
+| `folio` | texto | **Obligatorio** (generado por sistema). Correlativo legible. Formato propuesto `ADQ-AAAA-NNNNN`. ⚠ **Pendiente de definir:** formato final del correlativo. |
+| `procurement_type` | enum | **Opcional** hasta etapa 2.1; **Obligatorio** desde confirmación de modalidad. Valores: `agile_purchase`, `framework_agreement`, `public_tender`, `direct_procurement`. |
+| `current_step` | ref. `CaseStep` | **Obligatorio** |
+| `status` | enum | **Obligatorio**. Valores: `en_curso`, `finalizado`, `cancelado`, `desierto`. ⚠ **Pendiente de definir:** refinamiento de valores y transiciones. |
+| `created_at` | fecha/hora | **Obligatorio** (generado por sistema) |
+| `mp_process_id` | texto | **Opcional** hasta vinculación MP; **Obligatorio si** vinculación completada (salvo Trato Directo en fase inicial). Origen: ficha `2-modalidad-compra.md` §2.3. |
+| `mp_linked_at` | fecha/hora | **Opcional** hasta vinculación; **Obligatorio si** `mp_process_id` presente. Origen: ficha `2-modalidad-compra.md` §2.3. |
+| `mp_process_type` | enum | **Opcional** hasta vinculación; **Obligatorio si** `mp_process_id` presente. Coherente con `procurement_type`. Origen: ficha `2-modalidad-compra.md` §2.3. |
 
 ### `CaseStep` (Paso de Expediente)
 **Visibilidad:** interna
@@ -37,13 +49,13 @@ Raíz de trazabilidad de todo el ciclo SOLPED → Pago. El estado del expediente
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `procurement_case_id` | ref. `ProcurementCase` | |
-| `step_number` | número | |
-| `name` | texto | |
-| `status` | enum | `pendiente`, `en_curso`, `finalizada` |
-| `responsible_unit` | ref. `OrganizationalUnit` | |
-| `started_at` | fecha/hora | |
-| `completed_at` | fecha/hora | |
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio** |
+| `step_number` | número | **Obligatorio** |
+| `name` | texto | **Obligatorio** |
+| `status` | enum | **Obligatorio**. Valores: `pendiente`, `en_curso`, `finalizada` |
+| `responsible_unit` | ref. `OrganizationalUnit` | **Opcional** hasta asignación de responsable |
+| `started_at` | fecha/hora | **Opcional** hasta inicio del paso |
+| `completed_at` | fecha/hora | **Opcional** hasta cierre del paso |
 
 > `procurement_case_id` en cada entidad del ciclo es **desnormalización intencional** para trazabilidad y reportería directa (consultas por expediente sin recorrer la cadena de FKs). Se mantiene además de las FKs directas entre entidades.
 
@@ -54,16 +66,16 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
-| `requesting_unit` | ref. `OrganizationalUnit` | |
-| `description` | texto | |
-| `justification` | texto | |
-| `requested_date` | fecha | |
-| `purchase_modality` | enum, **opcional** | Indicación provisional de modalidad de compra. Valores: `agile_purchase` (Compra Ágil), `framework_agreement` (Convenio Marco), `public_tender` (Licitación Pública), `direct_procurement` (Trato Directo). Puede confirmarse o modificarse en etapa 2. |
-| `founded_resolution_attachment` | ref. adjunto | **Obligatorio** si `purchase_modality = direct_procurement`. Resolución Fundada que funda el Trato Directo. |
-| `proposed_budget_line_id` | ref. `BudgetLine` | **Opcional** — indicación del solicitante para autoconsulta de saldo (1.1, 1.2); no sustituye verificación en 1.3 |
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional — ver nota arriba |
+| `requesting_unit` | ref. `OrganizationalUnit` | **Obligatorio** |
+| `description` | texto | **Obligatorio** |
+| `justification` | texto | **Obligatorio** |
+| `requested_date` | fecha | **Obligatorio** |
+| `purchase_modality` | enum, **opcional** | **Opcional** — indicación provisional de modalidad. Valores: `agile_purchase`, `framework_agreement`, `public_tender`, `direct_procurement`. Confirmable en etapa 2. |
+| `founded_resolution_attachment` | ref. adjunto | **Obligatorio si** `purchase_modality = direct_procurement`. Resolución Fundada. |
+| `proposed_budget_line_id` | ref. `BudgetLine` | **Opcional** — pista para autoconsulta (1.1, 1.2); no sustituye verificación en 1.3 |
 | `proposed_fiscal_year` | número | **Opcional** — año fiscal asociado a la línea propuesta |
-| `status` | enum | `draft`, `pending_approval`, `pending_finance`, `quoting_in_progress`, `quote_void`, … |
+| `status` | enum | **Obligatorio**. Valores: `draft`, `pending_approval`, `pending_finance`, `quoting_in_progress`, `quote_void`, … |
 
 ### `PurchaseRequestLine`
 **Visibilidad:** expuesta — campos en contrato: `id`, `purchase_request_id`, `item_description`, `quantity`, `unit_of_measure`, `unit_price`, `price_source`
@@ -72,11 +84,11 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `item_description` | texto | |
-| `quantity` | número | |
-| `unit_of_measure` | ref. `UnitOfMeasure` | |
-| `unit_price` | número | Obligatorio |
-| `price_source` | ref. `PriceReference` | |
+| `item_description` | texto | **Obligatorio** |
+| `quantity` | número | **Obligatorio** |
+| `unit_of_measure` | ref. `UnitOfMeasure` | **Obligatorio** |
+| `unit_price` | número | **Obligatorio** |
+| `price_source` | ref. `PriceReference` | **Obligatorio** |
 
 ### `PriceReference`
 **Visibilidad:** interna — usada en validación de `createPurchaseRequest`; no cruza borde como entidad independiente
@@ -85,11 +97,11 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `item_code` / `item_description_hash` | texto | Pendiente definir mecanismo de match |
-| `source` | enum | `SII`, `mercado_publico_historico`, `otro` — **pendiente de definir cuál usar** |
-| `reference_price` | número | |
-| `reference_date` | fecha | |
-| `currency` | enum | Probablemente siempre CLP |
+| `item_code` / `item_description_hash` | texto | **Obligatorio**. Pendiente definir mecanismo de match |
+| `source` | enum | **Obligatorio**. Valores: `SII`, `mercado_publico_historico`, `otro` — **pendiente de definir cuál usar** |
+| `reference_price` | número | **Obligatorio** |
+| `reference_date` | fecha | **Obligatorio** |
+| `currency` | enum | **Obligatorio** (default CLP) |
 
 ### `PurchaseRequestApproval`
 **Visibilidad:** expuesta — campos en contrato: `id`, `purchase_request_id`, `approver_id`, `decision`, `decision_date`, `comments`
@@ -98,11 +110,11 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `purchase_request_id` | ref. `PurchaseRequest` | |
-| `approver_id` | ref. `User` | |
-| `decision` | enum | `approved`, `rejected` |
-| `decision_date` | fecha | |
-| `comments` | texto | Obligatorio si `decision = rejected` |
+| `purchase_request_id` | ref. `PurchaseRequest` | **Obligatorio** |
+| `approver_id` | ref. `User` | **Obligatorio** |
+| `decision` | enum | **Obligatorio**. Valores: `approved`, `rejected` |
+| `decision_date` | fecha | **Obligatorio** (generado por sistema al registrar) |
+| `comments` | texto | **Obligatorio si** `decision = rejected` |
 
 ### `BudgetAvailabilityCertificate` (CDP)
 **Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status`, `signature_mode`
@@ -111,19 +123,19 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
-| `purchase_request_id` | ref. `PurchaseRequest` | |
-| `certificate_number` | texto | Correlativo del CDP |
-| `budget_line_id` | ref. `BudgetLine` | |
-| `certified_amount` | número | |
-| `fiscal_year` | número | |
-| `verified_by` | ref. `User` | Formulador DAF (sub-paso 1.3) |
-| `signed_by` | ref. `User` | Aprobador DAF (sub-paso 1.5) |
-| `signed_at` | fecha/hora | |
-| `status` | enum | `issued`, `rejected`, `pending_signature` |
-| `rejection_reason` | texto | Obligatorio si `rejected` |
-| `signature_mode` | enum | `electronic`, `scanned` — distingue firma FirmaGob de CDP escaneado con firmas (sub-paso 1.5) |
-| `scanned_certificate_attachment` | ref. almacenamiento | Obligatorio si `signature_mode = scanned` |
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
+| `purchase_request_id` | ref. `PurchaseRequest` | **Obligatorio** |
+| `certificate_number` | texto | **Obligatorio** (generado por sistema en modo electrónico; ingreso manual en escaneado) |
+| `budget_line_id` | ref. `BudgetLine` | **Obligatorio** |
+| `certified_amount` | número | **Obligatorio** |
+| `fiscal_year` | número | **Obligatorio** |
+| `verified_by` | ref. `User` | **Obligatorio** — formulador DAF (sub-paso 1.3) |
+| `signed_by` | ref. `User` | **Obligatorio** — aprobador DAF (sub-paso 1.5) |
+| `signed_at` | fecha/hora | **Obligatorio** (generado por sistema al firmar) |
+| `status` | enum | **Obligatorio**. Valores: `issued`, `rejected`, `pending_signature` |
+| `rejection_reason` | texto | **Obligatorio si** `status = rejected` |
+| `signature_mode` | enum | **Obligatorio**. Valores: `electronic`, `scanned` |
+| `scanned_certificate_attachment` | ref. almacenamiento | **Obligatorio si** `signature_mode = scanned` |
 
 ### `BudgetPreCommitment` (Preobligación / Pre-afectación)
 **Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `purchase_request_id`, `budget_availability_certificate_id`, `budget_line_id`, `estimated_amount`, `fiscal_year`, `status`
@@ -134,13 +146,13 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
-| `purchase_request_id` | ref. `PurchaseRequest` | |
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
+| `purchase_request_id` | ref. `PurchaseRequest` | **Obligatorio** |
 | `budget_availability_certificate_id` | ref. `BudgetAvailabilityCertificate` | **Obligatorio** — requiere CDP vigente |
-| `budget_line_id` | ref. `BudgetLine` | |
-| `estimated_amount` | número | |
-| `fiscal_year` | número | |
-| `status` | enum | `active`, … |
+| `budget_line_id` | ref. `BudgetLine` | **Obligatorio** |
+| `estimated_amount` | número | **Obligatorio** |
+| `fiscal_year` | número | **Obligatorio** |
+| `status` | enum | **Obligatorio**. Valores: `active`, … |
 
 ### `AgileQuoteProcess`
 **Visibilidad:** expuesta — campos en contrato: `id`, `purchase_request_id`, `deep_link_clicked_at`, `mp_quote_id`
@@ -152,10 +164,10 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
-| `purchase_request_id` | ref. `PurchaseRequest` | |
-| `deep_link_clicked_at` | fecha/hora | |
-| `mp_quote_id` | texto | Nulo hasta sincronización. Duplica `ProcurementCase.mp_process_id` — ver nota arriba. |
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
+| `purchase_request_id` | ref. `PurchaseRequest` | **Obligatorio** |
+| `deep_link_clicked_at` | fecha/hora | **Opcional** — traza de uso del deep link |
+| `mp_quote_id` | texto | **Opcional** hasta sincronización; **Obligatorio si** proceso MP vinculado. Duplica `ProcurementCase.mp_process_id` — ver nota arriba. |
 
 ### `PurchaseOrder` (OC)
 **Visibilidad:** expuesta — campos en contrato: `id`, `purchase_request_id`, `mp_oc_id`, `supplier_rut`, `total_amount`, `selection_justification`, `status`, `acceptance_date`
@@ -164,18 +176,18 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
-| `purchase_request_id` | ref. `PurchaseRequest` | |
-| `mp_oc_id` | texto | |
-| `supplier_rut` | texto | |
-| `total_amount` | número | |
-| `selection_justification` | texto | Obligatorio si no se eligió la oferta de menor precio |
-| `status` | enum | `issued`, `accepted`, `rejected`, `blocked_ineligible`, `rejected_by_supplier`, `pending_mp_sync`, `commitment_pending`. <!-- REVISAR: 'rejected' y 'rejected_by_supplier' coexisten en este enum con semántica solapada; preexistente a esta reconciliación, ninguna instrucción lo aborda --> |
-| `acceptance_date` | fecha | Nula hasta aceptación |
-| `supplier_eligibility_check` | booleano | Resultado de validación de habilidad tributaria/laboral |
-| `cancellation_reason` | texto | Solo si se cancela antes de emitir |
-| `fulfillment_status` | enum | `pending`, `partially_received`, `fully_received` — derivado del agregado de líneas recepcionadas. Origen: ficha `4-recepcion-conforme.md` §4.1. |
-| `entry_mode` | enum | `mp_read` \| `manual` — distingue si el dato de la OC proviene de lectura MP o de registro manual (patrón lectura MP vs. registro manual). Origen: ficha `3-resolucion-compra.md`. |
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
+| `purchase_request_id` | ref. `PurchaseRequest` | **Obligatorio** |
+| `mp_oc_id` | texto | **Obligatorio** al registrar OC |
+| `supplier_rut` | texto | **Obligatorio** |
+| `total_amount` | número | **Obligatorio** |
+| `selection_justification` | texto | **Obligatorio si** no se eligió la oferta de menor precio |
+| `status` | enum | **Obligatorio**. Valores: `issued`, `accepted`, `rejected`, `blocked_ineligible`, `rejected_by_supplier`, `pending_mp_sync`, `commitment_pending` |
+| `acceptance_date` | fecha | **Opcional** hasta aceptación; **Obligatorio si** `status = accepted` |
+| `supplier_eligibility_check` | booleano | **Opcional** (derivado) — resultado de validación de habilidad |
+| `cancellation_reason` | texto | **Obligatorio si** cancelación antes de emitir |
+| `fulfillment_status` | enum | **Opcional** (derivado). Valores: `pending`, `partially_received`, `fully_received` |
+| `entry_mode` | enum | **Obligatorio**. Valores: `mp_read` \| `manual` |
 
 ### `BudgetCommitment` (Compromiso Cierto / Obligación)
 **Visibilidad:** expuesta — campos en contrato: `id`, `purchase_order_id`, `budget_pre_commitment_id`, `committed_amount`, `commitment_date`, `source`
@@ -184,12 +196,12 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
-| `purchase_order_id` | ref. `PurchaseOrder` | |
-| `budget_pre_commitment_id` | ref. `BudgetPreCommitment` | |
-| `committed_amount` | número | Monto real desde MP — puede diferir del `estimated_amount` |
-| `commitment_date` | fecha | Automática |
-| `source` | enum | `api_sync` — distingue de futuros ajustes manuales |
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
+| `purchase_order_id` | ref. `PurchaseOrder` | **Obligatorio** |
+| `budget_pre_commitment_id` | ref. `BudgetPreCommitment` | **Obligatorio** |
+| `committed_amount` | número | **Obligatorio** |
+| `commitment_date` | fecha | **Obligatorio** (generado por sistema) |
+| `source` | enum | **Obligatorio**. Valores: `api_sync`, … |
 
 ### `GoodsReceipt` (Recepción Conforme)
 **Visibilidad:** expuesta — campos en contrato: `id`, `purchase_order_id`, `received_by`, `received_date`, `receipt_type`, `receiving_unit`, `status`, `observations`
@@ -198,19 +210,19 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
-| `purchase_order_id` | ref. `PurchaseOrder` | |
-| `receipt_type` | enum | `physical_good` \| `service`. Origen: ficha 4.1. |
-| `received_by` | ref. `User` | |
-| `receiving_unit` | ref. `OrganizationalUnit` | Bodega o unidad requirente, según perfil de recepción configurado por el municipio. Origen: ficha 4.1. |
-| `received_date` | fecha | |
-| `service_period_start` / `service_period_end` | fecha | **Obligatorios si** `receipt_type = service` recurrente. Origen: ficha 4.1. |
-| `supporting_document_ref` | ref. almacenamiento de objetos | **Obligatorio si** `receipt_type = service` (informe, acta). Origen: ficha 4.1. |
-| `status` | enum | `draft`, `confirmed`, `rejected`, `partially_rejected`. **Reemplaza** el enum anterior `conformity_status` (`conforme`/`no_conforme`), que queda subsumido — la conformidad total/parcial se resuelve ahora a nivel de `GoodsReceiptLine`. Origen: ficha 4.1/4.2. |
-| `observations` | texto | Obligatorio si `status` indica rechazo total o parcial |
-| `confirmed_by` | ref. `User` | Debe ser distinto del aprobador de la compra (regla SoD). Origen: ficha 4.2. |
-| `confirmed_at` | fecha/hora | Origen: ficha 4.2. |
-| `accrual_ref` | ref. `Accrual` | Referencia resultante tras `recordAccrual`. Origen: ficha 4.4. <!-- REVISAR: momento del devengado — ver nota junto a `Accrual` --> |
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
+| `purchase_order_id` | ref. `PurchaseOrder` | **Obligatorio** |
+| `receipt_type` | enum | **Obligatorio**. Valores: `physical_good` \| `service` |
+| `received_by` | ref. `User` | **Obligatorio** |
+| `receiving_unit` | ref. `OrganizationalUnit` | **Obligatorio** |
+| `received_date` | fecha | **Obligatorio** |
+| `service_period_start` / `service_period_end` | fecha | **Obligatorio si** `receipt_type = service` recurrente |
+| `supporting_document_ref` | ref. almacenamiento de objetos | **Obligatorio si** `receipt_type = service` |
+| `status` | enum | **Obligatorio**. Valores: `draft`, `confirmed`, `rejected`, `partially_rejected` |
+| `observations` | texto | **Obligatorio si** `status` indica rechazo total o parcial |
+| `confirmed_by` | ref. `User` | **Obligatorio si** `status = confirmed` — regla SoD |
+| `confirmed_at` | fecha/hora | **Obligatorio si** `status = confirmed` |
+| `accrual_ref` | ref. `Accrual` | **Opcional** hasta devengado registrado |
 
 > `received_quantity` se retira del encabezado de `GoodsReceipt` (antes marcado "por línea", inconsistente con un campo a nivel de cabecera) — la cantidad ahora vive exclusivamente en `GoodsReceiptLine`.
 
@@ -221,14 +233,14 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `goods_receipt_id` | ref. `GoodsReceipt` | |
-| `purchase_order_line_ref` | ref. línea de `PurchaseOrder` | |
-| `quantity_ordered` | número | |
-| `quantity_received` | número | |
-| `quantity_accepted` | número | |
-| `quantity_rejected` | número | |
+| `goods_receipt_id` | ref. `GoodsReceipt` | **Obligatorio** |
+| `purchase_order_line_ref` | ref. línea de `PurchaseOrder` | **Obligatorio** |
+| `quantity_ordered` | número | **Obligatorio** |
+| `quantity_received` | número | **Obligatorio** |
+| `quantity_accepted` | número | **Obligatorio** |
+| `quantity_rejected` | número | **Obligatorio** |
 | `rejection_reason` | texto | **Obligatorio si** `quantity_rejected > 0` |
-| `inventory_entry_ref` | ref. externa | Referencia al registro del proveedor de inventario, si existe. Origen: ficha 4.3. |
+| `inventory_entry_ref` | ref. externa | **Opcional** — referencia al proveedor de inventario, si existe |
 
 ### `ThreeWayMatch` (Cruce de 3 vías)
 **Visibilidad:** expuesta — campos en contrato: `id`, `purchase_order_id`, `goods_receipt_id`, `invoice_id`, `match_status`, `match_date`
@@ -237,12 +249,12 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
-| `purchase_order_id` | ref. `PurchaseOrder` | |
-| `goods_receipt_id` | ref. `GoodsReceipt` | |
-| `invoice_id` | ref. `Invoice` (fuente SII) | |
-| `match_status` | enum | `matched`, `discrepancy` |
-| `match_date` | fecha | |
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
+| `purchase_order_id` | ref. `PurchaseOrder` | **Obligatorio** |
+| `goods_receipt_id` | ref. `GoodsReceipt` | **Obligatorio** |
+| `invoice_id` | ref. `Invoice` (fuente SII) | **Obligatorio** al ejecutar match |
+| `match_status` | enum | **Obligatorio**. Valores: `matched`, `discrepancy` |
+| `match_date` | fecha | **Obligatorio** (generado por sistema al ejecutar match) |
 
 ### `Accrual` (Devengado)
 **Visibilidad:** expuesta — campos en contrato: `id`, `three_way_match_id`, `budget_commitment_id`, `accrual_amount`, `accrual_date`
@@ -255,11 +267,11 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
-| `three_way_match_id` | ref. `ThreeWayMatch` | |
-| `budget_commitment_id` | ref. `BudgetCommitment` | |
-| `accrual_amount` | número | |
-| `accrual_date` | fecha | |
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
+| `three_way_match_id` | ref. `ThreeWayMatch` | **Obligatorio** |
+| `budget_commitment_id` | ref. `BudgetCommitment` | **Obligatorio** |
+| `accrual_amount` | número | **Obligatorio** |
+| `accrual_date` | fecha | **Obligatorio** |
 
 ### `PaymentDecree` (Decreto de Pago)
 **Visibilidad:** expuesta — campos en contrato: `id`, `accrual_id`, `decree_number`, `decree_date`, `approver_id`
@@ -268,11 +280,11 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
-| `accrual_id` | ref. `Accrual` | |
-| `decree_number` | texto | Correlativo |
-| `decree_date` | fecha | |
-| `approver_id` | ref. `User` | |
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
+| `accrual_id` | ref. `Accrual` | **Obligatorio** |
+| `decree_number` | texto | **Obligatorio** |
+| `decree_date` | fecha | **Obligatorio** |
+| `approver_id` | ref. `User` | **Obligatorio** |
 
 ### `Payment` (Pago)
 **Visibilidad:** expuesta — campos en contrato: `id`, `payment_decree_id`, `payment_date`, `payment_method`, `payment_status`
@@ -281,11 +293,11 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `procurement_case_id` | ref. `ProcurementCase` | Desnormalización intencional — ver nota arriba |
-| `payment_decree_id` | ref. `PaymentDecree` | |
-| `payment_date` | fecha | |
-| `payment_method` | enum | |
-| `payment_status` | enum | `completed`, `failed` |
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
+| `payment_decree_id` | ref. `PaymentDecree` | **Obligatorio** |
+| `payment_date` | fecha | **Obligatorio** |
+| `payment_method` | enum | **Obligatorio** |
+| `payment_status` | enum | **Obligatorio**. Valores: `completed`, `failed` |
 
 ### `ModalityDecision`
 **Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `selected_modality`, `ratified`, `decided_by`, `decided_at`
@@ -294,15 +306,15 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `procurement_case_id` | ref. `ProcurementCase` | |
-| `selected_modality` | enum | `agile_purchase`, `framework_agreement`, `public_tender`, `direct_procurement` |
-| `ratified` | booleano | Verdadero si coincide con `PurchaseRequest.purchase_modality` |
-| `catalog_bypass_justification` | texto | **Obligatorio si** aplica la regla de primera-opción-catálogo (V2) y se elige otra modalidad |
-| `direct_procurement_cause` | ref. catálogo de causales | **Obligatorio si** `selected_modality = direct_procurement`. Catálogo estructurado pendiente — **[PENDIENTE P-36]** |
-| `validation_results` | JSON | Resultado de las reglas de validación (V1–V8) y valores de `NormativeParameter` aplicados al momento de confirmar, para auditoría retrospectiva |
-| `requires_jefatura_approval` | booleano | Capturado por el usuario en 2.1: si es verdadero, el expediente pasa por 2.2 antes de continuar a la vinculación MP; si es falso, 2.2 se omite. Operacionaliza como decisión por expediente el sub-paso 2.2, mientras su existencia formal siga pendiente de ratificación con la DM — **[PENDIENTE P-38]** (no se cierra con este campo, solo se hace exigible/omitible por decisión operativa). |
-| `decided_by` | ref. `User` | |
-| `decided_at` | fecha | |
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio** |
+| `selected_modality` | enum | **Obligatorio** |
+| `ratified` | booleano | **Obligatorio** |
+| `catalog_bypass_justification` | texto | **Obligatorio si** aplica regla V2 y se elige otra modalidad |
+| `direct_procurement_cause` | ref. catálogo de causales | **Obligatorio si** `selected_modality = direct_procurement` — **[PENDIENTE P-36]** |
+| `validation_results` | JSON | **Obligatorio** (generado por sistema al confirmar) |
+| `requires_jefatura_approval` | booleano | **Opcional** — decisión operativa en 2.1; **[PENDIENTE P-38]** |
+| `decided_by` | ref. `User` | **Obligatorio** |
+| `decided_at` | fecha | **Obligatorio** (generado por sistema al confirmar) |
 
 ### `ModalityDecisionApproval` *(sugerida, no confirmada en fuente)*
 **Visibilidad:** expuesta — campos en contrato: `id`, `modality_decision_id`, `approver_id`, `decision`, `decision_date`
@@ -311,11 +323,11 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `modality_decision_id` | ref. `ModalityDecision` | |
-| `approver_id` | ref. `User` | |
-| `decision` | enum | `approved`, `rejected` |
-| `comments` | texto | Obligatorio si `decision = rejected` |
-| `decision_date` | fecha | |
+| `modality_decision_id` | ref. `ModalityDecision` | **Obligatorio** |
+| `approver_id` | ref. `User` | **Obligatorio** |
+| `decision` | enum | **Obligatorio**. Valores: `approved`, `rejected` |
+| `comments` | texto | **Obligatorio si** `decision = rejected` |
+| `decision_date` | fecha | **Obligatorio** (generado por sistema al registrar) |
 
 ### `NormativeParameter`
 **Visibilidad:** expuesta — referencia global de plataforma; no administrada por el módulo Adquisiciones ni por el tenant (administración a nivel plataforma por SUBDERE)
@@ -324,11 +336,11 @@ Umbrales legales configurables usados por el gateway de validación de modalidad
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `parameter_code` | texto | Ej. `AGILE_PURCHASE_UTM_LIMIT`, `COMPTROLLER_REVIEW_UTM_LIMIT`, `TENDER_TIER_THRESHOLDS`, `GUARANTEE_THRESHOLDS` |
-| `value` | JSON | Número o estructura de tramos |
-| `valid_from` | fecha | |
-| `created_by` / `approved_by` | ref. `User` | Personas distintas — doble control |
-| `legal_reference` | texto | Norma que motiva el valor |
+| `parameter_code` | texto | **Obligatorio** |
+| `value` | JSON | **Obligatorio** |
+| `valid_from` | fecha | **Obligatorio** |
+| `created_by` / `approved_by` | ref. `User` | **Obligatorio** — personas distintas (doble control) |
+| `legal_reference` | texto | **Obligatorio** |
 
 ### `UtmValue`
 **Visibilidad:** interna — valor obtenido de fuente externa (SII u otra fuente oficial) vía la dependencia `getUtmValue`; no se expone como entidad propia del contrato de Adquisiciones
@@ -337,10 +349,10 @@ Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validac
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `month` | número | |
-| `year` | número | |
-| `value_clp` | número | |
-| `source` | texto | |
+| `month` | número | **Obligatorio** |
+| `year` | número | **Obligatorio** |
+| `value_clp` | número | **Obligatorio** |
+| `source` | texto | **Obligatorio** |
 
 ### `MpProcessSnapshot` *(sugerida, no confirmada en fuente)*
 **Visibilidad:** interna
@@ -349,11 +361,11 @@ Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validac
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `procurement_case_id` | ref. `ProcurementCase` | |
-| `mp_status` | texto | |
-| `data` | JSON | Payload leído |
-| `read_at` | fecha/hora | |
-| `source` | enum | `push`, `polling` |
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio** |
+| `mp_status` | texto | **Obligatorio** |
+| `data` | JSON | **Obligatorio** |
+| `read_at` | fecha/hora | **Obligatorio** (generado por sistema) |
+| `source` | enum | **Obligatorio**. Valores: `push`, `polling` |
 
 ### `QuotationResult` *(sugerida, no confirmada en fuente)*
 **Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `entry_mode`
@@ -362,13 +374,13 @@ Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validac
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `procurement_case_id` | ref. `ProcurementCase` | |
-| `selected_provider_rut` | texto | |
-| `selected_provider_name` | texto | |
-| `offered_amount` | número | |
-| `lowest_price_selected` | booleano | |
-| `entry_mode` | enum | `mp_read`, `manual` |
-| `recorded_at` | fecha/hora | |
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio** |
+| `selected_provider_rut` | texto | **Obligatorio** |
+| `selected_provider_name` | texto | **Obligatorio** |
+| `offered_amount` | número | **Obligatorio** |
+| `lowest_price_selected` | booleano | **Obligatorio** |
+| `entry_mode` | enum | **Obligatorio**. Valores: `mp_read`, `manual` |
+| `recorded_at` | fecha/hora | **Obligatorio** (generado por sistema) |
 
 ### `ReceiptRejectionCase` *(sugerida, no confirmada en fuente)*
 **Visibilidad:** expuesta — campos en contrato: `id`, `goods_receipt_id`, `resolution_type`, `resolution_deadline`, `resolved_at`, `outcome`
@@ -377,12 +389,12 @@ Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validac
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `goods_receipt_id` | ref. `GoodsReceipt` | |
-| `goods_receipt_lines` | ref. `GoodsReceiptLine[]` | Líneas afectadas |
-| `resolution_type` | enum | `return`, `replacement`, `penalty`, `claim` |
-| `resolution_deadline` | fecha | |
-| `resolved_at` | fecha | |
-| `outcome` | texto | |
+| `goods_receipt_id` | ref. `GoodsReceipt` | **Obligatorio** |
+| `goods_receipt_lines` | ref. `GoodsReceiptLine[]` | **Obligatorio** |
+| `resolution_type` | enum | **Obligatorio**. Valores: `return`, `replacement`, `penalty`, `claim` |
+| `resolution_deadline` | fecha | **Obligatorio** |
+| `resolved_at` | fecha | **Opcional** hasta resolución |
+| `outcome` | texto | **Obligatorio si** `resolved_at` presente |
 
 ---
 

@@ -54,7 +54,7 @@
 **Modo degradado:** el usuario registra manualmente en SGM el resultado de la selección (proveedor y monto ofertado) antes de continuar; formulario mínimo sobre el expediente.
 
 **Entidad(es) y campos:**
-- `QuotationResult` *(sugerida, no confirmada en fuente)* — `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount` (monto), `lowest_price_selected` (booleano), `entry_mode` (`mp_read` \| `manual`), `recorded_at`
+- `QuotationResult` — `procurement_case_id` (ref., **obligatorio**), `selected_provider_rut` (texto, **obligatorio**), `selected_provider_name` (texto, **obligatorio**), `offered_amount` (número, **obligatorio**), `lowest_price_selected` (booleano, **obligatorio**), `selection_justification` (texto, **obligatorio si** no es menor precio), `entry_mode` (enum, **obligatorio**), `recorded_at` (fecha/hora, **obligatorio**)
 
 **Borde de módulo:**
 
@@ -87,7 +87,7 @@
 **Modo degradado:** sin lecturas, el estado "OC enviada" se infiere del registro manual de 3.2 + deep link; el bloqueo por inhabilidad solo se conoce cuando el usuario lo ve en MP y lo registra manualmente para activar la gestión en SGM.
 
 **Entidad(es) y campos:**
-- `PurchaseOrder` *(se crea aquí en estado `issued`; se confirma en 3.4)* — `procurement_case_id`, `mp_oc_number`, `provider_rut`, `amount`, `status` (enum: `issued` \| `accepted` \| `rejected_by_supplier` \| `blocked_ineligible`), `entry_mode`
+- `PurchaseOrder` — `procurement_case_id` (ref., **obligatorio**), `mp_oc_id` (texto, **obligatorio**), `supplier_rut` (texto, **obligatorio**), `total_amount` (número, **obligatorio**), `status` (enum, **obligatorio**: `issued`, …), `entry_mode` (enum, **obligatorio**)
 
 *(Nota de reconciliación: la ficha original usaba el estado `sent` y el evento `PurchaseOrderSent`; se normalizan aquí a `issued`/`PurchaseOrderIssued`, consistentes con el enum canónico de `entidades-core.md` y con el evento ya existente en `contracts.md`.)*
 
@@ -154,8 +154,8 @@
 **Modo degradado:** el usuario registra el rechazo manualmente al verlo en MP; la tarea de decisión se crea igual, con `entry_mode = manual`.
 
 **Entidad(es) y campos:**
-- `PurchaseOrder` (actualiza) — `status = rejected_by_supplier`, `rejected_at`, `rejection_reason` (si la lectura lo trae)
-- `CaseStep` — reapertura del paso correspondiente según decisión
+- Pantalla: `decision` (enum, **obligatorio** — segunda oferta / republicar)
+- `PurchaseOrder` (actualiza) — `status` (**obligatorio** = `rejected_by_supplier`), `rejection_reason` (texto, **opcional** — si MP lo trae)
 
 **Borde de módulo:**
 
@@ -186,8 +186,9 @@
 **Modo degradado:** vencido el plazo de cotización sin registro de selección (3.2), SGM presume posible desierto y crea la tarea de verificación al usuario, quien confirma manualmente contra MP.
 
 **Entidad(es) y campos:**
-- `ProcurementCase` (actualiza) — estado según decisión (`republished` \| `reassessing` \| `cancelled`)
-- `BudgetPreCommitment` *(entidad de 1.6)* — liberación total si se cancela
+- Pantalla: `decision` (enum, **obligatorio** — republicar / reevaluar / cancelar)
+- `ProcurementCase.status` (enum, **obligatorio** — según decisión)
+- `BudgetPreCommitment` — liberación si cancelación (**obligatorio** ejecutar `releasePreCommitment`)
 
 **Borde de módulo:**
 

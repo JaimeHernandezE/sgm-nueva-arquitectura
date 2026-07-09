@@ -67,7 +67,7 @@ Descripción funcional del sub-paso en prosa. Qué ocurre, quién lo hace, qué 
 - Referenciar entidades por su nombre canónico de `modelo-datos/entidades-core.md`.
 - Indicar si el sub-paso **crea** una entidad nueva o **actualiza** una existente (y qué campos toca).
 - Si una entidad es nueva, se agrega primero a `entidades-core.md` y luego se referencia aquí — nunca se define solo en el sub-paso.
-- Formato: lista con nombre de entidad, campos relevantes con tipo entre paréntesis, y condiciones de obligatoriedad.
+- Formato: lista con nombre de entidad, campos relevantes con tipo entre paréntesis, y **obligatoriedad explícita** en cada campo: `obligatorio`, `opcional`, u `obligatorio si <condición>`. Prohibido dejar un campo sin una de esas tres marcas — la ambigüedad silenciosa no es aceptable.
 
 ### 3.5 Borde de módulo (obligatoria; "Sin cruce" si no aplica)
 
@@ -163,6 +163,7 @@ Las fichas declaran la clasificación como **quinta materia de la tabla de ficha
 4. **Entidades sugeridas:** si el análisis sugiere una entidad que la fuente no confirma (ej. `GoodsReceiptLine`), se marca explícitamente como *(sugerida, no confirmada en fuente)*.
 5. **Glosario:** todo término técnico nuevo se agrega al mapeo técnico↔funcional en `modelo-datos/glosario.md`.
 6. **Visibilidad de borde:** cada entidad en `entidades-core.md` indica si es **interna** al módulo o **expuesta** en el contrato (y en ese caso, qué subconjunto de campos cruza el borde). Por defecto toda entidad es interna; la exposición se declara, no se asume.
+7. **Obligatoriedad explícita de campos:** todo campo en `entidades-core.md` y en las fichas de sub-paso declara si es obligatorio, opcional u obligatorio bajo condición (`**opcional**`, `Obligatorio`, `**Obligatorio si** …`). Si un campo aparece en un formulario, su obligatoriedad debe coincidir en modelo, ficha, wireframe y prototipo HTML.
 
 ---
 
@@ -185,9 +186,22 @@ Imagen exportada (PNG/SVG) + fuente editable si existe (Excalidraw, draw.io). Pa
 ### Contenido obligatorio por wireframe
 1. **Identificación:** nombre de pantalla + sub-paso(s) que la motivan.
 2. **Todos los campos del formulario**, correlacionados con los campos de entidad del sub-paso — si el wireframe muestra un campo que no existe en `entidades-core.md`, o viceversa, hay una inconsistencia que resolver antes de dar por cerrada la pantalla.
-3. **Acciones disponibles** (botones/enlaces), a dónde navega o qué transición de estado dispara cada una, y **qué operación de contrato invoca** (nombre de la operación en `contracts.md`).
-4. **Estados de la pantalla:** al menos el estado normal + estados de bloqueo/solo lectura si el proceso los define (ej. SOLPED "En proceso de cotización").
-5. **Validaciones visibles:** qué campos son obligatorios, qué condiciones bloquean el avance. Recordatorio de diseño: la validación bloqueante vive en el servidor y llega como error estructurado de la API; el wireframe la refleja, no la reemplaza.
+3. **Tabla Campos ↔ entidad** con columna **Obligatorio** (`Sí` / `No` / `Sí si <condición>`). Toda fila debe tener valor en esa columna; es el ancla de trazabilidad entre modelo, wireframe y prototipo.
+4. **Acciones disponibles** (botones/enlaces), a dónde navega o qué transición de estado dispara cada una, y **qué operación de contrato invoca** (nombre de la operación en `contracts.md`).
+5. **Estados de la pantalla:** al menos el estado normal + estados de bloqueo/solo lectura si el proceso los define (ej. SOLPED "En proceso de cotización").
+6. **Validaciones visibles:** qué campos son obligatorios, opcionales o condicionales, y qué condiciones bloquean el avance. Recordatorio de diseño: la validación bloqueante vive en el servidor y llega como error estructurado de la API; el wireframe la refleja, no la reemplaza.
+
+### Obligatoriedad en wireframe y prototipo HTML
+
+En **documentación** (layout ASCII y tabla Campos ↔ entidad) y en **prototipo** (`sgm-prototipos/`) la obligatoriedad debe ser visible sin inferirla:
+
+| Estado | Wireframe spec (`.md`) | Prototipo HTML |
+|---|---|---|
+| Obligatorio | Asterisco `*` en el layout; columna Obligatorio = `Sí` | `<span class="required">*</span>` en la etiqueta |
+| Opcional | Texto `(opcional)` en el layout; columna Obligatorio = `No` | Texto `(opcional)` en la etiqueta, o ausencia de asterisco con mención explícita en notas si el campo es poco obvio |
+| Condicional | Nota `obligatorio si …` en layout y columna = `Sí si …` | Etiqueta con texto `(obligatorio si …)` y/o asterisco solo cuando la condición se cumple en la demo |
+
+Referencia de implementación: wireframe `11-creacion-solped.md` y su HTML hermano.
 
 ### Anotación acompañante
 Cada wireframe lleva un bloque de notas (en un `.md` hermano o dentro de la imagen) con: reglas de comportamiento no evidentes en el dibujo, y pendientes de definir de UI si los hay.

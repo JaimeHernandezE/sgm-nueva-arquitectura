@@ -12,7 +12,7 @@
 | SOLPED #1234 — Preobligación presupuestaria               |
 +----------------------------------------------------------+
 | CDP vigente           CDP-2026-00891  (firmado 02/07/26)  |
-| Línea presupuestaria  [ Cuenta / Programa ...        ]  |
+| Línea presupuestaria (solo lectura)  Cuenta / Programa ...   |
 | Monto preobligación * [ $ ____________ ]                |
 | Año fiscal *          [ 2026 ]                          |
 +----------------------------------------------------------+
@@ -25,13 +25,13 @@
 
 ## Campos ↔ entidad
 
-| Campo UI | Entidad.campo |
-|---|---|
-| CDP vigente | `BudgetPreCommitment.budget_availability_certificate_id` |
-| Línea presupuestaria | `BudgetPreCommitment.budget_line_id` |
-| Monto preobligación | `BudgetPreCommitment.estimated_amount` |
-| Año fiscal | `BudgetPreCommitment.fiscal_year` |
-| Ref. asiento | respuesta `registerPreObligation` (Contabilidad) |
+| Campo UI | Entidad.campo | Obligatorio |
+|---|---|---|
+| CDP vigente | `BudgetPreCommitment.budget_availability_certificate_id` | Sí (solo lectura) |
+| Línea presupuestaria | `BudgetPreCommitment.budget_line_id` | No (solo lectura, heredada) |
+| Monto preobligación | `BudgetPreCommitment.estimated_amount` | Sí |
+| Año fiscal | `BudgetPreCommitment.fiscal_year` | Sí |
+| Ref. asiento | respuesta `registerPreObligation` | No (generado por sistema) |
 
 ## Acciones
 
@@ -45,6 +45,11 @@
 - **Saldo insuficiente:** `BUDGET_UNAVAILABLE` (QA 11 P0).
 - **Contabilidad no disponible:** `ACCOUNTING_PROVIDER_UNAVAILABLE`; sin efecto parcial.
 - **Éxito:** SOLPED lista para Modalidad de Compra; evento `BudgetPreCommitmentCreated`.
+
+## Validaciones visibles
+
+- Asterisco en monto preobligación y año fiscal.
+- Botón deshabilitado sin CDP vigente.
 
 ## Notas
 

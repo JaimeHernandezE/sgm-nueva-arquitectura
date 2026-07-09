@@ -16,9 +16,9 @@
 **Autoconsulta de saldo presupuestario (informativa):** si el usuario conoce la línea presupuestaria de destino, el formulario ofrece un **enlace informativo** («Consultar saldo en línea presupuestaria») que abre un panel lateral o modal. Allí puede indicar `budget_line_id`, año fiscal y —opcionalmente— el monto estimado de la SOLPED (suma de líneas) para obtener una **vista previa de saldo** vía `previewBudgetAvailability` (Presupuestos). Es **solo lectura**: no registra verificación, no avanza el flujo y **no sustituye** el sub-paso 1.3. El solicitante puede guardar la línea indicada como pista en `proposed_budget_line_id` (opcional) para prellenar la consulta y mostrarla al aprobador en 1.2.
 
 **Entidad(es) y campos:**
-- `PurchaseRequest` — `requesting_unit` (ref. `OrganizationalUnit`), `description` (texto), `justification` (texto), `requested_date` (fecha), `purchase_modality` (enum, **opcional**: `agile_purchase` \| `framework_agreement` \| `public_tender` \| `direct_procurement`), `founded_resolution_attachment` (ref. adjunto, **obligatorio si** `purchase_modality = direct_procurement`), `proposed_budget_line_id` (ref. `BudgetLine`, **opcional** — indicación del solicitante para autoconsulta; no equivale a verificación DAF), `proposed_fiscal_year` (número, **opcional**), `status` (enum: `draft`)
-- `PurchaseRequestLine` (1 SOLPED → N líneas) — `item_description` (texto), `quantity` (número), `unit_of_measure` (ref. `UnitOfMeasure`), `unit_price` (número, **obligatorio**), `price_source` (ref. `PriceReference`)
-- `PriceReference` (nueva) — `item_code` / `item_description_hash`, `source` (enum: `SII`, `mercado_publico_historico`, `otro`), `reference_price` (número), `reference_date` (fecha), `currency` (enum)
+- `PurchaseRequest` — `requesting_unit` (ref., **obligatorio**), `description` (texto, **obligatorio**), `justification` (texto, **obligatorio**), `requested_date` (fecha, **obligatorio**), `purchase_modality` (enum, **opcional**: `agile_purchase` \| `framework_agreement` \| `public_tender` \| `direct_procurement`), `founded_resolution_attachment` (ref. adjunto, **obligatorio si** `purchase_modality = direct_procurement`), `proposed_budget_line_id` (ref. `BudgetLine`, **opcional**), `proposed_fiscal_year` (número, **opcional**), `status` (enum, **obligatorio**: `draft`)
+- `PurchaseRequestLine` (1 SOLPED → N líneas, ≥1) — `item_description` (texto, **obligatorio**), `quantity` (número, **obligatorio**), `unit_of_measure` (ref., **obligatorio**), `unit_price` (número, **obligatorio**), `price_source` (ref. `PriceReference`, **obligatorio**)
+- `PriceReference` — `item_code` / `item_description_hash` (texto, **obligatorio**), `source` (enum, **obligatorio**), `reference_price` (número, **obligatorio**), `reference_date` (fecha, **obligatorio**), `currency` (enum, **obligatorio**, default CLP)
 
 > `unit_price` es obligatorio a nivel de línea, y debe validarse contra una fuente externa confiable (`PriceReference`) al momento de creación — no es un valor de ingreso libre sin referencia.
 
@@ -56,8 +56,8 @@
 **Detalle:** Jefatura de la unidad revisa y aprueba la SOLPED antes de que pase a Finanzas. La aprobación requiere firma electrónica avanzada conforme a normativa (QA ítems 5, 7). Dispone del mismo **enlace informativo de autoconsulta de saldo** que en 1.1 (`previewBudgetAvailability`): si la SOLPED trae `proposed_budget_line_id`, el panel se prellena; el aprobador puede consultar saldo antes de firmar sin que ello constituya verificación formal (eso ocurre en 1.3, a cargo de DAF Finanzas).
 
 **Entidad(es) y campos:**
-- `PurchaseRequestApproval` — `purchase_request_id` (ref. `PurchaseRequest`), `approver_id` (ref. `User`), `decision` (enum: `approved`, `rejected`), `decision_date` (fecha), `comments` (texto, obligatorio si `decision = rejected`)
-- `PurchaseRequest.status` (enum, transiciona a `pending_finance` si `approved`, o `draft` si `rejected`)
+- `PurchaseRequestApproval` — `purchase_request_id` (ref., **obligatorio**), `approver_id` (ref. `User`, **obligatorio**), `decision` (enum, **obligatorio**: `approved`, `rejected`), `decision_date` (fecha, **obligatorio**), `comments` (texto, **obligatorio si** `decision = rejected`)
+- `PurchaseRequest.status` (enum, **obligatorio** — transiciona a `pending_finance` si `approved`, o `draft` si `rejected`)
 
 **Borde de módulo:**
 
@@ -89,8 +89,9 @@
 **Detalle:** El formulador de DAF Finanzas consulta la disponibilidad presupuestaria de la SOLPED aprobada (QA ítem 8 P1). Muestra trazabilidad de saldo (disponible, comprometido por otras SOLPED, proyectado) y confirma o rechaza con justificación. Quien verifica aquí no es quien firma el CDP (segregación QA ítem 9).
 
 **Entidad(es) y campos:**
-- `PurchaseRequest.status` (enum, permanece en `pending_finance` hasta completar 1.6)
-- `BudgetAvailabilityCertificate.verified_by` (ref. `User`, se registra al confirmar verificación)
+- `PurchaseRequest.status` (enum, **obligatorio** — permanece en `pending_finance` hasta completar 1.6)
+- Verificación en pantalla: `budget_line_id` (ref., **obligatorio**), `amount` (número, **obligatorio**), `fiscal_year` (número, **obligatorio**), `comments` (texto, **obligatorio si** rechazo)
+- `BudgetAvailabilityCertificate.verified_by` (ref. `User`, **obligatorio** — se registra al confirmar verificación)
 
 **Borde de módulo:**
 
@@ -120,7 +121,8 @@
 **Detalle:** Paso optativo cuando en 1.3 no hay saldo disponible o Finanzas rechaza la verificación. El solicitante (o DAF en su nombre) registra la solicitud de financiamiento; el proceso deriva a **modificación o reasignación presupuestaria** (flujo externo a Adquisiciones). Tras resolver el presupuesto, el flujo retorna a 1.3.
 
 **Entidad(es) y campos:**
-- `PurchaseRequest.status` (enum, `pending_budget_financing` mientras el financiamiento está en trámite — valor propuesto)
+- `PurchaseRequest.status` (enum, **obligatorio** — `pending_budget_financing` mientras el financiamiento está en trámite)
+- Solicitud en pantalla: `justification` (texto, **obligatorio**)
 
 **Borde de módulo:**
 
@@ -156,7 +158,7 @@
 En ambos caminos se ejecuta `checkBudgetAvailability` antes de cerrar el paso. El expediente debe dejar visible el modo usado (`signature_mode`) en la línea secundaria de la fila del sub-paso.
 
 **Entidad(es) y campos:**
-- `BudgetAvailabilityCertificate` — `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status` (enum: `issued`, `rejected`, `pending_signature`), `rejection_reason` (texto, obligatorio si `rejected`), `signature_mode` (enum: `electronic` \| `scanned`), `scanned_certificate_attachment` (ref. almacenamiento de objetos, **obligatorio si** `signature_mode = scanned`)
+- `BudgetAvailabilityCertificate` — `procurement_case_id` (ref., **obligatorio**), `purchase_request_id` (ref., **obligatorio**), `certificate_number` (texto, **obligatorio**), `budget_line_id` (ref., **obligatorio**), `certified_amount` (número, **obligatorio**), `fiscal_year` (número, **obligatorio**), `verified_by` (ref., **obligatorio**), `signed_by` (ref., **obligatorio**), `signed_at` (fecha/hora, **obligatorio**), `status` (enum, **obligatorio**: `issued`, `rejected`, `pending_signature`), `rejection_reason` (texto, **obligatorio si** `rejected`), `signature_mode` (enum, **obligatorio**: `electronic` \| `scanned`), `scanned_certificate_attachment` (ref., **obligatorio si** `signature_mode = scanned`)
 
 **Borde de módulo:**
 
@@ -191,7 +193,7 @@ En ambos caminos se ejecuta `checkBudgetAvailability` antes de cerrar el paso. E
 **Detalle:** Tras el CDP vigente (1.5), DAF Finanzas registra la **preobligación** (pre-afectación presupuestaria). El registro se contabiliza en el módulo Contabilidad. Puede ejecutarse inmediatamente tras el CDP o en la misma transacción atómica — ver pendiente. Al completarse, la SOLPED queda lista para Modalidad de Compra.
 
 **Entidad(es) y campos:**
-- `BudgetPreCommitment` — `procurement_case_id`, `purchase_request_id`, `budget_availability_certificate_id` (ref. `BudgetAvailabilityCertificate`, **obligatorio**), `budget_line_id`, `estimated_amount`, `fiscal_year`, `status` (enum: `active`)
+- `BudgetPreCommitment` — `procurement_case_id` (ref., **obligatorio**), `purchase_request_id` (ref., **obligatorio**), `budget_availability_certificate_id` (ref., **obligatorio**), `budget_line_id` (ref., **obligatorio**), `estimated_amount` (número, **obligatorio**), `fiscal_year` (número, **obligatorio**), `status` (enum, **obligatorio**: `active`)
 
 **Borde de módulo:**
 

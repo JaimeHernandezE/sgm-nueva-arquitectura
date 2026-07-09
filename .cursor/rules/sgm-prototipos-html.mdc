@@ -15,3 +15,4 @@ alwaysApply: false
 - Breadcrumb con `form-shell.js` → Adquisiciones › Expedientes › expediente.
 - Perfiles demo en `expedientes-demo.js`; query `?expediente=` para contexto.
 - Acciones demo: `demoAction('nombreOperacion')` — sin backend.
+- Etiquetas de campo: obligatorio → `<span class="required">*</span>`; opcional → `(opcional)` en label; condicional → `(obligatorio si …)` — alineado con wireframe y `entidades-core.md`.

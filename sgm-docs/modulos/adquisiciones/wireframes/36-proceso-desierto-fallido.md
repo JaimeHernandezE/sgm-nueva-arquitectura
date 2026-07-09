@@ -26,11 +26,11 @@
 
 ## Campos ↔ entidad
 
-| Campo UI | Entidad.campo |
-|---|---|
-| Causa | payload del evento `ProcurementProcessFailed` (`deserted` \| `all_rejected`) |
-| Decisión | `ProcurementCase.status` (`republished` \| `reassessing` \| `cancelled`) |
-| Liberación de preobligación (si cancela) | `BudgetPreCommitment` (entidad de 1.6) |
+| Campo UI | Entidad.campo | Obligatorio |
+|---|---|---|
+| Causa | payload `ProcurementProcessFailed` | No (solo lectura) |
+| Decisión (radios) | `ProcurementCase.status` | Sí |
+| Liberación preobligación | `BudgetPreCommitment` | Sí si cancelación (`releasePreCommitment`) |
 
 ## Acciones
 

@@ -37,8 +37,9 @@ Antes de modificar un sub-paso `N.M`:
 3. Abrir la **ficha de proceso** (`processFicha`).
 4. Verificar **operaciones** en `contracts.md` — ningún botón sin operación.
 5. Verificar **campos** en `entidades-core.md`.
-6. Si cambia tinte/origen: revisar reglas 2a/2b en [`01-vista-expediente-detalle-ca.md`](../sgm-docs/modulos/adquisiciones/01-vista-expediente-detalle-ca.md).
-7. Actualizar **prototipo HTML** y **expediente** (`demo-data.js` / fila del paso) en el mismo cambio.
+6. Verificar **obligatoriedad explícita** en los tres niveles: `entidades-core.md` (obligatorio / opcional / obligatorio si), tabla **Obligatorio** del wireframe spec, y etiqueta del HTML (`*`, `(opcional)` o `(obligatorio si …)`).
+7. Si cambia tinte/origen: revisar reglas 2a/2b en [`01-vista-expediente-detalle-ca.md`](../sgm-docs/modulos/adquisiciones/01-vista-expediente-detalle-ca.md).
+8. Actualizar **prototipo HTML** y **expediente** (`demo-data.js` / fila del paso) en el mismo cambio.
 
 ## Etapa 1 — SOLPED (piloto Compra Ágil)
 
@@ -80,7 +81,23 @@ Ficha específica: [`sgm-docs/modulos/adquisiciones/1. compra-agil/3-resolucion-
 
 Navegación condicional: 3.2→3.3→3.4 (camino feliz); 3.3 inhábil → vuelve a 3.2 o va a 3.6; 3.4 rechazada → 3.5 → segunda oferta (3.2) o re-vinculación (2.3); 3.6 → republicar (2.3), reevaluar (bloqueado, **[PENDIENTE P-34]**) o cancelar (vuelve al expediente). 3.5 y 3.6 no aparecen en la fila del expediente demo salvo que ocurran — son caminos alternativos, no el flujo principal.
 
-Etapa 4 (Recepción Conforme, transversal) aún no tiene prototipo HTML — el flujo de 3.4 vuelve al expediente al finalizar.
+Etapa 4 (Recepción Conforme, transversal) tiene prototipo HTML para 4.1; el flujo de 3.4 puede enlazar al expediente o a 4.1 según estado demo.
+
+## Etapa 4 — Recepción Conforme (transversal)
+
+| stepId | Wireframe | Prototipo | Operaciones principales |
+|---|---|---|---|
+| 4.1 | `41-recepcion-conforme.md` | `procesos-transversales/41-recepcion-conforme.html` | `createGoodsReceipt`, `confirmGoodsReceipt` |
+
+Ficha transversal: [`sgm-docs/modulos/adquisiciones/procesos-transversales/4-recepcion-conforme.md`](../sgm-docs/modulos/adquisiciones/procesos-transversales/4-recepcion-conforme.md)
+
+## Etapa 5 — Pago (transversal)
+
+| stepId | Wireframe | Prototipo | Operaciones principales |
+|---|---|---|---|
+| 5.1 | `51-cruce-tres-vias.md` | `procesos-transversales/51-cruce-tres-vias.html` | `performThreeWayMatch`, `getInvoiceForMatch` |
+
+Ficha transversal: [`sgm-docs/modulos/adquisiciones/procesos-transversales/5-pago.md`](../sgm-docs/modulos/adquisiciones/procesos-transversales/5-pago.md)
 
 Shell expediente: [`modulos/adquisiciones/00-expediente/index.html`](./modulos/adquisiciones/00-expediente/index.html)
 

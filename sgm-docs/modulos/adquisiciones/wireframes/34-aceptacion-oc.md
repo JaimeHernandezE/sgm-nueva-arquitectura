@@ -19,18 +19,17 @@
 | (banner de resultado: aceptada + compromiso, o error de          |
 |  disponibilidad presupuestaria)                                  |
 +----------------------------------------------------------------+
-| Tras aceptación + compromiso → Continuar (vuelve al expediente,  |
-| etapa 4 Recepción Conforme aún sin prototipo)                    |
+| Tras aceptación + compromiso → Continuar (vuelve al expediente o a 4.1 Recepción conforme) |
 +----------------------------------------------------------------+
 ```
 
 ## Campos ↔ entidad
 
-| Campo UI | Entidad.campo |
-|---|---|
-| Monto real (tras aceptación) | `PurchaseOrder.amount` (definitivo) |
-| Estado OC | `PurchaseOrder.status = accepted`, `.accepted_at` |
-| Compromiso Cierto | `BudgetCommitment` (referencia, módulo Presupuestos) |
+| Campo UI | Entidad.campo | Obligatorio |
+|---|---|---|
+| Monto real (tras aceptación) | `PurchaseOrder.total_amount` | No (solo lectura) |
+| Estado OC | `PurchaseOrder.status`, `acceptance_date` | No (generado por lectura MP) |
+| Compromiso Cierto | `BudgetCommitment` | No (generado por `commitBudget`) |
 
 ## Acciones
 
@@ -53,5 +52,5 @@
 
 ## Notas
 
-- Es el hito contable mayor del macroproceso: perfecciona el vínculo legal (Compra Ágil no requiere contrato ni resolución) y avanza el expediente a Recepción Conforme (etapa 4, transversal — aún sin prototipo HTML).
+- Es el hito contable mayor del macroproceso: perfecciona el vínculo legal (Compra Ágil no requiere contrato ni resolución) y avanza el expediente a Recepción Conforme (etapa 4, prototipo 4.1).
 - El selector "Simular lectura MP" es un artefacto de prototipo — en producción esto llega vía `readMpProcess` (push o polling), nunca por acción de un usuario en esta pantalla.

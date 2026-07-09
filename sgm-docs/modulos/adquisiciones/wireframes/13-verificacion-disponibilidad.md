@@ -23,7 +23,7 @@
 | | Saldo proyectado:               $   450.000  [OK]    |  |
 | +------------------------------------------------------+  |
 +----------------------------------------------------------+
-| Comentarios (si rechazo)  [________________________]      |
+| Comentarios (obligatorio si rechazo)  [________________________]      |
 +----------------------------------------------------------+
 | [ Rechazar ]    [ Solicitar financiamiento ]  [ Confirmar ]|
 +----------------------------------------------------------+
@@ -31,12 +31,14 @@
 
 ## Campos ↔ entidad
 
-| Campo UI | Entidad.campo |
-|---|---|
-| Línea presupuestaria | `BudgetLine` (consulta) |
-| Monto estimado | entrada de verificación |
-| Panel saldo | respuesta `checkBudgetAvailability` |
-| Verificador | `BudgetAvailabilityCertificate.verified_by` (al confirmar) |
+| Campo UI | Entidad.campo | Obligatorio |
+|---|---|---|
+| Línea presupuestaria | `BudgetLine` (consulta) | Sí |
+| Monto estimado | entrada de verificación | Sí |
+| Año fiscal | entrada de verificación | Sí |
+| Comentarios | entrada `verifyBudgetAvailability` | Sí si rechazo |
+| Panel saldo | respuesta `checkBudgetAvailability` | No (solo lectura) |
+| Verificador | `BudgetAvailabilityCertificate.verified_by` | Sí (al confirmar) |
 
 ## Acciones
 

@@ -14,7 +14,8 @@
 **Detalle:** El sistema cruza tres fuentes: Orden de Compra (MP), Recepción Conforme (SGM) y Factura (SII), como condición para habilitar el Devengado (QA ítem 31 P0).
 
 **Entidad(es) y campos:**
-- `ThreeWayMatch` (nueva) — `purchase_order_id` (ref. `PurchaseOrder`), `goods_receipt_id` (ref. `GoodsReceipt`), `invoice_id` (ref. `Invoice`, fuente SII), `match_status` (enum: `matched`, `discrepancy`), `match_date` (fecha)
+- `ThreeWayMatch` — `purchase_order_id` (ref., **obligatorio**), `goods_receipt_id` (ref., **obligatorio**), `invoice_id` (ref. `Invoice`, **obligatorio** al ejecutar match), `match_status` (enum, **obligatorio**), `match_date` (fecha, **obligatorio**)
+- Pantalla: `invoice_number` (texto, **obligatorio** para buscar en SII)
 
 **Borde de módulo:**
 

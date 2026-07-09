@@ -23,10 +23,10 @@
 
 ## Campos ↔ entidad
 
-| Campo UI | Entidad.campo |
-|---|---|
-| Justificación | entrada `requestBudgetFinancing` |
-| Estado expediente | `PurchaseRequest.status` → `pending_budget_financing` *(propuesto)* |
+| Campo UI | Entidad.campo | Obligatorio |
+|---|---|---|
+| Motivo / justificación | entrada `requestBudgetFinancing` | Sí |
+| Estado expediente | `PurchaseRequest.status` | Sí (generado: `pending_budget_financing`) |
 
 ## Acciones
 
@@ -39,6 +39,10 @@
 - **En trámite:** pantalla informativa; usuario espera resolución de Presupuestos.
 - **Resuelto:** notificación; retorno a sub-paso 1.3 para nueva verificación.
 - **Denegado:** SOLPED bloqueada; opción cancelar o reformular.
+
+## Validaciones visibles
+
+- Asterisco en motivo / justificación.
 
 ## Notas
 

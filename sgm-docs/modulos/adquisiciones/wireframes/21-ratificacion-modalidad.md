@@ -36,14 +36,13 @@
 | | V8 | Garantías exigibles (LP)       | N/A      | advisory    | |
 | +----+--------------------------------+----------+-------------+ |
 +----------------------------------------------------------------+
-| Causal de Trato Directo * (solo si TD)          [oculto]         |
+| Causal de Trato Directo * (obligatorio si Trato Directo) [oculto] |
 | [________________________________________________]              |
 |                                                                   |
-| Justificación bypass catálogo CM * (solo si aplica V2) [oculto] |
+| Justificación bypass catálogo CM * (obligatorio si aplica V2) [oculto] |
 | [________________________________________________]              |
 +----------------------------------------------------------------+
-| [ ] ¿Solicitar aprobación de jefatura antes de continuar?        |
-|     (sub-paso 2.2 — optativo, ver nota)                          |
+| [ ] ¿Solicitar aprobación de jefatura antes de continuar? (opcional) |
 +----------------------------------------------------------------+
 | [ Cancelar ]                          [ Confirmar modalidad ]    |
 +----------------------------------------------------------------+
@@ -53,16 +52,16 @@
 
 ## Campos ↔ entidad
 
-| Campo UI | Entidad.campo |
-|---|---|
-| Modalidad a ratificar/seleccionar | `ModalityDecision.selected_modality` |
-| (derivado) ¿Coincide con SOLPED? | `ModalityDecision.ratified` |
-| Justificación bypass catálogo CM | `ModalityDecision.catalog_bypass_justification` |
-| Causal de Trato Directo | `ModalityDecision.direct_procurement_cause` |
-| Resultado del gateway (tabla V1–V8) | `ModalityDecision.validation_results` (JSON) |
-| Valor UTM del mes | `UtmValue.value_clp` |
-| Umbrales V1/V5/V7/V8 | `NormativeParameter` (`AGILE_PURCHASE_UTM_LIMIT`, `COMPTROLLER_REVIEW_UTM_LIMIT`, `TENDER_TIER_THRESHOLDS`, `GUARANTEE_THRESHOLDS`) |
-| ¿Solicitar aprobación de jefatura? | `ModalityDecision.requires_jefatura_approval` |
+| Campo UI | Entidad.campo | Obligatorio |
+|---|---|---|
+| Monto total estimado | entrada gateway V1–V8 | Sí |
+| Modalidad a ratificar/seleccionar | `ModalityDecision.selected_modality` | Sí |
+| (derivado) ¿Coincide con SOLPED? | `ModalityDecision.ratified` | Sí (generado) |
+| Justificación bypass catálogo CM | `ModalityDecision.catalog_bypass_justification` | Sí si aplica V2 |
+| Causal de Trato Directo | `ModalityDecision.direct_procurement_cause` | Sí si Trato Directo |
+| Resultado del gateway (tabla V1–V8) | `ModalityDecision.validation_results` | Sí (generado) |
+| ¿Solicitar aprobación de jefatura? | `ModalityDecision.requires_jefatura_approval` | No (opcional) |
+| Valor UTM del mes | `UtmValue.value_clp` | No (solo lectura) |
 
 ## Acciones
 

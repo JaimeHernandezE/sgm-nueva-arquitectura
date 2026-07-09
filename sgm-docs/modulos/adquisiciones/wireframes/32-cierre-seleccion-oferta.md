@@ -34,13 +34,14 @@
 
 ## Campos ↔ entidad
 
-| Campo UI | Entidad.campo |
-|---|---|
-| RUT proveedor seleccionado | `QuotationResult.selected_provider_rut` |
-| Nombre proveedor seleccionado | `QuotationResult.selected_provider_name` |
-| Monto ofertado | `QuotationResult.offered_amount` |
-| ¿Es la oferta de menor precio? | `QuotationResult.lowest_price_selected` |
-| Modo de registro | `QuotationResult.entry_mode` (`mp_read` \| `manual`) |
+| Campo UI | Entidad.campo | Obligatorio |
+|---|---|---|
+| RUT proveedor seleccionado | `QuotationResult.selected_provider_rut` | Sí |
+| Nombre proveedor seleccionado | `QuotationResult.selected_provider_name` | Sí |
+| Monto ofertado | `QuotationResult.offered_amount` | Sí |
+| ¿Es la oferta de menor precio? | `QuotationResult.lowest_price_selected` | Sí |
+| Justificación | `PurchaseOrder.selection_justification` | Sí si no es menor precio |
+| Modo de registro | `QuotationResult.entry_mode` | Sí (generado) |
 
 ## Acciones
 
