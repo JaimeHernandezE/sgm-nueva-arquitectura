@@ -155,6 +155,7 @@
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
     import { getExpedienteId, renderBreadcrumb, demoAction } from '../../../shared/form-shell.js';
+    import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -165,6 +166,8 @@
       stepName: 'Ratificación o selección de modalidad',
       stepId: '2.1',
     });
+
+    bootstrapFormPage('modalidad');
 
     const UTM_VALUE = 65084; // demo, cacheado — no representa el valor real vigente
     const AGILE_LIMIT_UTM = 100;

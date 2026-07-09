@@ -88,6 +88,7 @@
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
     import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, initCdpModeToggle } from '../../../shared/form-shell.js';
+    import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -104,6 +105,8 @@
       mode: 'dependencia',
     });
     document.getElementById('cancel-link').href = getExpedienteUrl(expedienteId);
+
+    bootstrapFormPage('solped-step');
 
     const btnElectronic = document.getElementById('mode-electronic');
     const btnScanned = document.getElementById('mode-scanned');

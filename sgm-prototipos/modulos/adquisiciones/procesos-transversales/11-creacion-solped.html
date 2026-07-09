@@ -45,10 +45,10 @@
           <label>Modalidad de compra (opcional)</label>
           <select id="purchase-modality">
             <option value="">(sin indicar)</option>
-            <option value="compra_agil" selected>Compra Ágil</option>
-            <option value="convenio_marco">Convenio Marco</option>
-            <option value="licitacion_publica">Licitación Pública</option>
-            <option value="trato_directo">Trato Directo</option>
+            <option value="agile_purchase">Compra Ágil</option>
+            <option value="framework_agreement">Convenio Marco</option>
+            <option value="public_tender">Licitación Pública</option>
+            <option value="direct_procurement">Trato Directo</option>
           </select>
         </div>
         <div id="resolution-row" class="form-row hidden">
@@ -147,6 +147,7 @@
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
     import { getExpedienteId, renderBreadcrumb, demoAction, initBalancePanel, initModalityToggle } from '../../../shared/form-shell.js';
+    import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -159,6 +160,7 @@
     });
 
     initModalityToggle('purchase-modality', 'resolution-row');
+    bootstrapFormPage('solped');
     initBalancePanel({
       triggerId: 'balance-trigger',
       modalId: 'balance-modal',

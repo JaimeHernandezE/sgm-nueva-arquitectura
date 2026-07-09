@@ -70,6 +70,7 @@
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
     import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -91,6 +92,8 @@
 
     document.getElementById('financing-link').href = `16-solicitar-financiamiento.html${qs}`;
     document.getElementById('financing-btn').href = `16-solicitar-financiamiento.html${qs}`;
+
+    bootstrapFormPage('solped-step');
 
     document.getElementById('reject').addEventListener('click', () => demoAction('verifyBudgetAvailability (rejected)'));
     document.getElementById('confirm').addEventListener('click', () => demoAction('verifyBudgetAvailability (confirmed)'));

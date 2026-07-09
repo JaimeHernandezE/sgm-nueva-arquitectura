@@ -67,18 +67,22 @@ sgm-prototipos/
 │   ├── app-shell.js        # Sidebar módulos + siteUrl()
 │   ├── shell.css
 │   ├── modules-registry.js
-│   ├── expedientes-demo.js # Perfiles de expediente demo
-│   └── ...
+│   ├── expedientes-demo.js # Perfiles de expediente demo (4 modalidades)
+│   ├── demo-data/          # Timeline por expediente (getStages)
+│   ├── form-presets.js     # Valores de formulario por expediente
+│   ├── form-bootstrap.js   # Aplica presets al cargar HTML
+│   ├── steps-manifest.json # Pasos transversales del shell
+│   └── steps-manifest-compra-agil.json  # Etapa 3 CA (referencia)
 └── modulos/
     └── adquisiciones/
         ├── index.html                  # Bienvenida del módulo
-        ├── 01-listado-expedientes.html # Listado (4 modalidades)
-        ├── 00-expediente/              # Detalle (wireframe 01)
+        ├── 01-listado-expedientes.html # Listado (4 modalidades, showcase transversal)
+        ├── 00-expediente/              # Detalle (wireframe 01) — etapa 3 stub
         ├── procesos-transversales/     # Etapas 1, 2, 4, 5 — comunes a las 4 modalidades
-        └── 1-compra-agil/              # (aún vacía) etapa 3, específica de Compra Ágil
+        └── 1-compra-agil/              # Etapa 3 CA (HTML existente; no enlazada desde shell)
 ```
 
-La carpeta de cada prototipo **espeja** la de `sgm-docs/modulos/adquisiciones/`: los formularios de una etapa transversal (SOLPED, Modalidad de Compra, Recepción Conforme, Pago) viven en `procesos-transversales/`, aunque el piloto solo ejercite el camino de Compra Ágil; los formularios de una etapa específica de modalidad (Resolución de Compra) viven en la carpeta de esa modalidad (`1-compra-agil/`, `2-convenio-marco/`, etc.).
+Cada fila del listado abre un expediente con **etapas transversales de ejemplo** (1, 2, 4 y 5) parametrizadas por modalidad vía `?expediente=`. La **etapa 3** queda pendiente en todas. Los formularios transversales reutilizan el mismo HTML; los valores visibles vienen de `form-presets.js`.
 
 ## Convención de numeración
 

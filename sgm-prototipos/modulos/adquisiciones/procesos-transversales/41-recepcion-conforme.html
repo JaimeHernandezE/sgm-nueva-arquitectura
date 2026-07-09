@@ -89,6 +89,7 @@
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
     import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, demoAction } from '../../../shared/form-shell.js';
+    import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -99,6 +100,8 @@
       stepName: 'Registro de la recepción',
       stepId: '4.1',
     });
+
+    bootstrapFormPage('recepcion');
 
     document.querySelectorAll('input[name="conformity"]').forEach((radio) => {
       radio.addEventListener('change', () => {

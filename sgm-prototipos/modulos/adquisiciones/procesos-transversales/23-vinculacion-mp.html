@@ -50,6 +50,10 @@
           </select>
         </div>
 
+        <div class="banner banner--info" id="mp-status-hint" style="margin-top:8px;">
+          Tipo esperado según modalidad confirmada.
+        </div>
+
         <div class="banner hidden" id="result-banner"></div>
 
         <div class="info-panel hidden" id="next-step-panel">
@@ -71,6 +75,7 @@
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
     import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -88,6 +93,8 @@
       label: 'Mercado Público',
       mode: 'solo lectura',
     });
+
+    bootstrapFormPage('vinculacion');
 
     const ERROR_MESSAGES = {
       not_found: 'MP_PROCESS_NOT_FOUND — código MP inexistente o con formato inválido; no se persiste el vínculo.',

@@ -1,5 +1,6 @@
 import { siteUrl, renderAdqBreadcrumb } from './app-shell.js';
 import { getExpedienteIdFromUrl, getExpedienteDetailUrl } from './expedientes-demo.js';
+import stepsManifest from './steps-manifest.js';
 
 export function getExpedienteId() {
   return getExpedienteIdFromUrl();
@@ -7,6 +8,13 @@ export function getExpedienteId() {
 
 export function getExpedienteUrl(expedienteId) {
   return siteUrl(getExpedienteDetailUrl(expedienteId));
+}
+
+/** URL absoluta al prototipo HTML de un sub-paso (evita rutas relativas rotas desde 00-expediente). */
+export function getStepFormUrl(stepId, expedienteId = getExpedienteIdFromUrl()) {
+  const entry = stepsManifest.steps.find((s) => s.stepId === stepId);
+  if (!entry?.prototypeHtml) return null;
+  return `${siteUrl(entry.prototypeHtml)}?expediente=${encodeURIComponent(expedienteId)}`;
 }
 
 export function renderBreadcrumb({ expedienteId, stageName, stepName, stepId }) {
@@ -67,7 +75,7 @@ export function initModalityToggle(selectId, resolutionRowId) {
   if (!select || !row) return;
 
   function update() {
-    const isTratoDirecto = select.value === 'trato_directo';
+    const isTratoDirecto = select.value === 'direct_procurement';
     row.classList.toggle('hidden', !isTratoDirecto);
   }
 

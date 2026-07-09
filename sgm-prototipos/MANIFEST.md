@@ -26,7 +26,11 @@ index.html → modulos/adquisiciones/index.html (bienvenida)
 ```
 
 - Sidebar derecho: módulos SGM (`shared/app-shell.js`, `shared/modules-registry.js`).
-- Perfiles de expediente: [`shared/expedientes-demo.js`](./shared/expedientes-demo.js) — solo Compra Ágil (`ADQ-2026-00123`) tiene detalle completo de etapas.
+- Perfiles de expediente: [`shared/expedientes-demo.js`](./shared/expedientes-demo.js) — los **4** expedientes del listado tienen detalle transversal (etapas 1, 2, 4 y 5 en modo showcase). La etapa 3 es stub pendiente en todas las modalidades.
+- Datos demo por expediente: [`shared/demo-data/`](./shared/demo-data/) (`getStages(expedienteId)`).
+- Presets de formularios: [`shared/form-presets.js`](./shared/form-presets.js) + [`shared/form-bootstrap.js`](./shared/form-bootstrap.js).
+- Manifiesto activo del shell: [`shared/steps-manifest.json`](./shared/steps-manifest.json) — solo pasos **transversales** (1.1–1.6, 2.1–2.3, 4.1, 5.1).
+- Etapa 3 Compra Ágil (HTML existente, no enlazada desde el shell): [`shared/steps-manifest-compra-agil.json`](./shared/steps-manifest-compra-agil.json).
 
 ## Checklist obligatoria
 
@@ -39,9 +43,9 @@ Antes de modificar un sub-paso `N.M`:
 5. Verificar **campos** en `entidades-core.md`.
 6. Verificar **obligatoriedad explícita** en los tres niveles: `entidades-core.md` (obligatorio / opcional / obligatorio si), tabla **Obligatorio** del wireframe spec, y etiqueta del HTML (`*`, `(opcional)` o `(obligatorio si …)`).
 7. Si cambia tinte/origen: revisar reglas 2a/2b en [`01-vista-expediente-detalle-ca.md`](../sgm-docs/modulos/adquisiciones/01-vista-expediente-detalle-ca.md).
-8. Actualizar **prototipo HTML** y **expediente** (`demo-data.js` / fila del paso) en el mismo cambio.
+8. Actualizar **prototipo HTML**, **expediente** (`shared/demo-data/<modalidad>.js`) y **preset** (`form-presets.js`) en el mismo cambio.
 
-## Etapa 1 — SOLPED (piloto Compra Ágil)
+## Etapa 1 — SOLPED (transversal, 4 modalidades)
 
 | stepId | Wireframe | Prototipo | Operaciones principales |
 |---|---|---|---|
@@ -66,7 +70,18 @@ Ficha transversal: [`sgm-docs/modulos/adquisiciones/procesos-transversales/2-mod
 
 Navegación entre 2.1→2.2/2.3 y 2.2→2.3 es condicional: 2.1 captura `requires_jefatura_approval` y enruta a 2.2 (si verdadero) o directo a 2.3 (si falso); 2.2 aprobado enruta a 2.3, rechazado vuelve a 2.1.
 
-## Etapa 3 — Resolución de Compra (específica de Compra Ágil)
+## Etapa 3 — Resolución de Compra (pendiente por modalidad)
+
+En el shell del expediente, la etapa 3 aparece como **stub** sin sub-pasos ni enlaces. Los HTML de Compra Ágil siguen en `1-compra-agil/` y el mapeo en [`steps-manifest-compra-agil.json`](./shared/steps-manifest-compra-agil.json) para iteraciones futuras.
+
+| Modalidad | Ficha etapa 3 |
+|---|---|
+| Compra Ágil | [`1. compra-agil/3-resolucion-compra.md`](../sgm-docs/modulos/adquisiciones/1.%20compra-agil/3-resolucion-compra.md) |
+| Convenio Marco | `2. convenio-marco/3-resolucion-compra.md` (pendiente) |
+| Licitación Pública | [`3. licitacion-publica/3-resolucion-compra.md`](../sgm-docs/modulos/adquisiciones/3.%20licitacion-publica/3-resolucion-compra.md) |
+| Trato Directo | `4. trato-directo/3-resolucion-compra.md` (pendiente) |
+
+### Compra Ágil — prototipos HTML existentes (no enlazados desde shell)
 
 | stepId | Wireframe | Prototipo | Operaciones principales |
 |---|---|---|---|

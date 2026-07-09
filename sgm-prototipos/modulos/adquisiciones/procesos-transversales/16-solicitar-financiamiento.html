@@ -46,6 +46,7 @@
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
     import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -63,6 +64,8 @@
       label: 'Presupuestos',
       mode: 'observado',
     });
+
+    bootstrapFormPage('solped-step');
 
     document.getElementById('cancel-link').href = `13-verificacion-disponibilidad.html${qs}`;
     document.getElementById('submit').addEventListener('click', () => demoAction('requestBudgetFinancing'));

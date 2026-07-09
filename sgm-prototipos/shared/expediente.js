@@ -1,13 +1,12 @@
-import { stages } from './demo-data.js';
-import stepsManifest from './steps-manifest.js';
+import { getStages } from './demo-data/index.js';
 import { getExpedienteIdFromUrl, getExpedienteProfile } from './expedientes-demo.js';
 import { renderAdqBreadcrumb } from './app-shell.js';
+import { getStepFormUrl } from './form-shell.js';
+
+let expandedState = {};
 
 export function getFormUrl(stepId) {
-  const entry = stepsManifest.steps.find((s) => s.stepId === stepId);
-  if (!entry?.formPath) return null;
-  const id = getExpedienteIdFromUrl();
-  return `${entry.formPath}?expediente=${encodeURIComponent(id)}`;
+  return getStepFormUrl(stepId, getExpedienteIdFromUrl());
 }
 
 export function resolveOrigin(step) {
@@ -25,6 +24,9 @@ function formatResponsible(r) {
 }
 
 function resolveAction(step, viewerRole) {
+  if (step.omitted || step.status === 'omitted') {
+    return step.action?.type === 'badge' ? step.action : { type: 'badge', label: 'Omitido (optativo)' };
+  }
   if (step.action?.type === 'primary' && viewerRole === 'other') {
     return { type: 'badge', label: 'En curso', active: true };
   }
@@ -33,9 +35,13 @@ function resolveAction(step, viewerRole) {
 
 function renderAction(action, step) {
   if (!action) return '';
-  const formUrl = getFormUrl(step.id);
+  const isOmitted = step.omitted || step.status === 'omitted';
+  const formUrl = isOmitted ? null : getFormUrl(step.id);
 
   if (action.type === 'primary') {
+    if (formUrl) {
+      return `<a class="btn btn--primary" href="${formUrl}">${action.label}</a>`;
+    }
     return `<button class="btn btn--primary" type="button">${action.label}</button>`;
   }
   if (action.type === 'secondary') {
@@ -83,7 +89,8 @@ function renderStage(stage, viewerRole) {
   const badgeClasses = ['stage__badge'];
   if (stage.state === 'active') badgeClasses.push('stage__badge--active');
 
-  const isExpanded = stage.expanded;
+  const stateKey = `${getExpedienteIdFromUrl()}-${stage.id}`;
+  const isExpanded = expandedState[stateKey] ?? stage.expanded;
 
   return `
     <section class="${stageClasses.join(' ')}">
@@ -119,26 +126,12 @@ function renderHeader(profile) {
   `;
 }
 
-function renderStubBody(profile) {
-  return `
-    <div class="banner banner--info" style="margin-top:16px;">
-      Prototipo pendiente — solo <strong>Compra Ágil</strong> tiene detalle de etapas en esta versión.
-      Las etapas 2 y 3 de <strong>${profile.modality}</strong> se documentarán en iteraciones posteriores.
-    </div>
-  `;
-}
-
 export function renderExpediente(viewerRole) {
-  const profile = getExpedienteProfile(getExpedienteIdFromUrl());
+  const expedienteId = getExpedienteIdFromUrl();
+  const profile = getExpedienteProfile(expedienteId);
+  const stages = getStages(expedienteId);
   const demoPanel = document.getElementById('demo-panel');
   const legend = document.getElementById('expediente-legend');
-
-  if (!profile.fullDetail) {
-    if (demoPanel) demoPanel.classList.add('hidden');
-    if (legend) legend.classList.add('hidden');
-    document.getElementById('app').innerHTML = renderHeader(profile) + renderStubBody(profile);
-    return;
-  }
 
   if (demoPanel) demoPanel.classList.remove('hidden');
   if (legend) legend.classList.remove('hidden');
@@ -149,11 +142,11 @@ export function renderExpediente(viewerRole) {
   document.querySelectorAll('.stage__header').forEach((btn) => {
     btn.addEventListener('click', () => {
       const id = Number(btn.dataset.stage);
+      const stateKey = `${expedienteId}-${id}`;
       const stage = stages.find((s) => s.id === id);
-      if (stage) {
-        stage.expanded = !stage.expanded;
-        renderExpediente(viewerRole);
-      }
+      const current = expandedState[stateKey] ?? stage?.expanded ?? false;
+      expandedState[stateKey] = !current;
+      renderExpediente(viewerRole);
     });
   });
 }
