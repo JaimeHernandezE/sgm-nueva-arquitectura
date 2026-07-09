@@ -19,7 +19,7 @@ Registro centralizado de pendientes de los documentos de arquitectura. En cada d
 | P-13 | Decisión sobre exigencia de evidencia de mercado laboral local en las bases (formato verificable) | decisiones-macro-stack §10 | ninguna | Abierto |
 | P-14 | Nivel de soporte mínimo Odoo en los 5 pilotos durante licitación y desarrollo (18–24 meses) | decisiones-macro-stack §10 | ninguna | Abierto |
 | P-15 | Diseño del convenio tipo de acceso al ecosistema para empresas terceras | decisiones-macro-stack §10 | ninguna | Abierto |
-| P-16 | Especificación del ambiente sandbox (alcance, datos sintéticos, disponibilidad pública) | decisiones-macro-stack §10 | ninguna | Abierto |
+| P-16 | Especificación del ambiente sandbox (alcance, datos sintéticos, disponibilidad pública). Marco de entregable: [`entregable-licitacion.md`](./entregable-licitacion.md); falta detalle operativo (`sandbox-desarrolladores.md`) | decisiones-macro-stack §10, entregable-licitacion §4 | ninguna | Abierto |
 | P-17 | Revisión jurídica del contrato original con el proveedor Odoo | decisiones-macro-stack §8.4, §10 | jurídica | Abierto |
 | P-18 | Encuadre jurídico de la consulta al mercado (RFI / diálogo competitivo, Ley 21.634) | decisiones-macro-stack §9.1, §10 | jurídica | Abierto |
 | P-19 | Borrador mínimo de estándares que gatilla la primera consulta al mercado | decisiones-macro-stack §10 | ninguna | Abierto |
@@ -51,3 +51,9 @@ Registro centralizado de pendientes de los documentos de arquitectura. En cada d
 | P-45 | Circuito DTE (plazos de reclamo, efectos de cesión/factoring, mérito ejecutivo) a confirmar contra norma vigente antes de especificar la etapa de pago | procesos-transversales/4-recepcion-conforme.md §4.4, §4.5 | jurídica / Contabilidad | Abierto |
 | P-46 | **[PRIORIDAD ALTA]** Momento del devengado: recepción conforme (por valor aceptado) vs. three-way match con factura — dos definiciones distintas no reconciliadas | procesos-transversales/4-recepcion-conforme.md §4.4, modelo-datos/entidades-core.md (`Accrual`), modulos/adquisiciones/contracts.md §4 | Contabilidad / DM | Abierto |
 | P-47 | Frontera Pago/Tesorería: la ficha de Recepción Conforme asume que Pago pertenece a un módulo Tesorería separado, pero el repo ya documenta Pago como etapa 5 propia de Adquisiciones (`procesos-transversales/5-pago.md`) | procesos-transversales/4-recepcion-conforme.md §4.4, procesos-transversales/5-pago.md | DM | Abierto |
+| P-48 | Redactar `plataforma/contracts.md` — contrato del core (identidad, roles, tenants, parámetros, auditoría, eventos) con las cuatro secciones de contrato-api-first §3 | plataforma-core §2, entregable-licitacion §9.1, §10 | ninguna | Abierto |
+| P-49 | Estructura organizacional municipal real (`OrganizationalUnit`): catálogo de unidades típicas, jerarquía, variación por tamaño de municipio — prerequisito de asignación RBAC por unidad | plataforma-core §4 | pilotos / DM | Abierto |
+| P-50 | Proceso de incorporación de municipio (convenio, configuración inicial, capacitación) y migración de datos históricos del municipio entrante | plataforma-core §5 | DM / jurídica (conecta P-01) | Abierto |
+| P-51 | Mecanismo de autorización en runtime (claims en token vs. consulta al core vs. híbrido); resolver junto con P-02 y P-22 | plataforma-core §7 | ninguna | Abierto |
+| P-52 | Wireframes de consolas de administración (plataforma SUBDERE y municipal) según plantilla-maestra §7, con acciones mapeadas al contrato del core | plataforma-core §8, entregable-licitacion §13 | ninguna | Abierto |
+| P-53 | Tooling de validación CI del repo para OpenAPI y fixtures (lint, correspondencia contracts.md ↔ spec, examples ↔ fixtures) | estandar-openapi-fixtures §5 | ninguna | Abierto |

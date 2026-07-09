@@ -128,3 +128,5 @@ En un mecanismo de convocatoria abierta, el proveedor anterior no puede ser excl
 ## 10. Pendientes abiertos
 
 Los pendientes de este documento están registrados en [`pendientes.md`](./pendientes.md): P-01, P-02, P-13, P-14, P-15, P-16, P-17, P-18, P-19.
+
+Modelo consolidado de entregable exigible de licitación (API, contratos, sandbox): [`entregable-licitacion.md`](./entregable-licitacion.md).
