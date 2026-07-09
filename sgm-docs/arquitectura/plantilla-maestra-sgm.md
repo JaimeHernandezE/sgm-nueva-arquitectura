@@ -6,6 +6,8 @@ Documento normativo del repositorio `sgm-docs`. Define la estructura obligatoria
 
 **Principio arquitectónico rector (mandato API):** cada módulo expone un contrato de entrada/salida versionado; ningún módulo accede a datos o funcionalidad de otro salvo a través de ese contrato. La documentación de procesos debe hacer visibles los bordes de módulo — cada vez que un flujo cruza de un módulo a otro, ahí vive un contrato. Detalle normativo en [`estandares-api.md`](./estandares-api.md) y [`contrato-api-first.md`](./contrato-api-first.md).
 
+**Contrato en tres capas (mismo módulo):** además de las fichas de proceso y `contracts.md`, todo cambio que afecte el borde del módulo debe propagarse a **OpenAPI** (`modulos/<módulo>/openapi/`) y, cuando corresponda, a **fixtures de sandbox** (`modulos/<módulo>/fixtures/`). Los tres artefactos son una sola especificación: vista funcional, vista técnica formal y estados reproducibles de prueba. Norma de formato en [`estandares-api.md`](./estandares-api.md) Parte II; modelo de entregable en [`entregable-licitacion.md`](./entregable-licitacion.md).
+
 ---
 
 ## 1. Jerarquía y nomenclatura
@@ -24,6 +26,9 @@ Documento normativo del repositorio `sgm-docs`. Define la estructura obligatoria
 - Cada macroproceso vive en su carpeta: `modulos/<módulo>/<macroproceso>/`, con un `overview.md` obligatorio.
 - Carpetas hermanas por módulo: `qa/` (fichas QA en CSV) y `diagramas/` (BPMN en `.drawio`).
 - **Contrato por módulo:** cada módulo tiene un `modulos/<módulo>/contracts.md` (estructura en sección 4). Es un documento de nivel módulo, no de macroproceso: los macroprocesos alimentan el contrato, no lo duplican.
+- **OpenAPI por módulo:** `modulos/<módulo>/openapi/<módulo>.openapi.yaml` — contraparte técnica de `contracts.md` (sección 4.1).
+- **Fixtures de sandbox por módulo:** `modulos/<módulo>/fixtures/` — catálogo (`catalogo.md`) y un YAML por expediente o escenario reproducible (sección 4.1).
+- **Componentes transversales OpenAPI:** `arquitectura/openapi/comunes.yaml` — errores, paginación y seguridad; referenciados vía `$ref`, no redefinidos por módulo.
 
 ---
 
@@ -85,6 +90,7 @@ Formato:
 
 Reglas:
 - Toda operación o evento nombrado aquí debe existir (o agregarse) en el `contracts.md` del módulo — nunca se define solo en el sub-paso, misma disciplina que las entidades.
+- Si la operación es nueva o cambia su entrada/salida, actualizar también **OpenAPI** y evaluar si requiere **fixture** (§4.1).
 - La clasificación síncrona/asíncrona/cacheada es obligatoria para dependencias; si no está decidida, se marca ⚠ pendiente.
 - Heurística de detección sobre el BPMN: **todo cruce de carril hacia una unidad que corresponde a otro módulo es un candidato a borde.**
 
@@ -120,6 +126,26 @@ Reglas:
 - Cada operación, dependencia y evento indica en qué sub-paso(s) se origina (trazabilidad proceso ↔ contrato en ambas direcciones).
 - Los estándares transversales (esquema de error, versionamiento, paginación, idempotencia, autenticación) **no se repiten** en cada contrato: viven en [`estandares-api.md`](./estandares-api.md) y los contratos los referencian.
 - Ante discrepancia entre una ficha de sub-paso y `contracts.md`, se resuelve la inconsistencia antes de dar por cerrado cualquiera de los dos — misma lógica que wireframe vs. entidades.
+
+### 4.1 OpenAPI y fixtures (obligatorios junto a `contracts.md`)
+
+Cuando una operación, entidad expuesta, código de error o ejemplo de request/response cambia en `contracts.md`, **el mismo cambio debe reflejarse en OpenAPI y, si aplica, en fixtures** en el mismo ciclo de edición. No se cierra un sub-paso ni una operación de contrato dejando solo la vista funcional actualizada.
+
+| Artefacto | Ubicación | Qué sincronizar desde `contracts.md` |
+|---|---|---|
+| **OpenAPI** | `modulos/<módulo>/openapi/<módulo>.openapi.yaml` | `operationId`, rutas, esquemas, errores, `examples`, extensiones `x-subpasos` / `x-emits` / `x-validation-class` |
+| **Fixtures** | `modulos/<módulo>/fixtures/*.yaml` + `catalogo.md` | IDs estables, `seeds`, operaciones canónicas (`operations`), `example_ref` apuntando a `components/examples` de la OpenAPI |
+| **Comunes** | `arquitectura/openapi/comunes.yaml` | Solo si cambia el esquema transversal de error, paginación o seguridad (Parte I de `estandares-api.md`) |
+
+Reglas de sincronización (detalle en [`estandares-api.md`](./estandares-api.md) Parte II §13–§14):
+
+1. **Correspondencia biunívoca:** toda operación de `contracts.md` §2 existe como `operationId` en la OpenAPI del módulo, y viceversa. Toda entidad expuesta en §1 existe como esquema.
+2. **Resolución de discrepancias:** ante conflicto entre `contracts.md` y OpenAPI, se resuelve antes de dar por cerrado cualquiera de los dos; el código del adjudicatario se valida contra OpenAPI.
+3. **Examples en OpenAPI:** al menos un ejemplo de éxito por operación publicada; los fixtures **referencian** esos examples (`example_ref`), no duplican el JSON de respuesta.
+4. **Fixtures:** datos 100% sintéticos; IDs alineados con prototipos demo cuando existan (`sgm-prototipos/shared/expedientes-demo.js` adopta los IDs del catálogo, no al revés).
+5. **Cuándo crear o actualizar un fixture:** nueva operación `GET` de lectura del expediente; escenario de error bloqueante frecuente del catálogo QA; nuevo estado de negocio demostrable en sandbox o recepción.
+
+El core de plataforma sigue la misma disciplina: `plataforma/contracts.md` + `plataforma/openapi/` (ver [`plataforma-core.md`](./plataforma-core.md)).
 
 ---
 
@@ -171,7 +197,7 @@ Las fichas declaran la clasificación como **quinta materia de la tabla de ficha
 
 **Decisión de proyecto: se producen wireframes de baja fidelidad, no mockups.** El diseño visual (colores, tipografía, sistema de diseño) es entregable del adjudicatario de la licitación, no de esta especificación. Los wireframes especifican estructura y comportamiento, no estética.
 
-**Regla API-first:** el frontend base consume la API publicada sin privilegios. Por tanto, toda acción de un wireframe debe corresponder a una operación existente en el contrato del módulo (o en el de un módulo del que este depende). Si un botón no tiene operación de contrato que lo respalde, hay una inconsistencia que resolver — misma lógica que campos vs. entidades.
+**Regla API-first:** el frontend base consume la API publicada sin privilegios. Por tanto, toda acción de un wireframe debe corresponder a una operación existente en el contrato del módulo (o en el de un módulo del que este depende). Si un botón no tiene operación de contrato que lo respalde, hay una inconsistencia que resolver — misma lógica que campos vs. entidades. Esa operación debe existir en **OpenAPI** con el mismo `operationId`; los prototipos y fixtures de demo no sustituyen la spec HTTP.
 
 ### Patrón expediente como vista principal
 
@@ -231,7 +257,7 @@ Cada wireframe lleva un bloque de notas (en un `.md` hermano o dentro de la imag
 Herramienta libre (draw.io, Mermaid embebido en el propio `.md`, dbdiagram) siempre que se versione la fuente editable en el repo. Mermaid tiene la ventaja de ser texto plano diffable y renderizable directo en GitLab.
 
 ### Regla de sincronización
-Todo cambio en `entidades-core.md` que afecte relaciones o entidades debe reflejarse en el diagrama del dominio correspondiente en el mismo commit (o marcarse como deuda explícita en el mensaje de commit). La misma regla aplica entre mapas de bordes y `contracts.md`.
+Todo cambio en `entidades-core.md` que afecte relaciones o entidades debe reflejarse en el diagrama del dominio correspondiente en el mismo commit (o marcarse como deuda explícita en el mensaje de commit). La misma regla aplica entre mapas de bordes y `contracts.md`, y entre `contracts.md`, **OpenAPI** y **fixtures** (§4.1).
 
 ---
 
@@ -241,6 +267,7 @@ Un **sub-paso** está completo cuando:
 - [ ] Tabla de ficha con las 4 materias llenas (sin celdas "por ver").
 - [ ] Todas las entidades referenciadas existen en `entidades-core.md`.
 - [ ] Sección de borde de módulo presente (aunque sea "Sin cruce"); si hay cruce, contrato/evento nombrado y existente en `contracts.md`, con clasificación declarada o marcada ⚠.
+- [ ] Si el borde implica operación nueva o cambio de payload: entrada correspondiente en OpenAPI del módulo (§4.1).
 - [ ] Todos los edge cases conocidos están documentados, incluidos los de falla de proveedor si hay borde.
 - [ ] Si depende de estados MP: materia "Interacción MP" declarada (§5.1), lecturas marcadas como confirmadas o deseadas, y modo degradado documentado para toda lectura deseada (§5.3).
 - [ ] Ningún vacío de la fuente quedó como supuesto silencioso — todos marcados con ⚠.
@@ -259,5 +286,7 @@ Un **macroproceso** está completo cuando:
 Un **módulo** está completo cuando:
 - [ ] Todos sus macroprocesos están completos.
 - [ ] Su `contracts.md` tiene las cuatro secciones pobladas y trazadas a sub-pasos.
+- [ ] Su OpenAPI (`modulos/<módulo>/openapi/`) está en correspondencia biunívoca con `contracts.md` §1 y §2.
+- [ ] Su catálogo de fixtures (`modulos/<módulo>/fixtures/`) cubre al menos un estado intermedio y un escenario de error por regla bloqueante frecuente del piloto, con `example_ref` válidos en la OpenAPI.
 - [ ] Toda dependencia declarada tiene definido el comportamiento ante falla o rechazo del proveedor.
-- [ ] Prueba de calidad: dos equipos independientes podrían construir, solo desde el contrato, un consumidor del módulo y un proveedor de sus dependencias funcionalmente equivalentes.
+- [ ] Prueba de calidad: dos equipos independientes podrían construir, solo desde el contrato y la OpenAPI publicada, un consumidor del módulo y un proveedor de sus dependencias funcionalmente equivalentes; la contraparte puede reproducir los fixtures en sandbox o recepción.
