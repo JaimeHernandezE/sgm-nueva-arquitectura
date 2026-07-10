@@ -1,0 +1,209 @@
+openapi: 3.1.0
+info:
+  title: SGM Adquisiciones — fragmento
+  version: 0.1.0
+  description: Fragmento de rutas. Ensamblado en `openapi/adquisiciones.openapi.yaml`.
+paths:
+  /purchase-orders/{id}/three-way-match:
+    post:
+      operationId: performThreeWayMatch
+      tags:
+        - pago
+      summary: Ejecutar cruce de 3 vías
+      description: |
+        Cruza OC, recepción conforme y factura SII (5.1). Emite evento `ThreeWayMatchCompleted`.
+      x-subpasos:
+        - "5.1"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "201":
+          description: Cruce de 3 vías ejecutado.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/ThreeWayMatch
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          description: Orden de compra no encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              example:
+                error_code: PURCHASE_ORDER_NOT_FOUND
+                field: id
+                rule: La orden de compra no existe
+                severity: blocking
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              examples:
+                goodsReceiptRequired:
+                  value:
+                    error_code: GOODS_RECEIPT_REQUIRED
+                    rule: Se requiere recepción conforme aprobada
+                    severity: blocking
+                invoiceUnavailable:
+                  value:
+                    error_code: INVOICE_PROVIDER_UNAVAILABLE
+                    rule: La factura SII no está disponible para cruce
+                    severity: blocking
+                matchDiscrepancy:
+                  value:
+                    error_code: MATCH_DISCREPANCY
+                    rule: Los montos de OC, recepción y factura no concuerdan
+                    severity: blocking
+  /three-way-matches/{id}/accrual:
+    post:
+      operationId: registerAccrual
+      tags:
+        - pago
+      summary: Registrar devengado desde cruce de 3 vías
+      description: >
+        Registra devengado tras match exitoso (5.2). Requiere `match_status = matched`. Emite evento `AccrualRegistered`.
+      x-subpasos:
+        - "5.2"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Identificador del cruce de 3 vías.
+      responses:
+        "201":
+          description: Devengado registrado.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/Accrual
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              examples:
+                threeWayMatchRequired:
+                  value:
+                    error_code: THREE_WAY_MATCH_REQUIRED
+                    rule: El cruce de 3 vías debe estar en estado matched
+                    severity: blocking
+                accountingUnavailable:
+                  value:
+                    error_code: ACCOUNTING_PROVIDER_UNAVAILABLE
+                    rule: El proveedor de contabilidad no está disponible
+                    severity: blocking
+  /accruals/{id}/payment-decree:
+    post:
+      operationId: issuePaymentDecree
+      tags:
+        - pago
+      summary: Emitir decreto de pago
+      description: |
+        Emite decreto de pago sobre devengado (5.3). Emite evento `PaymentDecreeIssued`.
+      x-subpasos:
+        - "5.3"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Identificador del devengado.
+      responses:
+        "201":
+          description: Decreto de pago emitido.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/PaymentDecree
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              example:
+                error_code: SIGNATURE_REQUIRED
+                rule: Se requiere firma electrónica válida (FirmaGob)
+                severity: blocking
+  /payment-decrees/{id}/execute:
+    post:
+      operationId: executePayment
+      tags:
+        - pago
+      summary: Ejecutar pago
+      description: |
+        Ejecuta el pago en Tesorería (5.4). Requiere idempotencia. Emite evento `PaymentCompleted`.
+      x-subpasos:
+        - "5.4"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Identificador del decreto de pago.
+        - $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/parameters/IdempotencyKey
+      responses:
+        "200":
+          description: Pago ejecutado.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/Payment
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              examples:
+                treasuryUnavailable:
+                  value:
+                    error_code: TREASURY_PROVIDER_UNAVAILABLE
+                    rule: El proveedor de tesorería no está disponible
+                    severity: blocking
+                paymentRejected:
+                  value:
+                    error_code: PAYMENT_REJECTED
+                    rule: El pago fue rechazado por tesorería
+                    severity: blocking

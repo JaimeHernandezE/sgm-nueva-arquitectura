@@ -1,0 +1,193 @@
+openapi: 3.1.0
+info:
+  title: SGM Adquisiciones — fragmento
+  version: 0.1.0
+  description: Fragmento de rutas. Ensamblado en `openapi/adquisiciones.openapi.yaml`.
+paths:
+  /purchase-orders/{id}/goods-receipts:
+    post:
+      operationId: registerReceipt
+      tags:
+        - recepcion-conforme
+      summary: Registrar recepción de bienes o servicios
+      description: Registra recepción parcial o total (4.1).
+      x-subpasos:
+        - "4.1"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/RegisterReceiptRequest
+      responses:
+        "201":
+          description: Recepción registrada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/GoodsReceipt
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          description: Orden de compra no encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              example:
+                error_code: PURCHASE_ORDER_NOT_FOUND
+                field: id
+                rule: La orden de compra no existe
+                severity: blocking
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              example:
+                error_code: RECEIPT_EXCEEDS_ORDER
+                rule: La cantidad recibida excede la pendiente de la línea
+                severity: blocking
+  /goods-receipts/{id}/confirm:
+    post:
+      operationId: confirmReceipt
+      tags:
+        - recepcion-conforme
+      summary: Confirmar recepción conforme
+      description: |
+        Confirma o rechaza la recepción (4.2). Emite eventos `GoodsReceiptConfirmed` o `ReceiptRejected`.
+      x-subpasos:
+        - "4.2"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Identificador de la recepción.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/ConfirmReceiptRequest
+      responses:
+        "200":
+          description: Recepción confirmada o rechazada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/GoodsReceipt
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              examples:
+                segregation:
+                  value:
+                    error_code: SEGREGATION_OF_DUTIES_VIOLATION
+                    rule: El confirmante no puede ser el aprobador de la compra
+                    severity: blocking
+                missingAttachments:
+                  value:
+                    error_code: MISSING_REQUIRED_ATTACHMENTS
+                    rule: Faltan adjuntos obligatorios (factura, guía de despacho)
+                    severity: blocking
+                signatureRequired:
+                  value:
+                    error_code: SIGNATURE_REQUIRED
+                    rule: Se requiere firma electrónica válida
+                    severity: blocking
+  /goods-receipt-lines/{id}/inventory-entry:
+    post:
+      operationId: registerInventoryEntry
+      tags:
+        - recepcion-conforme
+      summary: Registrar ingreso a inventario
+      description: |
+        Dependencia externa de inventario (4.3). Alcance pendiente (**[PENDIENTE P-44]**).
+      x-subpasos:
+        - "4.3"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Identificador de línea de recepción.
+      responses:
+        "202":
+          description: Ingreso a inventario solicitado al proveedor externo.
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+        "422":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+  /goods-receipts/{id}/accrual:
+    post:
+      operationId: recordAccrual
+      tags:
+        - recepcion-conforme
+      summary: Registrar devengado desde recepción conforme
+      description: |
+        Devengado asíncrono tras conformidad de recepción (4.4). Emite evento `AccrualRecorded`.
+      x-subpasos:
+        - "4.4"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Identificador de la recepción.
+      responses:
+        "202":
+          description: Devengado en proceso de registro.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/Accrual
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              example:
+                error_code: ACCRUAL_EXCEEDS_COMMITMENT
+                rule: El monto devengado excede el compromiso presupuestario
+                severity: blocking

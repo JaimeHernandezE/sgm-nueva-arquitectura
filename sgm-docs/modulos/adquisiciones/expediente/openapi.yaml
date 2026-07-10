@@ -1,0 +1,261 @@
+openapi: 3.1.0
+info:
+  title: SGM Adquisiciones — fragmento
+  version: 0.1.0
+  description: Fragmento de rutas. Ensamblado en `openapi/adquisiciones.openapi.yaml`.
+paths:
+  /procurement-cases:
+    get:
+      operationId: listProcurementCases
+      tags:
+        - expediente
+      summary: Listar expedientes de compra
+      description: >
+        Consulta paginada de expedientes. Solo lectura; sin efectos colaterales. Requiere scope `adquisiciones:read`
+        (personas) o `adquisiciones.read` (M2M).
+      x-subpasos: []
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Page
+        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/PageSize
+        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Sort
+        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Order
+        - name: procurement_type
+          in: query
+          schema:
+            $ref: ../openapi/adquisiciones.openapi.yaml#/components/schemas/ProcurementType
+        - name: status
+          in: query
+          schema:
+            $ref: ../openapi/adquisiciones.openapi.yaml#/components/schemas/ProcurementCaseStatus
+        - name: requesting_unit_id
+          in: query
+          schema:
+            type: string
+        - name: folio
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Colección paginada de expedientes.
+          content:
+            application/json:
+              schema:
+                $ref: ../openapi/adquisiciones.openapi.yaml#/components/schemas/PaginatedProcurementCaseSummary
+        "401":
+          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+  /procurement-cases/{case_id}:
+    get:
+      operationId: getProcurementCase
+      tags:
+        - expediente
+      summary: Obtener detalle de expediente
+      description: Vista de expediente con paso actual resumido.
+      x-subpasos: []
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../openapi/adquisiciones.openapi.yaml#/components/parameters/CaseId
+      responses:
+        "200":
+          description: Detalle del expediente.
+          content:
+            application/json:
+              schema:
+                $ref: ../openapi/adquisiciones.openapi.yaml#/components/schemas/ProcurementCaseDetail
+              examples:
+                ProcurementCaseAgile:
+                  $ref: ../openapi/adquisiciones.openapi.yaml#/components/examples/ProcurementCaseAgile
+        "401":
+          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          description: Expediente no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              example:
+                error_code: PROCUREMENT_CASE_NOT_FOUND
+                field: case_id
+                rule: El expediente no existe en el tenant del token
+                severity: blocking
+  /procurement-cases/{case_id}/steps:
+    get:
+      operationId: listProcurementCaseSteps
+      tags:
+        - expediente
+      summary: Listar pasos del expediente
+      description: Timeline de pasos ordenados por `step_number`.
+      x-subpasos: []
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../openapi/adquisiciones.openapi.yaml#/components/parameters/CaseId
+      responses:
+        "200":
+          description: Pasos del expediente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../openapi/adquisiciones.openapi.yaml#/components/schemas/CaseStep
+              examples:
+                ProcurementCaseStepsAgile:
+                  $ref: ../openapi/adquisiciones.openapi.yaml#/components/examples/ProcurementCaseStepsAgile
+        "401":
+          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          description: Expediente no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              example:
+                error_code: PROCUREMENT_CASE_NOT_FOUND
+                field: case_id
+                rule: El expediente no existe en el tenant del token
+                severity: blocking
+  /purchase-requests:
+    get:
+      operationId: listPurchaseRequests
+      tags:
+        - expediente
+      summary: Listar solicitudes de pedido
+      description: Consulta paginada de SOLPED.
+      x-subpasos: []
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Page
+        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/PageSize
+        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Sort
+        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Order
+        - name: procurement_case_id
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Colección paginada de SOLPED.
+          content:
+            application/json:
+              schema:
+                $ref: ../openapi/adquisiciones.openapi.yaml#/components/schemas/PaginatedPurchaseRequest
+        "401":
+          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+  /purchase-requests/{id}:
+    get:
+      operationId: getPurchaseRequest
+      tags:
+        - expediente
+      summary: Obtener detalle de SOLPED
+      description: SOLPED con sus líneas de detalle.
+      x-subpasos: []
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "200":
+          description: Detalle de SOLPED con líneas.
+          content:
+            application/json:
+              schema:
+                $ref: ../openapi/adquisiciones.openapi.yaml#/components/schemas/PurchaseRequestWithLines
+        "401":
+          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          description: SOLPED no encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              example:
+                error_code: PURCHASE_REQUEST_NOT_FOUND
+                field: id
+                rule: La solicitud de pedido no existe
+                severity: blocking
+  /purchase-orders:
+    get:
+      operationId: listPurchaseOrders
+      tags:
+        - expediente
+      summary: Listar órdenes de compra
+      description: Consulta paginada de órdenes de compra.
+      x-subpasos: []
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Page
+        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/PageSize
+        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Sort
+        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Order
+        - name: procurement_case_id
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Colección paginada de órdenes de compra.
+          content:
+            application/json:
+              schema:
+                $ref: ../openapi/adquisiciones.openapi.yaml#/components/schemas/PaginatedPurchaseOrder
+        "401":
+          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+  /purchase-orders/{id}:
+    get:
+      operationId: getPurchaseOrder
+      tags:
+        - expediente
+      summary: Obtener detalle de orden de compra
+      description: Detalle de una OC.
+      x-subpasos: []
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "200":
+          description: Detalle de orden de compra.
+          content:
+            application/json:
+              schema:
+                $ref: ../openapi/adquisiciones.openapi.yaml#/components/schemas/PurchaseOrder
+        "401":
+          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          description: Orden de compra no encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              example:
+                error_code: PURCHASE_ORDER_NOT_FOUND
+                field: id
+                rule: La orden de compra no existe
+                severity: blocking

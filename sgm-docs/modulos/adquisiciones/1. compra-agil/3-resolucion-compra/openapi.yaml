@@ -1,0 +1,168 @@
+openapi: 3.1.0
+info:
+  title: SGM Adquisiciones — fragmento
+  version: 0.1.0
+  description: Fragmento de rutas. Ensamblado en `openapi/adquisiciones.openapi.yaml`.
+paths:
+  /procurement-cases/{id}/quotation-result:
+    post:
+      operationId: recordQuotationResult
+      tags:
+        - resolucion-compra-ca
+      summary: Registrar resultado de cotización
+      description: |
+        Registro manual en modo degradado (3.2). Emite evento `QuotationClosed`.
+      x-subpasos:
+        - "3.2"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/QuotationResultInput
+      responses:
+        "201":
+          description: Resultado de cotización registrado.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/QuotationResult
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/ProcurementCaseNotFound
+        "422":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+  /purchase-orders:
+    post:
+      operationId: registerPurchaseOrder
+      tags:
+        - resolucion-compra-ca
+      summary: Registrar orden de compra
+      description: >
+        Registra OC desde lectura MP o modo manual (3.3). Emite eventos `PurchaseOrderIssued` o
+        `ProviderIneligibleBlocked`.
+      x-subpasos:
+        - "3.3"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/RegisterPurchaseOrderRequest
+      responses:
+        "201":
+          description: Orden de compra registrada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/PurchaseOrder
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "422":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+  /purchase-orders/{id}/sync-accepted:
+    post:
+      operationId: syncPurchaseOrderAccepted
+      tags:
+        - resolucion-compra-ca
+      summary: Sincronizar OC aceptada y comprometer presupuesto
+      description: >
+        Confirma aceptación de OC en MP y compromete presupuesto (3.4). Emite eventos `PurchaseOrderAccepted` y
+        `BudgetCommitmentCreated`.
+      x-subpasos:
+        - "3.4"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "200":
+          description: OC sincronizada y compromiso registrado.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/SyncPurchaseOrderAcceptedResponse
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          description: Orden de compra no encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              example:
+                error_code: PURCHASE_ORDER_NOT_FOUND
+                field: id
+                rule: La orden de compra no existe
+                severity: blocking
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              examples:
+                budgetUnavailable:
+                  $ref: ../../openapi/adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
+  /procurement-cases/{id}/release-pre-commitment:
+    post:
+      operationId: releasePreCommitment
+      tags:
+        - resolucion-compra-ca
+      summary: Liberar preobligación por proceso fallido
+      description: |
+        Libera preobligación cuando el proceso CA falla o queda desierto (3.6). Emite evento `ProcurementProcessFailed`.
+      x-subpasos:
+        - "3.6"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Preobligación liberada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/ProcurementCase
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/ProcurementCaseNotFound
+        "422":
+          description: Error del proveedor presupuestario.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              example:
+                error_code: BUDGET_PROVIDER_UNAVAILABLE
+                rule: El proveedor de presupuesto no está disponible
+                severity: blocking

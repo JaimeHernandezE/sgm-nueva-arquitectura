@@ -57,3 +57,6 @@ Registro centralizado de pendientes de los documentos de arquitectura. En cada d
 | P-51 | Mecanismo de autorización en runtime (claims en token vs. consulta al core vs. híbrido); resolver junto con P-02 y P-22 | plataforma-core §7 | ninguna | Abierto |
 | P-52 | Wireframes de consolas de administración (plataforma SUBDERE y municipal) según plantilla-maestra §7, con acciones mapeadas al contrato del core | plataforma-core §8, entregable-licitacion §13 | ninguna | Abierto |
 | P-53 | Tooling de validación CI del repo para OpenAPI y fixtures (lint, correspondencia contracts.md ↔ spec, examples ↔ fixtures) | estandares-api.md Parte II §13 | ninguna | Abierto |
+| P-54 | Definiciones exactas de las medidas financieras del catálogo analítico (embudo solicitado → pagado); `amount_accrued` bloqueada por P-46, `amount_paid` sujeta a P-47 | modulos/adquisiciones/analitica.md §4.2, §9.1 | Contabilidad / DM / Finanzas | Abierto |
+| P-55 | Forma del contrato de consulta agregada (operación genérica vs. consultas predefinidas) y calibración de límites por consulta | modulos/adquisiciones/analitica.md §5, §9.2 | ninguna | Abierto |
+| P-56 | Visibilidad de agregados analíticos por rol y unidad (municipio completo vs. propia unidad); resolver junto a P-24 | modulos/adquisiciones/analitica.md §7, §9.3 | DM / pilotos | Abierto |

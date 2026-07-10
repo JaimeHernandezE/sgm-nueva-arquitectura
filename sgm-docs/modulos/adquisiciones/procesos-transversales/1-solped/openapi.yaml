@@ -1,0 +1,497 @@
+openapi: 3.1.0
+info:
+  title: SGM Adquisiciones — fragmento
+  version: 0.1.0
+  description: Fragmento de rutas. Ensamblado en `openapi/adquisiciones.openapi.yaml`.
+paths:
+  /purchase-requests:
+    post:
+      operationId: createPurchaseRequest
+      tags:
+        - solped
+      summary: Crear solicitud de pedido
+      description: >
+        Registra una SOLPED en estado borrador. Valida campos obligatorios, cantidades, referencia de precio y
+        resolución fundada si aplica.
+      x-subpasos:
+        - "1.1"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/CreatePurchaseRequestRequest
+      responses:
+        "201":
+          description: SOLPED creada en estado borrador.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/PurchaseRequest
+              examples:
+                CreatePurchaseRequestSuccess:
+                  $ref: ../../openapi/adquisiciones.openapi.yaml#/components/examples/CreatePurchaseRequestSuccess
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              examples:
+                missingFields:
+                  value:
+                    error_code: MISSING_REQUIRED_FIELDS
+                    rule: Faltan campos obligatorios de la SOLPED
+                    severity: blocking
+                invalidQuantity:
+                  value:
+                    error_code: INVALID_QUANTITY
+                    field: lines[0].quantity
+                    rule: La cantidad debe ser mayor a cero
+                    severity: blocking
+                priceReference:
+                  value:
+                    error_code: PRICE_REFERENCE_UNAVAILABLE
+                    rule: No hay referencia de precio disponible para la línea
+                    severity: blocking
+                priceDeviation:
+                  value:
+                    error_code: PRICE_DEVIATION_EXCEEDED
+                    rule: La desviación de precio excede la tolerancia permitida
+                    severity: blocking
+                foundedResolution:
+                  value:
+                    error_code: FOUNDED_RESOLUTION_REQUIRED
+                    field: founded_resolution_attachment
+                    rule: Trato directo requiere resolución fundada adjunta
+                    severity: blocking
+  /purchase-requests/{id}/submit:
+    post:
+      operationId: submitPurchaseRequest
+      tags:
+        - solped
+      summary: Enviar SOLPED a aprobación
+      description: >
+        Transiciona SOLPED completa a `pending_approval`. Exige resolución fundada si `purchase_modality =
+        direct_procurement`.
+      x-subpasos:
+        - "1.1"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "200":
+          description: SOLPED enviada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/PurchaseRequest
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              example:
+                error_code: FOUNDED_RESOLUTION_REQUIRED
+                field: founded_resolution_attachment
+                rule: Trato directo requiere resolución fundada adjunta
+                severity: blocking
+  /purchase-requests/{id}/approve:
+    post:
+      operationId: approvePurchaseRequest
+      tags:
+        - solped
+      summary: Aprobar SOLPED
+      description: |
+        Aprueba la SOLPED con firma electrónica válida. Emite evento `PurchaseRequestApproved`.
+      x-subpasos:
+        - "1.2"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/ApprovalDecisionRequest
+      responses:
+        "200":
+          description: SOLPED aprobada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/PurchaseRequest
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              examples:
+                signatureRequired:
+                  value:
+                    error_code: SIGNATURE_REQUIRED
+                    rule: Se requiere firma electrónica válida (FirmaGob)
+                    severity: blocking
+                unauthorizedApprover:
+                  value:
+                    error_code: UNAUTHORIZED_APPROVER
+                    rule: Solo el aprobador de jefatura de la unidad solicitante puede aprobar
+                    severity: blocking
+  /purchase-requests/{id}/reject:
+    post:
+      operationId: rejectPurchaseRequest
+      tags:
+        - solped
+      summary: Rechazar SOLPED
+      description: Rechaza la SOLPED; `comments` obligatorio. Retorna a `draft`.
+      x-subpasos:
+        - "1.2"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/RejectionDecisionRequest
+      responses:
+        "200":
+          description: SOLPED rechazada y devuelta a borrador.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/PurchaseRequest
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
+        "422":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+  /purchase-requests/{id}/budget-verification:
+    post:
+      operationId: verifyBudgetAvailability
+      tags:
+        - solped
+      summary: Verificar disponibilidad presupuestaria
+      description: >
+        Confirma o rechaza disponibilidad presupuestaria (sub-paso 1.3). Invoca `checkBudgetAvailability` en
+        Presupuestos.
+      x-subpasos:
+        - "1.3"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/BudgetVerificationRequest
+      responses:
+        "200":
+          description: Verificación registrada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/BudgetAvailabilityPreview
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              examples:
+                budgetUnavailable:
+                  $ref: ../../openapi/adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
+                invalidStatus:
+                  value:
+                    error_code: INVALID_STATUS
+                    rule: La SOLPED debe estar en estado pending_finance
+                    severity: blocking
+  /purchase-requests/{id}/budget-financing-request:
+    post:
+      operationId: requestBudgetFinancing
+      tags:
+        - solped
+      summary: Solicitar financiamiento presupuestario
+      description: >
+        Paso optativo (1.4). Emite evento `BudgetFinancingRequested`; no avanza el ciclo principal hasta resolución
+        externa.
+      x-subpasos:
+        - "1.4"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - justification
+              properties:
+                justification:
+                  type: string
+      responses:
+        "202":
+          description: Solicitud de financiamiento registrada.
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
+        "422":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+  /purchase-requests/{id}/budget-availability-certificate:
+    post:
+      operationId: issueBudgetAvailabilityCertificate
+      tags:
+        - solped
+      summary: Emitir certificado de disponibilidad presupuestaria
+      description: |
+        Emite CDP firmado (modo electrónico o escaneado). Emite evento `BudgetAvailabilityCertificateIssued`.
+      x-subpasos:
+        - "1.5"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/IssueBudgetCertificateRequest
+      responses:
+        "201":
+          description: CDP emitido.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/BudgetAvailabilityCertificate
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              examples:
+                verificationRequired:
+                  value:
+                    error_code: VERIFICATION_REQUIRED
+                    rule: Debe existir verificación confirmada en sub-paso 1.3
+                    severity: blocking
+                segregation:
+                  value:
+                    error_code: SEGREGATION_OF_DUTIES_VIOLATION
+                    rule: El verificador no puede ser el firmante del CDP
+                    severity: blocking
+                budgetUnavailable:
+                  $ref: ../../openapi/adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
+                signatureRequired:
+                  value:
+                    error_code: SIGNATURE_REQUIRED
+                    rule: Se requiere firma electrónica válida (FirmaGob)
+                    severity: blocking
+                scannedInvalid:
+                  value:
+                    error_code: SCANNED_CDP_INVALID
+                    rule: El adjunto escaneado del CDP no es válido
+                    severity: blocking
+  /purchase-requests/{id}/budget-availability-certificate/scanned:
+    post:
+      operationId: registerScannedBudgetAvailabilityCertificate
+      tags:
+        - solped
+      summary: Registrar CDP escaneado
+      description: |
+        Modo degradado de emisión de CDP (1.5). Fija `signature_mode = scanned`.
+      x-subpasos:
+        - "1.5"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/RegisterScannedBudgetCertificateRequest
+      responses:
+        "201":
+          description: CDP escaneado registrado.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/BudgetAvailabilityCertificate
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              examples:
+                budgetUnavailable:
+                  $ref: ../../openapi/adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
+                scannedInvalid:
+                  value:
+                    error_code: SCANNED_CDP_INVALID
+                    rule: El adjunto escaneado del CDP no es válido
+                    severity: blocking
+  /purchase-requests/{id}/budget-pre-commitment:
+    post:
+      operationId: createBudgetPreCommitment
+      tags:
+        - solped
+      summary: Crear preobligación presupuestaria
+      description: |
+        Registra preobligación tras CDP vigente (1.6). Emite evento `BudgetPreCommitmentCreated`.
+      x-subpasos:
+        - "1.6"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/CreateBudgetPreCommitmentRequest
+      responses:
+        "201":
+          description: Preobligación creada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/BudgetPreCommitment
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              examples:
+                cdpRequired:
+                  value:
+                    error_code: CDP_REQUIRED
+                    rule: Se requiere CDP vigente
+                    severity: blocking
+                budgetUnavailable:
+                  $ref: ../../openapi/adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
+                invalidStatus:
+                  value:
+                    error_code: INVALID_STATUS
+                    rule: La SOLPED debe estar en estado pending_finance
+                    severity: blocking
+  /budget-lines/{id}/preview-availability:
+    get:
+      operationId: previewBudgetAvailability
+      tags:
+        - solped
+      summary: Autoconsulta informativa de saldo
+      description: >
+        Consulta informativa de disponibilidad presupuestaria. No persiste ni afecta el estado de la SOLPED. Requiere
+        RBAC de consulta sobre la línea.
+      x-subpasos:
+        - "1.1"
+        - "1.2"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Identificador de línea presupuestaria.
+        - name: fiscal_year
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: amount
+          in: query
+          description: Monto estimado de la SOLPED (opcional).
+          schema:
+            type: number
+            format: double
+      responses:
+        "200":
+          description: Proyección de saldo disponible.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/BudgetAvailabilityPreview
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "422":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity

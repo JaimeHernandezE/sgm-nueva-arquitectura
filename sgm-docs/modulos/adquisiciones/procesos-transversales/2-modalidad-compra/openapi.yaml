@@ -1,0 +1,232 @@
+openapi: 3.1.0
+info:
+  title: SGM Adquisiciones — fragmento
+  version: 0.1.0
+  description: Fragmento de rutas. Ensamblado en `openapi/adquisiciones.openapi.yaml`.
+paths:
+  /procurement-cases/{id}/modality:
+    post:
+      operationId: confirmProcurementModality
+      tags:
+        - modalidad-compra
+      summary: Confirmar modalidad de compra
+      description: >
+        Ratifica o selecciona modalidad (gateway V1–V8). Instancia pasos del expediente. Emite evento
+        `ProcurementModalityConfirmed`.
+      x-subpasos:
+        - "2.1"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Identificador del expediente.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/ConfirmProcurementModalityRequest
+      responses:
+        "200":
+          description: Modalidad confirmada e instancia de pasos.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/ConfirmProcurementModalityResponse
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/ProcurementCaseNotFound
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              examples:
+                modalityAmountExceeded:
+                  value:
+                    error_code: MODALITY_AMOUNT_EXCEEDED
+                    rule: El monto excede 100 UTM para Compra Ágil
+                    severity: blocking
+                frameworkFirst:
+                  value:
+                    error_code: FRAMEWORK_AGREEMENT_FIRST_OPTION
+                    rule: El catálogo de Convenio Marco es la primera opción sin justificación
+                    severity: blocking
+                directCause:
+                  value:
+                    error_code: DIRECT_PROCUREMENT_CAUSE_REQUIRED
+                    rule: Trato directo requiere causal y resolución fundada
+                    severity: blocking
+                alreadyConfirmed:
+                  value:
+                    error_code: MODALITY_ALREADY_CONFIRMED
+                    rule: La modalidad ya fue confirmada
+                    severity: blocking
+                utmUnavailable:
+                  value:
+                    error_code: UTM_VALUE_UNAVAILABLE
+                    rule: No fue posible obtener el valor UTM vigente
+                    severity: blocking
+  /modality-decisions/{id}/approve:
+    post:
+      operationId: approveModalityDecision
+      tags:
+        - modalidad-compra
+      summary: Aprobar decisión de modalidad
+      description: >
+        Aprobación condicionada a `requires_jefatura_approval` (**[PENDIENTE P-38]**). Emite evento
+        `ProcurementModalityApproved`.
+      x-subpasos:
+        - "2.2"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comments:
+                  type: string
+      responses:
+        "200":
+          description: Aprobación registrada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/ModalityDecisionApproval
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              example:
+                error_code: SIGNATURE_REQUIRED
+                rule: Se requiere firma electrónica válida (FirmaGob)
+                severity: blocking
+  /modality-decisions/{id}/reject:
+    post:
+      operationId: rejectModalityDecision
+      tags:
+        - modalidad-compra
+      summary: Rechazar decisión de modalidad
+      description: |
+        Rechaza la decisión; anula pasos de 2.1 con auditoría y retorna a 2.1. `comments` obligatorio.
+      x-subpasos:
+        - "2.2"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/RejectionDecisionRequest
+      responses:
+        "200":
+          description: Decisión rechazada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/ModalityDecision
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+        "422":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+  /procurement-cases/{id}/mp-link:
+    post:
+      operationId: linkMpProcess
+      tags:
+        - modalidad-compra
+      summary: Vincular proceso de Mercado Público
+      description: |
+        Vincula código MP al expediente. Emite evento `MpProcessLinked`.
+      x-subpasos:
+        - "2.3"
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - mp_process_id
+              properties:
+                mp_process_id:
+                  type: string
+                  example: 4021-33-COT26
+      responses:
+        "200":
+          description: Proceso MP vinculado.
+          content:
+            application/json:
+              schema:
+                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/ProcurementCase
+        "401":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/ProcurementCaseNotFound
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              examples:
+                mpNotFound:
+                  value:
+                    error_code: MP_PROCESS_NOT_FOUND
+                    rule: El proceso de Mercado Público no existe
+                    severity: blocking
+                organismMismatch:
+                  value:
+                    error_code: MP_PROCESS_ORGANISM_MISMATCH
+                    rule: El organismo comprador no coincide con el tenant
+                    severity: blocking
+                typeMismatch:
+                  value:
+                    error_code: MP_PROCESS_TYPE_MISMATCH
+                    rule: El tipo de proceso MP no coincide con la modalidad confirmada
+                    severity: blocking
+                alreadyLinked:
+                  value:
+                    error_code: MP_PROCESS_ALREADY_LINKED
+                    rule: El código MP ya está vinculado a otro expediente
+                    severity: blocking
