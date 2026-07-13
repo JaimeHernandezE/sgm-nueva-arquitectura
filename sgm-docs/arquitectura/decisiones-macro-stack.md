@@ -10,21 +10,25 @@
 
 **Decisión asentada.** SGM se concibe como un **motor backend API-first**, no como una aplicación. La API es el producto; todo consumidor —incluido el frontend base construido por SUBDERE— la consume sin privilegios especiales.
 
-Dos modos de consumo:
+Tres modos de consumo:
 
-| Modo | Público objetivo | Descripción |
-|---|---|---|
-| **Hosting completo** | Municipios sin musculatura TI (p. ej. Quilaco, Cochamó) | SUBDERE aloja motor, datos y frontend base. El municipio opera contra la interfaz provista. |
-| **Módulos à la carte vía API** | Municipios grandes con sistemas propios (arquetipo: Lo Barnechea sobre Oracle) | El municipio consume módulos específicos (p. ej. solo Adquisiciones) e integra las respuestas a sus aplicaciones en uso. |
+| Modo | Público objetivo | Motor SGM | BD transaccional | Archivos | Quién paga storage |
+|---|---|---|---|---|---|
+| **Hosting completo** | Municipios sin musculatura TI (p. ej. Quilaco, Cochamó) | SUBDERE | Schema SUBDERE | Bucket nube SUBDERE (incluido en convenio) | SUBDERE |
+| **Hosting híbrido** | Municipios con recursos TI que operan en SGM pero residen archivos en su nube | SUBDERE | Schema SUBDERE | Bucket en nube municipal (`tenant_owned` en C10) | Municipio |
+| **Módulos à la carte vía API** | Municipios grandes con sistemas propios (arquetipo: Lo Barnechea sobre Oracle) | SUBDERE | Según convenio | Según convenio (bucket municipal o DMS vía C10) | Municipio |
 
-**Consecuencia arquitectónica central:** cada módulo debe ser independiente, con protocolos de entrada y salida explícitos (ver documento `contrato-api-first.md`). Sin esa disciplina, el modo à la carte no es viable.
+El **híbrido** es distinto del à la carte: el municipio opera contra el frontend/base SUBDERE, pero los **archivos** viven en infraestructura que contrata el municipio. El à la carte consume módulos por API e integra en sistemas propios.
+
+**Consecuencia arquitectónica central:** cada módulo debe ser independiente, con protocolos de entrada y salida explícitos (ver documento `contrato-api-first.md`). Sin esa disciplina, el modo à la carte no es viable. Integraciones externas y documentos se resuelven siempre en el core (`plataforma-core.md` §7–§7bis).
 
 ## 2. Soberanía del dato vs. operación de infraestructura
 
 **Decisión asentada.** Se distingue la propiedad jurídica del dato de la operación de la infraestructura:
 
-- Municipios pequeños: alojados completamente en SUBDERE, nube incluida. La responsabilidad de tratamiento debe quedar jurídicamente clara (relevante para Ley 21.719).
-- Municipios grandes: absorben su data en sus propias nubes/sistemas, consumiendo el motor vía API.
+- **Hosting completo:** motor, datos transaccionales y archivos en infraestructura SUBDERE. La responsabilidad de tratamiento debe quedar jurídicamente clara (relevante para Ley 21.719).
+- **Hosting híbrido:** motor y datos transaccionales en SUBDERE; **archivos** en bucket o DMS del municipio, configurado en el core (C10). Soberanía documental municipal sin dejar de operar en SGM hospedado.
+- **À la carte:** el municipio absorbe su data en sus propias nubes/sistemas donde el convenio lo establezca, consumiendo el motor vía API.
 
 **[PENDIENTE P-01]** Formalizar el instrumento jurídico (convenio tipo) que define responsable del tratamiento y encargado en cada modo, en línea con Ley 21.719.
 

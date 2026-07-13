@@ -69,14 +69,15 @@ Metadatos del sub-paso: quién del municipio actúa, con qué rol, en qué siste
 Descripción funcional del sub-paso en prosa. Qué ocurre, quién lo hace, qué condiciones aplican, plazos si existen.
 
 ### 3.4 Entidad(es) y campos
-- Referenciar entidades por su nombre canónico de `modelo-datos/entidades-core.md`.
+- Referenciar entidades por su nombre canónico de `modelo-datos/entidades-core.md` o `entidades-plataforma.md` (dominio de plataforma: `DocumentRef`, `User`, etc.).
 - Indicar si el sub-paso **crea** una entidad nueva o **actualiza** una existente (y qué campos toca).
-- Si una entidad es nueva, se agrega primero a `entidades-core.md` y luego se referencia aquí — nunca se define solo en el sub-paso.
+- Si una entidad es nueva, se agrega primero al modelo canónico correspondiente y luego se referencia aquí — nunca se define solo en el sub-paso.
+- Campos de adjunto usan **`DocumentRef`**; la subida es operación del core C10 (`storeDocument`), no del módulo.
 - Formato: lista con nombre de entidad, campos relevantes con tipo entre paréntesis, y **obligatoriedad explícita** en cada campo: `obligatorio`, `opcional`, u `obligatorio si <condición>`. Prohibido dejar un campo sin una de esas tres marcas — la ambigüedad silenciosa no es aceptable.
 
 ### 3.5 Borde de módulo (obligatoria; "Sin cruce" si no aplica)
 
-Declara si el sub-paso cruza el borde del módulo. Un cruce existe cuando el sub-paso: (a) requiere validar o consultar algo que pertenece a otro módulo, (b) escribe o dispara efectos en otro módulo, (c) interactúa con un sistema externo (Mercado Público, FirmaGob, DocDigital), o (d) produce un hecho de dominio que otros deben poder observar.
+Declara si el sub-paso cruza el borde del módulo. Un cruce existe cuando el sub-paso: (a) requiere validar o consultar algo que pertenece a otro módulo, (b) escribe o dispara efectos en otro módulo, (c) interactúa con una **integración externa vía core** (Mercado Público, FirmaGob, SII, almacenamiento de documentos) o sube/descarga archivos (`storeDocument`), o (d) produce un hecho de dominio que otros deben poder observar.
 
 Formato:
 
@@ -84,7 +85,7 @@ Formato:
 |---|---|
 | **Tipo** | Dependencia (este módulo consume) / Evento (este módulo emite) / Sistema externo / Sin cruce |
 | **Contrato / Evento** | Nombre de la operación de contrato o del evento (nomenclatura inglesa: `checkBudgetAvailability`, `PurchaseOrderIssued`) |
-| **Contraparte** | Módulo o sistema al otro lado del borde |
+| **Contraparte** | Módulo, o **`Core (<proveedor>)`** / **`Core (documentos)`** para integraciones y archivos — nunca el tercero como implementador del módulo |
 | **Clasificación** | Síncrona bloqueante / Asíncrona / Cacheada (ver `musts-arquitectura.md`, sección 5) |
 | **Payload** | Entidades/campos que cruzan el borde (referencia a `entidades-core.md`) |
 
@@ -179,11 +180,19 @@ Las fichas declaran la clasificación como **quinta materia de la tabla de ficha
 - Cada ficha que dependa de una lectura MP indica si esa lectura está **confirmada** (existe en la API actual de MP) o es **deseada** (depende de la negociación con ChileCompra).
 - Todo sub-paso que dependa de una lectura *deseada* debe documentar su **modo degradado**: cómo avanza el flujo si la lectura no existe (típicamente, registro manual del usuario con menor granularidad de trazabilidad). La especificación no queda rehén de una API no negociada.
 
+### 5.4 Integraciones externas y documentos (propiedad del core)
+
+Reglas de propiedad (`plataforma-core.md` §7–§7bis):
+
+1. **Adaptador + secretos en el core** — MP (C7), FirmaGob, SII (C9), almacenamiento (C10). El módulo declara qué operación necesita y cuándo; el core implementa el HTTP y custodia credenciales por tenant.
+2. **Contraparte en fichas** = `Core (Mercado Público)`, `Core (FirmaGob)`, `Core (SII)`, `Core (documentos)` — no el nombre del tercero como implementador del módulo.
+3. **DocDigital** como canal de notificación formal (`musts-arquitectura.md` §9) es distinto del repositorio de archivos (C10). Si un municipio usa DocDigital como DMS, entra por backend `external_dms` con adaptador en el core.
+
 ---
 
 ## 6. Reglas del modelo de datos
 
-1. **Fuente única:** todas las entidades se definen en `modelo-datos/entidades-core.md`. Los procesos las referencian, no las redefinen.
+1. **Fuente única:** entidades de dominio en `modelo-datos/entidades-core.md`; entidades de plataforma en `modelo-datos/entidades-plataforma.md`. Los procesos las referencian, no las redefinen.
 2. **Nomenclatura:** inglés, estilo técnico, PascalCase para entidades (`PurchaseRequest`), snake_case para campos (`requesting_unit`).
 3. **Extensión de entidades existentes:** si un proceso nuevo necesita un campo en una entidad ya definida, el campo se agrega en `entidades-core.md` con nota de qué proceso lo motivó, y se referencia desde el sub-paso.
 4. **Entidades sugeridas:** si el análisis sugiere una entidad que la fuente no confirma (ej. `GoodsReceiptLine`), se marca explícitamente como *(sugerida, no confirmada en fuente)*.

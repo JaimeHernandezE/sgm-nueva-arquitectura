@@ -1,7 +1,7 @@
 # Wireframe: Aprobación de modalidad por jefatura
 
 **Sub-paso:** 2.2 — Aprobación de modalidad por jefatura *(condicional a `ModalityDecision.requires_jefatura_approval`, marcado en 2.1 — existencia formal pendiente de ratificar con la DM, **[PENDIENTE P-38]**)*
-**Operaciones:** `approveModalityDecision`, `rejectModalityDecision` *(nombres inferidos — no declarados literalmente en la ficha)* · Dependencia condicional: `requestSignature`/`confirmSignature` (FirmaGob)
+**Operaciones:** `approveModalityDecision`, `rejectModalityDecision` *(nombres inferidos — no declarados literalmente en la ficha)* · Dependencia condicional: `requestSignature`/`confirmSignature` (Core (FirmaGob))
 
 ## Layout
 
@@ -45,7 +45,7 @@
 
 | Botón | Operación contrato | Dependencia |
 |---|---|---|
-| Aprobar y firmar | `approveModalityDecision` *(inferido)* | `requestSignature` → `confirmSignature` (FirmaGob), condicional a que DM exija firma |
+| Aprobar y firmar | `approveModalityDecision` *(inferido)* | `requestSignature` → `confirmSignature` (Core (FirmaGob)), condicional a que DM exija firma |
 | Rechazar | `rejectModalityDecision` *(inferido)* | — |
 
 ## Estados de pantalla

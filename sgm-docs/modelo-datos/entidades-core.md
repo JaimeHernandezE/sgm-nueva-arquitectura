@@ -1,6 +1,10 @@
 # Entidades Core del Modelo de Datos
 
-Fuente única de las entidades del modelo de datos SGM. Los macroprocesos **referencian** estas entidades — no las redefinen. Si un macroproceso necesita un campo nuevo en una entidad ya existente aquí, se agrega en este archivo y se referencia desde el subproceso correspondiente, para evitar que la misma entidad diverja entre módulos.
+Fuente única de las entidades del **dominio de negocio** del modelo de datos SGM. Los macroprocesos **referencian** estas entidades — no las redefinen.
+
+**Entidades de plataforma** (identidad, `DocumentRef`, integraciones, parámetros normativos): [`entidades-plataforma.md`](entidades-plataforma.md).
+
+Si un macroproceso necesita un campo nuevo en una entidad ya existente aquí, se agrega en este archivo y se referencia desde el subproceso correspondiente, para evitar que la misma entidad diverja entre módulos.
 
 **Convención de nombres:** inglés, estilo técnico (`PurchaseRequest`, no `SolicitudCompra`).
 
@@ -78,7 +82,7 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 | `justification` | texto | **Obligatorio** |
 | `requested_date` | fecha | **Obligatorio** |
 | `purchase_modality` | enum, **opcional** | **Opcional** — indicación provisional de modalidad. Valores: `agile_purchase`, `framework_agreement`, `public_tender`, `direct_procurement`. Confirmable en etapa 2. |
-| `founded_resolution_attachment` | ref. adjunto | **Obligatorio si** `purchase_modality = direct_procurement`. Resolución Fundada. |
+| `founded_resolution_attachment` | ref. `DocumentRef` | **Obligatorio si** `purchase_modality = direct_procurement`. Resolución Fundada — almacenada vía C10 (`storeDocument`). |
 | `proposed_budget_line_id` | ref. `BudgetLine` | **Opcional** — pista para autoconsulta (1.1, 1.2); no sustituye verificación en 1.3 |
 | `proposed_fiscal_year` | número | **Opcional** — año fiscal asociado a la línea propuesta |
 | `status` | enum | **Obligatorio**. Valores: `draft`, `pending_approval`, `pending_finance`, `quoting_in_progress`, `quote_void`, … |
@@ -94,9 +98,10 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 | `quantity` | número | **Obligatorio** |
 | `unit_of_measure` | ref. `UnitOfMeasure` | **Obligatorio** |
 | `unit_price` | número | **Obligatorio** |
-| `price_source` | ref. `PriceReference` | **Obligatorio** |
+| `price_source` | ref. `PriceReference` | **Obligatorio** — valor obtenido vía core `getPriceReference` (C9) |
 
 ### `PriceReference`
+**Visibilidad:** interna — DTO de validación embebido en línea; datos desde core `getPriceReference` (C9 → SII u otra fuente oficial)
 **Visibilidad:** interna — usada en validación de `createPurchaseRequest`; no cruza borde como entidad independiente
 
 N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir.**
@@ -141,7 +146,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `status` | enum | **Obligatorio**. Valores: `issued`, `rejected`, `pending_signature` |
 | `rejection_reason` | texto | **Obligatorio si** `status = rejected` |
 | `signature_mode` | enum | **Obligatorio**. Valores: `electronic`, `scanned` |
-| `scanned_certificate_attachment` | ref. almacenamiento | **Obligatorio si** `signature_mode = scanned` |
+| `scanned_certificate_attachment` | ref. `DocumentRef` | **Obligatorio si** `signature_mode = scanned` — PDF escaneado vía C10 |
 
 ### `BudgetPreCommitment` (Preobligación / Pre-afectación)
 **Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `purchase_request_id`, `budget_availability_certificate_id`, `budget_line_id`, `estimated_amount`, `fiscal_year`, `status`
@@ -223,7 +228,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `receiving_unit` | ref. `OrganizationalUnit` | **Obligatorio** |
 | `received_date` | fecha | **Obligatorio** |
 | `service_period_start` / `service_period_end` | fecha | **Obligatorio si** `receipt_type = service` recurrente |
-| `supporting_document_ref` | ref. almacenamiento de objetos | **Obligatorio si** `receipt_type = service` |
+| `supporting_document_ref` | ref. `DocumentRef` | **Obligatorio si** `receipt_type = service` — almacenado vía C10 |
 | `status` | enum | **Obligatorio**. Valores: `draft`, `confirmed`, `rejected`, `partially_rejected` |
 | `observations` | texto | **Obligatorio si** `status` indica rechazo total o parcial |
 | `confirmed_by` | ref. `User` | **Obligatorio si** `status = confirmed` — regla SoD |
@@ -336,20 +341,20 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `decision_date` | fecha | **Obligatorio** (generado por sistema al registrar) |
 
 ### `NormativeParameter`
-**Visibilidad:** expuesta — referencia global de plataforma; no administrada por el módulo Adquisiciones ni por el tenant (administración a nivel plataforma por SUBDERE)
+**Visibilidad:** expuesta — entidad de plataforma; definición canónica en [`entidades-plataforma.md`](entidades-plataforma.md). No administrada por Adquisiciones.
 
-Umbrales legales configurables usados por el gateway de validación de modalidad (V1–V8): umbral de Compra Ágil, umbral de Toma de Razón, tramos de licitación, umbrales de garantías, ventana de detección de fraccionamiento. Cada valor tiene vigencia temporal (`valid_from`) y el cambio es un acto auditado con doble control (quien propone no aprueba). Carga inicial de valores pendiente de verificar contra norma vigente — **[PENDIENTE P-37]**. Origen: ficha `2-modalidad-compra.md` §2.1.
+Umbrales legales configurables usados por el gateway de validación de modalidad (V1–V8). Lectura vía core `getNormativeParameter`. Carga inicial **[PENDIENTE P-37]**. Origen: ficha `2-modalidad-compra.md` §2.1.
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `parameter_code` | texto | **Obligatorio** |
+| `parameter_code` | texto | **Obligatorio** — ver `key` en entidades-plataforma |
 | `value` | JSON | **Obligatorio** |
 | `valid_from` | fecha | **Obligatorio** |
 | `created_by` / `approved_by` | ref. `User` | **Obligatorio** — personas distintas (doble control) |
 | `legal_reference` | texto | **Obligatorio** |
 
 ### `UtmValue`
-**Visibilidad:** interna — valor obtenido de fuente externa (SII u otra fuente oficial) vía la dependencia `getUtmValue`; no se expone como entidad propia del contrato de Adquisiciones
+**Visibilidad:** interna — DTO desde core `getUtmValue` (C9 → SII); no se expone como entidad del contrato de Adquisiciones. Ver también [`entidades-plataforma.md`](entidades-plataforma.md).
 
 Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validación de modalidad. Origen: ficha `2-modalidad-compra.md` §2.1.
 
@@ -361,7 +366,7 @@ Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validac
 | `source` | texto | **Obligatorio** |
 
 ### `MpProcessSnapshot` *(sugerida, no confirmada en fuente)*
-**Visibilidad:** interna
+**Visibilidad:** interna — bitácora producida por servicio C7 del core; ver [`entidades-plataforma.md`](entidades-plataforma.md)
 
 1:N con `ProcurementCase`. Bitácora de sincronización de estado con Mercado Público, común a toda la etapa 3 (período de cotización, cierre/selección, emisión/aceptación/rechazo de OC, desierto/fallido) — agnóstica de si el mecanismo de origen es push o polling. Origen: ficha `3-resolucion-compra.md` §3.1.
 

@@ -58,7 +58,7 @@ El SGM registra automáticamente el compromiso presupuestario cierto (obligació
 |---|---|
 | **Tipo** | Sistema externo |
 | **Contrato / Evento** | Lectura API: OC Aceptada (nombre de operación no confirmado; propuesto: `getPurchaseOrderStatus` o `PurchaseOrderAccepted` si es evento) |
-| **Contraparte** | Mercado Público |
+| **Contraparte** | Core (Mercado Público) |
 | **Clasificación** | ⚠ no definida — el diagrama no distingue si es polling síncrono o webhook asíncrono |
 | **Payload** | `PurchaseOrder` (`mp_order_id`, `status`, `accepted_at`) |
 
@@ -84,7 +84,7 @@ El SGM registra automáticamente el compromiso presupuestario cierto (obligació
 
 | Sub-paso | Tipo | Contrato o Evento | Contraparte |
 |---|---|---|---|
-| 3.2 | Sistema externo | Lectura API: OC Aceptada (⚠ nombre pendiente) | Mercado Público |
+| 3.2 | Sistema externo | Lectura API: OC Aceptada (⚠ nombre pendiente) | Core (Mercado Público) |
 
 ---
 

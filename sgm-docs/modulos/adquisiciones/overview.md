@@ -33,7 +33,7 @@ Aunque el contenido interno de las etapas 2 y 3 difiere, las 4 modalidades compa
 
 ## Integración con Mercado Público
 
-Ver `arquitectura/integracion-mercado-publico.md` para el principio general (unidireccional read-only). El detalle de puntos de integración específicos de cada modalidad está dentro del archivo de cada etapa.
+Lecturas y sincronización vía **core (C7)** — contraparte en fichas: `Core (Mercado Público)`. Ver [`integracion-mercado-publico.md`](../../arquitectura/integracion-mercado-publico.md). Adjuntos y archivos vía **core (C10)** — `DocumentRef` / `storeDocument`.
 
 ## Ficha QA
 

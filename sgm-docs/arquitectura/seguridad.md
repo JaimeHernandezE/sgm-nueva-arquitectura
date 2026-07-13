@@ -65,8 +65,12 @@ En compras públicas la segregación no es buena práctica: es control interno e
 ## 7. Cifrado y gestión de secretos
 
 1. **En tránsito:** TLS en todo el perímetro y también entre servicios internos (módulos, capa de lectura, servicio de notificaciones). Versiones mínimas y suites definidas por referencia a estándar vigente, no congeladas en las bases.
-2. **En reposo:** cifrado de base de datos y del almacenamiento de objetos (que ya es separado por principio no negociable §6).
-3. **Gestión de secretos:** credenciales, llaves y tokens en un gestor de secretos dedicado; prohibido en código fuente, variables de entorno planas en repositorio, o logs. **Lección directa del sistema anterior: se encontraron secretos JWT en logs.** La ausencia de secretos en logs es ítem explícito de la revisión de recepción.
+2. **En reposo:** cifrado de base de datos y del almacenamiento de objetos (C10; backends `platform`, `tenant_owned` y `external_dms` — principio no negociable §6).
+3. **Gestión de secretos:** tres familias en gestor dedicado; prohibido en código fuente, variables de entorno planas en repositorio, o logs:
+   - **`ApiClient`:** credenciales de sistemas que **consumen** el SGM (M2M municipal, ecosistema).
+   - **`IntegrationCredential`:** secretos del SGM hacia terceros (MP, FirmaGob, SII, APIs de DMS).
+   - **Credenciales de bucket municipal** (`tenant_owned`): access keys del object storage del tenant, referenciadas desde `TenantStorageConfig`.
+   **Lección directa del sistema anterior: se encontraron secretos JWT en logs.** La ausencia de secretos en logs es ítem explícito de la revisión de recepción. Los módulos funcionales **no** almacenan ninguna de estas familias.
 4. Rotación de llaves y secretos: procedimiento documentado y demostrado, no declarado.
 
 ## 8. Seguridad de la API en operación

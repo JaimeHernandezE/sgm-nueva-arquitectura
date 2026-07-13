@@ -24,8 +24,13 @@
 | `TenantParameter` | Expuesta | `id`, `tenant_id`, `key`, `value` |
 | `AuditRecord` | Expuesta (scope restringido) | `id`, `timestamp`, `actor_id`, `action`, `resource_type`, `resource_id`, `payload_summary` |
 | `EventSubscription` | Expuesta (admin) | `id`, `event_types`, `delivery_url`, `scopes`, `status` |
+| `DocumentRef` | Expuesta | `id` |
+| `Document` | Expuesta (metadatos) | `id`, `content_type`, `size_bytes`, `sha256`, `retention_class`, `created_at` |
+| `TenantIntegrationConfig` | Expuesta (admin) | `id`, `tenant_id`, `provider_id`, `enabled`, parámetros no secretos |
+| `TenantStorageConfig` | Expuesta (admin) | `id`, `tenant_id`, `storage_backend`, campos según backend |
+| `DmsAdapter` | Expuesta (lectura catálogo) | `adapter_id`, `name`, `api_style`, `version` |
 
-Definición canónica propuesta: `modelo-datos/entidades-plataforma.md` (**pendiente de crear**).
+Definición canónica: [`modelo-datos/entidades-plataforma.md`](../modelo-datos/entidades-plataforma.md).
 
 ---
 
@@ -116,17 +121,99 @@ Rutas sin prefijo de tenant hasta resolver **[P-03]**.
 #### `DELETE /api-clients/{id}` — `revokeApiClient`
 - **Efecto:** revocación inmediata
 
+### 2.9 Integraciones externas (C7, C9)
+
+Operaciones consumidas por módulos vía dependencias declaradas en `contracts.md` §3. Implementación HTTP y secretos solo en el core.
+
+#### `GET /mp/processes/{mp_process_id}` — `readMpProcess`
+- **Servicio:** C7 — Mercado Público (solo lectura)
+- **Uso:** vinculación y sincronización de estado; emite `MpStateChanged` internamente
+- **Entrada:** `mp_process_id`
+- **Respuesta:** existencia, tipo de proceso, organismo comprador, estado actual, datos de OC/cotización según contexto
+- **Errores:** `MP_PROCESS_NOT_FOUND`, `MP_PROCESS_ORGANISM_MISMATCH`, `MP_PROCESS_TYPE_MISMATCH`, `MP_PROVIDER_UNAVAILABLE`
+
+#### `POST /signatures` — `requestSignature`
+- **Servicio:** C9 — FirmaGob
+- **Entrada:** `document_ref` (`DocumentRef`), `signer_id`, `document_type` (opcional)
+- **Respuesta:** `signature_request_id`, `status`
+- **Nota:** C9 lee PDF vía C10; versión firmada se persiste en C10
+- **Errores:** `SIGNATURE_PROVIDER_UNAVAILABLE`
+
+#### `POST /signatures/{id}/confirm` — `confirmSignature`
+- **Entrada:** `signature_request_id`
+- **Respuesta:** `status`, `signed_document_ref`, `signed_at`
+- **Errores:** `SIGNATURE_REJECTED`, `SIGNATURE_PROVIDER_UNAVAILABLE`
+
+#### `GET /normative/utm` — `getUtmValue`
+- **Servicio:** C9 — SII (cacheada, frescura mensual)
+- **Entrada:** `period` (año-mes, opcional — vigente por defecto)
+- **Respuesta:** `amount`, `period`, `source`
+- **Errores:** `UTM_VALUE_UNAVAILABLE`
+
+#### `GET /price-references/{item_code}` — `getPriceReference`
+- **Servicio:** C9 — SII u otra fuente oficial
+- **Entrada:** `item_code`, `reference_date` (opcional)
+- **Respuesta:** `item_code`, `reference_price`, `reference_date`, `source`
+- **Errores:** `PRICE_REFERENCE_UNAVAILABLE`
+
+#### Admin integraciones
+
+##### `PUT /tenant-integrations/{provider}` — `upsertTenantIntegration`
+- **Uso:** consola municipal / SUBDERE
+- **Entrada:** `enabled`, parámetros no secretos (`mp_organism_code`, `base_url`, …)
+- **Respuesta:** `TenantIntegrationConfig`
+
+##### `POST /tenant-integrations/{provider}/credentials` — `rotateIntegrationCredential`
+- **Entrada:** nuevo secreto (una sola vez en respuesta) o referencia a rotación externa
+- **Efecto:** rotación auditada en gestor de secretos
+
+### 2.10 Gestión documental (C10)
+
+Patrón recomendado para módulos: frontend sube aquí → obtiene `DocumentRef` → operación de negocio del módulo recibe solo el ref.
+
+#### `POST /documents` — `storeDocument`
+- **Entrada:** metadatos (`content_type`, `retention_class`, nombre opcional) + cuerpo binario o URL de subida firmada según implementación
+- **Respuesta:** `DocumentRef` (`id`)
+- **Errores:** `DOCUMENT_STORAGE_UNAVAILABLE`, `DOCUMENT_TYPE_NOT_ALLOWED`, `DOCUMENT_SIZE_EXCEEDED`
+
+#### `GET /documents/{id}` — `getDocumentMetadata`
+- **Respuesta:** `Document` (metadatos + hash)
+- **Errores:** `DOCUMENT_NOT_FOUND`
+
+#### `GET /documents/{id}/content` — `getDocument`
+- **Respuesta:** stream del archivo (scope RBAC)
+
+#### `GET /documents/{id}/download-url` — `getDownloadUrl`
+- **Respuesta:** URL presignada o equivalente con expiración
+- **Errores:** `DOCUMENT_NOT_FOUND`, `DOCUMENT_STORAGE_UNAVAILABLE`
+
+#### `DELETE /documents/{id}` — `archiveDocument`
+- **Efecto:** baja lógica según clase de retención
+
+#### Admin almacenamiento
+
+##### `PUT /tenant/storage` — `upsertTenantStorage`
+- **Entrada:** `storage_backend`, campos según backend (`bucket_*` o `adapter_id` + `base_url` + `repository_id`)
+- **Respuesta:** `TenantStorageConfig`
+
+##### `GET /dms-adapters` — `listDmsAdapters`
+- **Uso:** catálogo SUBDERE de adaptadores `external_dms`
+- **Respuesta:** colección de `DmsAdapter`
+
 ---
 
 ## 3. Dependencias que requiere
 
 | Proveedor | Operación | Uso del core |
 |---|---|---|
-| Clave Única | OIDC | Autenticación plano personas |
-| Mercado Público | `readMpProcess` (interno) | Servicio C7 — emite `MpStateChanged` |
-| FirmaGob | `requestSignature`, `confirmSignature` | Delegación desde módulos vía contrato de dependencia |
+| Clave Única | OIDC | Autenticación plano personas (C1) |
+| Mercado Público | API lectura procesos | C7 — `readMpProcess`, evento `MpStateChanged` |
+| FirmaGob | Firma electrónica | C9 — `requestSignature`, `confirmSignature`; PDF vía C10 |
+| SII | UTM, referencias de precio | C9 — `getUtmValue`, `getPriceReference` |
+| Object storage S3-compatible | Buckets `platform` / `tenant_owned` | C10 — backends documentales |
+| APIs de DMS según adaptador | Repositorio municipal | C10 — backend `external_dms` vía `DmsAdapter` |
 
-Los módulos **no** acceden a tablas del core; consumen estas operaciones.
+Los módulos **no** acceden a tablas del core ni a APIs de terceros; consumen las operaciones de §2.
 
 ---
 
@@ -135,6 +222,9 @@ Los módulos **no** acceden a tablas del core; consumen estas operaciones.
 | Evento | Origen | Esquema (campos principales) |
 |---|---|---|
 | `MpStateChanged` | Servicio sincronización MP (C7) | `mp_process_id`, `state`, `procurement_case_id` |
+| `DocumentStored` | C10 | `document_ref`, `tenant_id`, `content_type`, `retention_class` |
+| `SignatureCompleted` | C9 | `signature_request_id`, `signed_document_ref`, `signed_at` |
+| `SignatureRejected` | C9 | `signature_request_id`, `reason` |
 | `NormativeParameterUpdated` | Administración parámetros | `key`, `value`, `valid_from` |
 | `TenantProvisioned` | Alta tenant | `tenant_id`, `schema_name` |
 | `ApiClientRevoked` | Revocación M2M | `api_client_id`, `revoked_at` |
@@ -145,9 +235,11 @@ Los módulos **no** acceden a tablas del core; consumen estas operaciones.
 
 ## 5. Relación con Adquisiciones
 
-`modulos/adquisiciones/contracts.md` §3 declara dependencias hacia Presupuestos, Contabilidad, Tesorería, FirmaGob y MP. Las siguientes dependencias del core deben resolverse vía **este contrato**, no por acceso directo:
+`modulos/adquisiciones/contracts.md` §3 declara dependencias hacia módulos de negocio (Presupuestos, Contabilidad, Tesorería) y hacia el **core** (integraciones C7/C9, documentos C10). Las siguientes capacidades se resuelven vía **este contrato**:
 
 - Identidad del funcionario originante (**P-23**)
 - Scopes y roles para RBAC
-- `getNormativeParameter` / `getUtmValue` (UTM puede permanecer como dependencia SII en Adquisiciones; umbrales normativos vía core)
-- `MpStateChanged` como sustituto interno de polling MP en módulos
+- `getNormativeParameter`, `getUtmValue`, `getPriceReference`
+- `readMpProcess` / `MpStateChanged`
+- `requestSignature`, `confirmSignature`
+- `storeDocument`, `getDownloadUrl` — adjuntos como `DocumentRef`

@@ -10,10 +10,11 @@ El backend expone una API REST documentada como contrato de primera clase, con *
 
 El **motor** SGM se aloja en infraestructura propia de SUBDERE — nunca en infraestructura del proveedor adjudicatario, que es el lock-in que este principio evita. La **residencia de los datos** sigue el modo de consumo definido en `decisiones-macro-stack.md` §1–2:
 
-- **Hosting completo** (municipios sin capacidad TI): motor, datos y frontend base en infraestructura SUBDERE.
-- **Módulos à la carte vía API** (municipios con sistemas propios): el municipio absorbe su data en su propia infraestructura/nube, consumiendo el motor vía API.
+- **Hosting completo:** motor, datos transaccionales y archivos en infraestructura SUBDERE.
+- **Hosting híbrido:** motor y datos transaccionales en SUBDERE; archivos en bucket o DMS municipal vía servicio C10 del core.
+- **Módulos à la carte vía API:** el municipio absorbe su data en su propia infraestructura/nube donde el convenio lo establezca, consumiendo el motor vía API.
 
-Multitenancy por municipio con **separación por schema** y datos claramente aislados entre tenants, en ambos modos.
+Multitenancy por municipio con **separación por schema** y datos claramente aislados entre tenants, en todos los modos.
 
 ## 3. Stack abierto
 
@@ -36,7 +37,17 @@ El código fuente es propiedad de SUBDERE, con cláusulas de portabilidad explí
 
 ## 6. Separación de almacenamiento de objetos
 
-Los archivos/documentos (evidencias, resoluciones, comprobantes) se almacenan separados de la base de datos transaccional, con su propio ciclo de vida y política de retención.
+Los archivos/documentos (evidencias, resoluciones, comprobantes) se almacenan **separados de la base de datos transaccional**, con su propio ciclo de vida y política de retención. Prohibido persistir BLOBs de documentos en la BD transaccional de módulos.
+
+**Servicio obligatorio:** gestión documental del core (C10, `plataforma-core.md` §7bis). Los módulos referencian archivos solo mediante `DocumentRef` opaco emitido por el contrato del core (`plataforma/contracts.md`).
+
+**Backends por tenant** (configurables, ver `decisiones-macro-stack.md` §1):
+
+- `platform` — bucket provisionado por SUBDERE (hosting completo).
+- `tenant_owned` — bucket S3-compatible en nube del municipio (hosting híbrido).
+- `external_dms` — DMS municipal vía adaptador plug-in en el core (extensible; v1 define interfaz + stub).
+
+Los módulos funcionales **no** implementan clientes de object storage ni adaptadores DMS; **no** almacenan credenciales de bucket.
 
 ## 7. Validación fuerte del lado del servidor
 

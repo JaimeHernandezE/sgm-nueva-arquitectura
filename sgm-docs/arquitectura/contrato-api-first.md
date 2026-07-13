@@ -27,6 +27,15 @@ Un módulo no depende de otro módulo: depende de un **contrato de proveedor** q
 
 Esto es lo que hace viable el consumo de módulos individuales. Sin esta inversión, "solo Adquisiciones vía API" es un monolito con marketing.
 
+### Integraciones transversales y documentos (core obligatorio)
+
+Distinto de los proveedores de **negocio** intercambiables (Presupuestos, Contabilidad…), las integraciones con **terceros transversales** y el **almacenamiento de archivos** se resuelven siempre en el core (`plataforma/contracts.md`, `plataforma-core.md` §7–§7bis):
+
+- **C7/C9:** Mercado Público, FirmaGob, SII — el módulo declara la operación que necesita; el core implementa el adaptador y custodia secretos por tenant.
+- **C10:** documentos — el módulo guarda `DocumentRef` opaco; subida/descarga vía `storeDocument` / `getDownloadUrl`. Prohibido BLOB en BD del módulo o clientes S3/DMS en código de módulo.
+
+En fichas de proceso, la contraparte de estos bordes es `Core (<proveedor>)` o `Core (documentos)`, no el tercero ni el módulo como implementador.
+
 ## 3. Estructura del contrato por módulo (`contracts.md`)
 
 Cada módulo en `sgm-docs/modulos/<modulo>/` incorpora un archivo `contracts.md` con cuatro secciones fijas:
@@ -65,8 +74,10 @@ Método para el primer `contracts.md`, aprovechando el macroproceso ya documenta
 1. Recorrer los 17 sub-pasos identificando **qué cruza el borde de Adquisiciones**. Primeros cruces conocidos:
    - Disponibilidad presupuestaria → contrato de proveedor hacia Presupuestos.
    - Devengado / recepción conforme → contrato hacia Contabilidad.
-   - Firma de documentos → contrato hacia servicio de firma (FirmaGob), especificado esta vez con el estándar "campo presente ≠ integración funcional": el contrato define el flujo completo, no la existencia del campo.
-   - Mercado Público → **solo lectura**; deep links como navegación, sin escritura vía API (decisión ya asentada).
+   - Firma de documentos → operaciones del **core** (`requestSignature`, `confirmSignature` vía C9 / `plataforma/contracts.md`), no adaptador en Adquisiciones.
+   - Mercado Público → **solo lectura** vía **core C7**; deep links como navegación; evento `MpStateChanged`.
+   - Adjuntos (resoluciones, CDP escaneado, recepción) → **`DocumentRef`** del core C10 (`storeDocument` antes de la operación de negocio).
+   - UTM / referencia de precios → **core C9** (`getUtmValue`, `getPriceReference`).
 2. Para cada entidad expuesta que cruza el borde: derivar su esquema de payload desde la ficha de flujo ya existente.
 3. Catalogar eventos emitidos por sub-paso.
 4. Redactar el `contracts.md` de Adquisiciones y someterlo a la prueba de calidad de Etapa 1: **dos equipos independientes deberían poder construir consumidores equivalentes solo desde el contrato.**

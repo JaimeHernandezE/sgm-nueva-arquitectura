@@ -17,7 +17,7 @@
 |                       Compra Ágil / Convenio Marco /      |
 |                       Licitación Pública / Trato Directo  |
 +----------------------------------------------------------+
-| Resolución Fundada *  [ Subir archivo ]                  |
+| Resolución Fundada *  [ Subir → storeDocument (core) ]     |
 | (visible y obligatorio solo si Modalidad = Trato Directo)|
 +----------------------------------------------------------+
 | Líneas de bienes/servicios                                |
@@ -28,7 +28,7 @@
 | +--------+----------+----+-------+--------+-------------+ |
 | [+ Agregar línea]                                         |
 +----------------------------------------------------------+
-| Documentos adjuntos (opcional) [ Subir archivo ]              |
+| Documentos adjuntos (opcional) [ Subir → storeDocument ]    |
 | Línea presupuestaria       [ (opcional) Cuenta/Programa v ]|
 | [ Consultar saldo en línea presupuestaria ]  (enlace → panel)|
 +----------------------------------------------------------+

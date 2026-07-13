@@ -16,7 +16,7 @@
 **Autoconsulta de saldo presupuestario (informativa):** si el usuario conoce la línea presupuestaria de destino, el formulario ofrece un **enlace informativo** («Consultar saldo en línea presupuestaria») que abre un panel lateral o modal. Allí puede indicar `budget_line_id`, año fiscal y —opcionalmente— el monto estimado de la SOLPED (suma de líneas) para obtener una **vista previa de saldo** vía `previewBudgetAvailability` (Presupuestos). Es **solo lectura**: no registra verificación, no avanza el flujo y **no sustituye** el sub-paso 1.3. El solicitante puede guardar la línea indicada como pista en `proposed_budget_line_id` (opcional) para prellenar la consulta y mostrarla al aprobador en 1.2.
 
 **Entidad(es) y campos:**
-- `PurchaseRequest` — `requesting_unit` (ref., **obligatorio**), `description` (texto, **obligatorio**), `justification` (texto, **obligatorio**), `requested_date` (fecha, **obligatorio**), `purchase_modality` (enum, **opcional**: `agile_purchase` \| `framework_agreement` \| `public_tender` \| `direct_procurement`), `founded_resolution_attachment` (ref. adjunto, **obligatorio si** `purchase_modality = direct_procurement`), `proposed_budget_line_id` (ref. `BudgetLine`, **opcional**), `proposed_fiscal_year` (número, **opcional**), `status` (enum, **obligatorio**: `draft`)
+- `PurchaseRequest` — `requesting_unit` (ref., **obligatorio**), `description` (texto, **obligatorio**), `justification` (texto, **obligatorio**), `requested_date` (fecha, **obligatorio**), `purchase_modality` (enum, **opcional**: `agile_purchase` \| `framework_agreement` \| `public_tender` \| `direct_procurement`), `founded_resolution_attachment` (`DocumentRef`, **obligatorio si** `purchase_modality = direct_procurement` — subida previa vía `storeDocument` del core), `proposed_budget_line_id` (ref. `BudgetLine`, **opcional**), `proposed_fiscal_year` (número, **opcional**), `status` (enum, **obligatorio**: `draft`)
 - `PurchaseRequestLine` (1 SOLPED → N líneas, ≥1) — `item_description` (texto, **obligatorio**), `quantity` (número, **obligatorio**), `unit_of_measure` (ref., **obligatorio**), `unit_price` (número, **obligatorio**), `price_source` (ref. `PriceReference`, **obligatorio**)
 - `PriceReference` — `item_code` / `item_description_hash` (texto, **obligatorio**), `source` (enum, **obligatorio**), `reference_price` (número, **obligatorio**), `reference_date` (fecha, **obligatorio**), `currency` (enum, **obligatorio**, default CLP)
 
@@ -26,7 +26,7 @@
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Sistema externo | `getPriceReference` | SII / Mercado Público (histórico) | Cacheada | `PriceReference` (`item_code`, `reference_price`, `reference_date`, `source`) |
+| 1 | Sistema externo | `getPriceReference` | Core (SII) | Cacheada | `PriceReference` (`item_code`, `reference_price`, `reference_date`, `source`) |
 | 2 | Dependencia *(propuesta, QA ítem 4)* | `checkStockAvailability` | Inventario | Síncrona bloqueante *(asesora hasta definir alcance)* | Entrada: `item_code`, `quantity` — Respuesta: `available_quantity`, `suggested_action` (`use_stock` \| `continue_purchase`) |
 | 3 | Dependencia | `previewBudgetAvailability` | Presupuestos | Cacheada / informativa | Entrada: `budget_line_id`, `fiscal_year`, `amount` (opcional) — Respuesta: `available_balance`, `committed_by_others`, `projected_balance` — sin efecto en el expediente |
 
@@ -63,8 +63,8 @@
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Dependencia | `requestSignature` | FirmaGob | Síncrona bloqueante | Entrada: `document_id`, `document_type`, `signer_id` — Respuesta: `signature_request_id`, `status` |
-| 2 | Dependencia | `confirmSignature` | FirmaGob | Síncrona bloqueante | Entrada: `signature_request_id` — Respuesta: `signed_at`, `certificate_ref` |
+| 1 | Dependencia | `requestSignature` | Core (FirmaGob) | Síncrona bloqueante | Entrada: `document_id`, `document_type`, `signer_id` — Respuesta: `signature_request_id`, `status` |
+| 2 | Dependencia | `confirmSignature` | Core (FirmaGob) | Síncrona bloqueante | Entrada: `signature_request_id` — Respuesta: `signed_at`, `certificate_ref` |
 | 3 | Dependencia | `previewBudgetAvailability` | Presupuestos | Cacheada / informativa | Misma entrada y respuesta que en 1.1 — consulta opcional desde pantalla de aprobación |
 | 4 | Evento | `PurchaseRequestApproved` | — (consumidores: Presupuestos, auditoría) | Asíncrona | `PurchaseRequest` (`id`, `requesting_unit`, `status`), `PurchaseRequestApproval` |
 
@@ -165,7 +165,7 @@ En ambos caminos se ejecuta `checkBudgetAvailability` antes de cerrar el paso. E
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
 | 1 | Dependencia | `checkBudgetAvailability` | Presupuestos | Síncrona bloqueante | Revalidación de saldo al emitir |
-| 2 | Dependencia | `requestSignature`, `confirmSignature` | FirmaGob | Síncrona bloqueante | Solo si `signature_mode = electronic` |
+| 1.2 | Dependencia | `requestSignature`, `confirmSignature` | Core (documentos) *(PDF vía C10)*, Core (FirmaGob) | Síncrona bloqueante | Solo si `signature_mode = electronic` |
 | 3 | Operación | `issueBudgetAvailabilityCertificate` | — (Adquisiciones) | — | Entrada: metadatos del CDP + `signature_mode`; si `electronic`, dispara firma; respuesta: `BudgetAvailabilityCertificate` |
 | 4 | Operación | `registerScannedBudgetAvailabilityCertificate` | — (Adquisiciones) | — | Entrada: mismos metadatos + `scanned_certificate_attachment`; sin FirmaGob |
 | 5 | Evento | `BudgetAvailabilityCertificateIssued` | — (consumidores: auditoría, Contabilidad) | Asíncrona | `BudgetAvailabilityCertificate` (incl. `signature_mode`), `PurchaseRequest.id` |
@@ -229,10 +229,10 @@ En ambos caminos se ejecuta `checkBudgetAvailability` antes de cerrar el paso. E
 
 | Sub-paso | Tipo | Contrato o Evento | Contraparte |
 |---|---|---|---|
-| 1.1 | Sistema externo | `getPriceReference` | SII / Mercado Público |
+| 1.1 | Sistema externo | `getPriceReference` | Core (SII) |
 | 1.1 | Dependencia *(propuesta)* | `checkStockAvailability` | Inventario |
 | 1.1 | Dependencia | `previewBudgetAvailability` | Presupuestos *(informativa)* |
-| 1.2 | Dependencia | `requestSignature`, `confirmSignature` | FirmaGob |
+| 1.2 | Dependencia | `requestSignature`, `confirmSignature` | Core (FirmaGob) |
 | 1.2 | Dependencia | `previewBudgetAvailability` | Presupuestos *(informativa)* |
 | 1.2 | Evento | `PurchaseRequestApproved` | — |
 | 1.3 | Dependencia | `checkBudgetAvailability` | Presupuestos |

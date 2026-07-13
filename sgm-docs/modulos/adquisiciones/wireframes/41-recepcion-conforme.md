@@ -37,7 +37,7 @@
 | Conformidad | `GoodsReceipt.status` (vía conformidad) | Sí |
 | Observaciones | `GoodsReceipt.observations` | Sí si no conforme |
 | Cant. recibida | `GoodsReceiptLine.quantity_received` | Sí |
-| Documentos adjuntos | almacenamiento de objetos | Sí al confirmar |
+| Documentos adjuntos | `DocumentRef[]` (vía `storeDocument` del core) | Sí al confirmar |
 
 ## Acciones
 

@@ -83,10 +83,9 @@ flowchart TB
     Fixtures[Catálogo de fixtures sandbox — estándar definido, catálogo pendiente]
   end
   subgraph capa2 [Capa 2 — Implementación]
-    Core[Core de plataforma: identidad, RBAC, tenants, parámetros, auditoría, eventos]
+    Core[Core: identidad, RBAC, tenants, integraciones C7-C9, documentos C10, eventos]
     Motor[Módulos funcionales API multitenancy]
     Front[Frontend base + consolas admin, sin privilegios]
-    Integraciones[Adaptadores MP, FirmaGob, etc.]
   end
   subgraph capa3 [Capa 3 — Verificación]
     Sandbox[Sandbox público]
@@ -130,7 +129,8 @@ El implementador debe construir, como mínimo:
 | Multitenancy por schema | Separación por municipio; pooling y migraciones demostrables |
 | Frontend base | Consume la misma API que un tercero; sin rutas internas privilegiadas |
 | Motor de validación | Reglas bloqueantes en servidor; errores con esquema de `estandares-api.md` §3 |
-| Integraciones declaradas | Solo contratos de dependencia en `contracts.md` §3; MP read-only |
+| Integraciones declaradas | Solo contratos de dependencia en `contracts.md` §3 hacia core (MP, FirmaGob, SII, documentos); MP read-only vía C7 |
+| Servicio documental (C10) | Backends `platform` y `tenant_owned` demostrables; interfaz `external_dms` + stub en sandbox |
 | Observabilidad | Métricas por endpoint y tenant, trazas entre módulos, logs estructurados |
 | Capa de lectura agregada | Reportería nacional sin cruzar la transaccional (`musts-arquitectura.md` §4) |
 
@@ -389,6 +389,8 @@ La mesa técnica de estándares (API, contratos, sandbox, convenio de acceso) es
 | D-09 *(v2)* | El core de plataforma es parte del entregable licitado, con contrato y OpenAPI propios y el mismo estándar de recepción que un módulo ([`plataforma-core.md`](./plataforma-core.md)). |
 | D-10 *(v2)* | No existe orquestador central de procesos de negocio; la coordinación entre módulos es por contratos y eventos. |
 | D-11 *(v2)* | El formato de OpenAPI y fixtures queda normado en [`estandares-api.md`](./estandares-api.md); las brechas 2 y 4 de la v1 pasan de «sin estándar» a «estándar definido, artefactos por crear». |
+| D-12 *(v2)* | Integraciones transversales (MP, FirmaGob, SII) y gestión documental (C10) son responsabilidad del core; módulos solo `DocumentRef` y dependencias declaradas ([`plataforma-core.md`](./plataforma-core.md) §7–§7bis). |
+| D-13 *(v2)* | Backends documentales `platform` y `tenant_owned` demostrables en recepción; interfaz `external_dms` definida y extensible sin cambiar contratos de módulo. |
 
 ---
 
@@ -402,7 +404,10 @@ La mesa técnica de estándares (API, contratos, sandbox, convenio de acceso) es
 | P-15 | Convenio producción vs acceso libre sandbox |
 | P-16 | Especificación técnica del sandbox — **este documento es el marco; falta el detalle operativo** |
 | P-19 | Borrador mínimo para consulta al mercado |
-| P-48 | `plataforma/contracts.md` — contrato del core |
+| P-48 | `plataforma/contracts.md` — contrato del core (integraciones, documentos, identidad) |
+| P-57 | Catálogo de proveedores externos y config por tenant |
+| P-58 | Contrato documental C10: MIME, tamaños, retención |
+| P-59 | Interfaz adaptador DMS (`external_dms`) + primer producto certificado |
 | P-51 | Autorización en runtime — afecta headers de ejemplos `{a}` |
 | P-52 | Wireframes de consolas de administración |
 | P-53 | Tooling de validación CI de OpenAPI y fixtures |

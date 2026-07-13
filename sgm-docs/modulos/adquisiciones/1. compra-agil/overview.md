@@ -56,42 +56,42 @@ Agregado de las secciones 3.5 de los 17 sub-pasos. Insumo directo de [`contracts
 
 | Sub-paso | Tipo | Contrato / Evento | Contraparte | Clasificación |
 |---|---|---|---|---|
-| 1.1 | Sistema externo | `getPriceReference` | SII / Mercado Público | Cacheada |
+| 1.1 | Sistema externo | `getPriceReference` | Core (SII) | Cacheada |
 | 1.1 | Dependencia *(propuesta)* | `checkStockAvailability` | Inventario | Síncrona bloqueante ⚠ |
 | 1.1 | Dependencia | `previewBudgetAvailability` | Presupuestos | Cacheada / informativa |
-| 1.2 | Dependencia | `requestSignature`, `confirmSignature` | FirmaGob | Síncrona bloqueante |
+| 1.2 | Dependencia | `requestSignature`, `confirmSignature` | Core (FirmaGob) | Síncrona bloqueante |
 | 1.2 | Dependencia | `previewBudgetAvailability` | Presupuestos | Cacheada / informativa |
 | 1.2 | Evento | `PurchaseRequestApproved` | — | Asíncrona |
 | 1.3 | Dependencia | `checkBudgetAvailability` | Presupuestos | Síncrona bloqueante |
 | 1.3 | Operación | `verifyBudgetAvailability` | — | — |
 | 1.4 | Operación / Evento | `requestBudgetFinancing`, `BudgetFinancingRequested` | Presupuestos *(externo)* | — |
-| 1.5 | Dependencia | `checkBudgetAvailability`, `requestSignature`, `confirmSignature` | Presupuestos, FirmaGob | Síncrona bloqueante |
-| 1.5 | Operación / Evento | `issueBudgetAvailabilityCertificate`, `registerScannedBudgetAvailabilityCertificate`, `BudgetAvailabilityCertificateIssued` | Presupuestos, FirmaGob *(condicional)* | — |
+| 1.5 | Dependencia | `checkBudgetAvailability`, `requestSignature`, `confirmSignature` | Presupuestos, Core (FirmaGob) | Síncrona bloqueante |
+| 1.5 | Operación / Evento | `issueBudgetAvailabilityCertificate`, `registerScannedBudgetAvailabilityCertificate`, `BudgetAvailabilityCertificateIssued` | Presupuestos, Core (FirmaGob) *(condicional)* | — |
 | 1.6 | Dependencia | `createBudgetPreCommitment`, `registerPreObligation` | Presupuestos, Contabilidad | Síncrona bloqueante |
 | 1.6 | Evento | `BudgetPreCommitmentCreated` | — | Asíncrona |
-| 2.1 | Sistema externo | `getUtmValue` | SII / fuente oficial | Cacheada |
+| 2.1 | Sistema externo | `getUtmValue` | Core (SII) | Cacheada |
 | 2.1 | Dependencia | `checkCatalogAvailability` | Catálogo CM espejado | Cacheada |
 | 2.1 | Operación / Evento | `confirmProcurementModality`, `ProcurementModalityConfirmed` | — | — / Asíncrona |
-| 2.2 | Dependencia *(condicional)* | `requestSignature`, `confirmSignature` | FirmaGob | Síncrona bloqueante |
+| 2.2 | Dependencia *(condicional)* | `requestSignature`, `confirmSignature` | Core (FirmaGob) | Síncrona bloqueante |
 | 2.2 | Evento | `ProcurementModalityApproved` | — | Asíncrona — **[PENDIENTE P-38]** |
-| 2.3 | Sistema externo | deep link (navegación), `readMpProcess` | Mercado Público | — / Síncrona bloqueante (solo vinculación) |
+| 2.3 | Sistema externo | deep link (navegación), `readMpProcess` | Mercado Público (portal) / Core (Mercado Público) (lectura) | — / Síncrona bloqueante (solo vinculación) |
 | 2.3 | Operación / Evento | `linkMpProcess`, `MpProcessLinked` | — | — / Asíncrona |
-| 3.1 | Sistema externo / Evento | `readMpProcess`, `MpStateChanged` | Mercado Público | Asíncrona — lectura deseada |
-| 3.2 | Sistema externo / Evento | `readMpProcess`, `QuotationClosed` | Mercado Público | Asíncrona — lectura deseada |
-| 3.3 | Sistema externo / Evento | `readMpProcess`, `PurchaseOrderIssued`, `ProviderIneligibleBlocked` | Mercado Público | Asíncrona — lectura deseada |
-| 3.4 | Lectura + Dependencia + Evento | `readMpProcess` (OC Aceptada), `commitBudget`, `PurchaseOrderAccepted` | MP + Presupuestos | Asíncrona (MP) / Síncrona bloqueante (`commitBudget`) — lectura **confirmada** |
-| 3.5 | Sistema externo / Evento | `readMpProcess`, `PurchaseOrderRejected` | Mercado Público | Asíncrona — lectura deseada |
-| 3.6 | Lectura + Dependencia + Evento | `readMpProcess`, `releasePreCommitment`, `ProcurementProcessFailed` | MP + Presupuestos | Asíncrona (MP) / Síncrona bloqueante (`releasePreCommitment`) — lectura deseada |
+| 3.1 | Sistema externo / Evento | `readMpProcess`, `MpStateChanged` | Core (Mercado Público) | Asíncrona — lectura deseada |
+| 3.2 | Sistema externo / Evento | `readMpProcess`, `QuotationClosed` | Core (Mercado Público) | Asíncrona — lectura deseada |
+| 3.3 | Sistema externo / Evento | `readMpProcess`, `PurchaseOrderIssued`, `ProviderIneligibleBlocked` | Core (Mercado Público) | Asíncrona — lectura deseada |
+| 3.4 | Lectura + Dependencia + Evento | `readMpProcess` (OC Aceptada), `commitBudget`, `PurchaseOrderAccepted` | Core (Mercado Público) + Presupuestos | Asíncrona (MP) / Síncrona bloqueante (`commitBudget`) — lectura **confirmada** |
+| 3.5 | Sistema externo / Evento | `readMpProcess`, `PurchaseOrderRejected` | Core (Mercado Público) | Asíncrona — lectura deseada |
+| 3.6 | Lectura + Dependencia + Evento | `readMpProcess`, `releasePreCommitment`, `ProcurementProcessFailed` | Core (Mercado Público) + Presupuestos | Asíncrona (MP) / Síncrona bloqueante (`releasePreCommitment`) — lectura deseada |
 | 4.1 | Operación | `registerReceipt` | — | — |
 | 4.2 | Evento | `GoodsReceiptConfirmed` | — | Asíncrona |
 | 4.3 | Dependencia | `registerInventoryEntry` | Proveedor de inventario | Asíncrona — **[PENDIENTE P-44]** alcance por decidir |
 | 4.4 | Dependencia / Evento | `recordAccrual`, `AccrualRecorded` | Proveedor contable | Asíncrona — **[PENDIENTE P-46]** momento del devengado, ver `entidades-core.md` |
 | 4.5 | Evento / Deep link | `ReceiptRejected`, reclamo en ChileCompra | MP (navegación) | Asíncrona / — |
 | 5.1 | Dependencia | `getInvoiceForMatch` | SII / Contabilidad | Síncrona bloqueante |
-| 5.1 | Sistema externo | `getPurchaseOrderFromMP` | Mercado Público | Cacheada |
+| 5.1 | Sistema externo | `readMpProcess` | Core (Mercado Público) | Cacheada |
 | 5.1 | Evento | `ThreeWayMatchCompleted` | — | Asíncrona |
 | 5.2 | Dependencia + Evento | `registerAccrual`, `AccrualRegistered` | Contabilidad | Síncrona bloqueante |
-| 5.3 | Dependencia + Evento | `requestSignature`, `PaymentDecreeIssued` | FirmaGob | Síncrona bloqueante |
+| 5.3 | Dependencia + Evento | `requestSignature`, `PaymentDecreeIssued` | Core (FirmaGob) | Síncrona bloqueante |
 | 5.4 | Dependencia + Evento | `executePayment`, `PaymentCompleted` | Tesorería | Síncrona bloqueante |
 
 Ver definición detallada de payload y edge cases en cada ficha de sub-paso.

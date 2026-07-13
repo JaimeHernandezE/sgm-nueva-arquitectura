@@ -392,7 +392,9 @@ components:
           $ref: "#/components/schemas/PurchaseModality"
         founded_resolution_attachment:
           type: string
+          format: uuid
           nullable: true
+          description: DocumentRef — subida previa vía core POST /documents (plataforma/contracts.md §2.10)
         proposed_budget_line_id:
           type: string
           nullable: true
@@ -461,7 +463,9 @@ components:
           $ref: "#/components/schemas/PurchaseModality"
         founded_resolution_attachment:
           type: string
+          format: uuid
           nullable: true
+          description: DocumentRef — subida previa vía core POST /documents (plataforma/contracts.md §2.10)
         proposed_budget_line_id:
           type: string
           nullable: true
@@ -578,7 +582,8 @@ components:
           properties:
             scanned_certificate_attachment:
               type: string
-              description: Referencia al archivo PDF/imagen del CDP firmado.
+              format: uuid
+              description: DocumentRef — subida previa vía core POST /documents (plataforma/contracts.md §2.10)
     CreateBudgetPreCommitmentRequest:
       type: object
       required:

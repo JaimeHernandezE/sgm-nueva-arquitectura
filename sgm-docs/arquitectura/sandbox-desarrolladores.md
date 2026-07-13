@@ -65,16 +65,20 @@ Procedimiento formal documentado en convenio tipo (**[P-15]**): solicitud, revis
 
 ## 5. Stubs de dependencias externas
 
-| Dependencia | Comportamiento en sandbox |
-|---|---|
-| Mercado Público | Stub `readMpProcess` con estados predecibles por `mp_process_id` documentado en fixtures |
-| FirmaGob | Firma siempre exitosa salvo header `X-Sandbox-Signature: reject` |
-| Presupuestos | Saldo configurable por fixture; escenario `BUDGET_UNAVAILABLE` en `escenarios-transaccionales.yaml` |
-| Contabilidad | Acepta devengados; latencia simulada ≤ 200 ms |
-| Tesorería | Ejecuta pagos demo; sin transferencia real |
-| SII / UTM | Valor UTM fijo del mes de referencia en catálogo de fixtures |
+Stubs del **adaptador del core** (C7, C9, C10), no de módulos individuales:
 
-Los módulos consumen las mismas interfaces que en producción; solo cambia el proveedor detrás del contrato.
+| Dependencia | Servicio core | Comportamiento en sandbox |
+|---|---|---|
+| Mercado Público | C7 | Stub `readMpProcess` con estados predecibles por `mp_process_id` documentado en fixtures |
+| FirmaGob | C9 | Firma siempre exitosa salvo header `X-Sandbox-Signature: reject` |
+| SII / UTM / precios | C9 | Valor UTM fijo del mes de referencia; `getPriceReference` desde catálogo de fixtures |
+| Almacenamiento documental | C10 | Bucket demo compartido; mismo contrato que producción (`storeDocument` → `DocumentRef`) |
+| DMS externo | C10 (`external_dms`) | Stub genérico de adaptador DMS para pruebas de integración |
+| Presupuestos | módulo / adaptador | Saldo configurable por fixture; escenario `BUDGET_UNAVAILABLE` en `escenarios-transaccionales.yaml` |
+| Contabilidad | módulo / adaptador | Acepta devengados; latencia simulada ≤ 200 ms |
+| Tesorería | módulo / adaptador | Ejecuta pagos demo; sin transferencia real |
+
+Los módulos consumen las mismas interfaces que en producción; solo cambia el proveedor detrás del contrato del core o del adaptador municipal.
 
 ---
 

@@ -22,7 +22,7 @@
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
 | 1 | Dependencia | `getInvoiceForMatch` | SII / Contabilidad | Síncrona bloqueante | Entrada: `supplier_rut`, `invoice_number`, `purchase_order_id` — Respuesta: `Invoice` (`id`, `amount`, `issue_date`, `tax_details`) |
-| 2 | Sistema externo | `getPurchaseOrderFromMP` | Mercado Público (solo lectura) | Cacheada | Entrada: `mp_oc_id` — Respuesta: `total_amount` para cruce |
+| 2 | Sistema externo | `readMpProcess` | Core (Mercado Público) | Cacheada | Entrada: `mp_oc_id` — Respuesta: `total_amount` para cruce |
 | 3 | Evento | `ThreeWayMatchCompleted` | — | Asíncrona | `ThreeWayMatch` (`id`, `match_status`, `match_date`) |
 
 **Edge cases:**
@@ -80,7 +80,7 @@
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Dependencia | `requestSignature` | FirmaGob | Síncrona bloqueante | Entrada: `document_id` (decreto), `signer_id` |
+| 1 | Dependencia | `requestSignature` | Core (FirmaGob) | Síncrona bloqueante | Entrada: `document_id` (decreto), `signer_id` |
 | 2 | Evento | `PaymentDecreeIssued` | — | Asíncrona | `PaymentDecree` (`id`, `decree_number`, `decree_date`) |
 
 **Edge cases:**
@@ -133,10 +133,10 @@
 | Sub-paso | Tipo | Contrato o Evento | Contraparte |
 |---|---|---|---|
 | 5.1 | Dependencia | `getInvoiceForMatch` | SII / Contabilidad |
-| 5.1 | Sistema externo | `getPurchaseOrderFromMP` | Mercado Público |
+| 5.1 | Sistema externo | `readMpProcess` | Core (Mercado Público) |
 | 5.1 | Evento | `ThreeWayMatchCompleted` | — |
 | 5.2 | Dependencia + Evento | `registerAccrual`, `AccrualRegistered` | Contabilidad |
-| 5.3 | Dependencia + Evento | `requestSignature`, `PaymentDecreeIssued` | FirmaGob |
+| 5.3 | Dependencia + Evento | `requestSignature`, `PaymentDecreeIssued` | Core (FirmaGob) |
 | 5.4 | Dependencia + Evento | `executePayment`, `PaymentCompleted` | Tesorería |
 
 **Etapa anterior:** [4. Recepción Conforme](./4-recepcion-conforme.md) · **Fin del ciclo de compra** — vuelve a [Adquisiciones](../overview.md)

@@ -6,6 +6,16 @@ La integración con Mercado Público (ChileCompra) es **unidireccional read-only
 
 Esto no es una limitación técnica temporal; es una decisión de arquitectura confirmada explícitamente (julio 2026) y debe mantenerse como restricción de diseño en el nuevo stack.
 
+## Ubicación en arquitectura
+
+La integración con Mercado Público es responsabilidad del **core de plataforma (servicio C7)**, no de los módulos funcionales:
+
+- El adaptador HTTP (push o polling), credenciales y configuración por tenant (`TenantIntegrationConfig`, organismo comprador) viven en el core.
+- Hacia los módulos solo se publican `readMpProcess` (vinculación síncrona) y el evento interno `MpStateChanged` — ver `plataforma/contracts.md` y `plataforma-core.md` §7.
+- **Adquisiciones no llama a la API de ChileCompra directamente.** Declara dependencia hacia el contrato del core; en fichas la contraparte es `Core (Mercado Público)`.
+
+Negociación nacional con ChileCompra (webhooks, rate limits, sandbox MP) es activo de plataforma administrado por SUBDERE.
+
 ## Los dos únicos tipos de interacción permitidos
 
 ### 1. Deep link (navegación, no integración)

@@ -19,7 +19,7 @@
 
 **Detalle:** Redacción de las bases sobre el requerimiento de la SOLPED. Las **técnicas** definen el objeto; las **administrativas**, las reglas del proceso: requisitos de admisibilidad, garantías exigidas, y **criterios de evaluación con ponderaciones** — que se capturan **estructurados, no solo como documento adjunto**, porque la evaluación (3.9) puntúa contra ellos y el sistema debe poder verificar que el acta respeta las ponderaciones declaradas. SGM puede ofrecer plantillas de bases tipo (candidato a biblioteca administrable).
 
-**Entidades:** `TenderBases` *(nueva)* — `procurement_case_id`, refs. a documentos (almacenamiento de objetos), `status` (`draft`/`legal_review`/`approved`), flags de garantías exigidas y montos. `EvaluationCriterion` *(nueva)* — `tender_bases_id`, `name`, `weight_percent` (la suma debe ser 100 — validación bloqueante `CRITERIA_WEIGHTS_INVALID`), `scoring_rule` (texto).
+**Entidades:** `TenderBases` *(nueva)* — `procurement_case_id`, refs. `DocumentRef` (bases vía C10), `status` (`draft`/`legal_review`/`approved`), flags de garantías exigidas y montos. `EvaluationCriterion` *(nueva)* — `tender_bases_id`, `name`, `weight_percent` (la suma debe ser 100 — validación bloqueante `CRITERIA_WEIGHTS_INVALID`), `scoring_rule` (texto).
 
 **Borde:** Sin cruce (interno). **Edge cases:** modificación de bases después de enviadas a revisión → vuelve a `draft` con versionamiento del documento.
 
@@ -55,7 +55,7 @@
 
 **Entidades:** `AdministrativeAct` *(nueva, transversal)* — `act_type` (`bases_approval`/`award`/`desertion`/`revocation`/...), `subject_id`, `act_number`, `signed_by`, `signed_at`, ref. documento. Generaliza el patrón de `PaymentDecree`; **candidata a absorberlo a futuro** — marcar `REVISAR`, no fusionar ahora.
 
-**Borde:** Dependencia `requestSignature`/`confirmSignature` → FirmaGob (**síncrona bloqueante**; estándar "campo presente ≠ integración funcional": el contrato define el flujo completo de firma). Evento `AdministrativeActSigned`. **Edge cases:** falla de FirmaGob → acto no perfeccionado, reintento; nunca "firmado" sin confirmación del servicio.
+**Borde:** Dependencia `requestSignature`/`confirmSignature` → Core (FirmaGob) (**síncrona bloqueante**; estándar "campo presente ≠ integración funcional": el contrato define el flujo completo de firma). Evento `AdministrativeActSigned`. **Edge cases:** falla de FirmaGob → acto no perfeccionado, reintento; nunca "firmado" sin confirmación del servicio.
 
 ---
 
@@ -156,7 +156,7 @@
 
 **Regla SoD:** los integrantes de la comisión no pueden ser el requirente de la SOLPED ni quien elaboró las bases técnicas ⚠ **propuesta — validar con jurídica el alcance exacto de las inhabilidades**.
 
-**Borde:** Dependencia condicional FirmaGob (firmas del acta); evento `EvaluationCompleted`. **Edge cases:** integrante con conflicto sobreviniente → reemplazo por acto modificatorio, trazado; empate en ranking → criterio de desempate debe estar en las bases (validación en 3.1: bases sin criterio de desempate generan advertencia).
+**Borde:** Dependencia condicional Core (FirmaGob) (firmas del acta); evento `EvaluationCompleted`. **Edge cases:** integrante con conflicto sobreviniente → reemplazo por acto modificatorio, trazado; empate en ranking → criterio de desempate debe estar en las bases (validación en 3.1: bases sin criterio de desempate generan advertencia).
 
 ---
 
@@ -255,10 +255,10 @@
 
 | Sub-paso | Contrato / Evento | Contraparte | Nota |
 |---|---|---|---|
-| 3.3, 3.9, 3.10, 3.13 | `requestSignature` / `confirmSignature` | FirmaGob | Síncrona bloqueante |
+| 3.3, 3.9, 3.10, 3.13 | `requestSignature` / `confirmSignature` | Core (FirmaGob) | Síncrona bloqueante |
 | 3.4, 3.11 | — (registro manual + documento) | Contraloría | Sin API asumida; ⚠ explorar canal |
-| 3.5 | `readMpProcess`, `linkMpProcess`, `MpProcessLinked` | Mercado Público | Vinculación diferida de 2.3 |
-| 3.6, 3.8, 3.10 | `readMpProcess` (foro, apertura, adjudicación) | Mercado Público | Lecturas **deseadas** |
+| 3.5 | `readMpProcess`, `linkMpProcess`, `MpProcessLinked` | Core (Mercado Público) | Vinculación diferida de 2.3 |
+| 3.6, 3.8, 3.10 | `readMpProcess` (foro, apertura, adjudicación) | Core (Mercado Público) | Lecturas **deseadas** |
 | 3.7, 3.12, 3.13 | `registerGuaranteeCustody`, ejecución de garantía | Tesorería | Nueva dependencia de módulo |
 | 3.10 | `adjustPreCommitment` | Presupuestos | Ajuste a monto adjudicado |
 | 3.14 | `readMpProcess` (OC Aceptada, **confirmada**), `commitBudget`, `PurchaseOrderAccepted` | MP + Presupuestos | Hito contable |

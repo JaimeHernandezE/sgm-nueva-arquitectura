@@ -41,7 +41,7 @@
 
 | Botón | Operación contrato | Dependencia |
 |---|---|---|
-| Aprobar y firmar | `approvePurchaseRequest` | `requestSignature` → `confirmSignature` (FirmaGob) |
+| Aprobar y firmar | `approvePurchaseRequest` | `requestSignature` → `confirmSignature` (Core (FirmaGob)) |
 | Rechazar | `rejectPurchaseRequest` | — |
 | Consultar saldo (panel) | `previewBudgetAvailability` | Informativa — mismo panel que 1.1 |
 

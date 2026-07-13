@@ -44,7 +44,7 @@
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Sistema externo | `getUtmValue` | SII (u otra fuente oficial) | Cacheada (frescura mensual) | `UtmValue` (`month`, `year`, `value_clp`) |
+| 1 | Sistema externo | `getUtmValue` | Core (SII) | Cacheada (frescura mensual) | `UtmValue` (`month`, `year`, `value_clp`) |
 | 2 | Dependencia | `checkCatalogAvailability` | Catálogo CM espejado (sincronización diferencial MP) | Cacheada (frescura diaria, según deltas del catálogo) | Entrada: `item_code` / descripción, `region` — Respuesta: `available` (bool), `catalog_price`, `provider_count` |
 | 3 | Operación | `confirmProcurementModality` | — (Adquisiciones) | — | Entrada: `selected_modality`, justificaciones condicionales — Respuesta: `ModalityDecision`, `CaseStep[]` instanciados |
 | 4 | Evento | `ProcurementModalityConfirmed` | — (consumidores: expediente, reportería, auditoría) | Asíncrona | `ModalityDecision`, `ProcurementCase` (`id`, `procurement_type`) |
@@ -84,7 +84,7 @@
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Dependencia *(si se confirma firma)* | `requestSignature`, `confirmSignature` | FirmaGob | Síncrona bloqueante | Firma de la aprobación, si DM la exige |
+| 1 | Dependencia *(si se confirma firma)* | `requestSignature`, `confirmSignature` | Core (FirmaGob) | Síncrona bloqueante | Firma de la aprobación, si DM la exige |
 | 2 | Evento | `ProcurementModalityApproved` | — (consumidores: expediente, auditoría) | Asíncrona | `ModalityDecisionApproval`, `ProcurementCase.id` |
 
 **Edge cases:**
@@ -125,7 +125,7 @@ Registrado y validado el código — sea la ejecución inmediata o diferida —,
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
 | 1 | Sistema externo (deep link) | — (navegación pura, sin datos transmitidos) | Mercado Público | — | — |
-| 2 | Sistema externo (lectura) | `readMpProcess` | Mercado Público (API) | Síncrona bloqueante (solo en la vinculación) | Entrada: `mp_process_id` — Respuesta: existencia, tipo de proceso, organismo comprador, estado actual |
+| 2 | Sistema externo (lectura) | `readMpProcess` | Core (Mercado Público) | Síncrona bloqueante (solo en la vinculación) | Entrada: `mp_process_id` — Respuesta: existencia, tipo de proceso, organismo comprador, estado actual |
 | 3 | Operación | `linkMpProcess` | — (Adquisiciones) | — | Entrada: `mp_process_id` — valida contra `readMpProcess` antes de persistir |
 | 4 | Evento | `MpProcessLinked` | — (consumidores: expediente, servicio de sincronización de estados MP) | Asíncrona | `ProcurementCase` (`id`, `mp_process_id`, `procurement_type`) — gatilla el inicio del polling/webhook de estados |
 
@@ -159,12 +159,12 @@ Registrado y validado el código — sea la ejecución inmediata o diferida —,
 
 | Sub-paso | Tipo | Contrato o Evento | Contraparte |
 |---|---|---|---|
-| 2.1 | Sistema externo | `getUtmValue` | SII / fuente oficial |
+| 2.1 | Sistema externo | `getUtmValue` | Core (SII) |
 | 2.1 | Dependencia | `checkCatalogAvailability` | Catálogo CM espejado |
 | 2.1 | Operación / Evento | `confirmProcurementModality`, `ProcurementModalityConfirmed` | — |
-| 2.2 | Dependencia *(condicional)* | `requestSignature`, `confirmSignature` | FirmaGob |
+| 2.2 | Dependencia *(condicional)* | `requestSignature`, `confirmSignature` | Core (FirmaGob) |
 | 2.2 | Evento | `ProcurementModalityApproved` | — |
-| 2.3 | Sistema externo | deep link (navegación), `readMpProcess` | Mercado Público |
+| 2.3 | Sistema externo | deep link (navegación), `readMpProcess` | Mercado Público (portal) / Core (Mercado Público) (lectura) |
 | 2.3 | Operación / Evento | `linkMpProcess`, `MpProcessLinked` | — |
 
 **Etapa anterior:** [1. SOLPED](./1-solped.md) · **Siguiente etapa:** subproceso específico de la modalidad confirmada (ej. [Compra Ágil — 3. Resolución de Compra](../1.%20compra-agil/3-resolucion-compra.md))

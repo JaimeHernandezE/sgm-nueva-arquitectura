@@ -172,7 +172,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 
 #### `POST /purchase-requests/{id}/budget-availability-certificate/scanned` — `registerScannedBudgetAvailabilityCertificate`
 - **Sub-pasos:** 1.5 *(modo degradado)*
-- **Entrada:** mismos metadatos que emisión + `scanned_certificate_attachment` (archivo PDF/imagen del CDP firmado)
+- **Entrada:** mismos metadatos que emisión + `scanned_certificate_attachment` (`DocumentRef` — PDF previamente subido vía `storeDocument` del core)
 - **Reglas:** mismas que emisión, excepto FirmaGob; fija `signature_mode = scanned`
 - **Dependencias:** `checkBudgetAvailability`
 - **Evento emitido:** `BudgetAvailabilityCertificateIssued`
@@ -211,14 +211,14 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 - **Sub-pasos:** 2.2 — existencia y alcance pendientes de ratificar con la DM (**[PENDIENTE P-38]**); ejecución condicionada a `ModalityDecision.requires_jefatura_approval`
 - **Entrada:** `comments` (opcional)
 - **Respuesta:** `ModalityDecisionApproval`
-- **Dependencias:** `requestSignature`/`confirmSignature` (FirmaGob, condicional)
+- **Dependencias:** `requestSignature`/`confirmSignature` (Core (FirmaGob), condicional)
 - **Evento emitido:** `ProcurementModalityApproved`
 
 #### `POST /modality-decisions/{id}/reject` — `rejectModalityDecision`
 - **Sub-pasos:** 2.2
 - **Entrada:** `comments` (obligatorio)
 - **Reglas:** rechazo → `ModalityDecision` sin efecto, `CaseStep[]` de 2.1 anulados con auditoría, retorna a 2.1
-- **Dependencias:** `requestSignature`/`confirmSignature` (FirmaGob, condicional)
+- **Dependencias:** `requestSignature`/`confirmSignature` (Core (FirmaGob), condicional)
 
 #### `POST /procurement-cases/{id}/mp-link` — `linkMpProcess`
 - **Sub-pasos:** 2.3 (ejecución inmediata, Compra Ágil/Convenio Marco), 3.5 *(LP, ejecución diferida)*, subproceso de publicación *(Trato Directo, ejecución diferida)*
@@ -315,7 +315,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Recepción conforme aprobada | blocking | 31 P0 | `GOODS_RECEIPT_REQUIRED` |
   | Factura SII disponible y cruzable | blocking | 31 P0 | `INVOICE_PROVIDER_UNAVAILABLE` |
   | Montos concordantes (tolerancia ⚠) | blocking | P1 | `MATCH_DISCREPANCY` |
-- **Dependencias:** `getInvoiceForMatch`, `getPurchaseOrderFromMP`
+- **Dependencias:** `getInvoiceForMatch`, `readMpProcess`
 - **Evento emitido:** `ThreeWayMatchCompleted`
 
 #### `POST /three-way-matches/{id}/accrual` — `registerAccrual`
@@ -326,7 +326,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 
 #### `POST /accruals/{id}/payment-decree` — `issuePaymentDecree`
 - **Sub-pasos:** 5.3
-- **Dependencias:** `requestSignature` (FirmaGob)
+- **Dependencias:** `requestSignature` (Core (FirmaGob))
 - **Evento emitido:** `PaymentDecreeIssued`
 
 #### `POST /payment-decrees/{id}/execute` — `executePayment`
@@ -339,7 +339,9 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 
 ## 3. Dependencias que requiere
 
-Interfaces de proveedor — no llamadas a módulos concretos. El proveedor puede ser otro módulo SGM o un adaptador municipal.
+Interfaces de proveedor — no llamadas a módulos concretos. Los **módulos de negocio** (Presupuestos, Contabilidad, Tesorería…) son intercambiables según modo de consumo. El **core** es obligatorio para integraciones externas (MP, FirmaGob, SII) y almacenamiento de archivos (`DocumentRef` vía C10).
+
+Contrato del core: [`plataforma/contracts.md`](../../plataforma/contracts.md) §2.9–§2.10.
 
 ### 3.1 Presupuestos
 
@@ -368,16 +370,13 @@ Interfaces de proveedor — no llamadas a módulos concretos. El proveedor puede
 | `executePayment` | 5.4 | Síncrona bloqueante | `TREASURY_PROVIDER_UNAVAILABLE` o `PAYMENT_REJECTED`; `payment_status = failed` |
 | `registerGuaranteeCustody` | 3.7, 3.12 *(LP)* | Asíncrona | Custodia de garantías de seriedad/fiel cumplimiento; nueva dependencia de módulo desde la ficha LP |
 
-### 3.4 FirmaGob
+### 3.4 Core — integraciones externas
 
-| Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
-|---|---|---|---|
-| `requestSignature` | 1.2, 1.5, 4.1, 5.3 | Síncrona bloqueante | `SIGNATURE_PROVIDER_UNAVAILABLE`; documento queda `pending_signature` |
-| `confirmSignature` | 1.2, 1.5 | Síncrona bloqueante | `SIGNATURE_REJECTED`; no transiciona estado |
+Operaciones implementadas en el core ([`plataforma/contracts.md`](../../plataforma/contracts.md) §2.9). Contraparte en fichas: `Core (Mercado Público)`, `Core (FirmaGob)`, `Core (SII)`.
 
-### 3.5 Mercado Público (solo lectura)
+#### Mercado Público (C7, solo lectura)
 
-Consolidado en torno a `readMpProcess`, operación única de lectura que atiende toda la etapa 2 (vinculación, §2.3) y toda la etapa 3 (período de cotización, cierre/selección, emisión/aceptación/rechazo de OC, desierto/fallido), agnóstica de modalidad. Reemplaza las filas granulares atadas a la numeración de sub-pasos anterior (`validateQuoteId`, `getQuoteSummary`, `getPurchaseOrderFromMP`, `getPurchaseOrderStatus`, `syncPurchaseOrderAccepted`).
+Consolidado en torno a `readMpProcess`, operación única de lectura que atiende toda la etapa 2 (vinculación, §2.3) y toda la etapa 3, agnóstica de modalidad.
 
 | Operación | Sub-pasos | Lectura MP (§5.3) | Clasificación | Comportamiento ante falla |
 |---|---|---|---|---|
@@ -389,19 +388,37 @@ Consolidado en torno a `readMpProcess`, operación única de lectura que atiende
 | `readMpProcess` — OC Rechazada | 3.5 | Deseada | Asíncrona | Modo degradado: registro manual del rechazo |
 | `readMpProcess` — desierto | 3.6 | Deseada | Asíncrona | Presunción de desierto vencido el plazo, confirmación manual |
 | `readMpProcess` — foro/apertura/adjudicación *(LP)* | 3.6, 3.8, 3.10 | Deseada | Asíncrona | Modo degradado: registro manual del hito |
-| `getUtmValue` | 2.1 | — | Cacheada (frescura mensual) | `UTM_VALUE_UNAVAILABLE` |
 | `checkCatalogAvailability` | 2.1 | — | Cacheada (frescura diaria) | Advertencia `CATALOG_STALE` |
 
-Ver [`integracion-mercado-publico.md`](../../arquitectura/integracion-mercado-publico.md): sin escritura API hacia MP; tabla de momento de vinculación por modalidad (inmediata CA/CM, diferida LP/TD).
+Ver [`integracion-mercado-publico.md`](../../arquitectura/integracion-mercado-publico.md): sin escritura API hacia MP.
 
-### 3.6 SII / facturación
+#### FirmaGob (C9)
 
 | Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
 |---|---|---|---|
+| `requestSignature` | 1.2, 1.5, 4.1, 5.3 | Síncrona bloqueante | `SIGNATURE_PROVIDER_UNAVAILABLE`; documento queda `pending_signature` |
+| `confirmSignature` | 1.2, 1.5 | Síncrona bloqueante | `SIGNATURE_REJECTED`; no transiciona estado |
+
+#### SII y referencias (C9)
+
+| Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
+|---|---|---|---|
+| `getUtmValue` | 2.1 | Cacheada (frescura mensual) | `UTM_VALUE_UNAVAILABLE` |
 | `getPriceReference` | 1.1 | Cacheada | `PRICE_REFERENCE_UNAVAILABLE` |
 | `getInvoiceForMatch` | 5.1 | Síncrona bloqueante | `INVOICE_PROVIDER_UNAVAILABLE` |
 
-### 3.7 Inventario *(propuesta, QA ítem 4)*
+### 3.5 Core — documentos (C10)
+
+Patrón upload-then-reference: el cliente sube vía `storeDocument` → recibe `DocumentRef` → el módulo persiste solo el ref en operaciones de negocio. Sin endpoints multipart en el borde de Adquisiciones.
+
+| Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
+|---|---|---|---|
+| `storeDocument` | 1.1, 1.5, 4.1 | Síncrona bloqueante | `DOCUMENT_STORAGE_UNAVAILABLE`, `DOCUMENT_TYPE_NOT_ALLOWED`, `DOCUMENT_SIZE_EXCEEDED` |
+| `getDownloadUrl` | — *(lecturas de adjuntos)* | Síncrona | `DOCUMENT_NOT_FOUND`, `DOCUMENT_STORAGE_UNAVAILABLE` |
+
+Campos de adjunto en entidades expuestas: `founded_resolution_attachment`, `scanned_certificate_attachment`, `supporting_document_ref` — todos `DocumentRef`.
+
+### 3.6 Inventario *(propuesta, QA ítem 4)*
 
 | Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
 |---|---|---|---|
@@ -487,9 +504,9 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 | 3.1–3.3 *(LP)* | — *(bases, revisión jurídica, acto aprobatorio — sin cruce salvo firma)* | `requestSignature`/`confirmSignature` (3.3) | `LegalReviewCompleted` (3.2), `AdministrativeActSigned` (3.3) |
 | 3.4, 3.11 *(LP)* | — *(registro manual, sin API)* | Contraloría (sin integración asumida) | — |
 | 3.5 *(LP)* | `linkMpProcess` *(reutiliza 2.3, vinculación diferida)* | `readMpProcess` | `MpProcessLinked` |
-| 3.6–3.9 *(LP)* | — | `readMpProcess` (foro, apertura), `registerGuaranteeCustody` (3.7), FirmaGob (3.9 condicional) | `GuaranteeRegistered` (3.7), `EvaluationCompleted` (3.9) |
+| 3.6–3.9 *(LP)* | — | `readMpProcess` (foro, apertura), `registerGuaranteeCustody` (3.7), `Core (FirmaGob)` (3.9 condicional) | `GuaranteeRegistered` (3.7), `EvaluationCompleted` (3.9) |
 | 3.10 *(LP)* | — *(resolución de adjudicación/deserción/revocación)* | `adjustPreCommitment` (Presupuestos) | — |
-| 3.12–3.13 *(LP)* | — | `registerGuaranteeCustody`, FirmaGob (3.13) | — |
+| 3.12–3.13 *(LP)* | — | `registerGuaranteeCustody`, `Core (FirmaGob)` (3.13) | — |
 | 3.14 *(LP)* | `syncPurchaseOrderAccepted` | MP, `commitBudget` (Presupuestos) | `PurchaseOrderAccepted`, `BudgetCommitmentCreated` |
 | 4.1 | `registerReceipt` | — | — |
 | 4.2 | `confirmReceipt` *(inferido)* | `requestSignature` (condicional) | `GoodsReceiptConfirmed` |

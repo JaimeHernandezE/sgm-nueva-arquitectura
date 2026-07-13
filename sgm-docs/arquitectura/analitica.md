@@ -26,7 +26,7 @@ Consumidores previstos del mismo contrato: el dashboard del frontend base, los t
 
 1. **Consume de la capa de lectura, nunca de la transaccional** (`musts-arquitectura.md` §4). Toda respuesta declara su frescura (§6).
 2. **Catálogo cerrado y publicado.** Solo se puede consultar lo que el catálogo declara; el catálogo es parte del contrato del módulo y se versiona con él.
-3. **Mono-tenant.** Este contrato agrega datos de un municipio. La reportería nacional cruzada (SUBDERE, SINIM) es otro consumidor de la capa de lectura con scope propio — fuera del alcance de este documento.
+3. **Mono-tenant.** Este contrato agrega datos de un municipio. La reportería nacional cruzada (SUBDERE, SINIM) es otro consumidor de la capa de lectura con scope propio — fuera del alcance de este documento. SINIM no es integración de credenciales ni almacenamiento documental (C10).
 4. **Toda medida tiene definición exacta y fecha ancla declarada** (§4). Una cifra sin definición auditable no entra al catálogo.
 5. **Agregados sin datos personales.** Los resultados son cifras agregadas; las dimensiones que identifican personas naturales se restringen (§7).
 

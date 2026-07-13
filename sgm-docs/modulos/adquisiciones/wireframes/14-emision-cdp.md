@@ -54,7 +54,7 @@ Visible cuando FirmaGob no está disponible o el usuario elige «Registrar CDP f
 | Año fiscal | `BudgetAvailabilityCertificate.fiscal_year` | Sí |
 | Nº correlativo CDP | `BudgetAvailabilityCertificate.certificate_number` | Sí (modo escaneado) |
 | Fecha del documento | `BudgetAvailabilityCertificate.signed_at` | Sí (modo escaneado) |
-| Adjunto CDP firmado | `BudgetAvailabilityCertificate.scanned_certificate_attachment` | Sí si modo escaneado |
+| Adjunto CDP firmado | `BudgetAvailabilityCertificate.scanned_certificate_attachment` (`DocumentRef`) | Sí si modo escaneado — subida previa vía `storeDocument` (core) |
 | Firmante | `BudgetAvailabilityCertificate.signed_by` | Sí (generado al firmar) |
 | Modo de firma | `BudgetAvailabilityCertificate.signature_mode` | Sí |
 
@@ -62,7 +62,7 @@ Visible cuando FirmaGob no está disponible o el usuario elige «Registrar CDP f
 
 | Botón | Operación contrato | Dependencia |
 |---|---|---|
-| Emitir y firmar CDP | `issueBudgetAvailabilityCertificate` (`signature_mode = electronic`) | `checkBudgetAvailability` → `requestSignature` → `confirmSignature` |
+| Emitir y firmar CDP | `issueBudgetAvailabilityCertificate` (`signature_mode = electronic`) | `checkBudgetAvailability` → `requestSignature` → `confirmSignature` (Core (FirmaGob)) |
 | Registrar CDP escaneado | `registerScannedBudgetAvailabilityCertificate` | `checkBudgetAvailability` |
 
 ## Estados de pantalla

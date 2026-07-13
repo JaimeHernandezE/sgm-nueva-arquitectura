@@ -1,7 +1,7 @@
 # Wireframe: Vinculación del proceso en Mercado Público
 
 **Sub-paso:** 2.3 — Vinculación del proceso en Mercado Público (momento según modalidad)
-**Operación:** `linkMpProcess` · Dependencia: `readMpProcess` (Mercado Público, síncrona bloqueante solo en la vinculación)
+**Operación:** `linkMpProcess` · Dependencia: `readMpProcess` (Core (Mercado Público), síncrona bloqueante solo en la vinculación)
 
 Este wireframe cubre la **ejecución inmediata** (Compra Ágil / Convenio Marco, al cierre de la etapa 2). Para Licitación Pública y Trato Directo la misma operación se ejecuta de forma **diferida** dentro de su propio subproceso (LP §3.5, TD en su publicación) — ver `procesos-transversales/2-modalidad-compra.md` §2.3.
 
@@ -45,7 +45,7 @@ Este wireframe cubre la **ejecución inmediata** (Compra Ágil / Convenio Marco,
 | Botón / control | Operación contrato | Dependencia |
 |---|---|---|
 | Gestionar en MP | — (deep link, navegación pura, sin payload de escritura) | Mercado Público |
-| Validar y vincular | `linkMpProcess` | `readMpProcess` (síncrona bloqueante, solo en la vinculación) |
+| Validar y vincular | `linkMpProcess` | `readMpProcess` → Core (Mercado Público) |
 | Simular resultado (demo) | — *(solo prototipo, no existe en la ficha)* | Ilustra los 4 bloqueos + `MP_PROVIDER_UNAVAILABLE` |
 
 ## Estados de pantalla

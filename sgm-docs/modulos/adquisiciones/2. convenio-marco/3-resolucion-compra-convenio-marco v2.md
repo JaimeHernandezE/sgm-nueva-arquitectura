@@ -35,7 +35,7 @@
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Sistema externo | `getUtmValue` | SII / fuente oficial | Cacheada (frescura mensual) | `UtmValue` (`month`, `year`, `value_clp`) |
+| 1 | Sistema externo | `getUtmValue` | Core (SII) | Cacheada (frescura mensual) | `UtmValue` (`month`, `year`, `value_clp`) |
 | 2 | Evento | `ProcurementRouteDecided` | — (consumidores: expediente, `CaseStep` instanciador) | Asíncrona | `ProcurementCase` (`id`, `procurement_route`, `route_decided_at`) |
 
 **Edge cases:**
@@ -68,8 +68,8 @@
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Sistema externo (deep link) | — (navegación pura, sin datos transmitidos) | Mercado Público | — | — |
-| 2 | Sistema externo (lectura) | `readMpProcess` | Mercado Público (API) | Síncrona bloqueante (solo en la vinculación) | Entrada: `mp_process_id` — Respuesta: existencia, tipo, organismo, estado actual |
+| 1 | Sistema externo (deep link) | — (navegación pura, sin datos transmitidos) | Core (Mercado Público) | — | — |
+| 2 | Sistema externo (lectura) | `readMpProcess` | Core (Mercado Público) | Síncrona bloqueante (solo en la vinculación) | Entrada: `mp_process_id` — Respuesta: existencia, tipo, organismo, estado actual |
 | 3 | Operación | `linkMpProcess` | — (Adquisiciones) | — | Entrada: `mp_process_id` — valida contra `readMpProcess` antes de persistir |
 | 4 | Evento | `MpProcessLinked` | — (consumidores: expediente, servicio de sincronización) | Asíncrona | `ProcurementCase` (`id`, `mp_process_id`, `procurement_type`) |
 
@@ -104,8 +104,8 @@
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Sistema externo (deep link) | — (navegación pura) | Mercado Público | — | — |
-| 2 | Sistema externo (lectura) | `readMpProcess` | Mercado Público (API) | Síncrona bloqueante (vinculación) | Entrada: `mp_process_id` — Respuesta: existencia, tipo, organismo, estado |
+| 1 | Sistema externo (deep link) | — (navegación pura) | Core (Mercado Público) | — | — |
+| 2 | Sistema externo (lectura) | `readMpProcess` | Core (Mercado Público) | Síncrona bloqueante (vinculación) | Entrada: `mp_process_id` — Respuesta: existencia, tipo, organismo, estado |
 | 3 | Operación | `linkMpProcess` | — (Adquisiciones) | — | Entrada: `mp_process_id` |
 | 4 | Evento | `MpProcessLinked` | — (consumidores: expediente, sincronización, timer de plazo) | Asíncrona | `ProcurementCase` (`id`, `mp_process_id`, `purchase_intent_deadline`) |
 
@@ -138,7 +138,7 @@
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Sistema externo (lectura, deseada) | `readMpProcess` (vía servicio de sincronización) | Mercado Público | Asíncrona | Estado del proceso, n° ofertas |
+| 1 | Sistema externo (lectura, deseada) | `readMpProcess` (vía servicio de sincronización) | Core (Mercado Público) | Asíncrona | Estado del proceso, n° ofertas |
 | 2 | Evento | `MpStateChanged` (interno, agnóstico de push/polling) | — (consumidores: expediente, notificaciones) | Asíncrona | `MpProcessSnapshot` |
 
 **Edge cases:**
@@ -169,7 +169,7 @@
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Sistema externo (lectura, deseada) | `readMpProcess` | Mercado Público | Asíncrona | Cierre + selección |
+| 1 | Sistema externo (lectura, deseada) | `readMpProcess` | Core (Mercado Público) | Asíncrona | Cierre + selección |
 | 2 | Evento | `QuotationClosed` | — (consumidores: expediente, notificaciones) | Asíncrona | `QuotationResult` |
 
 **Edge cases:**
@@ -205,7 +205,7 @@
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Sistema externo (lectura, deseada) | `readMpProcess` — proceso desierto | Mercado Público | Asíncrona | Estado terminal del proceso |
+| 1 | Sistema externo (lectura, deseada) | `readMpProcess` — proceso desierto | Core (Mercado Público) | Asíncrona | Estado terminal del proceso |
 | 2 | Evento | `GranCompraDesierta` | — (consumidores: expediente, notificaciones, reportería) | Asíncrona | `ProcurementCase` (`id`, `mp_process_id` anterior, nueva `procurement_route`) |
 
 **Edge cases:**
@@ -236,7 +236,7 @@
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Sistema externo (lectura, **confirmada**) | `readMpProcess` — OC Aceptada | Mercado Público | Asíncrona | N° OC, RUT proveedor, monto real, fecha de aceptación |
+| 1 | Sistema externo (lectura, **confirmada**) | `readMpProcess` — OC Aceptada | Core (Mercado Público) | Asíncrona | N° OC, RUT proveedor, monto real, fecha de aceptación |
 | 2 | Dependencia | `commitBudget` (compromiso por monto real; incluye ajuste contra preobligación) | Proveedor de disponibilidad presupuestaria (Presupuestos SGM o sistema municipal) | **Síncrona bloqueante** | Entrada: `pre_commitment_id`, `real_amount`, `purchase_order_ref` — Respuesta: `BudgetCommitment` o error estructurado |
 | 3 | Evento | `PurchaseOrderAccepted` | — (consumidores: expediente, recepción, Contabilidad, notificaciones, terceros vía webhook con scope) | Asíncrona | `PurchaseOrder`, `BudgetCommitment.id` |
 
@@ -270,7 +270,7 @@
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Sistema externo (lectura, deseada) | `readMpProcess` — OC Rechazada | Mercado Público | Asíncrona | Estado, motivo si disponible |
+| 1 | Sistema externo (lectura, deseada) | `readMpProcess` — OC Rechazada | Core (Mercado Público) | Asíncrona | Estado, motivo si disponible |
 | 2 | Evento | `PurchaseOrderRejected` | — (consumidores: expediente, notificaciones) | Asíncrona | `PurchaseOrder` |
 
 **Edge cases:**
@@ -294,14 +294,14 @@
 
 | Sub-paso | Tipo | Contrato o Evento | Contraparte | Lectura MP |
 |---|---|---|---|---|
-| 3.1 | Sistema externo / Evento | `getUtmValue`, `ProcurementRouteDecided` | SII / fuente oficial | — |
-| 3.2 | Sistema externo / Operación / Evento | `readMpProcess`, `linkMpProcess`, `MpProcessLinked` | Mercado Público | — (vinculación, no lectura de estado) |
-| 3.3 | Sistema externo / Operación / Evento | `readMpProcess`, `linkMpProcess`, `MpProcessLinked` | Mercado Público | — (vinculación) |
-| 3.4 | Sistema externo / Evento | `readMpProcess`, `MpStateChanged` | Mercado Público | Deseada |
-| 3.5 | Sistema externo / Evento | `readMpProcess`, `QuotationClosed` | Mercado Público | Deseada |
-| 3.6 | Sistema externo / Evento | `readMpProcess`, `GranCompraDesierta` | Mercado Público | Deseada |
+| 3.1 | Sistema externo / Evento | `getUtmValue`, `ProcurementRouteDecided` | Core (SII) | — |
+| 3.2 | Sistema externo / Operación / Evento | `readMpProcess`, `linkMpProcess`, `MpProcessLinked` | Core (Mercado Público) | — (vinculación, no lectura de estado) |
+| 3.3 | Sistema externo / Operación / Evento | `readMpProcess`, `linkMpProcess`, `MpProcessLinked` | Core (Mercado Público) | — (vinculación) |
+| 3.4 | Sistema externo / Evento | `readMpProcess`, `MpStateChanged` | Core (Mercado Público) | Deseada |
+| 3.5 | Sistema externo / Evento | `readMpProcess`, `QuotationClosed` | Core (Mercado Público) | Deseada |
+| 3.6 | Sistema externo / Evento | `readMpProcess`, `GranCompraDesierta` | Core (Mercado Público) | Deseada |
 | 3.7 | Lectura + Dependencia + Evento | `readMpProcess` (OC Aceptada), `commitBudget`, `PurchaseOrderAccepted` | MP + Presupuestos | **Confirmada** |
-| 3.8 | Sistema externo / Evento | `readMpProcess`, `PurchaseOrderRejected` | Mercado Público | Deseada |
+| 3.8 | Sistema externo / Evento | `readMpProcess`, `PurchaseOrderRejected` | Core (Mercado Público) | Deseada |
 
 **Etapa anterior:** [2. Modalidad de Compra](../procesos-transversales/2-modalidad-compra.md) · **Siguiente etapa:** [4. Recepción Conforme](../procesos-transversales/4-recepcion-conforme.md) *(transversal, por documentar)*
 
