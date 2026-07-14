@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: SGM Adquisiciones — fragmento
   version: 0.1.0
-  description: Fragmento de rutas. Ensamblado en `openapi/adquisiciones.openapi.yaml`.
+  description: Fragmento de rutas. Ensamblado en `adquisiciones.openapi.yaml` (entrada del módulo).
 paths:
   /purchase-requests:
     post:
@@ -23,21 +23,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/CreatePurchaseRequestRequest
+              $ref: ../adquisiciones.openapi.yaml#/components/schemas/CreatePurchaseRequestRequest
       responses:
         "201":
           description: SOLPED creada en estado borrador.
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/PurchaseRequest
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/PurchaseRequest
               examples:
                 CreatePurchaseRequestSuccess:
-                  $ref: ../../openapi/adquisiciones.openapi.yaml#/components/examples/CreatePurchaseRequestSuccess
+                  $ref: ../adquisiciones.openapi.yaml#/components/examples/CreatePurchaseRequestSuccess
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "422":
           description: Regla de negocio violada.
           content:
@@ -87,20 +87,20 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
       responses:
         "200":
           description: SOLPED enviada.
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/PurchaseRequest
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/PurchaseRequest
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
         "422":
           description: Regla de negocio violada.
           content:
@@ -126,26 +126,26 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/ApprovalDecisionRequest
+              $ref: ../adquisiciones.openapi.yaml#/components/schemas/ApprovalDecisionRequest
       responses:
         "200":
           description: SOLPED aprobada.
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/PurchaseRequest
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/PurchaseRequest
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
         "422":
           description: Regla de negocio violada.
           content:
@@ -176,28 +176,28 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/RejectionDecisionRequest
+              $ref: ../adquisiciones.openapi.yaml#/components/schemas/RejectionDecisionRequest
       responses:
         "200":
           description: SOLPED rechazada y devuelta a borrador.
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/PurchaseRequest
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/PurchaseRequest
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
         "422":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
   /purchase-requests/{id}/budget-verification:
     post:
       operationId: verifyBudgetAvailability
@@ -213,26 +213,26 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/BudgetVerificationRequest
+              $ref: ../adquisiciones.openapi.yaml#/components/schemas/BudgetVerificationRequest
       responses:
         "200":
           description: Verificación registrada.
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/BudgetAvailabilityPreview
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/BudgetAvailabilityPreview
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
         "422":
           description: Regla de negocio violada.
           content:
@@ -241,7 +241,7 @@ paths:
                 $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
               examples:
                 budgetUnavailable:
-                  $ref: ../../openapi/adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
+                  $ref: ../adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
                 invalidStatus:
                   value:
                     error_code: INVALID_STATUS
@@ -262,7 +262,7 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
       requestBody:
         required: true
         content:
@@ -278,13 +278,13 @@ paths:
         "202":
           description: Solicitud de financiamiento registrada.
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
         "422":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
   /purchase-requests/{id}/budget-availability-certificate:
     post:
       operationId: issueBudgetAvailabilityCertificate
@@ -299,26 +299,26 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/IssueBudgetCertificateRequest
+              $ref: ../adquisiciones.openapi.yaml#/components/schemas/IssueBudgetCertificateRequest
       responses:
         "201":
           description: CDP emitido.
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/BudgetAvailabilityCertificate
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/BudgetAvailabilityCertificate
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
         "422":
           description: Regla de negocio violada.
           content:
@@ -337,7 +337,7 @@ paths:
                     rule: El verificador no puede ser el firmante del CDP
                     severity: blocking
                 budgetUnavailable:
-                  $ref: ../../openapi/adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
+                  $ref: ../adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
                 signatureRequired:
                   value:
                     error_code: SIGNATURE_REQUIRED
@@ -362,26 +362,26 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/RegisterScannedBudgetCertificateRequest
+              $ref: ../adquisiciones.openapi.yaml#/components/schemas/RegisterScannedBudgetCertificateRequest
       responses:
         "201":
           description: CDP escaneado registrado.
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/BudgetAvailabilityCertificate
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/BudgetAvailabilityCertificate
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
         "422":
           description: Regla de negocio violada.
           content:
@@ -390,7 +390,7 @@ paths:
                 $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
               examples:
                 budgetUnavailable:
-                  $ref: ../../openapi/adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
+                  $ref: ../adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
                 scannedInvalid:
                   value:
                     error_code: SCANNED_CDP_INVALID
@@ -410,26 +410,26 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/CreateBudgetPreCommitmentRequest
+              $ref: ../adquisiciones.openapi.yaml#/components/schemas/CreateBudgetPreCommitmentRequest
       responses:
         "201":
           description: Preobligación creada.
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/BudgetPreCommitment
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/BudgetPreCommitment
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
         "422":
           description: Regla de negocio violada.
           content:
@@ -443,7 +443,7 @@ paths:
                     rule: Se requiere CDP vigente
                     severity: blocking
                 budgetUnavailable:
-                  $ref: ../../openapi/adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
+                  $ref: ../adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
                 invalidStatus:
                   value:
                     error_code: INVALID_STATUS
@@ -488,10 +488,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/BudgetAvailabilityPreview
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/BudgetAvailabilityPreview
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "422":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity

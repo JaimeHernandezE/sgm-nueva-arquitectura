@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: SGM Adquisiciones — fragmento
   version: 0.1.0
-  description: Fragmento de rutas. Ensamblado en `openapi/adquisiciones.openapi.yaml`.
+  description: Fragmento de rutas. Ensamblado en `adquisiciones.openapi.yaml` (entrada del módulo).
 paths:
   /procurement-cases/{id}/quotation-result:
     post:
@@ -28,22 +28,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/QuotationResultInput
+              $ref: ../adquisiciones.openapi.yaml#/components/schemas/QuotationResultInput
       responses:
         "201":
           description: Resultado de cotización registrado.
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/QuotationResult
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/QuotationResult
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/ProcurementCaseNotFound
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/ProcurementCaseNotFound
         "422":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
   /purchase-orders:
     post:
       operationId: registerPurchaseOrder
@@ -63,20 +63,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/RegisterPurchaseOrderRequest
+              $ref: ../adquisiciones.openapi.yaml#/components/schemas/RegisterPurchaseOrderRequest
       responses:
         "201":
           description: Orden de compra registrada.
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/PurchaseOrder
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/PurchaseOrder
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "422":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
   /purchase-orders/{id}/sync-accepted:
     post:
       operationId: syncPurchaseOrderAccepted
@@ -92,18 +92,18 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
       responses:
         "200":
           description: OC sincronizada y compromiso registrado.
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/SyncPurchaseOrderAcceptedResponse
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/SyncPurchaseOrderAcceptedResponse
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
           description: Orden de compra no encontrada.
           content:
@@ -123,7 +123,7 @@ paths:
                 $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
               examples:
                 budgetUnavailable:
-                  $ref: ../../openapi/adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
+                  $ref: ../adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
   /procurement-cases/{id}/release-pre-commitment:
     post:
       operationId: releasePreCommitment
@@ -149,13 +149,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/ProcurementCase
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/ProcurementCase
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/ProcurementCaseNotFound
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/ProcurementCaseNotFound
         "422":
           description: Error del proveedor presupuestario.
           content:

@@ -5,7 +5,7 @@
 > Estándares transversales: [`arquitectura/estandares-api.md`](../../arquitectura/estandares-api.md)
 > Metodología: [`arquitectura/contrato-api-first.md`](../../arquitectura/contrato-api-first.md)
 > Entidades canónicas: [`modelo-datos/entidades-core.md`](../../modelo-datos/entidades-core.md)
-> OpenAPI: [`openapi/adquisiciones.openapi.yaml`](./openapi/adquisiciones.openapi.yaml)
+> OpenAPI: [`openapi/adquisiciones.openapi.yaml`](./openapi/adquisiciones.openapi.yaml) — estructura: [`openapi/README.md`](./openapi/README.md)
 > Fixtures sandbox: [`fixtures/catalogo.md`](./fixtures/catalogo.md)
 
 **Alcance:** las etapas transversales (1, 2, 4) y la etapa 3 de Compra Ágil están cubiertas en profundidad. La etapa 3 de Licitación Pública ya tiene ficha de flujo (`3. licitacion-publica/3-resolucion-compra.md`, 14 sub-pasos) pero sus entidades y operaciones específicas (`TenderBases`, `Guarantee`, `Contract`, Comisión Evaluadora, etc.) aún no están completamente incorporadas a este contrato ni a `entidades-core.md` — solo se propagó aquí la concordancia de vinculación MP (§2.3 ↔ §3.5). Convenio Marco y Trato Directo se extenderán tras validar el piloto.

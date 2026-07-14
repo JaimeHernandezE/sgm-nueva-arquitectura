@@ -19,3 +19,8 @@ Solo la etapa 3 (Resolución de Compra) tiene documentación específica por mod
 - [Trato Directo](../4.%20trato-directo/overview.md)
 
 Ver también `modelo-datos/entidades-core.md` para la definición canónica de las entidades usadas en estos procesos.
+
+## OpenAPI
+
+Las rutas HTTP de estas etapas viven en `../openapi/procesos-transversales/` (espejo de esta carpeta). Entrada del módulo: [`../openapi/adquisiciones.openapi.yaml`](../openapi/adquisiciones.openapi.yaml). Ver [`../openapi/README.md`](../openapi/README.md).
+

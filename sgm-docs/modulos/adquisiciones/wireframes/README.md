@@ -2,6 +2,8 @@
 
 Wireframes de **baja fidelidad** (borrador). Especifican estructura y comportamiento, no diseño visual.
 
+Patrón transversal de la vista de expediente (filas, tintes, botones): [`../../../arquitectura/patron-vista-expediente.md`](../../../arquitectura/patron-vista-expediente.md).
+
 | Archivo | Sub-paso | Operación principal |
 |---|---|---|
 | [11-creacion-solped.md](./11-creacion-solped.md) | 1.1 | `createPurchaseRequest` |
@@ -22,4 +24,4 @@ Wireframes de **baja fidelidad** (borrador). Especifican estructura y comportami
 | [41-recepcion-conforme.md](./41-recepcion-conforme.md) | 4.1 | `confirmGoodsReceipt` |
 | [51-cruce-tres-vias.md](./51-cruce-tres-vias.md) | 5.1 | `performThreeWayMatch` |
 
-Contrato: [`../../contracts.md`](../../contracts.md)
+Contrato: [`../contracts.md`](../contracts.md)

@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: SGM Adquisiciones — fragmento
   version: 0.1.0
-  description: Fragmento de rutas. Ensamblado en `openapi/adquisiciones.openapi.yaml`.
+  description: Fragmento de rutas. Ensamblado en `adquisiciones.openapi.yaml` (entrada del módulo).
 paths:
   /procurement-cases/{id}/modality:
     post:
@@ -30,20 +30,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/ConfirmProcurementModalityRequest
+              $ref: ../adquisiciones.openapi.yaml#/components/schemas/ConfirmProcurementModalityRequest
       responses:
         "200":
           description: Modalidad confirmada e instancia de pasos.
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/ConfirmProcurementModalityResponse
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/ConfirmProcurementModalityResponse
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/ProcurementCaseNotFound
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/ProcurementCaseNotFound
         "422":
           description: Regla de negocio violada.
           content:
@@ -91,7 +91,7 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
       requestBody:
         content:
           application/json:
@@ -106,13 +106,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/ModalityDecisionApproval
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/ModalityDecisionApproval
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
         "422":
           description: Regla de negocio violada.
           content:
@@ -137,28 +137,28 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/RejectionDecisionRequest
+              $ref: ../adquisiciones.openapi.yaml#/components/schemas/RejectionDecisionRequest
       responses:
         "200":
           description: Decisión rechazada.
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/ModalityDecision
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/ModalityDecision
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
         "422":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
   /procurement-cases/{id}/mp-link:
     post:
       operationId: linkMpProcess
@@ -196,13 +196,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/ProcurementCase
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/ProcurementCase
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/ProcurementCaseNotFound
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/ProcurementCaseNotFound
         "422":
           description: Regla de negocio violada.
           content:

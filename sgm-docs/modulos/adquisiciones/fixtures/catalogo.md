@@ -12,4 +12,4 @@
 
 Alineación con prototipos: IDs coinciden con `sgm-prototipos/shared/expedientes-demo.js`.
 
-OpenAPI: [`../openapi/adquisiciones.openapi.yaml`](../openapi/adquisiciones.openapi.yaml)
+OpenAPI: [`../openapi/adquisiciones.openapi.yaml`](../openapi/adquisiciones.openapi.yaml) — mapa de fragmentos: [`../openapi/README.md`](../openapi/README.md)

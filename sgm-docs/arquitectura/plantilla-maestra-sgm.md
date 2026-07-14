@@ -6,7 +6,7 @@ Documento normativo del repositorio `sgm-docs`. Define la estructura obligatoria
 
 **Principio arquitectónico rector (mandato API):** cada módulo expone un contrato de entrada/salida versionado; ningún módulo accede a datos o funcionalidad de otro salvo a través de ese contrato. La documentación de procesos debe hacer visibles los bordes de módulo — cada vez que un flujo cruza de un módulo a otro, ahí vive un contrato. Detalle normativo en [`estandares-api.md`](./estandares-api.md) y [`contrato-api-first.md`](./contrato-api-first.md).
 
-**Contrato en tres capas (mismo módulo):** además de las fichas de proceso y `contracts.md`, todo cambio que afecte el borde del módulo debe propagarse a **OpenAPI** (`modulos/<módulo>/openapi/`) y, cuando corresponda, a **fixtures de sandbox** (`modulos/<módulo>/fixtures/`). Los tres artefactos son una sola especificación: vista funcional, vista técnica formal y estados reproducibles de prueba. Norma de formato en [`estandares-api.md`](./estandares-api.md) Parte II; modelo de entregable en [`entregable-licitacion.md`](./entregable-licitacion.md).
+**Contrato en tres capas (mismo módulo):** además de las fichas de proceso y `contracts.md`, todo cambio que afecte el borde del módulo debe propagarse a **OpenAPI** (`modulos/<módulo>/openapi/`, seccionada como los procesos) y, cuando corresponda, a **fixtures de sandbox** (`modulos/<módulo>/fixtures/`). Los tres artefactos son una sola especificación: vista funcional, vista técnica formal y estados reproducibles de prueba. Norma de formato en [`estandares-api.md`](./estandares-api.md) Parte II; modelo de entregable en [`entregable-licitacion.md`](./entregable-licitacion.md).
 
 ---
 
@@ -26,7 +26,7 @@ Documento normativo del repositorio `sgm-docs`. Define la estructura obligatoria
 - Cada macroproceso vive en su carpeta: `modulos/<módulo>/<macroproceso>/`, con un `overview.md` obligatorio.
 - Carpetas hermanas por módulo: `qa/` (fichas QA en CSV) y `diagramas/` (BPMN en `.drawio`).
 - **Contrato por módulo:** cada módulo tiene un `modulos/<módulo>/contracts.md` (estructura en sección 4). Es un documento de nivel módulo, no de macroproceso: los macroprocesos alimentan el contrato, no lo duplican.
-- **OpenAPI por módulo:** `modulos/<módulo>/openapi/<módulo>.openapi.yaml` — contraparte técnica de `contracts.md` (sección 4.1).
+- **OpenAPI por módulo:** carpeta hermana `modulos/<módulo>/openapi/` — espejo de la estructura de procesos; entrada única `<módulo>.openapi.yaml` (sección 4.1).
 - **Fixtures de sandbox por módulo:** `modulos/<módulo>/fixtures/` — catálogo (`catalogo.md`) y un YAML por expediente o escenario reproducible (sección 4.1).
 - **Componentes transversales OpenAPI:** `arquitectura/openapi/comunes.yaml` — errores, paginación y seguridad; referenciados vía `$ref`, no redefinidos por módulo.
 
@@ -132,19 +132,68 @@ Reglas:
 
 Cuando una operación, entidad expuesta, código de error o ejemplo de request/response cambia en `contracts.md`, **el mismo cambio debe reflejarse en OpenAPI y, si aplica, en fixtures** en el mismo ciclo de edición. No se cierra un sub-paso ni una operación de contrato dejando solo la vista funcional actualizada.
 
+#### Para qué sirve cada artefacto OpenAPI
+
+| Artefacto | Quién lo consume | Para qué |
+|---|---|---|
+| **Entrada `<módulo>.openapi.yaml`** | Sandbox, CI, Swagger/Redoc, adjudicatario, SUBDERE en recepción | Contrato HTTP publicado del módulo: `paths` ensamblados + `components` (schemas, responses, examples) |
+| **Fragmentos por proceso/modalidad** (`.yaml` bajo `openapi/`) | Autores de especificación y herramientas que resuelven `$ref` | Editar operaciones cerca del borde de negocio sin un monolito; se reagrupan en la entrada |
+| **`arquitectura/openapi/comunes.yaml`** | Todas las OpenAPI de módulo | Errores, paginación, idempotencia y security schemes transversales |
+| **Fixtures** (`fixtures/*.yaml` + `catalogo.md`) | Sandbox y recepción | Estados sintéticos reproducibles; `example_ref` apunta a `components/examples` de la entrada OpenAPI |
+
+Las fichas `.md` (proceso y `contracts.md`) **no** las consume el sandbox: son la vista funcional. El sandbox se ancla a la OpenAPI + fixtures.
+
+#### Dónde viven los archivos (espejo de procesos)
+
+La carpeta `modulos/<módulo>/openapi/` es **hermana** de las fichas de flujo, no un subdirectorio suyo. Replica la organización del módulo:
+
+```
+modulos/<módulo>/
+├── contracts.md
+├── procesos-transversales/          ← fichas .md
+│   ├── 1-solped.md
+│   └── …
+├── 1. compra-agil/                  ← fichas .md (nombre de carpeta de proceso)
+│   └── 3-resolucion-compra.md
+├── openapi/                         ← contrato HTTP (YAML)
+│   ├── <módulo>.openapi.yaml        ← entrada única
+│   ├── expediente.yaml              ← lecturas transversales del expediente (si aplica)
+│   ├── procesos-transversales/
+│   │   ├── 1-solped.yaml
+│   │   └── …
+│   ├── 1-compra-agil/               ← kebab-case (sin espacios en $ref)
+│   │   └── 3-resolucion-compra.yaml
+│   ├── 2-convenio-marco/            ← placeholder hasta documentar etapa 3
+│   └── …
+└── fixtures/
+```
+
+Reglas de nomenclatura OpenAPI:
+
+1. Carpetas de modalidad en OpenAPI: `N-nombre-kebab` (ej. `1-compra-agil`), aunque la carpeta de fichas use `N. nombre`.
+2. Un fragmento por etapa documentada: mismo stem que la ficha (`1-solped.yaml` ↔ `1-solped.md`).
+3. La entrada `<módulo>.openapi.yaml` referencia cada path (o verbo HTTP) con `$ref` al fragmento; no duplica el cuerpo de la operación.
+4. Schemas, responses y `examples` viven en la entrada (o en `comunes.yaml` si son transversales), no se copian en cada fragmento.
+
+Referencia concreta (piloto): [`modulos/adquisiciones/openapi/README.md`](../modulos/adquisiciones/openapi/README.md).
+
+#### Sincronización
+
 | Artefacto | Ubicación | Qué sincronizar desde `contracts.md` |
 |---|---|---|
-| **OpenAPI** | `modulos/<módulo>/openapi/<módulo>.openapi.yaml` | `operationId`, rutas, esquemas, errores, `examples`, extensiones `x-subpasos` / `x-emits` / `x-validation-class` |
-| **Fixtures** | `modulos/<módulo>/fixtures/*.yaml` + `catalogo.md` | IDs estables, `seeds`, operaciones canónicas (`operations`), `example_ref` apuntando a `components/examples` de la OpenAPI |
-| **Comunes** | `arquitectura/openapi/comunes.yaml` | Solo si cambia el esquema transversal de error, paginación o seguridad (Parte I de `estandares-api.md`) |
+| **OpenAPI (entrada)** | `modulos/<módulo>/openapi/<módulo>.openapi.yaml` | Índice de `paths`, `components` (esquemas, errores, `examples`), tags |
+| **OpenAPI (fragmentos)** | `openapi/procesos-transversales/*.yaml`, `openapi/<modalidad>/*.yaml`, etc. | Cuerpo de cada operación (`operationId`, request/response, `x-subpasos` / `x-emits` / `x-validation-class`) |
+| **Fixtures** | `modulos/<módulo>/fixtures/*.yaml` + `catalogo.md` | IDs estables, `seeds`, operaciones canónicas (`operations`), `example_ref` → entrada OpenAPI |
+| **Comunes** | `arquitectura/openapi/comunes.yaml` | Solo si cambia error/paginación/seguridad (Parte I de `estandares-api.md`) |
 
 Reglas de sincronización (detalle en [`estandares-api.md`](./estandares-api.md) Parte II §13–§14):
 
-1. **Correspondencia biunívoca:** toda operación de `contracts.md` §2 existe como `operationId` en la OpenAPI del módulo, y viceversa. Toda entidad expuesta en §1 existe como esquema.
+1. **Correspondencia biunívoca:** toda operación de `contracts.md` §2 existe como `operationId` en la OpenAPI del módulo (entrada + fragmentos resueltos), y viceversa. Toda entidad expuesta en §1 existe como esquema.
 2. **Resolución de discrepancias:** ante conflicto entre `contracts.md` y OpenAPI, se resuelve antes de dar por cerrado cualquiera de los dos; el código del adjudicatario se valida contra OpenAPI.
 3. **Examples en OpenAPI:** al menos un ejemplo de éxito por operación publicada; los fixtures **referencian** esos examples (`example_ref`), no duplican el JSON de respuesta.
 4. **Fixtures:** datos 100% sintéticos; IDs alineados con prototipos demo cuando existan (`sgm-prototipos/shared/expedientes-demo.js` adopta los IDs del catálogo, no al revés).
 5. **Cuándo crear o actualizar un fixture:** nueva operación `GET` de lectura del expediente; escenario de error bloqueante frecuente del catálogo QA; nuevo estado de negocio demostrable en sandbox o recepción.
+6. **Cuándo crear un fragmento OpenAPI:** al abrir una etapa transversal o una etapa 3 de modalidad; hasta entonces basta el placeholder (`README.md` en la carpeta de modalidad).
 
 El core de plataforma sigue la misma disciplina: `plataforma/contracts.md` + `plataforma/openapi/` (ver [`plataforma-core.md`](./plataforma-core.md)).
 
@@ -210,7 +259,9 @@ Reglas de propiedad (`plataforma-core.md` §7–§7bis):
 
 ### Patrón expediente como vista principal
 
-La vista principal de una compra es la **vista de expediente**: timeline vertical de pasos con estado, responsable, tiempo transcurrido y fecha de última modificación por paso (referencia: plataforma Transferencia de Competencias de SUBDERE). Las vistas por etapa son secciones dentro del expediente, no pestañas ni vistas independientes. El **folio** del expediente (`ProcurementCase.folio`) debe ser visible en toda pantalla del proceso.
+La vista principal de una compra (y de otros flujos con expediente) es la **vista de expediente**: timeline vertical de pasos con estado, responsable, tiempo transcurrido y fecha de última modificación por paso (referencia: plataforma Transferencia de Competencias de SUBDERE). Las vistas por etapa son secciones dentro del expediente, no pestañas ni vistas independientes. El **folio** del expediente (`ProcurementCase.folio` u homólogo del módulo) debe ser visible en toda pantalla del proceso.
+
+Detalle normativo de filas, tintes de origen (plataforma externa vs borde de módulo), botones vs badges y correlación UI ↔ `CaseStep` / contrato: [`patron-vista-expediente.md`](./patron-vista-expediente.md). Es documento de **arquitectura UI transversal**, no wireframe de un sub-paso concreto; Compra Ágil ilustra el piloto.
 
 ### Ubicación
 `modulos/<módulo>/<macroproceso>/wireframes/` — un archivo por pantalla, nombrado `NN-nombre-pantalla.<ext>` donde `NN` correlaciona con el sub-paso que la motiva (ej. `11-creacion-solped.png` para el sub-paso 1.1).

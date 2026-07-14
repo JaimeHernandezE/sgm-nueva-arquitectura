@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: SGM Adquisiciones — fragmento
   version: 0.1.0
-  description: Fragmento de rutas. Ensamblado en `openapi/adquisiciones.openapi.yaml`.
+  description: Fragmento de rutas. Ensamblado en `adquisiciones.openapi.yaml` (entrada del módulo).
 paths:
   /purchase-orders/{id}/three-way-match:
     post:
@@ -18,18 +18,18 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
       responses:
         "201":
           description: Cruce de 3 vías ejecutado.
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/ThreeWayMatch
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/ThreeWayMatch
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
           description: Orden de compra no encontrada.
           content:
@@ -89,13 +89,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/Accrual
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/Accrual
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
         "422":
           description: Regla de negocio violada.
           content:
@@ -139,13 +139,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/PaymentDecree
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/PaymentDecree
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
         "422":
           description: Regla de negocio violada.
           content:
@@ -183,13 +183,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../openapi/adquisiciones.openapi.yaml#/components/schemas/Payment
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/Payment
         "401":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
-          $ref: ../../openapi/adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
         "422":
           description: Regla de negocio violada.
           content:

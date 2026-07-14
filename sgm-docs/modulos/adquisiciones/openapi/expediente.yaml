@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: SGM Adquisiciones — fragmento
   version: 0.1.0
-  description: Fragmento de rutas. Ensamblado en `openapi/adquisiciones.openapi.yaml`.
+  description: Fragmento de rutas. Ensamblado en `adquisiciones.openapi.yaml` (entrada del módulo).
 paths:
   /procurement-cases:
     get:
@@ -25,11 +25,11 @@ paths:
         - name: procurement_type
           in: query
           schema:
-            $ref: ../openapi/adquisiciones.openapi.yaml#/components/schemas/ProcurementType
+            $ref: ./adquisiciones.openapi.yaml#/components/schemas/ProcurementType
         - name: status
           in: query
           schema:
-            $ref: ../openapi/adquisiciones.openapi.yaml#/components/schemas/ProcurementCaseStatus
+            $ref: ./adquisiciones.openapi.yaml#/components/schemas/ProcurementCaseStatus
         - name: requesting_unit_id
           in: query
           schema:
@@ -44,11 +44,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../openapi/adquisiciones.openapi.yaml#/components/schemas/PaginatedProcurementCaseSummary
+                $ref: ./adquisiciones.openapi.yaml#/components/schemas/PaginatedProcurementCaseSummary
         "401":
-          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ./adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ./adquisiciones.openapi.yaml#/components/responses/Forbidden
   /procurement-cases/{case_id}:
     get:
       operationId: getProcurementCase
@@ -61,21 +61,21 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../openapi/adquisiciones.openapi.yaml#/components/parameters/CaseId
+        - $ref: ./adquisiciones.openapi.yaml#/components/parameters/CaseId
       responses:
         "200":
           description: Detalle del expediente.
           content:
             application/json:
               schema:
-                $ref: ../openapi/adquisiciones.openapi.yaml#/components/schemas/ProcurementCaseDetail
+                $ref: ./adquisiciones.openapi.yaml#/components/schemas/ProcurementCaseDetail
               examples:
                 ProcurementCaseAgile:
-                  $ref: ../openapi/adquisiciones.openapi.yaml#/components/examples/ProcurementCaseAgile
+                  $ref: ./adquisiciones.openapi.yaml#/components/examples/ProcurementCaseAgile
         "401":
-          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ./adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ./adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
           description: Expediente no encontrado.
           content:
@@ -99,7 +99,7 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../openapi/adquisiciones.openapi.yaml#/components/parameters/CaseId
+        - $ref: ./adquisiciones.openapi.yaml#/components/parameters/CaseId
       responses:
         "200":
           description: Pasos del expediente.
@@ -108,14 +108,14 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: ../openapi/adquisiciones.openapi.yaml#/components/schemas/CaseStep
+                  $ref: ./adquisiciones.openapi.yaml#/components/schemas/CaseStep
               examples:
                 ProcurementCaseStepsAgile:
-                  $ref: ../openapi/adquisiciones.openapi.yaml#/components/examples/ProcurementCaseStepsAgile
+                  $ref: ./adquisiciones.openapi.yaml#/components/examples/ProcurementCaseStepsAgile
         "401":
-          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ./adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ./adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
           description: Expediente no encontrado.
           content:
@@ -153,11 +153,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../openapi/adquisiciones.openapi.yaml#/components/schemas/PaginatedPurchaseRequest
+                $ref: ./adquisiciones.openapi.yaml#/components/schemas/PaginatedPurchaseRequest
         "401":
-          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ./adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ./adquisiciones.openapi.yaml#/components/responses/Forbidden
   /purchase-requests/{id}:
     get:
       operationId: getPurchaseRequest
@@ -170,18 +170,18 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+        - $ref: ./adquisiciones.openapi.yaml#/components/parameters/ResourceId
       responses:
         "200":
           description: Detalle de SOLPED con líneas.
           content:
             application/json:
               schema:
-                $ref: ../openapi/adquisiciones.openapi.yaml#/components/schemas/PurchaseRequestWithLines
+                $ref: ./adquisiciones.openapi.yaml#/components/schemas/PurchaseRequestWithLines
         "401":
-          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ./adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ./adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
           description: SOLPED no encontrada.
           content:
@@ -219,11 +219,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../openapi/adquisiciones.openapi.yaml#/components/schemas/PaginatedPurchaseOrder
+                $ref: ./adquisiciones.openapi.yaml#/components/schemas/PaginatedPurchaseOrder
         "401":
-          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ./adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ./adquisiciones.openapi.yaml#/components/responses/Forbidden
   /purchase-orders/{id}:
     get:
       operationId: getPurchaseOrder
@@ -236,18 +236,18 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../openapi/adquisiciones.openapi.yaml#/components/parameters/ResourceId
+        - $ref: ./adquisiciones.openapi.yaml#/components/parameters/ResourceId
       responses:
         "200":
           description: Detalle de orden de compra.
           content:
             application/json:
               schema:
-                $ref: ../openapi/adquisiciones.openapi.yaml#/components/schemas/PurchaseOrder
+                $ref: ./adquisiciones.openapi.yaml#/components/schemas/PurchaseOrder
         "401":
-          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Unauthorized
+          $ref: ./adquisiciones.openapi.yaml#/components/responses/Unauthorized
         "403":
-          $ref: ../openapi/adquisiciones.openapi.yaml#/components/responses/Forbidden
+          $ref: ./adquisiciones.openapi.yaml#/components/responses/Forbidden
         "404":
           description: Orden de compra no encontrada.
           content:

@@ -23,73 +23,73 @@ tags:
     description: Cruce de 3 vías, devengado, decreto y ejecución de pago.
 paths:
   /procurement-cases:
-    $ref: ../expediente/openapi.yaml#/paths/~1procurement-cases
+    $ref: ./expediente.yaml#/paths/~1procurement-cases
   /procurement-cases/{case_id}:
-    $ref: ../expediente/openapi.yaml#/paths/~1procurement-cases~1{case_id}
+    $ref: ./expediente.yaml#/paths/~1procurement-cases~1{case_id}
   /procurement-cases/{case_id}/steps:
-    $ref: ../expediente/openapi.yaml#/paths/~1procurement-cases~1{case_id}~1steps
+    $ref: ./expediente.yaml#/paths/~1procurement-cases~1{case_id}~1steps
   /purchase-requests/{id}:
-    $ref: ../expediente/openapi.yaml#/paths/~1purchase-requests~1{id}
+    $ref: ./expediente.yaml#/paths/~1purchase-requests~1{id}
   /purchase-orders/{id}:
-    $ref: ../expediente/openapi.yaml#/paths/~1purchase-orders~1{id}
+    $ref: ./expediente.yaml#/paths/~1purchase-orders~1{id}
   /purchase-requests/{id}/submit:
-    $ref: ../procesos-transversales/1-solped/openapi.yaml#/paths/~1purchase-requests~1{id}~1submit
+    $ref: ./procesos-transversales/1-solped.yaml#/paths/~1purchase-requests~1{id}~1submit
   /purchase-requests/{id}/approve:
-    $ref: ../procesos-transversales/1-solped/openapi.yaml#/paths/~1purchase-requests~1{id}~1approve
+    $ref: ./procesos-transversales/1-solped.yaml#/paths/~1purchase-requests~1{id}~1approve
   /purchase-requests/{id}/reject:
-    $ref: ../procesos-transversales/1-solped/openapi.yaml#/paths/~1purchase-requests~1{id}~1reject
+    $ref: ./procesos-transversales/1-solped.yaml#/paths/~1purchase-requests~1{id}~1reject
   /purchase-requests/{id}/budget-verification:
-    $ref: ../procesos-transversales/1-solped/openapi.yaml#/paths/~1purchase-requests~1{id}~1budget-verification
+    $ref: ./procesos-transversales/1-solped.yaml#/paths/~1purchase-requests~1{id}~1budget-verification
   /purchase-requests/{id}/budget-financing-request:
-    $ref: ../procesos-transversales/1-solped/openapi.yaml#/paths/~1purchase-requests~1{id}~1budget-financing-request
+    $ref: ./procesos-transversales/1-solped.yaml#/paths/~1purchase-requests~1{id}~1budget-financing-request
   /purchase-requests/{id}/budget-availability-certificate:
-    $ref: ../procesos-transversales/1-solped/openapi.yaml#/paths/~1purchase-requests~1{id}~1budget-availability-certificate
+    $ref: ./procesos-transversales/1-solped.yaml#/paths/~1purchase-requests~1{id}~1budget-availability-certificate
   /purchase-requests/{id}/budget-availability-certificate/scanned:
-    $ref: ../procesos-transversales/1-solped/openapi.yaml#/paths/~1purchase-requests~1{id}~1budget-availability-certificate~1scanned
+    $ref: ./procesos-transversales/1-solped.yaml#/paths/~1purchase-requests~1{id}~1budget-availability-certificate~1scanned
   /purchase-requests/{id}/budget-pre-commitment:
-    $ref: ../procesos-transversales/1-solped/openapi.yaml#/paths/~1purchase-requests~1{id}~1budget-pre-commitment
+    $ref: ./procesos-transversales/1-solped.yaml#/paths/~1purchase-requests~1{id}~1budget-pre-commitment
   /budget-lines/{id}/preview-availability:
-    $ref: ../procesos-transversales/1-solped/openapi.yaml#/paths/~1budget-lines~1{id}~1preview-availability
+    $ref: ./procesos-transversales/1-solped.yaml#/paths/~1budget-lines~1{id}~1preview-availability
   /procurement-cases/{id}/modality:
-    $ref: ../procesos-transversales/2-modalidad-compra/openapi.yaml#/paths/~1procurement-cases~1{id}~1modality
+    $ref: ./procesos-transversales/2-modalidad-compra.yaml#/paths/~1procurement-cases~1{id}~1modality
   /modality-decisions/{id}/approve:
-    $ref: ../procesos-transversales/2-modalidad-compra/openapi.yaml#/paths/~1modality-decisions~1{id}~1approve
+    $ref: ./procesos-transversales/2-modalidad-compra.yaml#/paths/~1modality-decisions~1{id}~1approve
   /modality-decisions/{id}/reject:
-    $ref: ../procesos-transversales/2-modalidad-compra/openapi.yaml#/paths/~1modality-decisions~1{id}~1reject
+    $ref: ./procesos-transversales/2-modalidad-compra.yaml#/paths/~1modality-decisions~1{id}~1reject
   /procurement-cases/{id}/mp-link:
-    $ref: ../procesos-transversales/2-modalidad-compra/openapi.yaml#/paths/~1procurement-cases~1{id}~1mp-link
+    $ref: ./procesos-transversales/2-modalidad-compra.yaml#/paths/~1procurement-cases~1{id}~1mp-link
   /procurement-cases/{id}/quotation-result:
-    $ref: ../1. compra-agil/3-resolucion-compra/openapi.yaml#/paths/~1procurement-cases~1{id}~1quotation-result
+    $ref: ./1-compra-agil/3-resolucion-compra.yaml#/paths/~1procurement-cases~1{id}~1quotation-result
   /purchase-orders/{id}/sync-accepted:
-    $ref: ../1. compra-agil/3-resolucion-compra/openapi.yaml#/paths/~1purchase-orders~1{id}~1sync-accepted
+    $ref: ./1-compra-agil/3-resolucion-compra.yaml#/paths/~1purchase-orders~1{id}~1sync-accepted
   /procurement-cases/{id}/release-pre-commitment:
-    $ref: ../1. compra-agil/3-resolucion-compra/openapi.yaml#/paths/~1procurement-cases~1{id}~1release-pre-commitment
+    $ref: ./1-compra-agil/3-resolucion-compra.yaml#/paths/~1procurement-cases~1{id}~1release-pre-commitment
   /purchase-orders/{id}/goods-receipts:
-    $ref: ../procesos-transversales/4-recepcion-conforme/openapi.yaml#/paths/~1purchase-orders~1{id}~1goods-receipts
+    $ref: ./procesos-transversales/4-recepcion-conforme.yaml#/paths/~1purchase-orders~1{id}~1goods-receipts
   /goods-receipts/{id}/confirm:
-    $ref: ../procesos-transversales/4-recepcion-conforme/openapi.yaml#/paths/~1goods-receipts~1{id}~1confirm
+    $ref: ./procesos-transversales/4-recepcion-conforme.yaml#/paths/~1goods-receipts~1{id}~1confirm
   /goods-receipt-lines/{id}/inventory-entry:
-    $ref: ../procesos-transversales/4-recepcion-conforme/openapi.yaml#/paths/~1goods-receipt-lines~1{id}~1inventory-entry
+    $ref: ./procesos-transversales/4-recepcion-conforme.yaml#/paths/~1goods-receipt-lines~1{id}~1inventory-entry
   /goods-receipts/{id}/accrual:
-    $ref: ../procesos-transversales/4-recepcion-conforme/openapi.yaml#/paths/~1goods-receipts~1{id}~1accrual
+    $ref: ./procesos-transversales/4-recepcion-conforme.yaml#/paths/~1goods-receipts~1{id}~1accrual
   /purchase-orders/{id}/three-way-match:
-    $ref: ../procesos-transversales/5-pago/openapi.yaml#/paths/~1purchase-orders~1{id}~1three-way-match
+    $ref: ./procesos-transversales/5-pago.yaml#/paths/~1purchase-orders~1{id}~1three-way-match
   /three-way-matches/{id}/accrual:
-    $ref: ../procesos-transversales/5-pago/openapi.yaml#/paths/~1three-way-matches~1{id}~1accrual
+    $ref: ./procesos-transversales/5-pago.yaml#/paths/~1three-way-matches~1{id}~1accrual
   /accruals/{id}/payment-decree:
-    $ref: ../procesos-transversales/5-pago/openapi.yaml#/paths/~1accruals~1{id}~1payment-decree
+    $ref: ./procesos-transversales/5-pago.yaml#/paths/~1accruals~1{id}~1payment-decree
   /payment-decrees/{id}/execute:
-    $ref: ../procesos-transversales/5-pago/openapi.yaml#/paths/~1payment-decrees~1{id}~1execute
+    $ref: ./procesos-transversales/5-pago.yaml#/paths/~1payment-decrees~1{id}~1execute
   /purchase-requests:
     get:
-      $ref: ../expediente/openapi.yaml#/paths/~1purchase-requests/get
+      $ref: ./expediente.yaml#/paths/~1purchase-requests/get
     post:
-      $ref: ../procesos-transversales/1-solped/openapi.yaml#/paths/~1purchase-requests/post
+      $ref: ./procesos-transversales/1-solped.yaml#/paths/~1purchase-requests/post
   /purchase-orders:
     get:
-      $ref: ../expediente/openapi.yaml#/paths/~1purchase-orders/get
+      $ref: ./expediente.yaml#/paths/~1purchase-orders/get
     post:
-      $ref: ../1. compra-agil/3-resolucion-compra/openapi.yaml#/paths/~1purchase-orders/post
+      $ref: ./1-compra-agil/3-resolucion-compra.yaml#/paths/~1purchase-orders/post
 components:
   securitySchemes:
     bearerPersonas:
