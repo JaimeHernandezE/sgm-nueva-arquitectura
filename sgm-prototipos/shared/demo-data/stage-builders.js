@@ -1,3 +1,4 @@
+/** @deprecated Prefer buildStage3* por modalidad. */
 export function stage3Stub(modalityLabel, docsPath) {
   return {
     id: 3,
@@ -8,6 +9,294 @@ export function stage3Stub(modalityLabel, docsPath) {
     state: 'pending',
     note: `Sub-pasos específicos documentados en ${docsPath}`,
     steps: [],
+  };
+}
+
+function doneStep(partial) {
+  return {
+    status: 'done',
+    action: { type: 'secondary', label: 'Ver formulario' },
+    ...partial,
+  };
+}
+
+/** Camino feliz CA: 3.1–3.4 ejecutados; 3.5 y 3.6 visibles como caminos alternativos (navegables). */
+export function buildStage3CompraAgil() {
+  return {
+    id: 3,
+    name: 'Resolución de Compra',
+    status: 'Finalizada',
+    summary: '6 sub-pasos · Cotización → OC aceptada · Compromiso cierto',
+    expanded: true,
+    state: 'done',
+    totalTime: 'Total etapa: 4 d 2 h (27-06 → 01-07)',
+    note: '3.5 (rechazo) y 3.6 (desierto/fallido) son caminos alternativos al feliz — se listan para explorar el prototipo.',
+    steps: [
+      doneStep({
+        id: '3.1',
+        name: 'Período de cotización',
+        responsible: { unit: '—', role: 'N/A', name: '(monitoreo MP)' },
+        secondaryLine: 'Tiempo transcurrido: 2 d 14 h · ID Cotización: 4021-33-COT26 · 4 cotizaciones (1ª ronda MiPyme)',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+      }),
+      doneStep({
+        id: '3.2',
+        name: 'Cierre y selección de oferta',
+        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        secondaryLine: 'Tiempo transcurrido: 0 d 3 h · Comercial Sur SpA · $ 1.240.000 · Menor precio',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+      }),
+      doneStep({
+        id: '3.3',
+        name: 'Emisión de la Orden de Compra',
+        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        secondaryLine: 'Tiempo transcurrido: 0 d 2 h · OC N° 4021-33-SE26 · Emitida en MP',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+      }),
+      doneStep({
+        id: '3.4',
+        name: 'Aceptación de la OC',
+        responsible: { unit: '—', role: 'N/A', name: '(proveedor en MP)' },
+        secondaryLine: 'Tiempo transcurrido: 1 d 0 h · Vínculo perfeccionado · Compromiso cierto $ 1.240.000',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+      }),
+      doneStep({
+        id: '3.5',
+        name: 'Rechazo de la OC',
+        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        action: { type: 'secondary', label: 'Ver camino alternativo' },
+        secondaryLine: 'Camino alternativo (excluyente con 3.4) · No ocurrió en este expediente',
+        pendingCondition: 'Excluyente con 3.4 — se muestra para explorar el prototipo de decisión post-rechazo.',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+      }),
+      doneStep({
+        id: '3.6',
+        name: 'Proceso desierto o fallido',
+        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        action: { type: 'secondary', label: 'Ver camino alternativo' },
+        secondaryLine: 'Camino alternativo (optativo) · No ocurrió en este expediente',
+        pendingCondition: 'Solo si el proceso fracasa — se muestra para explorar republicar / reevaluar / cancelar.',
+      }),
+    ],
+  };
+}
+
+/** CM demo = Gran Compra: ruta gran_compra. 3.2 (compra directa), 3.6 y 3.8 visibles como alternativas. */
+export function buildStage3ConvenioMarco() {
+  return {
+    id: 3,
+    name: 'Resolución de Compra',
+    status: 'Finalizada',
+    summary: '8 sub-pasos · Gran Compra → OC aceptada · Compromiso cierto',
+    expanded: true,
+    state: 'done',
+    totalTime: 'Total etapa: 12 d 4 h (14-03 → 26-03)',
+    note: 'Ruta del ejemplo: Gran Compra (> 1.000 UTM). 3.2 (Compra Directa), 3.6 (desierta) y 3.8 (rechazo) son caminos alternativos/condicionales — listados para explorar.',
+    steps: [
+      doneStep({
+        id: '3.1',
+        name: 'Evaluación de umbral y determinación de ruta',
+        responsible: { unit: '—', role: 'N/A', name: '(automático)' },
+        secondaryLine: 'Ruta: gran_compra · Monto $ 4.800.000 ≥ 1.000 UTM · UTM mes emisión aplicada',
+      }),
+      doneStep({
+        id: '3.2',
+        name: 'Compra Directa por Catálogo',
+        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        action: { type: 'secondary', label: 'Ver ruta alternativa' },
+        secondaryLine: 'Ruta alternativa (compra_directa < 1.000 UTM) · No aplica en este expediente',
+        pendingCondition: 'Condicional a procurement_route = compra_directa — se muestra para explorar vinculación OC de catálogo.',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+      }),
+      doneStep({
+        id: '3.3',
+        name: 'Publicación de Intención de Compra / Gran Compra',
+        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        secondaryLine: 'ID Intención: 4021-88-IC26 · Plazo competencia: 10 días corridos',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+      }),
+      doneStep({
+        id: '3.4',
+        name: 'Período de competencia Gran Compra',
+        responsible: { unit: '—', role: 'N/A', name: '(monitoreo MP)' },
+        secondaryLine: 'Tiempo transcurrido: 10 d 0 h · 3 ofertas recibidas',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+      }),
+      doneStep({
+        id: '3.5',
+        name: 'Selección de oferta Gran Compra',
+        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        secondaryLine: 'Mobiliario Chile Ltda. · $ 4.650.000 · Selección en MP',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+      }),
+      doneStep({
+        id: '3.6',
+        name: 'Gran Compra desierta',
+        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        action: { type: 'secondary', label: 'Ver camino alternativo' },
+        secondaryLine: 'Camino alternativo · Caería a compra_directa sobre el mismo folio · No ocurrió',
+        pendingCondition: 'Condicional a período sin ofertas — se muestra para explorar la caída automática a Compra Directa.',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+      }),
+      doneStep({
+        id: '3.7',
+        name: 'Emisión y aceptación de la OC',
+        responsible: { unit: '—', role: 'N/A', name: '(proveedor en MP)' },
+        secondaryLine: 'OC N° 4021-88-OC26 · Compromiso cierto $ 4.650.000 · Hito contable',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+      }),
+      doneStep({
+        id: '3.8',
+        name: 'Rechazo de la OC',
+        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        action: { type: 'secondary', label: 'Ver camino alternativo' },
+        secondaryLine: 'Camino alternativo (excluyente con 3.7) · No ocurrió en este expediente',
+        pendingCondition: 'Excluyente con 3.7 — se muestra para explorar decisión post-rechazo.',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+      }),
+    ],
+  };
+}
+
+/** LP showcase completo (14 sub-pasos). */
+export function buildStage3LicitacionPublica() {
+  return {
+    id: 3,
+    name: 'Resolución de Compra',
+    status: 'Finalizada',
+    summary: '14 sub-pasos · Bases → adjudicación → contrato → OC aceptada',
+    expanded: true,
+    state: 'done',
+    totalTime: 'Total etapa: 68 d (20-01 → 29-03)',
+    note: 'Todos los sub-pasos documentados se listan (incluidos condicionales) para recorrer el prototipo completo de Licitación Pública.',
+    steps: [
+      doneStep({
+        id: '3.1',
+        name: 'Elaboración de bases administrativas y técnicas',
+        responsible: { unit: 'Dirección de Obras / DAF Abastecimiento', role: 'Usuario', name: 'Felipe Rojas' },
+        secondaryLine: 'Criterios estructurados · Pesos suman 100% · Estado: approved',
+      }),
+      doneStep({
+        id: '3.2',
+        name: 'Revisión jurídica de bases',
+        responsible: { unit: 'Departamento Jurídico', role: 'Aprobador', name: 'Elena Vargas' },
+        secondaryLine: 'V°B° sin observaciones · LegalReview completed',
+      }),
+      doneStep({
+        id: '3.3',
+        name: 'Acto administrativo que aprueba las bases',
+        responsible: { unit: 'Alcaldía', role: 'Aprobador', name: 'Alcalde(sa)' },
+        secondaryLine: 'Decreto bases N° 045-2026 · FirmaGob confirmada',
+      }),
+      doneStep({
+        id: '3.4',
+        name: 'Toma de Razón de las bases (Contraloría)',
+        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        secondaryLine: 'Condicional por umbral · Toma de razón aprobada · Oficio CGR registrado',
+        origin: { kind: 'external', label: 'Contraloría', mode: 'registro manual' },
+      }),
+      doneStep({
+        id: '3.5',
+        name: 'Publicación en Mercado Público y vinculación',
+        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        secondaryLine: 'ID Licitación: 4021-12-LP26 · Vinculación diferida desde 2.3',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+      }),
+      doneStep({
+        id: '3.6',
+        name: 'Foro de preguntas y aclaraciones',
+        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        secondaryLine: 'Período cerrado · Aclaración a las bases publicada en MP',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+      }),
+      doneStep({
+        id: '3.7',
+        name: 'Recepción y custodia de Garantía de Seriedad',
+        responsible: { unit: 'Tesorería', role: 'Usuario', name: 'Patricia Vega' },
+        secondaryLine: 'Condicional · 5 instrumentos en custodia · bid_bond',
+        origin: { kind: 'module', label: 'Tesorería', mode: 'dependencia' },
+        borderModules: ['Tesorería'],
+      }),
+      doneStep({
+        id: '3.8',
+        name: 'Acto de apertura electrónica',
+        responsible: { unit: '—', role: 'N/A', name: '(en MP)' },
+        secondaryLine: '5 ofertas recibidas · Apertura electrónica reflejada',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+      }),
+      doneStep({
+        id: '3.9',
+        name: 'Comisión evaluadora y acta de evaluación',
+        responsible: { unit: 'Comisión ad hoc', role: 'Aprobador', name: 'Integrantes' },
+        secondaryLine: 'Ranking + propuesta · Firma acta · Conflictos declarados',
+      }),
+      doneStep({
+        id: '3.10',
+        name: 'Resolución de adjudicación',
+        responsible: { unit: 'Alcaldía', role: 'Aprobador', name: 'Alcalde(sa)' },
+        secondaryLine: 'Adjudicada a Taller Municipal SpA · $ 178.500.000 · Preobligación ajustada',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+      }),
+      doneStep({
+        id: '3.11',
+        name: 'Toma de Razón de la adjudicación',
+        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        secondaryLine: 'Condicional por umbral · Toma de razón de adjudicación OK',
+        origin: { kind: 'external', label: 'Contraloría', mode: 'registro manual' },
+      }),
+      doneStep({
+        id: '3.12',
+        name: 'Garantía de Fiel Cumplimiento',
+        responsible: { unit: 'Tesorería', role: 'Usuario', name: 'Patricia Vega' },
+        secondaryLine: 'Condicional · performance_bond en custodia previo a contrato',
+        origin: { kind: 'module', label: 'Tesorería', mode: 'dependencia' },
+        borderModules: ['Tesorería'],
+      }),
+      doneStep({
+        id: '3.13',
+        name: 'Contrato',
+        responsible: { unit: 'Departamento Jurídico / Alcaldía', role: 'Usuario / Aprobador', name: 'Elena Vargas' },
+        secondaryLine: 'Condicional · Contrato suscrito · Vigencia 12 meses',
+      }),
+      doneStep({
+        id: '3.14',
+        name: 'Emisión y aceptación de la OC',
+        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        secondaryLine: 'OC N° 4021-12-LP26-OC · Aceptada · Compromiso cierto',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+      }),
+    ],
+  };
+}
+
+/** TD: 2 sub-pasos documentados. */
+export function buildStage3TratoDirecto() {
+  return {
+    id: 3,
+    name: 'Resolución de Compra',
+    status: 'Finalizada',
+    summary: '2 sub-pasos · OC aceptada en MP → compromiso cierto automático',
+    expanded: true,
+    state: 'done',
+    totalTime: 'Total etapa: 1 d 2 h (07-05 → 08-05)',
+    note: 'En TD emisión y aceptación se modelan en un solo nodo (3.1); el compromiso cierto es automático (3.2).',
+    steps: [
+      doneStep({
+        id: '3.1',
+        name: 'Emisión de OC y aceptación del proveedor',
+        responsible: { unit: '—', role: 'N/A', name: '(en MP)' },
+        secondaryLine: 'OC N° 4021-05-TD26-OC · Repuestos Industriales SpA · Aceptada en MP',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+      }),
+      doneStep({
+        id: '3.2',
+        name: 'Registrar Compromiso Cierto',
+        responsible: { unit: 'DAF Finanzas', role: 'N/A', name: '(automático)' },
+        secondaryLine: 'Gatillado por lectura API OC Aceptada · $ 2.400.000 · Sin intervención humana',
+        origin: { kind: 'module', label: 'Presupuestos', mode: 'dependencia' },
+        borderModules: ['Presupuestos'],
+      }),
+    ],
   };
 }
 
@@ -28,21 +317,21 @@ export function buildStage4({
       id: '4.1',
       name: 'Registro de la recepción',
       responsible: { unit: serviceProfile ? 'Unidad Solicitante' : 'Bodega', role: 'Usuario', name: serviceProfile ? 'Juan Astorga' : 'Ana Pérez' },
-      status: allDone ? 'done' : 'done',
+      status: 'done',
       action: { type: 'secondary', label: 'Ver recepción' },
       secondaryLine: allDone
         ? `Tiempo transcurrido: 0 d 4 h · Contra OC N° ${ocNumber} · ${profileLabel}`
-        : `Ejemplo ilustrativo · Contra OC N° ${ocNumber} (referencia ficticia — etapa 3 pendiente)`,
+        : `Contra OC N° ${ocNumber} · ${profileLabel}`,
     },
     {
       id: '4.2',
       name: 'Verificación de conformidad',
       responsible: { unit: 'Unidad Solicitante', role: 'Aprobador', name: 'Juan Astorga' },
-      status: allDone ? 'done' : 'done',
+      status: 'done',
       action: { type: 'secondary', label: 'Ver conformidad' },
       secondaryLine: allDone
         ? 'Tiempo transcurrido: 0 d 2 h · Doble conformidad validada'
-        : 'Ejemplo ilustrativo · Doble conformidad: unidad requirente valida entrega',
+        : 'Doble conformidad: unidad requirente valida entrega',
     },
   ];
 
@@ -51,11 +340,11 @@ export function buildStage4({
       id: '4.3',
       name: 'Alta en inventario / activo fijo',
       responsible: { unit: 'Bodega', role: 'Usuario', name: 'Ana Pérez' },
-      status: allDone ? 'done' : 'done',
+      status: 'done',
       action: { type: 'secondary', label: 'Ver alta' },
       secondaryLine: allDone
         ? 'Tiempo transcurrido: 0 d 1 h · Bienes físicos registrados en inventario'
-        : 'Ejemplo ilustrativo · Condicional: solo bienes físicos aceptados',
+        : 'Condicional: solo bienes físicos aceptados',
     });
   } else {
     steps.push({
@@ -73,11 +362,11 @@ export function buildStage4({
     id: '4.4',
     name: 'Devengado',
     responsible: { unit: 'Contabilidad', role: 'N/A', name: '(automático)' },
-    status: allDone ? 'done' : 'done',
+    status: 'done',
     action: { type: 'secondary', label: 'Ver devengado' },
     secondaryLine: allDone
       ? `Tiempo transcurrido: 0 d 0 h · Contra compromiso · Proveedor: ${provider}`
-      : 'Ejemplo ilustrativo · Gatillado por conformidad (4.2) · Arranca reloj legal de pago (30 días)',
+      : `Gatillado por conformidad (4.2) · Proveedor: ${provider} · Arranca reloj legal de pago (30 días)`,
     origin: { kind: 'module', label: 'Contabilidad', mode: 'dependencia' },
     borderModules: ['Contabilidad'],
   });
@@ -104,7 +393,7 @@ export function buildStage5({ allDone = false, ocNumber, provider }) {
       ? 'Match validado · Pago ejecutado'
       : 'Etapa observada · Tesorería · Ejemplo de sub-pasos transversales',
     expanded: true,
-    state: allDone ? 'done' : 'done',
+    state: 'done',
     totalTime: allDone ? 'Total etapa: 12 d 3 h' : undefined,
     note: 'Etapa observada — los sub-pasos reflejan eventos de Contabilidad y Tesorería; el reloj legal de pago (30 días) se activa al recibirse la factura.',
     steps: [
@@ -116,7 +405,7 @@ export function buildStage5({ allDone = false, ocNumber, provider }) {
         action: { type: 'secondary', label: 'Ver match' },
         secondaryLine: allDone
           ? `Match OK · OC ${ocNumber} + recepción conforme + factura SII · ${provider}`
-          : `Ejemplo ilustrativo · OC ${ocNumber} + recepción + factura (referencia ficticia)`,
+          : `OC ${ocNumber} + recepción + factura · ${provider}`,
         origin: { kind: 'module', label: 'Contabilidad', mode: 'dependencia' },
         borderModules: ['Contabilidad'],
       },
@@ -126,7 +415,7 @@ export function buildStage5({ allDone = false, ocNumber, provider }) {
         responsible: { unit: 'Contabilidad', role: 'Aprobador', name: 'Luis Morales' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver devengado' },
-        secondaryLine: allDone ? 'Tiempo transcurrido: 0 d 1 h · Devengado registrado' : 'Ejemplo ilustrativo · Requiere match validado (5.1)',
+        secondaryLine: allDone ? 'Tiempo transcurrido: 0 d 1 h · Devengado registrado' : 'Requiere match validado (5.1)',
         origin: { kind: 'module', label: 'Contabilidad', mode: 'dependencia' },
         borderModules: ['Contabilidad'],
       },
@@ -136,7 +425,7 @@ export function buildStage5({ allDone = false, ocNumber, provider }) {
         responsible: { unit: 'Contabilidad', role: 'Aprobador', name: 'Luis Morales' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver decreto' },
-        secondaryLine: allDone ? 'Tiempo transcurrido: 0 d 2 h · Firma vía FirmaGob' : 'Ejemplo ilustrativo · Firma vía FirmaGob al emitir',
+        secondaryLine: allDone ? 'Tiempo transcurrido: 0 d 2 h · Firma vía FirmaGob' : 'Firma vía FirmaGob al emitir',
       },
       {
         id: '5.4',
@@ -144,7 +433,9 @@ export function buildStage5({ allDone = false, ocNumber, provider }) {
         responsible: { unit: 'Tesorería', role: 'Aprobador', name: 'Patricia Vega' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver pago' },
-        secondaryLine: allDone ? 'Tiempo transcurrido: 12 d 0 h · Pago ejecutado dentro del plazo legal' : 'Ejemplo ilustrativo · Plazo legal: 30 días corridos desde factura',
+        secondaryLine: allDone
+          ? 'Tiempo transcurrido: 12 d 0 h · Pago ejecutado dentro del plazo legal'
+          : 'Plazo legal: 30 días corridos desde factura',
         origin: { kind: 'module', label: 'Tesorería', mode: 'observado' },
         borderModules: ['Tesorería'],
       },

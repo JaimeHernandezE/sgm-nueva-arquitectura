@@ -24,5 +24,5 @@ export const expediente = {
   glosa: 'Insumos de oficina — reposición anual',
   modality: 'Compra Ágil',
   unit: 'Unidad Solicitante',
-  globalStatus: 'Ejemplo transversal — etapa 3 pendiente',
+  globalStatus: 'Showcase · 5 etapas · Resolución de Compra completa',
 };

@@ -5,7 +5,7 @@ export const expedientesDemo = [
     modality: 'Compra Ágil',
     modalityKey: 'agile_purchase',
     unit: 'Unidad Solicitante',
-    globalStatus: 'Ejemplo transversal — etapa 3 pendiente',
+    globalStatus: 'Showcase · 5 etapas · Resolución de Compra completa',
     fullDetail: true,
   },
   {
@@ -14,7 +14,7 @@ export const expedientesDemo = [
     modality: 'Convenio Marco',
     modalityKey: 'framework_agreement',
     unit: 'DAF Administración',
-    globalStatus: 'Ejemplo transversal — etapa 3 pendiente',
+    globalStatus: 'Showcase · Gran Compra · Resolución de Compra completa',
     fullDetail: true,
   },
   {
@@ -32,7 +32,7 @@ export const expedientesDemo = [
     modality: 'Trato Directo',
     modalityKey: 'direct_procurement',
     unit: 'DAF Abastecimiento',
-    globalStatus: 'Ejemplo transversal — etapa 3 pendiente',
+    globalStatus: 'Showcase · Resolución de Compra completa',
     fullDetail: true,
   },
 ];

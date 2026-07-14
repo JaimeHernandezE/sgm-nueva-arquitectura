@@ -2,7 +2,7 @@
   "version": 1,
   "module": "adquisiciones",
   "modality": "compra-agil",
-  "description": "Etapa 3 específica de Compra Ágil — no enlazada desde el shell transversal hasta iteración de etapa 3.",
+  "description": "Etapa 3 específica de Compra Ágil.",
   "expedienteShell": "modulos/adquisiciones/00-expediente/index.html",
   "contract": "sgm-docs/modulos/adquisiciones/contracts.md",
   "steps": [

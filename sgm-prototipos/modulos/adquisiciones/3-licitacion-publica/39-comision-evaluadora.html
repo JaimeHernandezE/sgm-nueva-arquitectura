@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3.9 — Comisión evaluadora y acta de evaluación</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
+    <!-- Operaciones: requestSignature -->
+
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>ADQ-2026-00045 — Comisión evaluadora y acta de evaluación</span>
+        <span class="badge badge--active" id="header-badge">Acta firmada</span>
+      </div>
+      <div class="form-card__body">
+        <div class="info-panel">Designación + conflictos declarados + admisibilidad + puntajes vs. pesos de bases (SCORES_INCONSISTENT_WITH_CRITERIA bloqueante).</div>
+        <div class="form-row"><label>Propuesta adjudicación</label><input value="Taller Municipal SpA" readonly /></div>
+      </div>
+      <div class="form-actions">
+        <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
+        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+      </div>
+    </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+
+  <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+
+    const expedienteId = getExpedienteId();
+
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 3 · Resolución de Compra',
+      stepName: 'Comisión evaluadora y acta de evaluación',
+      stepId: '3.9',
+    });
+
+    document.getElementById('origin-banner').innerHTML = '';
+
+    document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
+    document.getElementById('confirm').addEventListener('click', () => {
+      demoAction('requestSignature');
+      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+    });
+  </script>
+</body>
+</html>

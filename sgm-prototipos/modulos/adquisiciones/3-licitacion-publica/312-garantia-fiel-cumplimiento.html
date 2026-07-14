@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3.12 — Garantía de Fiel Cumplimiento</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
+    <!-- Operaciones: registerGuaranteeCustody -->
+
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>ADQ-2026-00045 — Garantía de Fiel Cumplimiento</span>
+        <span class="badge badge--active" id="header-badge">En custodia</span>
+      </div>
+      <div class="form-card__body">
+        <div class="form-row"><label>Tipo</label><input value="performance_bond" readonly /></div>
+        <div class="info-panel">Previo a contrato / OC. Borde Tesorería.</div>
+      </div>
+      <div class="form-actions">
+        <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
+        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+      </div>
+    </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+
+  <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+
+    const expedienteId = getExpedienteId();
+
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 3 · Resolución de Compra',
+      stepName: 'Garantía de Fiel Cumplimiento',
+      stepId: '3.12',
+    });
+
+    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
+      kind: 'module',
+      label: 'Tesorería',
+      mode: 'dependencia',
+    });
+
+    document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
+    document.getElementById('confirm').addEventListener('click', () => {
+      demoAction('registerGuaranteeCustody');
+      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+    });
+  </script>
+</body>
+</html>

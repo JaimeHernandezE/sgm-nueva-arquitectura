@@ -1,4 +1,4 @@
-import { stage3Stub, buildStage4, buildStage5 } from './stage-builders.js';
+import { buildStage3CompraAgil, buildStage4, buildStage5 } from './stage-builders.js';
 
 export const stages = [
   {
@@ -105,7 +105,7 @@ export const stages = [
       },
     ],
   },
-  stage3Stub('Compra Ágil', 'sgm-docs/modulos/adquisiciones/1. compra-agil/3-resolucion-compra.md'),
+  buildStage3CompraAgil(),
   buildStage4({
     profileLabel: 'Bien físico, entrega única — insumos de oficina',
     ocNumber: '4021-33-SE26',

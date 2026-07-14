@@ -29,12 +29,12 @@ Sidebar «Plataforma» → plataforma/index.html (hub consolas)
 ```
 
 - Sidebar derecho: módulos SGM (`shared/app-shell.js`, `shared/modules-registry.js`) — incluye **Plataforma** (core) y Adquisiciones.
-- Perfiles de expediente: [`shared/expedientes-demo.js`](./shared/expedientes-demo.js) — los **4** expedientes del listado tienen detalle transversal (etapas 1, 2, 4 y 5 en modo showcase). La etapa 3 es stub pendiente en todas las modalidades.
+- Perfiles de expediente: [`shared/expedientes-demo.js`](./shared/expedientes-demo.js) — los **4** expedientes del listado tienen detalle completo (etapas 1–5). La etapa 3 es específica por modalidad.
 - Datos demo por expediente: [`shared/demo-data/`](./shared/demo-data/) (`getStages(expedienteId)`).
 - Datos demo core: [`shared/demo-data/plataforma.js`](./shared/demo-data/plataforma.js).
 - Presets de formularios: [`shared/form-presets.js`](./shared/form-presets.js) + [`shared/form-bootstrap.js`](./shared/form-bootstrap.js).
-- Manifiesto activo del shell: [`shared/steps-manifest.json`](./shared/steps-manifest.json) — solo pasos **transversales** (1.1–1.6, 2.1–2.3, 4.1, 5.1).
-- Etapa 3 Compra Ágil (HTML existente, no enlazada desde el shell): [`shared/steps-manifest-compra-agil.json`](./shared/steps-manifest-compra-agil.json).
+- Manifiesto activo del shell: [`shared/steps-manifest.json`](./shared/steps-manifest.json) — pasos **transversales** (1.1–1.6, 2.1–2.3, 4.1, 5.1).
+- Etapa 3 por modalidad: `steps-manifest-compra-agil.js`, `steps-manifest-convenio-marco.js`, `steps-manifest-licitacion-publica.js`, `steps-manifest-trato-directo.js` (fusionados en `getStepFormUrl`).
 
 ## Checklist obligatoria
 
@@ -74,18 +74,18 @@ Ficha transversal: [`sgm-docs/modulos/adquisiciones/procesos-transversales/2-mod
 
 Navegación entre 2.1→2.2/2.3 y 2.2→2.3 es condicional: 2.1 captura `requires_jefatura_approval` y enruta a 2.2 (si verdadero) o directo a 2.3 (si falso); 2.2 aprobado enruta a 2.3, rechazado vuelve a 2.1.
 
-## Etapa 3 — Resolución de Compra (pendiente por modalidad)
+## Etapa 3 — Resolución de Compra (por modalidad)
 
-En el shell del expediente, la etapa 3 aparece como **stub** sin sub-pasos ni enlaces. Los HTML de Compra Ágil siguen en `1-compra-agil/` y el mapeo en [`steps-manifest-compra-agil.json`](./shared/steps-manifest-compra-agil.json) para iteraciones futuras.
+Enlazada desde el shell del expediente vía manifiestos de modalidad (`form-shell.js` resuelve `stepId` 3.x según `?expediente=`). Todos los sub-pasos documentados se listan en los 4 ejemplos (caminos alternativos/condicionales incluyen botón «Ver…» para explorar).
 
-| Modalidad | Ficha etapa 3 |
-|---|---|
-| Compra Ágil | [`1. compra-agil/3-resolucion-compra.md`](../sgm-docs/modulos/adquisiciones/1.%20compra-agil/3-resolucion-compra.md) |
-| Convenio Marco | `2. convenio-marco/3-resolucion-compra.md` (pendiente) |
-| Licitación Pública | [`3. licitacion-publica/3-resolucion-compra.md`](../sgm-docs/modulos/adquisiciones/3.%20licitacion-publica/3-resolucion-compra.md) |
-| Trato Directo | `4. trato-directo/3-resolucion-compra.md` (pendiente) |
+| Modalidad | Ficha etapa 3 | Manifiesto | Carpeta HTML |
+|---|---|---|---|
+| Compra Ágil | [`1. compra-agil/3-resolucion-compra.md`](../sgm-docs/modulos/adquisiciones/1.%20compra-agil/3-resolucion-compra.md) | `steps-manifest-compra-agil.js` | `1-compra-agil/` (6 sub-pasos) |
+| Convenio Marco | [`2. convenio-marco/3-resolucion-compra-convenio-marco v2.md`](../sgm-docs/modulos/adquisiciones/2.%20convenio-marco/3-resolucion-compra-convenio-marco%20v2.md) | `steps-manifest-convenio-marco.js` | `2-convenio-marco/` (8 sub-pasos) |
+| Licitación Pública | [`3. licitacion-publica/3-resolucion-compra.md`](../sgm-docs/modulos/adquisiciones/3.%20licitacion-publica/3-resolucion-compra.md) | `steps-manifest-licitacion-publica.js` | `3-licitacion-publica/` (14 sub-pasos) |
+| Trato Directo | [`4. trato-directo/3-resolucion-compra.md`](../sgm-docs/modulos/adquisiciones/4.%20trato-directo/3-resolucion-compra.md) | `steps-manifest-trato-directo.js` | `4-trato-directo/` (2 sub-pasos) |
 
-### Compra Ágil — prototipos HTML existentes (no enlazados desde shell)
+### Compra Ágil
 
 | stepId | Wireframe | Prototipo | Operaciones principales |
 |---|---|---|---|
@@ -93,14 +93,16 @@ En el shell del expediente, la etapa 3 aparece como **stub** sin sub-pasos ni en
 | 3.2 | `32-cierre-seleccion-oferta.md` | `1-compra-agil/32-cierre-seleccion-oferta.html` | `recordQuotationResult` |
 | 3.3 | `33-emision-oc.md` | `1-compra-agil/33-emision-oc.html` | `registerPurchaseOrder` |
 | 3.4 | `34-aceptacion-oc.md` | `1-compra-agil/34-aceptacion-oc.html` | `syncPurchaseOrderAccepted` (hito crítico) |
-| 3.5 | `35-rechazo-oc.md` | `1-compra-agil/35-rechazo-oc.html` | — (reflejo de lectura MP, excluyente con 3.4) |
-| 3.6 | `36-proceso-desierto-fallido.md` | `1-compra-agil/36-proceso-desierto-fallido.html` | `releasePreCommitment` (optativo, camino alternativo) |
+| 3.5 | `35-rechazo-oc.md` | `1-compra-agil/35-rechazo-oc.html` | — (excluyente con 3.4; camino alternativo) |
+| 3.6 | `36-proceso-desierto-fallido.md` | `1-compra-agil/36-proceso-desierto-fallido.html` | `releasePreCommitment` (camino alternativo) |
 
-Ficha específica: [`sgm-docs/modulos/adquisiciones/1. compra-agil/3-resolucion-compra.md`](<../sgm-docs/modulos/adquisiciones/1. compra-agil/3-resolucion-compra.md>)
+Navegación condicional: 3.2→3.3→3.4 (camino feliz); 3.5 y 3.6 se listan en el expediente demo como caminos explorables.
 
-Navegación condicional: 3.2→3.3→3.4 (camino feliz); 3.3 inhábil → vuelve a 3.2 o va a 3.6; 3.4 rechazada → 3.5 → segunda oferta (3.2) o re-vinculación (2.3); 3.6 → republicar (2.3), reevaluar (bloqueado, **[PENDIENTE P-34]**) o cancelar (vuelve al expediente). 3.5 y 3.6 no aparecen en la fila del expediente demo salvo que ocurran — son caminos alternativos, no el flujo principal.
+### Convenio Marco / Licitación Pública / Trato Directo
 
-Etapa 4 (Recepción Conforme, transversal) tiene prototipo HTML para 4.1; el flujo de 3.4 puede enlazar al expediente o a 4.1 según estado demo.
+Prototipos HTML generados desde las fichas de etapa 3 (wireframes `.md` específicos pendientes). Ver tablas de `processFicha` / `prototypeHtml` en los respectivos `steps-manifest-*.js`.
+
+Etapa 4 (Recepción Conforme, transversal) tiene prototipo HTML para 4.1; el flujo post-aceptación de OC enlaza al expediente o a 4.1 según estado demo.
 
 ## Etapa 4 — Recepción Conforme (transversal)
 

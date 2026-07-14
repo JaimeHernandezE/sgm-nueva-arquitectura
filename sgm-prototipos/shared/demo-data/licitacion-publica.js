@@ -1,4 +1,4 @@
-import { stage3Stub, buildStage4, buildStage5 } from './stage-builders.js';
+import { buildStage3LicitacionPublica, buildStage4, buildStage5 } from './stage-builders.js';
 
 export const stages = [
   {
@@ -106,7 +106,7 @@ export const stages = [
       },
     ],
   },
-  stage3Stub('Licitación Pública', 'sgm-docs/modulos/adquisiciones/3. licitacion-publica/3-resolucion-compra.md'),
+  buildStage3LicitacionPublica(),
   buildStage4({
     profileLabel: 'Servicio de mantención de flota — hitos de ejecución',
     ocNumber: '4021-12-LP26-OC',

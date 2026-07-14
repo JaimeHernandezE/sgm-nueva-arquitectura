@@ -3,7 +3,7 @@ export default {
   version: 1,
   module: 'adquisiciones',
   scope: 'transversal',
-  description: 'Pasos transversales compartidos por las 4 modalidades (etapas 1, 2, 4 y 5). Etapa 3 pendiente por modalidad.',
+  description: 'Pasos transversales compartidos por las 4 modalidades (etapas 1, 2, 4 y 5). Etapa 3 se resuelve por manifiesto de modalidad.',
   expedienteShell: 'modulos/adquisiciones/00-expediente/index.html',
   contract: 'sgm-docs/modulos/adquisiciones/contracts.md',
   steps: [

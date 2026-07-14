@@ -1,4 +1,4 @@
-import { stage3Stub, buildStage4, buildStage5 } from './stage-builders.js';
+import { buildStage3ConvenioMarco, buildStage4, buildStage5 } from './stage-builders.js';
 
 export const stages = [
   {
@@ -105,7 +105,7 @@ export const stages = [
       },
     ],
   },
-  stage3Stub('Convenio Marco', 'sgm-docs/modulos/adquisiciones/2. convenio-marco/3-resolucion-compra.md'),
+  buildStage3ConvenioMarco(),
   buildStage4({
     profileLabel: 'Mobiliario ergonómico — bien físico, entrega programada',
     ocNumber: '4021-88-OC26',

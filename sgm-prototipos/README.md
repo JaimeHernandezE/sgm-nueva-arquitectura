@@ -74,7 +74,7 @@ sgm-prototipos/
 │   ├── form-presets.js     # Valores de formulario por expediente
 │   ├── form-bootstrap.js   # Aplica presets al cargar HTML
 │   ├── steps-manifest.json # Pasos transversales del shell
-│   └── steps-manifest-compra-agil.json  # Etapa 3 CA (referencia)
+│   ├── steps-manifest-*.js # Etapa 3 por modalidad (CA, CM, LP, TD)
 ├── plataforma/             # Consolas del core (SUBDERE + municipal)
 │   ├── index.html          # Hub elegir consola
 │   ├── subdere/            # 01–07 pantallas admin plataforma
@@ -82,15 +82,18 @@ sgm-prototipos/
 └── modulos/
     └── adquisiciones/
         ├── index.html                  # Bienvenida del módulo
-        ├── 01-listado-expedientes.html # Listado (4 modalidades, showcase transversal)
-        ├── 00-expediente/              # Detalle (wireframe 01) — etapa 3 stub
-        ├── procesos-transversales/     # Etapas 1, 2, 4, 5 — comunes a las 4 modalidades
-        └── 1-compra-agil/              # Etapa 3 CA (HTML existente; no enlazada desde shell)
+        ├── 01-listado-expedientes.html # Listado (4 modalidades)
+        ├── 00-expediente/              # Detalle (wireframe 01) — 5 etapas
+        ├── procesos-transversales/     # Etapas 1, 2, 4, 5 — comunes
+        ├── 1-compra-agil/              # Etapa 3 Compra Ágil
+        ├── 2-convenio-marco/           # Etapa 3 Convenio Marco
+        ├── 3-licitacion-publica/       # Etapa 3 Licitación Pública
+        └── 4-trato-directo/            # Etapa 3 Trato Directo
 ```
 
 Local: `npx serve sgm-prototipos` → `/plataforma` (hub) o `/modulos/adquisiciones`.
 
-Cada fila del listado abre un expediente con **etapas transversales de ejemplo** (1, 2, 4 y 5) parametrizadas por modalidad vía `?expediente=`. La **etapa 3** queda pendiente en todas. Los formularios transversales reutilizan el mismo HTML; los valores visibles vienen de `form-presets.js`.
+Cada fila del listado abre un expediente con **las 5 etapas** parametrizadas por modalidad vía `?expediente=`. La **etapa 3** es específica de cada modalidad y está enlazada desde el shell. Los formularios transversales reutilizan el mismo HTML; los valores visibles vienen de `form-presets.js`.
 
 ## Convención de numeración
 

@@ -1,4 +1,4 @@
-import { stage3Stub, buildStage4, buildStage5 } from './stage-builders.js';
+import { buildStage3TratoDirecto, buildStage4, buildStage5 } from './stage-builders.js';
 
 export const stages = [
   {
@@ -106,7 +106,7 @@ export const stages = [
       },
     ],
   },
-  stage3Stub('Trato Directo', 'sgm-docs/modulos/adquisiciones/4. trato-directo/3-resolucion-compra.md'),
+  buildStage3TratoDirecto(),
   buildStage4({
     profileLabel: 'Repuestos críticos — bien físico, entrega urgente',
     ocNumber: '4021-05-TD26-OC',

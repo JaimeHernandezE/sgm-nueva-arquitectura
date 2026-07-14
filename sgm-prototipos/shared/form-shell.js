@@ -1,6 +1,17 @@
 import { siteUrl, renderAdqBreadcrumb } from './app-shell.js';
 import { getExpedienteIdFromUrl, getExpedienteDetailUrl } from './expedientes-demo.js';
 import stepsManifest from './steps-manifest.js';
+import stepsManifestCompraAgil from './steps-manifest-compra-agil.js';
+import stepsManifestConvenioMarco from './steps-manifest-convenio-marco.js';
+import stepsManifestLicitacionPublica from './steps-manifest-licitacion-publica.js';
+import stepsManifestTratoDirecto from './steps-manifest-trato-directo.js';
+
+const modalityManifestByExpediente = {
+  'ADQ-2026-00123': stepsManifestCompraAgil,
+  'ADQ-2026-00089': stepsManifestConvenioMarco,
+  'ADQ-2026-00045': stepsManifestLicitacionPublica,
+  'ADQ-2026-00012': stepsManifestTratoDirecto,
+};
 
 export function getExpedienteId() {
   return getExpedienteIdFromUrl();
@@ -19,9 +30,18 @@ export function relativeFormHref(htmlPath, expedienteId = getExpedienteIdFromUrl
   return `${path}?expediente=${encodeURIComponent(expedienteId)}`;
 }
 
+function findStepEntry(stepId, expedienteId) {
+  const modality = modalityManifestByExpediente[expedienteId];
+  return (
+    modality?.steps.find((s) => s.stepId === stepId) ||
+    stepsManifest.steps.find((s) => s.stepId === stepId) ||
+    null
+  );
+}
+
 /** URL absoluta al prototipo HTML de un sub-paso (evita rutas relativas rotas desde 00-expediente). */
 export function getStepFormUrl(stepId, expedienteId = getExpedienteIdFromUrl()) {
-  const entry = stepsManifest.steps.find((s) => s.stepId === stepId);
+  const entry = findStepEntry(stepId, expedienteId);
   if (!entry?.prototypeHtml) return null;
   return siteUrl(`${entry.prototypeHtml}?expediente=${encodeURIComponent(expedienteId)}`);
 }
