@@ -8,6 +8,30 @@
   <link rel="stylesheet" href="../../shared/layout.css" />
   <link rel="stylesheet" href="../../shared/shell.css" />
   <link rel="stylesheet" href="../../shared/forms.css" />
+  <style>
+    .view-tabs { display: flex; gap: 8px; margin: 12px 0 16px; }
+    .view-tabs .btn.is-active { font-weight: 600; }
+    .view-panel[hidden] { display: none !important; }
+    .process-layout {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) minmax(240px, 1.4fr);
+      gap: 16px;
+      margin-top: 12px;
+    }
+    @media (max-width: 720px) {
+      .process-layout { grid-template-columns: 1fr; }
+    }
+    .process-tree { list-style: none; margin: 0; padding: 0; border: 1px solid var(--color-border, #ddd); border-radius: 4px; }
+    .process-tree button {
+      display: block; width: 100%; text-align: left; border: 0; background: transparent;
+      padding: 10px 12px; cursor: pointer; font: inherit; border-bottom: 1px solid var(--color-border, #eee);
+    }
+    .process-tree button:last-child { border-bottom: 0; }
+    .process-tree button.is-selected { background: var(--color-surface-muted, #f3f5f7); font-weight: 600; }
+    .process-panel { border: 1px solid var(--color-border, #ddd); border-radius: 4px; padding: 12px; min-height: 180px; }
+    .role-block { margin-bottom: 16px; }
+    .role-block h4 { margin: 0 0 6px; font-size: 13px; }
+  </style>
 </head>
 <body>
   <div class="app-layout">
@@ -17,42 +41,116 @@
         <div class="form-card">
           <div class="form-card__header"><span>Roles y unidades</span></div>
           <div class="form-card__body">
-            <h3 style="font-size:14px;margin:0 0 8px;">Unidades organizacionales</h3>
-            <ul id="units-list" style="margin:0 0 20px;padding-left:20px;"></ul>
+            <div class="banner banner--info">
+              Jerarquía: <strong>Departamento → Unidad</strong>.
+              Dos vistas: <strong>por usuario</strong> o <strong>por módulo/proceso</strong> (mismo <code>RoleAssignment</code>).
+              Catálogo borrador P-24.
+            </div>
+
+            <div class="view-tabs" role="tablist">
+              <button class="btn btn--secondary is-active" type="button" id="tab-user" data-view="user">Por usuario</button>
+              <button class="btn btn--secondary" type="button" id="tab-process" data-view="process">Por módulo/proceso</button>
+            </div>
+
+            <h3 style="font-size:14px;margin:8px 0 8px;">Estructura del municipio</h3>
+            <ul id="units-list" style="margin:0 0 12px;padding-left:20px;"></ul>
+            <button class="btn btn--secondary" type="button" id="btn-dept">+ Departamento</button>
             <button class="btn btn--secondary" type="button" id="btn-unit">+ Unidad</button>
 
-            <h3 style="font-size:14px;margin:24px 0 12px;">Asignaciones de rol</h3>
-            <table class="form-table" id="roles-table">
-              <thead>
-                <tr><th>Usuario</th><th>Rol</th><th>Unidad</th><th>Hasta</th></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-            <h3 style="font-size:14px;margin:20px 0 12px;">Nueva asignación</h3>
-            <div class="form-row">
-              <label>Usuario <span class="required">*</span></label>
-              <select id="a-user"><option>Ana Pérez</option><option>María López</option></select>
+            <!-- Vista por usuario -->
+            <div id="view-user" class="view-panel">
+              <h3 style="font-size:14px;margin:24px 0 12px;">Roles por usuario</h3>
+              <div class="form-row">
+                <label>Usuario <span class="required">*</span></label>
+                <select id="a-user">
+                  <option value="u-ana">Ana Pérez</option>
+                  <option value="u-maria">María López</option>
+                  <option value="u-luis">Luis Soto</option>
+                </select>
+              </div>
+
+              <p style="font-size:13px;margin:8px 0;">Asignaciones vigentes</p>
+              <table class="form-table" id="user-assignments">
+                <thead>
+                  <tr><th>Nodo orgánico</th><th>Rol</th><th>Desde</th><th>Hasta</th><th></th></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+
+              <h3 style="font-size:14px;margin:20px 0 12px;">Agregar asignación</h3>
+              <div class="form-row">
+                <label>Departamento <span class="required">*</span></label>
+                <select id="a-dept">
+                  <option>Finanzas</option>
+                  <option>Dirección de Obras Municipales</option>
+                  <option>Tránsito</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label>Unidad <span class="required">*</span></label>
+                <select id="a-unit">
+                  <option>Abastecimiento</option>
+                  <option>Presupuestos</option>
+                  <option>Tesorería</option>
+                  <option>(el departamento)</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label>Rol <span class="required">*</span></label>
+                <select id="a-role"></select>
+              </div>
+              <div class="form-row">
+                <label>Desde <span class="required">*</span></label>
+                <input type="date" value="2026-07-01" />
+              </div>
+              <div class="form-row">
+                <label>Hasta (opcional)</label>
+                <input type="date" />
+              </div>
+
+              <h3 style="font-size:14px;margin:24px 0 12px;">Todas las asignaciones</h3>
+              <table class="form-table" id="roles-table">
+                <thead>
+                  <tr><th>Usuario</th><th>Nodo orgánico</th><th>Rol</th><th>Hasta</th></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+
+              <div class="form-actions" style="margin-top:16px;">
+                <button class="btn btn--primary" type="button" id="btn-assign">Guardar asignación</button>
+              </div>
             </div>
-            <div class="form-row">
-              <label>Rol <span class="required">*</span></label>
-              <select id="a-role"><option>aprobador_solped</option><option>formulador_daf</option><option>solicitante</option></select>
+
+            <!-- Vista por módulo/proceso -->
+            <div id="view-process" class="view-panel" hidden>
+              <h3 style="font-size:14px;margin:24px 0 12px;">Cobertura por proceso</h3>
+              <div class="form-row">
+                <label>Módulo <span class="required">*</span></label>
+                <select id="p-module">
+                  <option value="adquisiciones">Adquisiciones</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label>Filtro unidad</label>
+                <select id="p-unit-filter">
+                  <option value="">Todas</option>
+                  <option>Finanzas › Abastecimiento</option>
+                  <option>Finanzas › Presupuestos</option>
+                  <option>Dirección de Obras Municipales</option>
+                </select>
+              </div>
+
+              <div class="process-layout">
+                <div>
+                  <p style="font-size:13px;margin:0 0 8px;">Árbol de proceso</p>
+                  <div class="process-tree" id="process-tree" role="list"></div>
+                </div>
+                <div class="process-panel">
+                  <p style="font-size:13px;margin:0 0 12px;" id="process-node-title">Seleccione un nodo</p>
+                  <div id="process-involvements"></div>
+                </div>
+              </div>
             </div>
-            <div class="form-row">
-              <label>Unidad <span class="required">*</span></label>
-              <select id="a-unit"><option>Abastecimiento</option><option>Finanzas</option></select>
-            </div>
-            <div class="form-row">
-              <label>Desde <span class="required">*</span></label>
-              <input type="date" value="2026-07-01" />
-            </div>
-            <div class="form-row">
-              <label>Hasta (opcional)</label>
-              <input type="date" />
-            </div>
-          </div>
-          <div class="form-actions">
-            <button class="btn btn--secondary" type="button" id="btn-revoke">Revocar asignación</button>
-            <button class="btn btn--primary" type="button" id="btn-assign">Guardar</button>
           </div>
         </div>
       </div>
@@ -62,7 +160,12 @@
   <script type="module">
     import { initAppShell, renderPlataformaBreadcrumb } from '../../shared/app-shell.js';
     import { demoAction } from '../../shared/form-shell.js';
-    import { organizationalUnits, roleAssignments } from '../../shared/demo-data/plataforma.js';
+    import {
+      organizationalUnits,
+      roleAssignments,
+      catalogRoles,
+      processTreeAdq,
+    } from '../../shared/demo-data/plataforma.js';
 
     initAppShell({ activeModule: 'plataforma', console: 'municipal', activeNav: '02-roles' });
     document.getElementById('breadcrumb').innerHTML = renderPlataformaBreadcrumb({
@@ -70,28 +173,151 @@
       screenLabel: 'Roles y unidades',
     });
 
-    const roots = organizationalUnits.filter((u) => !u.parent_unit_id);
-    const children = (pid) => organizationalUnits.filter((u) => u.parent_unit_id === pid);
-    document.getElementById('units-list').innerHTML = roots
-      .map((r) => {
-        const kids = children(r.id)
-          .map((c) => `<li>${c.name}</li>`)
+    const departments = organizationalUnits.filter((u) => u.kind === 'department');
+    const unitsOf = (deptId) => organizationalUnits.filter((u) => u.kind === 'unit' && u.parent_id === deptId);
+    document.getElementById('units-list').innerHTML = departments
+      .map((d) => {
+        const kids = unitsOf(d.id)
+          .map((c) => `<li>${c.name} <span style="color:#666;font-size:12px;">(unit)</span></li>`)
           .join('');
-        return `<li><strong>${r.name}</strong>${kids ? `<ul>${kids}</ul>` : ''}</li>`;
+        return `<li><strong>${d.name}</strong> <span style="color:#666;font-size:12px;">(department)</span>${kids ? `<ul>${kids}</ul>` : ''}</li>`;
       })
       .join('');
+
+    const adqRoles = catalogRoles.filter((r) => r.module === 'adquisiciones');
+    document.getElementById('a-role').innerHTML = adqRoles
+      .map((r) => `<option value="${r.code}">${r.code}</option>`)
+      .join('');
+
+    function setView(view) {
+      document.getElementById('view-user').hidden = view !== 'user';
+      document.getElementById('view-process').hidden = view !== 'process';
+      document.getElementById('tab-user').classList.toggle('is-active', view === 'user');
+      document.getElementById('tab-process').classList.toggle('is-active', view === 'process');
+      if (view === 'process') {
+        demoAction('listRoles (module=adquisiciones)');
+        selectProcessNode(selectedProcessId || 'adq.solped');
+      }
+    }
+
+    document.getElementById('tab-user').addEventListener('click', () => setView('user'));
+    document.getElementById('tab-process').addEventListener('click', () => setView('process'));
+
+    function renderUserAssignments() {
+      const uid = document.getElementById('a-user').value;
+      const rows = roleAssignments.filter((a) => a.user_id === uid);
+      const tbody = document.querySelector('#user-assignments tbody');
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="5">Sin asignaciones — agregue la primera.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = rows
+        .map(
+          (a) => `<tr>
+            <td>${a.node_label}</td><td><code>${a.role}</code></td>
+            <td>${a.valid_from || '—'}</td><td>${a.valid_until}</td>
+            <td><button class="btn btn--link" type="button" data-revoke="1">Revocar</button></td>
+          </tr>`,
+        )
+        .join('');
+    }
 
     document.querySelector('#roles-table tbody').innerHTML = roleAssignments
       .map(
         (a) => `<tr>
-          <td>${a.user_name}</td><td>${a.role}</td><td>${a.unit}</td><td>${a.valid_until}</td>
+          <td>${a.user_name}</td><td>${a.node_label}</td><td><code>${a.role}</code></td><td>${a.valid_until}</td>
         </tr>`,
       )
       .join('');
 
-    document.getElementById('btn-unit').addEventListener('click', () => demoAction('createOrganizationalUnit'));
+    document.getElementById('a-user').addEventListener('change', () => {
+      renderUserAssignments();
+      demoAction('listRoleAssignments (user_id)');
+    });
+    document.querySelector('#user-assignments tbody').addEventListener('click', (e) => {
+      if (e.target.closest('[data-revoke]')) demoAction('revokeRoleAssignment');
+    });
+
+    renderUserAssignments();
+
+    let selectedProcessId = 'adq.solped';
+    const treeEl = document.getElementById('process-tree');
+    treeEl.innerHTML = processTreeAdq
+      .map(
+        (n) => `<button type="button" role="listitem" data-area="${n.id}">${n.label}</button>`,
+      )
+      .join('');
+
+    function selectProcessNode(areaId) {
+      selectedProcessId = areaId;
+      treeEl.querySelectorAll('button').forEach((b) => {
+        b.classList.toggle('is-selected', b.dataset.area === areaId);
+      });
+      const node = processTreeAdq.find((n) => n.id === areaId);
+      document.getElementById('process-node-title').textContent = `Nodo: ${node ? node.label : areaId} (${areaId})`;
+
+      const rolesHere = catalogRoles.filter((r) => r.process_area === areaId);
+      const unitFilter = document.getElementById('p-unit-filter').value;
+      const panel = document.getElementById('process-involvements');
+
+      if (!rolesHere.length) {
+        panel.innerHTML = '<p style="font-size:13px;color:#666;">Sin roles de catálogo en este nodo (p. ej. resolución reutiliza gestor_compra en modalidad).</p>';
+        if (areaId === 'adq.resolucion') {
+          const gestor = roleAssignments.filter(
+            (a) => a.role === 'adq.gestor_compra' && (!unitFilter || a.node_label === unitFilter),
+          );
+          panel.innerHTML += `<div class="role-block"><h4><code>adq.gestor_compra</code> (también actúa en resolución)</h4>
+            ${gestor.length ? `<ul>${gestor.map((a) => `<li>${a.user_name} (${a.node_label}) <button class="btn btn--link" type="button" data-revoke-p="1">Revocar</button></li>`).join('')}</ul>` : '<p style="font-size:13px;">(sin asignaciones)</p>'}
+            <button class="btn btn--secondary" type="button" data-assign-role="adq.gestor_compra">+ Asignar usuario</button></div>`;
+        }
+        demoAction('listRoleAssignments (module=adquisiciones)');
+        return;
+      }
+
+      panel.innerHTML = rolesHere
+        .map((role) => {
+          const people = roleAssignments.filter(
+            (a) => a.role === role.code && (!unitFilter || a.node_label === unitFilter),
+          );
+          const list = people.length
+            ? `<ul>${people
+                .map(
+                  (a) =>
+                    `<li>${a.user_name} (${a.node_label}) <button class="btn btn--link" type="button" data-revoke-p="1">Revocar</button></li>`,
+                )
+                .join('')}</ul>`
+            : '<p style="font-size:13px;color:#666;">(sin asignaciones)</p>';
+          return `<div class="role-block">
+            <h4><code>${role.code}</code> — ${role.name}</h4>
+            ${list}
+            <button class="btn btn--secondary" type="button" data-assign-role="${role.code}">+ Asignar usuario</button>
+          </div>`;
+        })
+        .join('');
+
+      demoAction('listRoleAssignments (module=adquisiciones)');
+    }
+
+    treeEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-area]');
+      if (btn) selectProcessNode(btn.dataset.area);
+    });
+
+    document.getElementById('p-unit-filter').addEventListener('change', () => {
+      selectProcessNode(selectedProcessId);
+    });
+
+    document.getElementById('process-involvements').addEventListener('click', (e) => {
+      if (e.target.closest('[data-revoke-p]')) demoAction('revokeRoleAssignment');
+      const assign = e.target.closest('[data-assign-role]');
+      if (assign) demoAction(`createRoleAssignment (${assign.dataset.assignRole})`);
+    });
+
+    document.getElementById('btn-dept').addEventListener('click', () => demoAction('createOrganizationalUnit (department)'));
+    document.getElementById('btn-unit').addEventListener('click', () => demoAction('createOrganizationalUnit (unit)'));
     document.getElementById('btn-assign').addEventListener('click', () => demoAction('createRoleAssignment'));
-    document.getElementById('btn-revoke').addEventListener('click', () => demoAction('revokeRoleAssignment'));
+
+    selectProcessNode('adq.solped');
   </script>
 </body>
 </html>

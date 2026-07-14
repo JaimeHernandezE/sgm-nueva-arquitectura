@@ -15,5 +15,5 @@ alwaysApply: false
 - Tintes azul/rojizo solo vía clases en `origin.css` (`form-panel--module`, chips).
 - Breadcrumb Adquisiciones: `form-shell.js` → Adquisiciones › Expedientes › expediente; breadcrumb core: `renderPlataformaBreadcrumb`.
 - Perfiles demo en `expedientes-demo.js`; query `?expediente=` para contexto de compras.
-- Acciones demo: `demoAction('nombreOperacion')` — sin backend.
+- Acciones demo: `demoAction('nombreOperacion')` — stub silencioso (sin `alert`); sin backend.
 - Etiquetas de campo: obligatorio → `<span class="required">*</span>`; opcional → `(opcional)` en label; condicional → `(obligatorio si …)` — alineado con wireframe y modelo de datos.

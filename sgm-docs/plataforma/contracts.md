@@ -16,8 +16,9 @@
 |---|---|---|
 | `Tenant` | Expuesta (lectura restringida) | `id`, `name`, `consumption_mode`, `enabled_modules`, `status` |
 | `User` | Expuesta | `id`, `run`, `display_name`, `status` |
-| `OrganizationalUnit` | Expuesta | `id`, `tenant_id`, `name`, `parent_unit_id` |
-| `Role` | Expuesta | `id`, `module`, `name`, `description` |
+| `OrganizationalUnit` | Expuesta | `id`, `tenant_id`, `kind`, `name`, `code`, `parent_id`, `status`, `source` |
+| `OrgStructureTemplate` | Expuesta (admin SUBDERE) | `id`, `kind`, `name`, `code`, `parent_template_id`, `active` |
+| `Role` | Expuesta | `id`, `module`, `code`, `name`, `description`, `process_area` |
 | `RoleAssignment` | Expuesta | `id`, `user_id`, `role_id`, `organizational_unit_id`, `valid_from`, `valid_until` |
 | `ApiClient` | Expuesta (admin) | `id`, `name`, `scopes`, `tenant_ids`, `status`, `created_at` |
 | `NormativeParameter` | Expuesta (lectura) | `id`, `key`, `value`, `valid_from`, `valid_until`, `legal_reference` |
@@ -61,6 +62,12 @@ Rutas sin prefijo de tenant hasta resolver **[P-03]**.
 - **Errores:** `USER_NOT_FOUND`
 
 ### 2.3 Autorización
+
+#### `GET /roles` — `listRoles`
+- **Uso:** catálogo de roles del módulo (consola «Por módulo/proceso»); agrupable por `process_area`
+- **Entrada:** filtros `module`, `process_area` (opcionales)
+- **Respuesta:** colección de `Role`
+- **Nota:** contenido canónico de prueba en [`catalogo-roles.md`](./catalogo-roles.md) (**P-24**)
 
 #### `GET /role-assignments` — `listRoleAssignments`
 - **Entrada:** filtros `user_id`, `organizational_unit_id`, `module`
@@ -228,9 +235,11 @@ Operaciones citadas en wireframes de [`overview.md`](./overview.md) / [`wirefram
 | `createUser` | idem | Alta funcionario |
 | `updateUser` | idem | Metadatos / estado |
 | `revokeUser` | idem | Baja inmediata |
-| `listOrganizationalUnits` | `municipal/02-roles-unidades` | Árbol unidades |
-| `createOrganizationalUnit` | idem | Alta unidad |
-| `updateOrganizationalUnit` | idem | Renombre / padre |
+| `listRoles` | `municipal/02-roles-unidades` | Catálogo + `process_area` (P-24) |
+| `listOrganizationalUnits` | `municipal/02-roles-unidades` | Árbol departamento→unidad |
+| `createOrganizationalUnit` | idem | Alta departamento o unidad (`kind`) |
+| `updateOrganizationalUnit` | idem | Renombre / padre / `status` |
+| `listOrgStructureTemplates` | *SUBDERE (futuro)* | Catálogo base de plataforma — P-49 contenido |
 | `createRoleAssignment` | idem | Con validación SoD |
 | `revokeRoleAssignment` | idem | Fin asignación |
 | `listDelegations` | `municipal/03-subrogancias` | |

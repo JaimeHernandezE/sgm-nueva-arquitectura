@@ -72,9 +72,10 @@ Entidades transversales que hoy las fichas usan de forma implícita (columnas Un
 | Entidad | Rol | Visibilidad propuesta |
 |---|---|---|
 | `Tenant` | Municipio como unidad de aislamiento (schema) y de configuración; incluye módulos habilitados y modo de consumo (hosting completo / híbrido archivos / à la carte — ver `decisiones-macro-stack.md` §1) | Expuesta (lectura restringida) |
-| `OrganizationalUnit` | Unidad municipal (Unidad Solicitante, DAF Abastecimiento…); jerarquía simple por tenant | Expuesta |
+| `OrganizationalUnit` | Estructura orgánica del tenant en dos niveles: `department` (Finanzas, Tránsito, DOM…) → `unit` (Abastecimiento, Presupuestos…); clonada desde plantilla de plataforma y editable por el municipio | Expuesta |
+| `OrgStructureTemplate` | Catálogo base de departamentos/unidades de plataforma; se clona al aprovisionar el tenant | Expuesta (admin SUBDERE) |
 | `User` | Funcionario municipal o de SUBDERE; identidad ligada a RUN (Clave Única); estado activo/suspendido/baja | Expuesta (subconjunto mínimo, Ley 21.719) |
-| `Role` / `Permission` | Rol por módulo; permiso = operación del contrato (`seguridad.md` §3.1) | Expuesta |
+| `Role` / `Permission` | Rol por módulo (`code`, `process_area`); permiso = operación del contrato (`seguridad.md` §3.1); catálogo borrador P-24 | Expuesta |
 | `RoleAssignment` | Otorgamiento de rol a usuario en contexto tenant + unidad, con vigencia | Expuesta |
 | `Delegation` | Subrogancia/suplencia: asignación temporal con fecha de término obligatoria y reversión automática | Expuesta |
 | `SodRule` / `SodException` | Incompatibilidad entre roles y excepción configurada por tenant (explícita, registrada, auditada) | Interna; excepciones consultables |
@@ -92,13 +93,15 @@ Entidades transversales que hoy las fichas usan de forma implícita (columnas Un
 | `DocumentRef` | Identificador opaco que cruzan los módulos en campos `*_attachment` | Expuesta |
 | `SignatureRequest` | Estado de solicitud de firma electrónica vía FirmaGob (C9) | Interna; subconjunto consultable |
 
-⚠ **Pendiente de definir:** la estructura organizacional municipal real (catálogo de unidades típicas, jerarquía, variación entre municipios grandes y pequeños) debe levantarse con pilotos/DM antes de cerrar `OrganizationalUnit` — las fichas usan nombres de unidad como texto y el RBAC exige asignación por unidad. **[PENDIENTE P-49]**
+**Modelo fijado:** Municipio → Departamento → Unidad (`OrganizationalUnit.kind`), con plantilla de plataforma (`OrgStructureTemplate`) clonada al alta del tenant y editable después por el administrador municipal. Detalle canónico en `entidades-plataforma.md`.
+
+⚠ **Pendiente de cerrar con pilotos/DM:** el **contenido** del catálogo base (lista típica de departamentos y unidades, variación por tamaño de municipio) — las fichas aún usan nombres como texto. El modelo de dos niveles + plantilla clonable ya no está abierto. **[PENDIENTE P-49]**
 
 ## 5. Ciclo de vida de tenants (nuevo)
 
 Flujo de plataforma sin especificación previa. Etapas mínimas que el contrato del core debe cubrir:
 
-1. **Alta:** creación del `Tenant` (convenio firmado como precondición administrativa — conecta con **P-01**), aprovisionamiento del schema (automatizado y demostrable a escala, `musts-arquitectura.md` §3), selección de modo de consumo y módulos habilitados, carga de configuración inicial (unidades, primer administrador municipal, parámetros operativos por defecto).
+1. **Alta:** creación del `Tenant` (convenio firmado como precondición administrativa — conecta con **P-01**), aprovisionamiento del schema (automatizado y demostrable a escala, `musts-arquitectura.md` §3), selección de modo de consumo y módulos habilitados, carga de configuración inicial (**clonación de `OrgStructureTemplate` → `OrganizationalUnit` del tenant**, primer administrador municipal, parámetros operativos por defecto).
 2. **Operación:** administración delegada (C8), cambios de módulos habilitados, cambio de modo de consumo (un municipio à la carte que migra a hosting completo, o viceversa).
 3. **Suspensión / baja:** estados definidos con efecto sobre accesos (revocación inmediata) y sobre los datos (retención y devolución según el convenio — soberanía del dato, `decisiones-macro-stack.md` §2).
 
@@ -202,7 +205,7 @@ Dos consolas, ambas consumidoras sin privilegios del contrato del core (§2). Se
 | Pantalla | Operaciones de contrato que respalda |
 |---|---|
 | Usuarios del municipio | Alta, modificación, baja inmediata (`seguridad.md` §9) |
-| Roles y unidades | `RoleAssignment` por unidad; detección de violaciones SoD al asignar |
+| Roles y unidades | Árbol departamento→unidad; `RoleAssignment` 1:N (usuario+nodo orgánico+rol); detección de violaciones SoD al asignar |
 | Subrogancias | `Delegation` con vencimiento obligatorio |
 | Excepciones SoD | Configuración explícita y auditada (**P-25**) |
 | Parámetros operativos | `TenantParameter` dentro del catálogo de plataforma |

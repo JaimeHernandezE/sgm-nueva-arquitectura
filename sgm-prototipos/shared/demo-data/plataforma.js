@@ -98,25 +98,171 @@ export const users = [
 ];
 
 export const organizationalUnits = [
-  { id: 'ou-daf', name: 'DAF', parent_unit_id: null },
-  { id: 'ou-abas', name: 'Abastecimiento', parent_unit_id: 'ou-daf' },
-  { id: 'ou-fin', name: 'Finanzas', parent_unit_id: 'ou-daf' },
-  { id: 'ou-obras', name: 'Dirección de Obras', parent_unit_id: null },
+  {
+    id: 'ou-fin',
+    kind: 'department',
+    name: 'Finanzas',
+    parent_id: null,
+    source: 'template',
+  },
+  {
+    id: 'ou-abas',
+    kind: 'unit',
+    name: 'Abastecimiento',
+    parent_id: 'ou-fin',
+    source: 'template',
+  },
+  {
+    id: 'ou-presup',
+    kind: 'unit',
+    name: 'Presupuestos',
+    parent_id: 'ou-fin',
+    source: 'template',
+  },
+  {
+    id: 'ou-teso',
+    kind: 'unit',
+    name: 'Tesorería',
+    parent_id: 'ou-fin',
+    source: 'template',
+  },
+  {
+    id: 'ou-obras',
+    kind: 'department',
+    name: 'Dirección de Obras Municipales',
+    parent_id: null,
+    source: 'template',
+  },
+  {
+    id: 'ou-transito',
+    kind: 'department',
+    name: 'Tránsito',
+    parent_id: null,
+    source: 'template',
+  },
+];
+
+export const catalogRoles = [
+  {
+    code: 'adq.solicitante',
+    name: 'Solicitante',
+    module: 'adquisiciones',
+    process_area: 'adq.solped',
+  },
+  {
+    code: 'adq.aprobador_unidad',
+    name: 'Aprobador de unidad',
+    module: 'adquisiciones',
+    process_area: 'adq.solped',
+  },
+  {
+    code: 'adq.formulador_presupuesto',
+    name: 'Formulador DAF / verificación',
+    module: 'adquisiciones',
+    process_area: 'adq.solped',
+  },
+  {
+    code: 'adq.firmante_cdp',
+    name: 'Firmante CDP',
+    module: 'adquisiciones',
+    process_area: 'adq.solped',
+  },
+  {
+    code: 'adq.gestor_compra',
+    name: 'Gestor de compra',
+    module: 'adquisiciones',
+    process_area: 'adq.modalidad',
+  },
+  {
+    code: 'adq.aprobador_modalidad',
+    name: 'Aprobador de modalidad',
+    module: 'adquisiciones',
+    process_area: 'adq.modalidad',
+  },
+  {
+    code: 'adq.recepcionista',
+    name: 'Recepcionista',
+    module: 'adquisiciones',
+    process_area: 'adq.recepcion',
+  },
+  {
+    code: 'adq.confirmante_recepcion',
+    name: 'Confirmante de recepción',
+    module: 'adquisiciones',
+    process_area: 'adq.recepcion',
+  },
+  {
+    code: 'adq.operador_pago',
+    name: 'Operador de pago',
+    module: 'adquisiciones',
+    process_area: 'adq.pago',
+  },
+  {
+    code: 'adq.lector',
+    name: 'Lector de expediente',
+    module: 'adquisiciones',
+    process_area: 'adq',
+  },
+  {
+    code: 'plat.admin_municipal',
+    name: 'Administrador municipal',
+    module: 'plataforma',
+    process_area: 'plat.municipal',
+  },
+];
+
+/** Nodos del árbol «Por módulo/proceso» (Adquisiciones). */
+export const processTreeAdq = [
+  { id: 'adq.solped', label: '1. SOLPED' },
+  { id: 'adq.modalidad', label: '2. Modalidad' },
+  { id: 'adq.resolucion', label: '3. Resolución / OC' },
+  { id: 'adq.recepcion', label: '4. Recepción' },
+  { id: 'adq.pago', label: '5. Pago' },
 ];
 
 export const roleAssignments = [
   {
     user_id: 'u-ana',
     user_name: 'Ana Pérez',
-    role: 'aprobador_solped',
+    role: 'adq.aprobador_unidad',
+    process_area: 'adq.solped',
+    department: 'Finanzas',
     unit: 'Abastecimiento',
+    node_label: 'Finanzas › Abastecimiento',
+    valid_from: '2026-01-01',
+    valid_until: '—',
+  },
+  {
+    user_id: 'u-ana',
+    user_name: 'Ana Pérez',
+    role: 'adq.gestor_compra',
+    process_area: 'adq.modalidad',
+    department: 'Finanzas',
+    unit: 'Abastecimiento',
+    node_label: 'Finanzas › Abastecimiento',
+    valid_from: '2026-01-01',
     valid_until: '—',
   },
   {
     user_id: 'u-maria',
     user_name: 'María López',
-    role: 'formulador_daf',
-    unit: 'Finanzas',
+    role: 'adq.formulador_presupuesto',
+    process_area: 'adq.solped',
+    department: 'Finanzas',
+    unit: 'Presupuestos',
+    node_label: 'Finanzas › Presupuestos',
+    valid_from: '2026-01-01',
+    valid_until: '—',
+  },
+  {
+    user_id: 'u-luis',
+    user_name: 'Luis Soto',
+    role: 'adq.solicitante',
+    process_area: 'adq.solped',
+    department: 'Dirección de Obras Municipales',
+    unit: '(el departamento)',
+    node_label: 'Dirección de Obras Municipales',
+    valid_from: '2026-01-01',
     valid_until: '—',
   },
 ];
@@ -133,7 +279,7 @@ export const delegations = [
 export const sodExceptions = [
   {
     user_name: 'Ana Pérez',
-    rule: 'aprobador ≠ formulador',
+    rule: 'adq.formulador_presupuesto ≠ adq.firmante_cdp',
     reason: 'Auditoría excepcional Q2',
     valid_until: '2026-12-31',
   },

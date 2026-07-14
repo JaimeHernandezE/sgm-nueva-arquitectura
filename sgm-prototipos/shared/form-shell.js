@@ -48,8 +48,9 @@ export function renderOriginBanner(origin) {
   `;
 }
 
-export function demoAction(operationName) {
-  alert(`Demo: operación ${operationName} — sin backend en prototipo.`);
+/** Stub de operación de contrato. Sin modal: la audiencia ya sabe que es prototipo. */
+export function demoAction(_operationName) {
+  /* no-op */
 }
 
 export function initBalancePanel({ triggerId, modalId, closeId, consultId }) {

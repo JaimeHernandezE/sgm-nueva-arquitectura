@@ -38,15 +38,104 @@ Contrato HTTP: [`plataforma/contracts.md`](../plataforma/contracts.md)
 ### `OrganizationalUnit`
 **Visibilidad:** expuesta
 
+Estructura orgánico-funcional del municipio en **dos niveles** bajo el tenant:
+
+```
+Tenant (municipio)
+ └── department  →  Tránsito, Dirección de Obras, Finanzas, …
+      └── unit   →  Abastecimiento, Presupuestos, Tesorería, …
+```
+
+Una sola entidad tipada (no dos tablas): el `kind` fija el nivel y las reglas de padre.
+
 | Campo | Tipo | Notas |
 |---|---|---|
 | `id` | UUID | **Obligatorio** |
 | `tenant_id` | ref. `Tenant` | **Obligatorio** |
+| `kind` | enum | **Obligatorio**. `department` \| `unit` |
 | `name` | texto | **Obligatorio** |
-| `parent_unit_id` | ref. `OrganizationalUnit` | **Opcional** — raíz si nulo |
+| `code` | texto | **Opcional** — código estable interno del tenant (útil para integraciones) |
+| `parent_id` | ref. `OrganizationalUnit` | **Obligatorio si** `kind = unit` (padre debe ser `department`). **Nulo si** `kind = department` |
+| `status` | enum | **Obligatorio**. `active` \| `inactive` |
+| `source` | enum | **Obligatorio**. `template` (clonada desde plantilla de plataforma) \| `custom` (creada por el municipio) |
 
-### `Role` / `RoleAssignment` / `Delegation` / `SodRule` / `SodException`
-Definición detallada en `plataforma-core.md` §4; modelo completo pendiente de cerrar con pilotos (**P-49**).
+**Reglas de jerarquía (v1):**
+
+1. Profundidad máxima dos niveles bajo el tenant: departamento → unidad. Sin sub-unidades anidadas.
+2. Un departamento puede existir **sin** unidades hijas (municipio pequeño o área sin desglose). En ese caso el RBAC puede asignar roles al propio departamento — ver `RoleAssignment`.
+3. Renombrar, agregar, desactivar o mover unidades entre departamentos es administración municipal auditada; no requiere cambios de schema.
+
+Ejemplos típicos:
+
+| Departamento | Unidades (ejemplos) |
+|---|---|
+| Finanzas | Abastecimiento, Presupuestos, Tesorería |
+| Dirección de Obras Municipales | (ninguna, o unidades de obra según el municipio) |
+| Tránsito | (ninguna, o fiscalización / permisos según el municipio) |
+
+#### Plantilla de estructura (`OrgStructureTemplate`)
+
+**Visibilidad:** expuesta (lectura plataforma; administración SUBDERE)
+
+Catálogo **base de plataforma** que el sistema ofrece al aprovisionar un tenant. No es la estructura viva del municipio: al alta del tenant se **clona** al tenant como `OrganizationalUnit` con `source = template`. Después el municipio la edita (renombra, agrega, desactiva).
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `id` | UUID | **Obligatorio** |
+| `kind` | enum | **Obligatorio**. `department` \| `unit` |
+| `name` | texto | **Obligatorio** |
+| `code` | texto | **Opcional** — código estable de plantilla |
+| `parent_template_id` | ref. `OrgStructureTemplate` | **Obligatorio si** `kind = unit` |
+| `active` | booleano | **Obligatorio** — ítem incluido en nuevos aprovisionamientos |
+
+⚠ Contenido concreto del catálogo base (lista definitiva de departamentos/unidades típicos) se cierra con pilotos/DM — **[P-49]**. El **modelo** (dos niveles + plantilla clonable) queda fijado aquí.
+
+### `Role` / `Permission`
+
+Catálogo de prueba: [`plataforma/catalogo-roles.md`](../plataforma/catalogo-roles.md) (**P-24**).
+
+#### `Role`
+**Visibilidad:** expuesta (lectura; administración de definiciones = plataforma / SUBDERE)
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `id` | UUID | **Obligatorio** |
+| `module` | texto | **Obligatorio** — `adquisiciones`, `plataforma`, … |
+| `code` | texto | **Obligatorio** — estable (`adq.solicitante`); único por plataforma |
+| `name` | texto | **Obligatorio** |
+| `description` | texto | **Opcional** |
+| `process_area` | texto | **Opcional** — nodo del árbol de proceso para vista admin «Por módulo/proceso» (`adq.solped`, `plat.municipal`, …) |
+
+#### `Permission`
+**Visibilidad:** expuesta (lectura)
+
+Unidad de autorización = operación del contrato (`seguridad.md` §3.1).
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `id` | UUID | **Obligatorio** |
+| `role_id` | ref. `Role` | **Obligatorio** |
+| `operation_id` | texto | **Obligatorio** — `operationId` OpenAPI / `contracts.md` del módulo |
+| `module` | texto | **Obligatorio** — módulo dueño del contrato de la operación |
+
+### `RoleAssignment` / `Delegation` / `SodRule` / `SodException`
+
+Definición de alto nivel en `plataforma-core.md` §4.
+
+#### `RoleAssignment` — cardinalidad
+
+**1 usuario → N asignaciones.** Cada fila vincula un rol a un nodo orgánico del tenant (preferentemente una **unidad**; departamento solo si opera sin desglose):
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `id` | UUID | **Obligatorio** |
+| `user_id` | ref. `User` | **Obligatorio** |
+| `role_id` | ref. `Role` | **Obligatorio** — rol **en ese** nodo |
+| `organizational_unit_id` | ref. `OrganizationalUnit` | **Obligatorio** — `kind = unit`, o `kind = department` sin unidades hijas activas |
+| `valid_from` | fecha | **Obligatorio** |
+| `valid_until` | fecha | **Opcional** |
+
+Un municipio pequeño puede asignar a la misma persona, p. ej., `adq.aprobador_unidad` en Abastecimiento y `adq.firmante_cdp` en Presupuestos (dos `RoleAssignment`). La UI ofrece vistas **por usuario** y **por módulo/proceso** — ver wireframe [`02-roles-unidades.md`](../plataforma/wireframes/municipal/02-roles-unidades.md).
 
 ---
 

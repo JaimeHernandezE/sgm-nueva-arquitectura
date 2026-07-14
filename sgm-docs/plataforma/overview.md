@@ -6,7 +6,8 @@ Infraestructura **obligatoria** del SGM: identidad, RBAC, tenants, parámetros, 
 
 Marco arquitectónico: [`arquitectura/plataforma-core.md`](../arquitectura/plataforma-core.md)  
 Modelo de datos: [`modelo-datos/entidades-plataforma.md`](../modelo-datos/entidades-plataforma.md)  
-Contrato API: [`contracts.md`](./contracts.md)
+Contrato API: [`contracts.md`](./contracts.md)  
+Catálogo RBAC (borrador P-24): [`catalogo-roles.md`](./catalogo-roles.md)
 
 ## Dos consolas, una API
 
@@ -36,7 +37,7 @@ Fuente de pantallas: `plataforma-core.md` §9. Wireframes: [`wireframes/`](./wir
 | Pantalla | Wireframe | Operaciones |
 |---|---|---|
 | Usuarios | [`municipal/01-usuarios.md`](./wireframes/municipal/01-usuarios.md) | `getUser`, `getCurrentUser`; *(inferidas)* `listUsers`, `createUser`, `updateUser`, `revokeUser` |
-| Roles y unidades | [`municipal/02-roles-unidades.md`](./wireframes/municipal/02-roles-unidades.md) | `listRoleAssignments`; *(inferidas)* `createRoleAssignment`, `revokeRoleAssignment`, `listOrganizationalUnits`, CRUD unidades |
+| Roles y unidades | [`municipal/02-roles-unidades.md`](./wireframes/municipal/02-roles-unidades.md) | Vistas **por usuario** y **por módulo/proceso**. `listRoleAssignments`, `listRoles`; *(inferidas)* `createRoleAssignment`, `revokeRoleAssignment`, `listOrganizationalUnits`, CRUD departamentos/unidades |
 | Subrogancias | [`municipal/03-subrogancias.md`](./wireframes/municipal/03-subrogancias.md) | *(inferidas)* CRUD `Delegation` |
 | Excepciones SoD | [`municipal/04-excepciones-sod.md`](./wireframes/municipal/04-excepciones-sod.md) | *(inferidas)* CRUD `SodException` |
 | Parámetros operativos | [`municipal/05-parametros-operativos.md`](./wireframes/municipal/05-parametros-operativos.md) | `getTenantParameter`; *(inferidas)* `listTenantParameters`, `upsertTenantParameter` |
