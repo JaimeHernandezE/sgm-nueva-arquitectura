@@ -1,4 +1,10 @@
-import { modules, adquisicionesNav } from './modules-registry.js';
+import {
+  modules,
+  adquisicionesNav,
+  plataformaHubNav,
+  plataformaSubdereNav,
+  plataformaMunicipalNav,
+} from './modules-registry.js';
 
 let siteBase = null;
 
@@ -53,32 +59,57 @@ function renderModuleList(activeModuleId) {
     .join('');
 }
 
-function renderModuleNav(activeModuleId, activeNavId) {
-  if (activeModuleId !== 'adquisiciones') return '';
-
-  const links = adquisicionesNav
+function navLinks(items, activeNavId) {
+  return items
     .map(
       (item) =>
         `<a href="${siteUrl(item.path)}" class="${item.id === activeNavId ? 'is-active' : ''}">${item.label}</a>`,
     )
     .join('');
-
-  return `
-    <div class="app-sidebar__nav">
-      <div class="app-sidebar__nav-title">Adquisiciones</div>
-      ${links}
-    </div>
-  `;
 }
 
-export function initAppShell({ activeModule = 'adquisiciones', activeNav = null } = {}) {
+function renderModuleNav(activeModuleId, activeNavId, consoleId) {
+  if (activeModuleId === 'adquisiciones') {
+    return `
+    <div class="app-sidebar__nav">
+      <div class="app-sidebar__nav-title">Adquisiciones</div>
+      ${navLinks(adquisicionesNav, activeNavId)}
+    </div>
+  `;
+  }
+
+  if (activeModuleId === 'plataforma') {
+    let title = 'Plataforma';
+    let items = plataformaHubNav;
+    if (consoleId === 'subdere') {
+      title = 'Consola SUBDERE';
+      items = plataformaSubdereNav;
+    } else if (consoleId === 'municipal') {
+      title = 'Consola municipal';
+      items = plataformaMunicipalNav;
+    }
+    return `
+    <div class="app-sidebar__nav">
+      <div class="app-sidebar__nav-title">${title}</div>
+      ${navLinks(items, activeNavId)}
+    </div>
+  `;
+  }
+
+  return '';
+}
+
+/**
+ * @param {{ activeModule?: string, activeNav?: string|null, console?: 'subdere'|'municipal'|null }} opts
+ */
+export function initAppShell({ activeModule = 'adquisiciones', activeNav = null, console: consoleId = null } = {}) {
   const sidebar = document.getElementById('app-sidebar');
   if (!sidebar) return;
 
   sidebar.innerHTML = `
     <p class="app-sidebar__title">Módulos SGM</p>
     <ul class="app-sidebar__modules">${renderModuleList(activeModule)}</ul>
-    ${renderModuleNav(activeModule, activeNav)}
+    ${renderModuleNav(activeModule, activeNav, consoleId)}
   `;
 }
 
@@ -90,4 +121,15 @@ export function renderAdqBreadcrumb({ items }) {
     return item.label;
   });
   return `<nav class="breadcrumb" aria-label="Ruta">${parts.join(' › ')}</nav>`;
+}
+
+/** Breadcrumb de consolas del core. */
+export function renderPlataformaBreadcrumb({ consoleLabel, screenLabel }) {
+  return renderAdqBreadcrumb({
+    items: [
+      { label: 'Plataforma', href: 'plataforma/index.html' },
+      { label: consoleLabel },
+      { label: screenLabel },
+    ],
+  });
 }

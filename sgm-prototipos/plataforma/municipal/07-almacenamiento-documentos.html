@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Almacenamiento de documentos — Consola municipal</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header"><span>Almacenamiento de documentos (C10)</span></div>
+          <div class="form-card__body">
+            <div class="form-row">
+              <label>Backend <span class="required">*</span></label>
+              <label><input type="radio" name="backend" value="platform" checked /> platform</label>
+              <label><input type="radio" name="backend" value="tenant_owned" /> tenant_owned</label>
+              <label><input type="radio" name="backend" value="external_dms" /> external_dms</label>
+            </div>
+
+            <div id="block-platform">
+              <div class="banner banner--info">Solo lectura — provisionado por SUBDERE.</div>
+              <div class="form-row">
+                <label>Bucket</label>
+                <input type="text" id="bucket" value="sgm-tenant-alpha" readonly />
+              </div>
+            </div>
+
+            <div id="block-owned" hidden>
+              <div class="form-row">
+                <label>Bucket <span class="required">*</span></label>
+                <input type="text" id="ow-bucket" placeholder="mi-bucket-municipal" />
+              </div>
+              <div class="form-row">
+                <label>Región <span class="required">*</span></label>
+                <input type="text" id="ow-region" placeholder="us-east-1" />
+              </div>
+              <div class="form-row">
+                <label>Endpoint <span class="required">*</span> (S3-compatible)</label>
+                <input type="url" id="ow-endpoint" placeholder="https://…" />
+              </div>
+              <button class="btn btn--secondary" type="button" id="btn-rot-ow">Rotar credenciales…</button>
+            </div>
+
+            <div id="block-dms" hidden>
+              <div class="form-row">
+                <label>Adaptador <span class="required">*</span></label>
+                <select id="dms-adapter"><option value="stub_generic">stub_generic — Stub DMS genérico</option></select>
+              </div>
+              <div class="form-row">
+                <label>Base URL <span class="required">*</span></label>
+                <input type="url" id="dms-url" placeholder="https://dms.municipio.cl" />
+              </div>
+              <div class="form-row">
+                <label>Repositorio <span class="required">*</span></label>
+                <input type="text" id="dms-repo" placeholder="repositorio-id" />
+              </div>
+              <button class="btn btn--secondary" type="button" id="btn-rot-dms">Rotar credenciales…</button>
+            </div>
+
+            <div class="banner banner--info" style="margin-top:16px;">
+              MIME/tamaños/retención: P-58. Primer DMS certificado: P-59. Módulos solo ven DocumentRef.
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn--secondary" type="button" id="btn-test">Probar conexión</button>
+            <button class="btn btn--primary" type="button" id="btn-save">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderPlataformaBreadcrumb } from '../../shared/app-shell.js';
+    import { demoAction } from '../../shared/form-shell.js';
+    import { tenantStorage } from '../../shared/demo-data/plataforma.js';
+
+    initAppShell({ activeModule: 'plataforma', console: 'municipal', activeNav: '07-storage' });
+    document.getElementById('breadcrumb').innerHTML = renderPlataformaBreadcrumb({
+      consoleLabel: 'Consola municipal',
+      screenLabel: 'Almacenamiento de documentos',
+    });
+
+    document.getElementById('bucket').value = tenantStorage.bucket_name;
+
+    function syncBlocks() {
+      const v = document.querySelector('input[name="backend"]:checked').value;
+      document.getElementById('block-platform').hidden = v !== 'platform';
+      document.getElementById('block-owned').hidden = v !== 'tenant_owned';
+      document.getElementById('block-dms').hidden = v !== 'external_dms';
+    }
+    document.querySelectorAll('input[name="backend"]').forEach((r) => r.addEventListener('change', syncBlocks));
+    syncBlocks();
+
+    document.getElementById('btn-save').addEventListener('click', () => {
+      if (!confirm('¿Confirmar cambio de backend? (migración P-58)')) return;
+      demoAction('upsertTenantStorage');
+    });
+    document.getElementById('btn-test').addEventListener('click', () => demoAction('getTenantStorage (probe)'));
+    document.getElementById('btn-rot-ow')?.addEventListener('click', () => demoAction('rotateIntegrationCredential (bucket)'));
+    document.getElementById('btn-rot-dms')?.addEventListener('click', () => demoAction('rotateIntegrationCredential (dms)'));
+  </script>
+</body>
+</html>

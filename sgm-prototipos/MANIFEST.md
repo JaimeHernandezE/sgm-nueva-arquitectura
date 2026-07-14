@@ -23,11 +23,15 @@ entidades-core.md            →  campos de formulario
 index.html → modulos/adquisiciones/index.html (bienvenida)
            → 01-listado-expedientes.html
            → 00-expediente/index.html?expediente=<id>
+
+Sidebar «Plataforma» → plataforma/index.html (hub consolas)
+                     → subdere/* | municipal/*
 ```
 
-- Sidebar derecho: módulos SGM (`shared/app-shell.js`, `shared/modules-registry.js`).
+- Sidebar derecho: módulos SGM (`shared/app-shell.js`, `shared/modules-registry.js`) — incluye **Plataforma** (core) y Adquisiciones.
 - Perfiles de expediente: [`shared/expedientes-demo.js`](./shared/expedientes-demo.js) — los **4** expedientes del listado tienen detalle transversal (etapas 1, 2, 4 y 5 en modo showcase). La etapa 3 es stub pendiente en todas las modalidades.
 - Datos demo por expediente: [`shared/demo-data/`](./shared/demo-data/) (`getStages(expedienteId)`).
+- Datos demo core: [`shared/demo-data/plataforma.js`](./shared/demo-data/plataforma.js).
 - Presets de formularios: [`shared/form-presets.js`](./shared/form-presets.js) + [`shared/form-bootstrap.js`](./shared/form-bootstrap.js).
 - Manifiesto activo del shell: [`shared/steps-manifest.json`](./shared/steps-manifest.json) — solo pasos **transversales** (1.1–1.6, 2.1–2.3, 4.1, 5.1).
 - Etapa 3 Compra Ágil (HTML existente, no enlazada desde el shell): [`shared/steps-manifest-compra-agil.json`](./shared/steps-manifest-compra-agil.json).
@@ -117,6 +121,39 @@ Ficha transversal: [`sgm-docs/modulos/adquisiciones/procesos-transversales/5-pag
 Shell expediente: [`modulos/adquisiciones/00-expediente/index.html`](./modulos/adquisiciones/00-expediente/index.html)
 
 Listado: [`modulos/adquisiciones/01-listado-expedientes.html`](./modulos/adquisiciones/01-listado-expedientes.html)
+
+## Plataforma — consolas del core
+
+Overview docs: [`sgm-docs/plataforma/overview.md`](../sgm-docs/plataforma/overview.md)  
+Wireframes: [`sgm-docs/plataforma/wireframes/`](../sgm-docs/plataforma/wireframes/README.md)  
+Hub prototipo: [`plataforma/index.html`](./plataforma/index.html)
+
+No usa expediente ni `?expediente=`. Breadcrumb: Plataforma › Consola › Pantalla. Acciones vía `demoAction(operationId)`.
+
+### Consola SUBDERE
+
+| Pantalla | Wireframe | Prototipo | Operaciones principales |
+|---|---|---|---|
+| Tenants | `subdere/01-gestion-tenants.md` | `plataforma/subdere/01-gestion-tenants.html` | `listTenants`, `getTenant`, `createTenant`, `updateTenant`, `suspendTenant`, `setEnabledModules` |
+| Parámetros normativos | `02-parametros-normativos.md` | `02-parametros-normativos.html` | `proposeNormativeParameter`, `approveNormativeParameter` |
+| Clientes M2M | `03-clientes-m2m.md` | `03-clientes-m2m.html` | `createApiClient`, `revokeApiClient`, `rotateApiClientSecret` |
+| Integraciones plataforma | `04-integraciones-plataforma.md` | `04-integraciones-plataforma.html` | `upsertPlatformIntegration`, `listDmsAdapters` |
+| Provisión storage | `05-provision-almacenamiento.md` | `05-provision-almacenamiento.html` | `provisionPlatformBucket` |
+| Monitoreo | `06-monitoreo-tenant.md` | `06-monitoreo-tenant.html` | — (empty state P-08) |
+| Auditoría | `07-auditoria-plataforma.md` | `07-auditoria-plataforma.html` | `listAuditRecords` |
+
+### Consola municipal
+
+| Pantalla | Wireframe | Prototipo | Operaciones principales |
+|---|---|---|---|
+| Usuarios | `municipal/01-usuarios.md` | `plataforma/municipal/01-usuarios.html` | `listUsers`, `createUser`, `updateUser`, `revokeUser` |
+| Roles y unidades | `02-roles-unidades.md` | `02-roles-unidades.html` | `createRoleAssignment`, CRUD unidades |
+| Subrogancias | `03-subrogancias.md` | `03-subrogancias.html` | CRUD `Delegation` |
+| Excepciones SoD | `04-excepciones-sod.md` | `04-excepciones-sod.html` | CRUD `SodException` |
+| Parámetros operativos | `05-parametros-operativos.md` | `05-parametros-operativos.html` | `listTenantParameters`, `upsertTenantParameter` |
+| Integraciones municipio | `06-integraciones-municipio.md` | `06-integraciones-municipio.html` | `upsertTenantIntegration`, `rotateIntegrationCredential` |
+| Almacenamiento | `07-almacenamiento-documentos.md` | `07-almacenamiento-documentos.html` | `upsertTenantStorage`, `getTenantStorage` |
+| Recertificación | `08-recertificacion-accesos.md` | `08-recertificacion-accesos.html` | `listAccessRecertificationReport` |
 
 ## Reglas de tinte (resumen)
 

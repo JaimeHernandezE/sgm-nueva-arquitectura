@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recertificación de accesos — Consola municipal</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header"><span>Recertificación de accesos</span></div>
+          <div class="form-card__body">
+            <div class="form-row" style="display:flex;gap:12px;flex-wrap:wrap;">
+              <div>
+                <label>Periodo <span class="required">*</span></label>
+                <select id="period">
+                  <option>último trimestre</option>
+                  <option>últimos 6 meses</option>
+                </select>
+              </div>
+              <div>
+                <label>Filtro</label>
+                <select>
+                  <option>sin actividad &gt; 90 días</option>
+                  <option>todos</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn btn--primary" type="button" id="btn-report" style="margin:12px 0;">Generar reporte</button>
+            <table class="form-table" id="recert-table">
+              <thead>
+                <tr><th>Usuario</th><th>Roles</th><th>Últ. acceso</th><th>Acción</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <div class="banner banner--info" style="margin-top:12px;">
+              Fuente: seguridad.md §9.4 — reporte de cuentas y última actividad.
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn--secondary" type="button" id="btn-export">Exportar</button>
+            <button class="btn btn--primary" type="button" id="btn-mark">Marcar periodo como revisado</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderPlataformaBreadcrumb } from '../../shared/app-shell.js';
+    import { demoAction } from '../../shared/form-shell.js';
+    import { users, roleAssignments } from '../../shared/demo-data/plataforma.js';
+
+    initAppShell({ activeModule: 'plataforma', console: 'municipal', activeNav: '08-recert' });
+    document.getElementById('breadcrumb').innerHTML = renderPlataformaBreadcrumb({
+      consoleLabel: 'Consola municipal',
+      screenLabel: 'Recertificación de accesos',
+    });
+
+    function rolesFor(userId) {
+      return roleAssignments.filter((a) => a.user_id === userId).map((a) => a.role).join(', ') || '—';
+    }
+
+    function renderReport() {
+      document.querySelector('#recert-table tbody').innerHTML = users
+        .map(
+          (u) => `<tr>
+            <td>${u.display_name}</td>
+            <td>${rolesFor(u.id)}</td>
+            <td>${u.last_access || 'nunca'}</td>
+            <td><button class="btn btn--link" type="button" data-revoke="${u.id}">Revocar</button></td>
+          </tr>`,
+        )
+        .join('');
+    }
+
+    renderReport();
+
+    document.querySelector('#recert-table tbody').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-revoke]');
+      if (!btn) return;
+      if (confirm('¿Revocar desde recertificación?')) demoAction('revokeUser (' + btn.dataset.revoke + ')');
+    });
+
+    document.getElementById('btn-report').addEventListener('click', () => {
+      renderReport();
+      demoAction('listAccessRecertificationReport');
+    });
+    document.getElementById('btn-export').addEventListener('click', () => demoAction('listAccessRecertificationReport (export)'));
+    document.getElementById('btn-mark').addEventListener('click', () => demoAction('listAccessRecertificationReport (markReviewed)'));
+  </script>
+</body>
+</html>

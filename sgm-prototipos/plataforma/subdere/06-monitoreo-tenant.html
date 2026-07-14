@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monitoreo por tenant — Consola SUBDERE</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header"><span>Monitoreo por tenant</span></div>
+          <div class="form-card__body">
+            <div class="form-row">
+              <label>Tenant <span class="required">*</span></label>
+              <select>
+                <option>Mun. Alpha</option>
+                <option>Mun. Beta</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>Ventana <span class="required">*</span></label>
+              <select>
+                <option>últimas 24 h</option>
+                <option>últimos 7 días</option>
+              </select>
+            </div>
+            <div class="banner banner--info" style="margin-top:16px;">
+              Pantalla estructural: la fuente de métricas y el contrato de consulta de observabilidad
+              están pendientes (musts §8, <strong>P-08</strong>). No se inventan endpoints ni métricas aquí.
+            </div>
+            <p class="subtitle" style="margin-top:24px;">Sin datos de observabilidad en este prototipo.</p>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn--secondary" type="button" disabled>Actualizar</button>
+            <button class="btn btn--secondary" type="button" disabled>Exportar CSV</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderPlataformaBreadcrumb } from '../../shared/app-shell.js';
+
+    initAppShell({ activeModule: 'plataforma', console: 'subdere', activeNav: '06-monitoreo' });
+    document.getElementById('breadcrumb').innerHTML = renderPlataformaBreadcrumb({
+      consoleLabel: 'Consola SUBDERE',
+      screenLabel: 'Monitoreo por tenant',
+    });
+  </script>
+</body>
+</html>

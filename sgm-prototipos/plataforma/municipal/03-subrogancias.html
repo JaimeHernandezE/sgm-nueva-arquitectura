@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subrogancias — Consola municipal</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header">
+            <span>Subrogancias (Delegation)</span>
+            <button class="btn btn--primary" type="button" id="btn-new">+ Nueva</button>
+          </div>
+          <div class="form-card__body">
+            <table class="form-table" id="del-table">
+              <thead>
+                <tr><th>Titular</th><th>Subrogante</th><th>Desde</th><th>Hasta</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <h3 style="font-size:14px;margin:20px 0 12px;">Nueva subrogancia</h3>
+            <div class="form-row">
+              <label>Titular <span class="required">*</span></label>
+              <select><option>Ana Pérez</option><option>María López</option></select>
+            </div>
+            <div class="form-row">
+              <label>Subrogante <span class="required">*</span></label>
+              <select><option>Luis Soto</option><option>María López</option></select>
+            </div>
+            <div class="form-row">
+              <label>Desde <span class="required">*</span></label>
+              <input type="date" value="2026-07-01" />
+            </div>
+            <div class="form-row">
+              <label>Hasta <span class="required">*</span> (vencimiento obligatorio)</label>
+              <input type="date" value="2026-07-15" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn--secondary" type="button" id="btn-revoke">Revocar</button>
+            <button class="btn btn--primary" type="button" id="btn-save">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderPlataformaBreadcrumb } from '../../shared/app-shell.js';
+    import { demoAction } from '../../shared/form-shell.js';
+    import { delegations } from '../../shared/demo-data/plataforma.js';
+
+    initAppShell({ activeModule: 'plataforma', console: 'municipal', activeNav: '03-subrogancias' });
+    document.getElementById('breadcrumb').innerHTML = renderPlataformaBreadcrumb({
+      consoleLabel: 'Consola municipal',
+      screenLabel: 'Subrogancias',
+    });
+
+    document.querySelector('#del-table tbody').innerHTML = delegations
+      .map(
+        (d) => `<tr>
+          <td>${d.titular}</td><td>${d.subrogante}</td>
+          <td>${d.valid_from}</td><td>${d.valid_until}</td>
+        </tr>`,
+      )
+      .join('');
+
+    document.getElementById('btn-new').addEventListener('click', () => demoAction('listDelegations'));
+    document.getElementById('btn-save').addEventListener('click', () => demoAction('createDelegation'));
+    document.getElementById('btn-revoke').addEventListener('click', () => demoAction('revokeDelegation'));
+  </script>
+</body>
+</html>

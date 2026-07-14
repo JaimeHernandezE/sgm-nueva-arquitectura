@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Auditoría de plataforma — Consola SUBDERE</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header"><span>Auditoría de plataforma</span></div>
+          <div class="form-card__body">
+            <div class="form-row" style="display:flex;gap:12px;flex-wrap:wrap;">
+              <div>
+                <label>Desde <span class="required">*</span></label>
+                <input type="date" value="2026-07-01" />
+              </div>
+              <div>
+                <label>Hasta <span class="required">*</span></label>
+                <input type="date" value="2026-07-14" />
+              </div>
+              <div>
+                <label>Acción (opcional)</label>
+                <input type="text" placeholder="tenant.suspend" />
+              </div>
+            </div>
+            <button class="btn btn--primary" type="button" id="btn-search" style="margin:12px 0;">Buscar</button>
+            <table class="form-table" id="audit-table">
+              <thead>
+                <tr><th>Timestamp</th><th>Actor</th><th>Acción</th><th>Recurso</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <div class="info-panel" id="detail" style="margin-top:12px;">
+              Seleccione una fila para ver <code>payload_summary</code> (sin PII sensible).
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderPlataformaBreadcrumb } from '../../shared/app-shell.js';
+    import { demoAction } from '../../shared/form-shell.js';
+    import { auditRecords } from '../../shared/demo-data/plataforma.js';
+
+    initAppShell({ activeModule: 'plataforma', console: 'subdere', activeNav: '07-auditoria' });
+    document.getElementById('breadcrumb').innerHTML = renderPlataformaBreadcrumb({
+      consoleLabel: 'Consola SUBDERE',
+      screenLabel: 'Auditoría de plataforma',
+    });
+
+    const tbody = document.querySelector('#audit-table tbody');
+    tbody.innerHTML = auditRecords
+      .map(
+        (r, i) => `<tr data-i="${i}" style="cursor:pointer;">
+          <td>${r.timestamp}</td><td>${r.actor_id}</td><td>${r.action}</td><td>${r.resource}</td>
+        </tr>`,
+      )
+      .join('');
+
+    tbody.addEventListener('click', (e) => {
+      const tr = e.target.closest('tr[data-i]');
+      if (!tr) return;
+      const r = auditRecords[Number(tr.dataset.i)];
+      document.getElementById('detail').innerHTML =
+        `<strong>${r.action}</strong><br />payload_summary: ${r.payload_summary}`;
+    });
+
+    document.getElementById('btn-search').addEventListener('click', () => demoAction('listAuditRecords'));
+  </script>
+</body>
+</html>

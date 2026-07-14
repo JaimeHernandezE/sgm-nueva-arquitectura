@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roles y unidades — Consola municipal</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header"><span>Roles y unidades</span></div>
+          <div class="form-card__body">
+            <h3 style="font-size:14px;margin:0 0 8px;">Unidades organizacionales</h3>
+            <ul id="units-list" style="margin:0 0 20px;padding-left:20px;"></ul>
+            <button class="btn btn--secondary" type="button" id="btn-unit">+ Unidad</button>
+
+            <h3 style="font-size:14px;margin:24px 0 12px;">Asignaciones de rol</h3>
+            <table class="form-table" id="roles-table">
+              <thead>
+                <tr><th>Usuario</th><th>Rol</th><th>Unidad</th><th>Hasta</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <h3 style="font-size:14px;margin:20px 0 12px;">Nueva asignación</h3>
+            <div class="form-row">
+              <label>Usuario <span class="required">*</span></label>
+              <select id="a-user"><option>Ana Pérez</option><option>María López</option></select>
+            </div>
+            <div class="form-row">
+              <label>Rol <span class="required">*</span></label>
+              <select id="a-role"><option>aprobador_solped</option><option>formulador_daf</option><option>solicitante</option></select>
+            </div>
+            <div class="form-row">
+              <label>Unidad <span class="required">*</span></label>
+              <select id="a-unit"><option>Abastecimiento</option><option>Finanzas</option></select>
+            </div>
+            <div class="form-row">
+              <label>Desde <span class="required">*</span></label>
+              <input type="date" value="2026-07-01" />
+            </div>
+            <div class="form-row">
+              <label>Hasta (opcional)</label>
+              <input type="date" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn--secondary" type="button" id="btn-revoke">Revocar asignación</button>
+            <button class="btn btn--primary" type="button" id="btn-assign">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderPlataformaBreadcrumb } from '../../shared/app-shell.js';
+    import { demoAction } from '../../shared/form-shell.js';
+    import { organizationalUnits, roleAssignments } from '../../shared/demo-data/plataforma.js';
+
+    initAppShell({ activeModule: 'plataforma', console: 'municipal', activeNav: '02-roles' });
+    document.getElementById('breadcrumb').innerHTML = renderPlataformaBreadcrumb({
+      consoleLabel: 'Consola municipal',
+      screenLabel: 'Roles y unidades',
+    });
+
+    const roots = organizationalUnits.filter((u) => !u.parent_unit_id);
+    const children = (pid) => organizationalUnits.filter((u) => u.parent_unit_id === pid);
+    document.getElementById('units-list').innerHTML = roots
+      .map((r) => {
+        const kids = children(r.id)
+          .map((c) => `<li>${c.name}</li>`)
+          .join('');
+        return `<li><strong>${r.name}</strong>${kids ? `<ul>${kids}</ul>` : ''}</li>`;
+      })
+      .join('');
+
+    document.querySelector('#roles-table tbody').innerHTML = roleAssignments
+      .map(
+        (a) => `<tr>
+          <td>${a.user_name}</td><td>${a.role}</td><td>${a.unit}</td><td>${a.valid_until}</td>
+        </tr>`,
+      )
+      .join('');
+
+    document.getElementById('btn-unit').addEventListener('click', () => demoAction('createOrganizationalUnit'));
+    document.getElementById('btn-assign').addEventListener('click', () => demoAction('createRoleAssignment'));
+    document.getElementById('btn-revoke').addEventListener('click', () => demoAction('revokeRoleAssignment'));
+  </script>
+</body>
+</html>

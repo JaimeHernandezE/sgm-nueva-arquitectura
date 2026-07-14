@@ -8,11 +8,12 @@ alwaysApply: false
 
 - Assets compartidos en `sgm-prototipos/shared/` (CSS, JS, manifiesto).
 - Toda pantalla usa `initAppShell()` desde `app-shell.js` (sidebar derecho de módulos).
-- Numeración `NN-nombre.html` donde `NN` = etapa×10 + sub-paso.
+- Numeración `NN-nombre.html` donde `NN` = etapa×10 + sub-paso (Adquisiciones); en `plataforma/` el `NN` correlaciona con wireframes de consolas (no es flujo de expediente).
+- Consolas del core viven en `sgm-prototipos/plataforma/` (`subdere/`, `municipal/`); `initAppShell({ activeModule: 'plataforma', console: '…' })`.
 - Sin frameworks; vanilla HTML/CSS/JS con `type="module"`.
 - Enlaces entre módulos vía `siteUrl()` en `app-shell.js` (compatible GitHub Pages y local).
 - Tintes azul/rojizo solo vía clases en `origin.css` (`form-panel--module`, chips).
-- Breadcrumb con `form-shell.js` → Adquisiciones › Expedientes › expediente.
-- Perfiles demo en `expedientes-demo.js`; query `?expediente=` para contexto.
+- Breadcrumb Adquisiciones: `form-shell.js` → Adquisiciones › Expedientes › expediente; breadcrumb core: `renderPlataformaBreadcrumb`.
+- Perfiles demo en `expedientes-demo.js`; query `?expediente=` para contexto de compras.
 - Acciones demo: `demoAction('nombreOperacion')` — sin backend.
-- Etiquetas de campo: obligatorio → `<span class="required">*</span>`; opcional → `(opcional)` en label; condicional → `(obligatorio si …)` — alineado con wireframe y `entidades-core.md`.
+- Etiquetas de campo: obligatorio → `<span class="required">*</span>`; opcional → `(opcional)` en label; condicional → `(obligatorio si …)` — alineado con wireframe y modelo de datos.

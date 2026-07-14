@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Integraciones del municipio — Consola municipal</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header"><span>Integraciones del municipio</span></div>
+          <div class="form-card__body">
+            <table class="form-table" id="int-table">
+              <thead>
+                <tr><th>Proveedor</th><th>Habilitado</th><th>Parámetros no secretos</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <h3 style="font-size:14px;margin:20px 0 12px;">Editar Mercado Público</h3>
+            <div class="form-row">
+              <label><input type="checkbox" id="mp-enabled" checked /> Habilitado <span class="required">*</span></label>
+            </div>
+            <div class="form-row">
+              <label>Código organismo <span class="required">*</span></label>
+              <input type="text" id="mp-org" value="1234" />
+            </div>
+            <button class="btn btn--secondary" type="button" id="btn-rotate">Rotar credencial…</button>
+            <div class="banner banner--info" style="margin-top:12px;">
+              Detalle de campos por proveedor: P-57. Secretos nunca en claro.
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn--primary" type="button" id="btn-save">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderPlataformaBreadcrumb } from '../../shared/app-shell.js';
+    import { demoAction } from '../../shared/form-shell.js';
+    import { tenantIntegrations } from '../../shared/demo-data/plataforma.js';
+
+    initAppShell({ activeModule: 'plataforma', console: 'municipal', activeNav: '06-integraciones' });
+    document.getElementById('breadcrumb').innerHTML = renderPlataformaBreadcrumb({
+      consoleLabel: 'Consola municipal',
+      screenLabel: 'Integraciones del municipio',
+    });
+
+    document.querySelector('#int-table tbody').innerHTML = tenantIntegrations
+      .map(
+        (i) => `<tr>
+          <td>${i.provider_id}</td>
+          <td>${i.enabled ? 'sí' : 'no'}</td>
+          <td>${i.params}</td>
+        </tr>`,
+      )
+      .join('');
+
+    document.getElementById('btn-save').addEventListener('click', () => demoAction('upsertTenantIntegration'));
+    document.getElementById('btn-rotate').addEventListener('click', () => demoAction('rotateIntegrationCredential'));
+  </script>
+</body>
+</html>

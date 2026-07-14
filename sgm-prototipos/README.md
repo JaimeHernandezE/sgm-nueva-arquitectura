@@ -66,15 +66,19 @@ sgm-prototipos/
 ├── index.html              # Redirige a Adquisiciones
 ├── MANIFEST.md
 ├── shared/
-│   ├── app-shell.js        # Sidebar módulos + siteUrl()
+│   ├── app-shell.js        # Sidebar módulos + siteUrl() + nav Plataforma
 │   ├── shell.css
-│   ├── modules-registry.js
+│   ├── modules-registry.js # Adquisiciones + Plataforma (consolas)
 │   ├── expedientes-demo.js # Perfiles de expediente demo (4 modalidades)
-│   ├── demo-data/          # Timeline por expediente (getStages)
+│   ├── demo-data/          # Timeline por expediente + plataforma.js (core)
 │   ├── form-presets.js     # Valores de formulario por expediente
 │   ├── form-bootstrap.js   # Aplica presets al cargar HTML
 │   ├── steps-manifest.json # Pasos transversales del shell
 │   └── steps-manifest-compra-agil.json  # Etapa 3 CA (referencia)
+├── plataforma/             # Consolas del core (SUBDERE + municipal)
+│   ├── index.html          # Hub elegir consola
+│   ├── subdere/            # 01–07 pantallas admin plataforma
+│   └── municipal/          # 01–08 pantallas admin municipio
 └── modulos/
     └── adquisiciones/
         ├── index.html                  # Bienvenida del módulo
@@ -83,6 +87,8 @@ sgm-prototipos/
         ├── procesos-transversales/     # Etapas 1, 2, 4, 5 — comunes a las 4 modalidades
         └── 1-compra-agil/              # Etapa 3 CA (HTML existente; no enlazada desde shell)
 ```
+
+Local: `npx serve sgm-prototipos` → `/plataforma` (hub) o `/modulos/adquisiciones`.
 
 Cada fila del listado abre un expediente con **etapas transversales de ejemplo** (1, 2, 4 y 5) parametrizadas por modalidad vía `?expediente=`. La **etapa 3** queda pendiente en todas. Los formularios transversales reutilizan el mismo HTML; los valores visibles vienen de `form-presets.js`.
 

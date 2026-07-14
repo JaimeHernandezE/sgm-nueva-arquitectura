@@ -49,9 +49,12 @@ Las operaciones *(inferidas)* están listadas en [`contracts.md`](./contracts.md
 ## Fuera de alcance de esta carpeta
 
 - Flujos de negocio de módulos funcionales (Adquisiciones, Presupuestos, etc.).
-- Prototipos HTML (`sgm-prototipos/`) — iteración posterior a wireframes.
 - OpenAPI del core — sigue en P-48.
+
+## Prototipo HTML
+
+[`sgm-prototipos/plataforma/`](../../sgm-prototipos/plataforma/index.html) — hub de consolas SUBDERE y municipal (véase [`MANIFEST.md`](../../sgm-prototipos/MANIFEST.md) sección Plataforma).
 
 ## Estado
 
-Wireframes de ambas consolas creados (**P-52**). Cuerpos HTTP completos de ops admin pendientes en **P-48**.
+Wireframes (**P-52**) y prototipos HTML de ambas consolas. Cuerpos HTTP de ops admin pendientes en **P-48**.

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión de tenants — Consola SUBDERE</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header">
+            <span>Tenants</span>
+            <button class="btn btn--primary" type="button" id="btn-alta">+ Alta</button>
+          </div>
+          <div class="form-card__body">
+            <table class="form-table" id="tenants-table">
+              <thead>
+                <tr><th>Nombre</th><th>Modo consumo</th><th>Estado</th><th>Módulos</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <h3 style="font-size:14px;margin:24px 0 12px;">Detalle / edición</h3>
+            <div class="form-row">
+              <label>Nombre <span class="required">*</span></label>
+              <input type="text" id="f-name" value="Mun. Alpha" />
+            </div>
+            <div class="form-row">
+              <label>Modo de consumo <span class="required">*</span></label>
+              <select id="f-mode">
+                <option value="hosted_full" selected>hosted_full</option>
+                <option value="hosted_hybrid">hosted_hybrid</option>
+                <option value="api_a_la_carte">api_a_la_carte</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>Módulos habilitados <span class="required">*</span></label>
+              <div><label><input type="checkbox" checked /> Adquisiciones</label></div>
+              <div><label><input type="checkbox" /> Presupuestos</label></div>
+            </div>
+            <div class="form-row">
+              <label>Schema (solo lectura)</label>
+              <input type="text" value="tenant_alpha" readonly />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn--secondary" type="button" id="btn-suspend">Suspender</button>
+            <button class="btn btn--secondary" type="button" id="btn-modules">Guardar módulos</button>
+            <button class="btn btn--primary" type="button" id="btn-save">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderPlataformaBreadcrumb } from '../../shared/app-shell.js';
+    import { demoAction } from '../../shared/form-shell.js';
+    import { tenants } from '../../shared/demo-data/plataforma.js';
+
+    initAppShell({ activeModule: 'plataforma', console: 'subdere', activeNav: '01-tenants' });
+    document.getElementById('breadcrumb').innerHTML = renderPlataformaBreadcrumb({
+      consoleLabel: 'Consola SUBDERE',
+      screenLabel: 'Gestión de tenants',
+    });
+
+    document.querySelector('#tenants-table tbody').innerHTML = tenants
+      .map(
+        (t) => `<tr>
+          <td><button class="btn btn--link" type="button" data-id="${t.id}">${t.name}</button></td>
+          <td>${t.consumption_mode}</td>
+          <td><span class="badge badge--active">${t.status}</span></td>
+          <td>${t.enabled_modules.join(', ')}</td>
+        </tr>`,
+      )
+      .join('');
+
+    document.querySelector('#tenants-table tbody').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-id]');
+      if (btn) demoAction('getTenant (' + btn.dataset.id + ')');
+    });
+
+    document.getElementById('btn-alta').addEventListener('click', () => demoAction('createTenant'));
+    document.getElementById('btn-save').addEventListener('click', () => demoAction('updateTenant'));
+    document.getElementById('btn-modules').addEventListener('click', () => demoAction('setEnabledModules'));
+    document.getElementById('btn-suspend').addEventListener('click', () => {
+      if (confirm('¿Suspender tenant?')) demoAction('suspendTenant');
+    });
+  </script>
+</body>
+</html>

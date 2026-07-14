@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Provisión de almacenamiento — Consola SUBDERE</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header"><span>Almacenamiento platform por tenant</span></div>
+          <div class="form-card__body">
+            <div class="form-row">
+              <label>Tenant <span class="required">*</span></label>
+              <select id="tenant">
+                <option value="t-alpha">Mun. Alpha</option>
+                <option value="t-beta">Mun. Beta</option>
+                <option value="t-gamma">Mun. Gamma</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>Backend actual</label>
+              <input type="text" value="platform" readonly />
+            </div>
+            <div class="form-row">
+              <label>Bucket</label>
+              <input type="text" id="bucket" value="sgm-tenant-alpha" readonly />
+            </div>
+            <div class="form-row">
+              <label>Estado</label>
+              <span class="badge badge--active">provisioned</span>
+            </div>
+            <div class="banner banner--info">
+              tenant_owned y external_dms se configuran en la consola municipal (hosting híbrido).
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn--secondary" type="button" id="btn-retry">Reintentar</button>
+            <button class="btn btn--primary" type="button" id="btn-provision">Provisionar bucket</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderPlataformaBreadcrumb } from '../../shared/app-shell.js';
+    import { demoAction } from '../../shared/form-shell.js';
+
+    initAppShell({ activeModule: 'plataforma', console: 'subdere', activeNav: '05-storage' });
+    document.getElementById('breadcrumb').innerHTML = renderPlataformaBreadcrumb({
+      consoleLabel: 'Consola SUBDERE',
+      screenLabel: 'Provisión de almacenamiento',
+    });
+
+    document.getElementById('btn-provision').addEventListener('click', () => demoAction('provisionPlatformBucket'));
+    document.getElementById('btn-retry').addEventListener('click', () => demoAction('provisionPlatformBucket (retry)'));
+  </script>
+</body>
+</html>

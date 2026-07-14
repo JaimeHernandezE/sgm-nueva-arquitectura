@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parámetros normativos — Consola SUBDERE</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header">
+            <span>Parámetros normativos</span>
+            <button class="btn btn--primary" type="button" id="btn-propose">Proponer cambio</button>
+          </div>
+          <div class="form-card__body">
+            <table class="form-table" id="params-table">
+              <thead>
+                <tr><th>Clave</th><th>Valor</th><th>Vigente desde</th><th>Estado</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <div id="proposal-panel" hidden style="margin-top:20px;">
+              <h3 style="font-size:14px;margin:0 0 12px;">Propuesta / aprobación (doble control)</h3>
+              <div class="form-row">
+                <label>Clave <span class="required">*</span></label>
+                <input type="text" id="p-key" value="umbral_compra_agil" readonly />
+              </div>
+              <div class="form-row">
+                <label>Nuevo valor <span class="required">*</span></label>
+                <input type="text" id="p-value" value="120 UTM" />
+              </div>
+              <div class="form-row">
+                <label>Vigente desde <span class="required">*</span></label>
+                <input type="date" id="p-from" value="2026-08-01" />
+              </div>
+              <div class="form-row">
+                <label>Referencia legal <span class="required">*</span></label>
+                <input type="text" id="p-legal" value="Propuesta piloto 2026-H2" />
+              </div>
+              <div class="banner banner--info">Propuesto por: Operador SUBDERE A — el aprobador debe ser otra persona.</div>
+              <div class="form-actions" style="margin-top:12px;">
+                <button class="btn btn--secondary" type="button" id="btn-send">Enviar a aprobación</button>
+                <button class="btn btn--primary" type="button" id="btn-approve">Aprobar</button>
+                <button class="btn btn--secondary" type="button" id="btn-reject">Rechazar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderPlataformaBreadcrumb } from '../../shared/app-shell.js';
+    import { demoAction } from '../../shared/form-shell.js';
+    import { normativeParameters } from '../../shared/demo-data/plataforma.js';
+
+    initAppShell({ activeModule: 'plataforma', console: 'subdere', activeNav: '02-normativos' });
+    document.getElementById('breadcrumb').innerHTML = renderPlataformaBreadcrumb({
+      consoleLabel: 'Consola SUBDERE',
+      screenLabel: 'Parámetros normativos',
+    });
+
+    document.querySelector('#params-table tbody').innerHTML = normativeParameters
+      .map(
+        (p) => `<tr>
+          <td>${p.key}</td>
+          <td>${p.value}</td>
+          <td>${p.valid_from}</td>
+          <td><span class="badge badge--active">${p.status}</span></td>
+        </tr>`,
+      )
+      .join('');
+
+    document.getElementById('btn-propose').addEventListener('click', () => {
+      document.getElementById('proposal-panel').hidden = false;
+    });
+    document.getElementById('btn-send').addEventListener('click', () => demoAction('proposeNormativeParameter'));
+    document.getElementById('btn-approve').addEventListener('click', () => demoAction('approveNormativeParameter'));
+    document.getElementById('btn-reject').addEventListener('click', () => demoAction('approveNormativeParameter (reject)'));
+  </script>
+</body>
+</html>

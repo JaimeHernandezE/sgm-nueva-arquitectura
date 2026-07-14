@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Excepciones SoD — Consola municipal</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header">
+            <span>Excepciones de segregación de funciones</span>
+            <button class="btn btn--primary" type="button" id="btn-new">+ Nueva</button>
+          </div>
+          <div class="form-card__body">
+            <table class="form-table" id="sod-table">
+              <thead>
+                <tr><th>Usuario</th><th>Regla SoD</th><th>Motivo</th><th>Hasta</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <h3 style="font-size:14px;margin:20px 0 12px;">Nueva excepción</h3>
+            <div class="form-row">
+              <label>Usuario <span class="required">*</span></label>
+              <select><option>Ana Pérez</option></select>
+            </div>
+            <div class="form-row">
+              <label>Regla SoD <span class="required">*</span></label>
+              <select><option>aprobador ≠ formulador</option></select>
+            </div>
+            <div class="form-row">
+              <label>Motivo <span class="required">*</span></label>
+              <textarea placeholder="Justificación auditada…"></textarea>
+            </div>
+            <div class="form-row">
+              <label>Hasta <span class="required">*</span></label>
+              <input type="date" value="2026-12-31" />
+            </div>
+            <div class="banner banner--info">Toda excepción es explícita, registrada y auditada (P-25).</div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn--secondary" type="button" id="btn-revoke">Revocar</button>
+            <button class="btn btn--primary" type="button" id="btn-save">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderPlataformaBreadcrumb } from '../../shared/app-shell.js';
+    import { demoAction } from '../../shared/form-shell.js';
+    import { sodExceptions } from '../../shared/demo-data/plataforma.js';
+
+    initAppShell({ activeModule: 'plataforma', console: 'municipal', activeNav: '04-sod' });
+    document.getElementById('breadcrumb').innerHTML = renderPlataformaBreadcrumb({
+      consoleLabel: 'Consola municipal',
+      screenLabel: 'Excepciones SoD',
+    });
+
+    document.querySelector('#sod-table tbody').innerHTML = sodExceptions
+      .map(
+        (e) => `<tr>
+          <td>${e.user_name}</td><td>${e.rule}</td><td>${e.reason}</td><td>${e.valid_until}</td>
+        </tr>`,
+      )
+      .join('');
+
+    document.getElementById('btn-new').addEventListener('click', () => demoAction('listSodExceptions'));
+    document.getElementById('btn-save').addEventListener('click', () => demoAction('createSodException'));
+    document.getElementById('btn-revoke').addEventListener('click', () => demoAction('revokeSodException'));
+  </script>
+</body>
+</html>

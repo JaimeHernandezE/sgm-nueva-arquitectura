@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Usuarios — Consola municipal</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header">
+            <span>Usuarios del municipio</span>
+            <button class="btn btn--primary" type="button" id="btn-alta">+ Alta</button>
+          </div>
+          <div class="form-card__body">
+            <table class="form-table" id="users-table">
+              <thead>
+                <tr><th>RUN</th><th>Nombre</th><th>Estado</th><th>Últ. acceso</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <h3 style="font-size:14px;margin:24px 0 12px;">Usuario</h3>
+            <div class="form-row">
+              <label>RUN <span class="required">*</span></label>
+              <input type="text" id="u-run" value="12.345.678-9" />
+            </div>
+            <div class="form-row">
+              <label>Nombre visible <span class="required">*</span></label>
+              <input type="text" id="u-name" value="Ana Pérez" />
+            </div>
+            <div class="form-row">
+              <label>Estado <span class="required">*</span></label>
+              <select id="u-status">
+                <option value="active" selected>active</option>
+                <option value="suspended">suspended</option>
+                <option value="revoked">revoked</option>
+              </select>
+            </div>
+            <p class="subtitle">Roles se asignan en «Roles y unidades».</p>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn--secondary" type="button" id="btn-revoke">Revocar acceso</button>
+            <button class="btn btn--primary" type="button" id="btn-save">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderPlataformaBreadcrumb } from '../../shared/app-shell.js';
+    import { demoAction } from '../../shared/form-shell.js';
+    import { users } from '../../shared/demo-data/plataforma.js';
+
+    initAppShell({ activeModule: 'plataforma', console: 'municipal', activeNav: '01-usuarios' });
+    document.getElementById('breadcrumb').innerHTML = renderPlataformaBreadcrumb({
+      consoleLabel: 'Consola municipal',
+      screenLabel: 'Usuarios',
+    });
+
+    document.querySelector('#users-table tbody').innerHTML = users
+      .map(
+        (u) => `<tr>
+          <td>${u.run}</td><td>${u.display_name}</td>
+          <td><span class="badge badge--active">${u.status}</span></td>
+          <td>${u.last_access}</td>
+        </tr>`,
+      )
+      .join('');
+
+    document.getElementById('btn-alta').addEventListener('click', () => demoAction('createUser'));
+    document.getElementById('btn-save').addEventListener('click', () => demoAction('updateUser'));
+    document.getElementById('btn-revoke').addEventListener('click', () => {
+      if (confirm('¿Revocar acceso del usuario?')) demoAction('revokeUser');
+    });
+  </script>
+</body>
+</html>

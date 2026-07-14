@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plataforma — Consolas del core — SGM</title>
+  <link rel="stylesheet" href="../shared/tokens.css" />
+  <link rel="stylesheet" href="../shared/layout.css" />
+  <link rel="stylesheet" href="../shared/shell.css" />
+  <link rel="stylesheet" href="../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div class="welcome-card">
+          <h1>Core de plataforma</h1>
+          <p>
+            Consolas de administración que consumen el contrato del core sin privilegios.
+            Toda acción es una operación de API auditada.
+          </p>
+          <div style="display:grid;gap:16px;margin-top:24px;max-width:560px;">
+            <a class="btn btn--primary" id="link-subdere" href="subdere/01-gestion-tenants.html" style="display:block;text-align:center;padding:16px;">
+              Consola SUBDERE
+              <small style="display:block;font-weight:400;margin-top:4px;opacity:.9;">
+                Tenants, parámetros normativos, M2M, integraciones, storage platform, auditoría
+              </small>
+            </a>
+            <a class="btn btn--secondary" id="link-municipal" href="municipal/01-usuarios.html" style="display:block;text-align:center;padding:16px;">
+              Consola municipal
+              <small style="display:block;font-weight:400;margin-top:4px;">
+                Usuarios, roles, SoD, parámetros operativos, integraciones del tenant, documentos
+              </small>
+            </a>
+          </div>
+        </div>
+        <p class="subtitle">Prototipo interactivo para validación UX — no es diseño visual de licitación.</p>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, siteUrl } from '../shared/app-shell.js';
+    initAppShell({ activeModule: 'plataforma', activeNav: 'hub', console: null });
+    document.getElementById('link-subdere').href = siteUrl('plataforma/subdere/01-gestion-tenants.html');
+    document.getElementById('link-municipal').href = siteUrl('plataforma/municipal/01-usuarios.html');
+  </script>
+</body>
+</html>

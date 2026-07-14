@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Integraciones de plataforma — Consola SUBDERE</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header"><span>Integraciones de plataforma</span></div>
+          <div class="form-card__body">
+            <h3 style="font-size:14px;margin:0 0 12px;">Clave Única (OIDC)</h3>
+            <div class="form-row">
+              <label>Issuer URL <span class="required">*</span></label>
+              <input type="url" id="cu-issuer" value="https://accounts.claveunica.gob.cl" />
+            </div>
+            <div class="form-row">
+              <label>Client ID <span class="required">*</span></label>
+              <input type="text" id="cu-client" value="sgm-plataforma" />
+            </div>
+            <button class="btn btn--secondary" type="button" id="btn-cu">Guardar CU</button>
+
+            <h3 style="font-size:14px;margin:24px 0 12px;">Mercado Público — webhook nacional</h3>
+            <div class="form-row">
+              <label>Endpoint callback (solo lectura)</label>
+              <input type="text" value="https://api.sgm.subdere.gob.cl/webhooks/mp" readonly />
+            </div>
+            <div class="form-row">
+              <label>Estado suscripción</label>
+              <input type="text" value="activo" readonly />
+            </div>
+            <button class="btn btn--secondary" type="button" id="btn-mp">Guardar MP plataforma</button>
+
+            <h3 style="font-size:14px;margin:24px 0 12px;">Catálogo DmsAdapter (solo lectura)</h3>
+            <table class="form-table" id="dms-table">
+              <thead>
+                <tr><th>adapter_id</th><th>Nombre</th><th>api_style</th><th>versión</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <div class="banner banner--info" style="margin-top:12px;">
+              Secretos de CU/MP no se muestran en claro — rotación vía gestor (P-57).
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderPlataformaBreadcrumb } from '../../shared/app-shell.js';
+    import { demoAction } from '../../shared/form-shell.js';
+    import { dmsAdapters } from '../../shared/demo-data/plataforma.js';
+
+    initAppShell({ activeModule: 'plataforma', console: 'subdere', activeNav: '04-integraciones' });
+    document.getElementById('breadcrumb').innerHTML = renderPlataformaBreadcrumb({
+      consoleLabel: 'Consola SUBDERE',
+      screenLabel: 'Integraciones de plataforma',
+    });
+
+    document.querySelector('#dms-table tbody').innerHTML = dmsAdapters
+      .map(
+        (a) => `<tr>
+          <td>${a.adapter_id}</td><td>${a.name}</td><td>${a.api_style}</td><td>${a.version}</td>
+        </tr>`,
+      )
+      .join('');
+
+    document.getElementById('btn-cu').addEventListener('click', () => demoAction('upsertPlatformIntegration (clave_unica)'));
+    document.getElementById('btn-mp').addEventListener('click', () => demoAction('upsertPlatformIntegration (mercado_publico)'));
+  </script>
+</body>
+</html>
