@@ -57,6 +57,8 @@ Requiere servidor HTTP (los módulos ES no funcionan con doble clic en el archiv
 npx serve sgm-prototipos
 ```
 
+`serve` activa *clean URLs* (quita `.html` con redirect). Los enlaces del prototipo se generan **sin** `.html` (vía `siteUrl` / `relativeFormHref`) para no perder el query `?expediente=` en esas redirecciones.
+
 ## Estructura
 
 ```

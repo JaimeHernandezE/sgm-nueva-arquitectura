@@ -57,12 +57,11 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, relativeFormHref } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
     const expedienteId = getExpedienteId();
-    const qs = `?expediente=${encodeURIComponent(expedienteId)}`;
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
@@ -80,9 +79,9 @@
     document.getElementById('continue').addEventListener('click', () => {
       const decision = document.querySelector('input[name="decision"]:checked').value;
       if (decision === 'reselect') {
-        window.location.href = `32-cierre-seleccion-oferta.html${qs}`;
+        window.location.href = relativeFormHref('32-cierre-seleccion-oferta.html');
       } else {
-        window.location.href = `../procesos-transversales/23-vinculacion-mp.html${qs}`;
+        window.location.href = relativeFormHref('../procesos-transversales/23-vinculacion-mp.html');
       }
     });
   </script>

@@ -181,7 +181,9 @@ El RBAC es del core, pero cada request llega a un módulo. Cómo valida el módu
 
 ## 9. Pantallas de administración mínima
 
-Dos consolas, ambas consumidoras sin privilegios del contrato del core (§2). Se especifican con wireframes de baja fidelidad según `plantilla-maestra-sgm.md` §7 — estructura y operaciones, no estética:
+Dos consolas, ambas consumidoras sin privilegios del contrato del core (§2). Se especifican con wireframes de baja fidelidad según `plantilla-maestra-sgm.md` §7 — estructura y operaciones, no estética.
+
+**Artefactos:** overview e índice en [`plataforma/overview.md`](../plataforma/overview.md); wireframes en [`plataforma/wireframes/`](../plataforma/wireframes/README.md). Operaciones admin aún sin cuerpo HTTP completo: `plataforma/contracts.md` §2.11.
 
 ### 9.1 Consola de plataforma (SUBDERE)
 
@@ -208,7 +210,7 @@ Dos consolas, ambas consumidoras sin privilegios del contrato del core (§2). Se
 | Almacenamiento de documentos | `TenantStorageConfig`: bucket propio (`tenant_owned`) o DMS (`external_dms`) |
 | Recertificación de accesos | Reporte de cuentas y última actividad (`seguridad.md` §9.4) |
 
-**[PENDIENTE P-52]** Wireframes de ambas consolas según el estándar de la plantilla maestra — mismo tratamiento que las pantallas de módulo: toda acción mapeada a operación del contrato del core.
+**P-52:** wireframes de ambas consolas creados (`plataforma/wireframes/`); cuerpos HTTP de ops *(inferidas)* pendientes en **P-48** (§2.11 del contrato).
 
 ## 10. Foliación
 
@@ -228,7 +230,7 @@ Los folios (`ADQ-AAAA-NNNNN`) son hoy responsabilidad del módulo. Se mantiene a
 
 ## 12. Pendientes abiertos
 
-Nuevos de este documento: **P-48** (contracts.md de plataforma — integraciones, documentos, interfaz DMS), **P-49** (estructura organizacional municipal / `OrganizationalUnit`), **P-50** (proceso de incorporación de municipio y migración de datos históricos), **P-51** (mecanismo de autorización en runtime), **P-52** (wireframes de consolas de administración), **P-57** (catálogo de proveedores externos y config por tenant), **P-58** (contrato documental: MIME, tamaños, retención), **P-59** (interfaz adaptador DMS + primer producto certificado / CMIS).
+Nuevos de este documento: **P-48** (contracts.md de plataforma — integraciones, documentos, interfaz DMS, cuerpos HTTP de ops admin §2.11), **P-49** (estructura organizacional municipal / `OrganizationalUnit`), **P-50** (proceso de incorporación de municipio y migración de datos históricos), **P-51** (mecanismo de autorización en runtime), **P-52** (wireframes de consolas — creados; ver `plataforma/wireframes/`), **P-57** (catálogo de proveedores externos y config por tenant), **P-58** (contrato documental: MIME, tamaños, retención), **P-59** (interfaz adaptador DMS + primer producto certificado / CMIS).
 
 Preexistentes que este documento organiza: P-01, P-02, P-05, P-06, P-15, P-22, P-23, P-24, P-25, P-26, P-28, P-33, P-37, P-39, P-42.
 

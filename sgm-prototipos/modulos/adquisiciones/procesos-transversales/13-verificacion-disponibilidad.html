@@ -69,13 +69,12 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
     const expedienteId = getExpedienteId();
-    const qs = `?expediente=${encodeURIComponent(expedienteId)}`;
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
@@ -90,8 +89,8 @@
       mode: 'dependencia',
     });
 
-    document.getElementById('financing-link').href = `16-solicitar-financiamiento.html${qs}`;
-    document.getElementById('financing-btn').href = `16-solicitar-financiamiento.html${qs}`;
+    document.getElementById('financing-link').href = relativeFormHref('16-solicitar-financiamiento.html');
+    document.getElementById('financing-btn').href = relativeFormHref('16-solicitar-financiamiento.html');
 
     bootstrapFormPage('solped-step');
 

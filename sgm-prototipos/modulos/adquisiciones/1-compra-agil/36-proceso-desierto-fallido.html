@@ -49,12 +49,11 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
     const expedienteId = getExpedienteId();
-    const qs = `?expediente=${encodeURIComponent(expedienteId)}`;
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
@@ -74,7 +73,7 @@
       if (decision === 'republish') {
         resultBanner.classList.add('banner--info');
         resultBanner.textContent = 'Republicando — redirigiendo a la vinculación MP (2.3) para el nuevo proceso…';
-        setTimeout(() => { window.location.href = `../procesos-transversales/23-vinculacion-mp.html${qs}`; }, 800);
+        setTimeout(() => { window.location.href = relativeFormHref('../procesos-transversales/23-vinculacion-mp.html'); }, 800);
       } else if (decision === 'reassess') {
         resultBanner.style.color = '#8c6d1f';
         resultBanner.innerHTML = 'Procedimiento de reversión formal a etapa 2 aún no definido — <a href="../../../../sgm-docs/arquitectura/pendientes.md" target="_blank" rel="noopener">PENDIENTE P-34</a>. No se puede ejecutar en este prototipo.';

@@ -62,12 +62,11 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
     const expedienteId = getExpedienteId();
-    const qs = `?expediente=${encodeURIComponent(expedienteId)}`;
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
@@ -121,7 +120,7 @@
         resultBanner.textContent = 'OC Rechazada por el proveedor — excluyente con la aceptación.';
         document.getElementById('header-badge').textContent = 'Rechazada';
         nextStepText.textContent = 'Continuar a 3.5 (Rechazo de la OC).';
-        nextStepLink.href = `35-rechazo-oc.html${qs}`;
+        nextStepLink.href = relativeFormHref('35-rechazo-oc.html');
         executeBtn.disabled = true;
         simulateSelect.disabled = true;
         nextStepPanel.classList.remove('hidden');

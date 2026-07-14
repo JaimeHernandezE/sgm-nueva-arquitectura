@@ -71,12 +71,11 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
     const expedienteId = getExpedienteId();
-    const qs = `?expediente=${encodeURIComponent(expedienteId)}`;
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
@@ -95,9 +94,9 @@
       demoAction('Deep link a Mercado Público (emisión de OC en el portal)');
     });
 
-    document.getElementById('reselect-link').href = `32-cierre-seleccion-oferta.html${qs}`;
-    document.getElementById('cancel-link').href = `36-proceso-desierto-fallido.html${qs}`;
-    document.getElementById('next-step-link').href = `34-aceptacion-oc.html${qs}`;
+    document.getElementById('reselect-link').href = relativeFormHref('32-cierre-seleccion-oferta.html');
+    document.getElementById('cancel-link').href = relativeFormHref('36-proceso-desierto-fallido.html');
+    document.getElementById('next-step-link').href = relativeFormHref('34-aceptacion-oc.html');
 
     const ocNumberInput = document.getElementById('oc-number');
     const eligibilitySelect = document.getElementById('simulate-eligibility');

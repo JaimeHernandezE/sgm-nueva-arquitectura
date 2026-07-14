@@ -200,6 +200,51 @@ Patrón recomendado para módulos: frontend sube aquí → obtiene `DocumentRef`
 - **Uso:** catálogo SUBDERE de adaptadores `external_dms`
 - **Respuesta:** colección de `DmsAdapter`
 
+### 2.11 Consolas admin — operations pendientes (P-48 / P-52)
+
+Operaciones citadas en wireframes de [`overview.md`](./overview.md) / [`wireframes/`](./wireframes/README.md) que **aún no tienen cuerpo HTTP completo** en §2.1–§2.10. Los botones de UI las invocan por `operationId`; el detalle request/response se cierra en **P-48**.
+
+#### Consola SUBDERE
+
+| operationId | Pantalla wireframe | Notas |
+|---|---|---|
+| `createTenant` | `subdere/01-gestion-tenants` | Alta tenant + disparo aprovisionamiento |
+| `updateTenant` | idem | Nombre, metadatos |
+| `suspendTenant` | idem | `status = suspended` |
+| `setEnabledModules` | idem | `Tenant.enabled_modules` |
+| `proposeNormativeParameter` | `subdere/02-parametros-normativos` | Doble control — proponente |
+| `approveNormativeParameter` | idem | Doble control — aprobador ≠ proponente |
+| `listApiClients` | `subdere/03-clientes-m2m` | Listado admin |
+| `rotateApiClientSecret` | idem | Secreto una sola vez en respuesta |
+| `upsertPlatformIntegration` | `subdere/04-integraciones-plataforma` | CU OIDC, webhook MP nacional |
+| `provisionPlatformBucket` | `subdere/05-provision-almacenamiento` | Backend `platform` por tenant |
+| *(observabilidad)* | `subdere/06-monitoreo-tenant` | Sin operationId hasta P-08 / musts §8 |
+
+#### Consola municipal
+
+| operationId | Pantalla wireframe | Notas |
+|---|---|---|
+| `listUsers` | `municipal/01-usuarios` | Scope tenant |
+| `createUser` | idem | Alta funcionario |
+| `updateUser` | idem | Metadatos / estado |
+| `revokeUser` | idem | Baja inmediata |
+| `listOrganizationalUnits` | `municipal/02-roles-unidades` | Árbol unidades |
+| `createOrganizationalUnit` | idem | Alta unidad |
+| `updateOrganizationalUnit` | idem | Renombre / padre |
+| `createRoleAssignment` | idem | Con validación SoD |
+| `revokeRoleAssignment` | idem | Fin asignación |
+| `listDelegations` | `municipal/03-subrogancias` | |
+| `createDelegation` | idem | `valid_until` obligatorio |
+| `revokeDelegation` | idem | |
+| `listSodExceptions` | `municipal/04-excepciones-sod` | |
+| `createSodException` | idem | Auditada (P-25) |
+| `revokeSodException` | idem | |
+| `listTenantParameters` | `municipal/05-parametros-operativos` | Catálogo permitido |
+| `upsertTenantParameter` | idem | |
+| `listTenantIntegrations` | `municipal/06-integraciones-municipio` | |
+| `getTenantStorage` | `municipal/07-almacenamiento-documentos` | Lectura config C10 |
+| `listAccessRecertificationReport` | `municipal/08-recertificacion-accesos` | Reporte §9.4 seguridad |
+
 ---
 
 ## 3. Dependencias que requiere

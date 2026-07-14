@@ -154,7 +154,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
@@ -299,8 +299,6 @@
     const nextStepPanel = document.getElementById('next-step-panel');
     const nextStepText = document.getElementById('next-step-text');
     const nextStepLink = document.getElementById('next-step-link');
-    const qs = `?expediente=${encodeURIComponent(expedienteId)}`;
-
     confirmBtn.addEventListener('click', () => {
       demoAction('confirmProcurementModality');
       document.getElementById('header-badge').textContent = 'Confirmada';
@@ -310,10 +308,10 @@
 
       if (jefaturaApprovalCheck.checked) {
         nextStepText.textContent = 'Se solicitó aprobación de jefatura (2.2) antes de continuar.';
-        nextStepLink.href = `22-aprobacion-jefatura.html${qs}`;
+        nextStepLink.href = relativeFormHref('22-aprobacion-jefatura.html');
       } else {
         nextStepText.textContent = 'No se solicitó aprobación de jefatura — continúa directo a la vinculación con Mercado Público (2.3).';
-        nextStepLink.href = `23-vinculacion-mp.html${qs}`;
+        nextStepLink.href = relativeFormHref('23-vinculacion-mp.html');
       }
       nextStepPanel.classList.remove('hidden');
     });

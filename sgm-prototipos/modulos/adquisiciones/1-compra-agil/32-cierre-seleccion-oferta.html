@@ -74,12 +74,11 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
     const expedienteId = getExpedienteId();
-    const qs = `?expediente=${encodeURIComponent(expedienteId)}`;
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
@@ -105,7 +104,7 @@
     const nextStepPanel = document.getElementById('next-step-panel');
     const nextStepLink = document.getElementById('next-step-link');
 
-    nextStepLink.href = `33-emision-oc.html${qs}`;
+    nextStepLink.href = relativeFormHref('33-emision-oc.html');
 
     function toggleJustification() {
       justificationRow.classList.toggle('hidden', lowestPriceCheck.checked);

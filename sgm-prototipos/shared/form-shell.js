@@ -10,11 +10,20 @@ export function getExpedienteUrl(expedienteId) {
   return siteUrl(getExpedienteDetailUrl(expedienteId));
 }
 
+/**
+ * Href relativo a otra pantalla del prototipo (mismo árbol).
+ * Sin extensión .html: evita que cleanUrls de `serve` pierda ?expediente=.
+ */
+export function relativeFormHref(htmlPath, expedienteId = getExpedienteIdFromUrl()) {
+  const path = htmlPath.replace(/\.html$/i, '').replace(/\/index$/i, '/');
+  return `${path}?expediente=${encodeURIComponent(expedienteId)}`;
+}
+
 /** URL absoluta al prototipo HTML de un sub-paso (evita rutas relativas rotas desde 00-expediente). */
 export function getStepFormUrl(stepId, expedienteId = getExpedienteIdFromUrl()) {
   const entry = stepsManifest.steps.find((s) => s.stepId === stepId);
   if (!entry?.prototypeHtml) return null;
-  return `${siteUrl(entry.prototypeHtml)}?expediente=${encodeURIComponent(expedienteId)}`;
+  return siteUrl(`${entry.prototypeHtml}?expediente=${encodeURIComponent(expedienteId)}`);
 }
 
 export function renderBreadcrumb({ expedienteId, stageName, stepName, stepId }) {

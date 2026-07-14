@@ -50,12 +50,11 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, relativeFormHref } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
     const expedienteId = getExpedienteId();
-    const qs = `?expediente=${encodeURIComponent(expedienteId)}`;
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
@@ -74,7 +73,7 @@
     const nextStepPanel = document.getElementById('next-step-panel');
     const nextStepLink = document.getElementById('next-step-link');
 
-    nextStepLink.href = `32-cierre-seleccion-oferta.html${qs}`;
+    nextStepLink.href = relativeFormHref('32-cierre-seleccion-oferta.html');
 
     simulateBtn.addEventListener('click', () => {
       document.getElementById('header-badge').textContent = 'Cerrado';

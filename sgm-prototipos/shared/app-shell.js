@@ -2,17 +2,43 @@ import { modules, adquisicionesNav } from './modules-registry.js';
 
 let siteBase = null;
 
+/**
+ * Raíz del sitio de prototipos ('' | '/sgm-nueva-arquitectura' | '/sgm-prototipos' | …).
+ * Se deriva de la URL de este módulo (…/shared/app-shell.js), no de un nombre de repo fijo.
+ */
 export function getSiteBase() {
   if (siteBase !== null) return siteBase;
-  const marker = '/sgm-nueva-arquitectura';
-  siteBase = window.location.pathname.includes(marker) ? marker : '';
+  const pathname = new URL(import.meta.url).pathname;
+  const sharedIdx = pathname.lastIndexOf('/shared/');
+  siteBase = sharedIdx >= 0 ? pathname.slice(0, sharedIdx) : '';
   return siteBase;
 }
 
+/**
+ * Quita .html / index.html para que servidores con cleanUrls (p. ej. `npx serve`)
+ * no redirijan perdiendo el query string (?expediente=…).
+ */
+function normalizePublicPath(relativePath) {
+  let path = relativePath.replace(/^\//, '');
+  let query = '';
+  const q = path.indexOf('?');
+  if (q >= 0) {
+    query = path.slice(q);
+    path = path.slice(0, q);
+  }
+  if (path.endsWith('/index.html')) {
+    path = path.slice(0, -'index.html'.length);
+  } else if (path.endsWith('.html')) {
+    path = path.slice(0, -'.html'.length);
+  }
+  return { path, query };
+}
+
 export function siteUrl(relativePath) {
-  const clean = relativePath.replace(/^\//, '');
+  const { path, query } = normalizePublicPath(relativePath);
   const base = getSiteBase();
-  return base ? `${base}/${clean}` : `/${clean}`;
+  const url = base ? `${base}/${path}` : `/${path}`;
+  return url + query;
 }
 
 function renderModuleList(activeModuleId) {

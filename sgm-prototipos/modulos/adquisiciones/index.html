@@ -31,7 +31,7 @@
             las etapas 2 y 3 varían según la modalidad.
           </p>
           <p>
-            <a class="btn btn--primary" href="01-listado-expedientes.html">Ver expedientes</a>
+            <a class="btn btn--primary" id="ver-expedientes" href="01-listado-expedientes.html">Ver expedientes</a>
           </p>
         </div>
         <p class="subtitle">Prototipo interactivo para validación UX — no es diseño visual de licitación.</p>
@@ -40,8 +40,13 @@
     <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
   </div>
   <script type="module">
-    import { initAppShell } from '../../shared/app-shell.js';
+    import { initAppShell, siteUrl } from '../../shared/app-shell.js';
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'home' });
+    // Absolute: with cleanUrls the URL is /modulos/adquisiciones (no trailing slash),
+    // so a relative href would resolve to /modulos/01-listado-expedientes (404).
+    document.getElementById('ver-expedientes').href = siteUrl(
+      'modulos/adquisiciones/01-listado-expedientes.html',
+    );
   </script>
 </body>
 </html>
