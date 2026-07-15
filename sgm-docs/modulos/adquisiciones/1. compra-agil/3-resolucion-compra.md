@@ -4,6 +4,8 @@
 
 *Toda la etapa se rige por el estándar MP ↔ SGM de `plantilla-maestra-sgm.md` §5: integración solo lectura, clasificación Informativo/Gestión, lecturas confirmadas vs. deseadas y modo degradado. Lectura confirmada disponible hoy: **OC Aceptada**. Las demás lecturas de esta etapa son **deseadas** (dependen de la negociación con ChileCompra) y cada sub-paso documenta su modo degradado.*
 
+*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md) (P-24).*
+
 ---
 
 ## 3.1 — Período de cotización
@@ -43,7 +45,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Abastecimiento |
-| Rol | Usuario |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | Mercado Público |
 | Optativo | Falso |
 | Interacción MP | **Informativo** ⚠ *(candidato a Gestión optativa, ver pendiente)* |
@@ -76,7 +78,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Abastecimiento |
-| Rol | Usuario |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | Mercado Público |
 | Optativo | Falso |
 | Interacción MP | **Gestión condicional** |
@@ -143,7 +145,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Abastecimiento |
-| Rol | Usuario |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | Mercado Público → SGM |
 | Optativo | Falso *(excluyente con 3.4)* |
 | Interacción MP | **Gestión** |
@@ -175,7 +177,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Abastecimiento (decisión) / Unidad Solicitante (informada) |
-| Rol | Usuario |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Verdadero *(solo ocurre si el proceso fracasa)* |
 | Interacción MP | **Gestión** |

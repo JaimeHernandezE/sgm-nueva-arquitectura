@@ -1,6 +1,7 @@
 # Wireframe: Cierre y selección de oferta
 
-**Sub-paso:** 3.2 — Cierre y selección de oferta *(Compra Ágil)*
+**Sub-paso:** 3.2 — Cierre y selección de oferta *(Compra Ágil)*  
+**Rol:** Gestor de compra (`adq.gestor_compra`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
 **Operación:** `recordQuotationResult` *(nombre inferido — no declarado literalmente en la ficha)* · Dependencia: `readMpProcess` (deseada)
 
 ## Layout

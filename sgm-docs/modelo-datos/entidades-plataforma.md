@@ -92,7 +92,7 @@ Catálogo **base de plataforma** que el sistema ofrece al aprovisionar un tenant
 
 ### `Role` / `Permission`
 
-Catálogo de prueba: [`plataforma/catalogo-roles.md`](../plataforma/catalogo-roles.md) (**P-24**).
+Catálogo transversal (única fuente): [`arquitectura/catalogo-roles.md`](../arquitectura/catalogo-roles.md) (**P-24**).
 
 #### `Role`
 **Visibilidad:** expuesta (lectura; administración de definiciones = plataforma / SUBDERE)

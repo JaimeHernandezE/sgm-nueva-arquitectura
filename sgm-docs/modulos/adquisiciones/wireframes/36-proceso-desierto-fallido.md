@@ -1,6 +1,7 @@
 # Wireframe: Proceso desierto o fallido
 
-**Sub-paso:** 3.6 — Proceso desierto o fallido *(Compra Ágil, optativo — solo si el proceso fracasa)*
+**Sub-paso:** 3.6 — Proceso desierto o fallido *(Compra Ágil, optativo — solo si el proceso fracasa)*  
+**Rol:** Gestor de compra (`adq.gestor_compra`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
 **Operación:** `releasePreCommitment` (si cancelación) · Dependencia: `readMpProcess` — desierto (deseada)
 
 ## Layout

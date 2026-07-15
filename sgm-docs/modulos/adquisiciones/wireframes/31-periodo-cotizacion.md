@@ -1,6 +1,7 @@
 # Wireframe: Período de cotización
 
-**Sub-paso:** 3.1 — Período de cotización *(Compra Ágil)*
+**Sub-paso:** 3.1 — Período de cotización *(Compra Ágil)*  
+**Rol:** N/A (monitoreo automático / proceso en MP)  
 **Sin operación de contrato** — solo lectura MP (`readMpProcess`, deseada) y evento interno `MpStateChanged`.
 
 ## Layout

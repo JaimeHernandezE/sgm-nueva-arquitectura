@@ -1,6 +1,7 @@
 # Wireframe: Emisión de CDP firmado
 
 **Sub-paso:** 1.5 — Emisión de CDP firmado  
+**Rol:** Firmante CDP (`adq.firmante_cdp`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
 **Operación:** `issueBudgetAvailabilityCertificate` · `registerScannedBudgetAvailabilityCertificate` *(modo degradado)*
 
 ## Layout — firma electrónica (camino preferido)
@@ -67,7 +68,7 @@ Visible cuando FirmaGob no está disponible o el usuario elige «Registrar CDP f
 
 ## Estados de pantalla
 
-- **Segregación roles:** si firmante = verificador → `SEGREGATION_OF_DUTIES_VIOLATION` (QA 9 P1).
+- **Segregación roles:** si Firmante CDP (`adq.firmante_cdp`) = Formulador DAF / verificación (`adq.formulador_presupuesto`) → `SEGREGATION_OF_DUTIES_VIOLATION` (QA 9 P1 / SoD S2).
 - **Firma pendiente:** estado `pending_signature`; reintento FirmaGob u oferta de camino escaneado.
 - **CDP escaneado inválido:** adjunto sin firmas legibles o metadatos inconsistentes → `SCANNED_CDP_INVALID`.
 - **Éxito:** CDP `issued`; evento `BudgetAvailabilityCertificateIssued`; avance a 1.6. La fila del expediente muestra el modo en línea secundaria (`Firma electrónica` / `CDP escaneado`).
@@ -76,7 +77,7 @@ Visible cuando FirmaGob no está disponible o el usuario elige «Registrar CDP f
 
 - Asterisco en monto certificado y año fiscal (ambos modos).
 - Modo escaneado: asterisco en correlativo, fecha y adjunto.
-- Segregación verificador ≠ firmante (`SEGREGATION_OF_DUTIES_VIOLATION`).
+- Segregación: Formulador DAF / verificación ≠ Firmante CDP (`SEGREGATION_OF_DUTIES_VIOLATION`).
 
 ## Notas
 

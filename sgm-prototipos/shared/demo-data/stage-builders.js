@@ -42,14 +42,14 @@ export function buildStage3CompraAgil() {
       doneStep({
         id: '3.2',
         name: 'Cierre y selección de oferta',
-        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
         secondaryLine: 'Tiempo transcurrido: 0 d 3 h · Comercial Sur SpA · $ 1.240.000 · Menor precio',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
       doneStep({
         id: '3.3',
         name: 'Emisión de la Orden de Compra',
-        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
         secondaryLine: 'Tiempo transcurrido: 0 d 2 h · OC N° 4021-33-SE26 · Emitida en MP',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
@@ -63,7 +63,7 @@ export function buildStage3CompraAgil() {
       doneStep({
         id: '3.5',
         name: 'Rechazo de la OC',
-        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
         action: { type: 'secondary', label: 'Ver camino alternativo' },
         secondaryLine: 'Camino alternativo (excluyente con 3.4) · No ocurrió en este expediente',
         pendingCondition: 'Excluyente con 3.4 — se muestra para explorar el prototipo de decisión post-rechazo.',
@@ -72,7 +72,7 @@ export function buildStage3CompraAgil() {
       doneStep({
         id: '3.6',
         name: 'Proceso desierto o fallido',
-        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
         action: { type: 'secondary', label: 'Ver camino alternativo' },
         secondaryLine: 'Camino alternativo (optativo) · No ocurrió en este expediente',
         pendingCondition: 'Solo si el proceso fracasa — se muestra para explorar republicar / reevaluar / cancelar.',
@@ -102,7 +102,7 @@ export function buildStage3ConvenioMarco() {
       doneStep({
         id: '3.2',
         name: 'Compra Directa por Catálogo',
-        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
         action: { type: 'secondary', label: 'Ver ruta alternativa' },
         secondaryLine: 'Ruta alternativa (compra_directa < 1.000 UTM) · No aplica en este expediente',
         pendingCondition: 'Condicional a procurement_route = compra_directa — se muestra para explorar vinculación OC de catálogo.',
@@ -111,7 +111,7 @@ export function buildStage3ConvenioMarco() {
       doneStep({
         id: '3.3',
         name: 'Publicación de Intención de Compra / Gran Compra',
-        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
         secondaryLine: 'ID Intención: 4021-88-IC26 · Plazo competencia: 10 días corridos',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
@@ -125,14 +125,14 @@ export function buildStage3ConvenioMarco() {
       doneStep({
         id: '3.5',
         name: 'Selección de oferta Gran Compra',
-        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
         secondaryLine: 'Mobiliario Chile Ltda. · $ 4.650.000 · Selección en MP',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
       doneStep({
         id: '3.6',
         name: 'Gran Compra desierta',
-        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
         action: { type: 'secondary', label: 'Ver camino alternativo' },
         secondaryLine: 'Camino alternativo · Caería a compra_directa sobre el mismo folio · No ocurrió',
         pendingCondition: 'Condicional a período sin ofertas — se muestra para explorar la caída automática a Compra Directa.',
@@ -148,7 +148,7 @@ export function buildStage3ConvenioMarco() {
       doneStep({
         id: '3.8',
         name: 'Rechazo de la OC',
-        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
         action: { type: 'secondary', label: 'Ver camino alternativo' },
         secondaryLine: 'Camino alternativo (excluyente con 3.7) · No ocurrió en este expediente',
         pendingCondition: 'Excluyente con 3.7 — se muestra para explorar decisión post-rechazo.',
@@ -173,46 +173,46 @@ export function buildStage3LicitacionPublica() {
       doneStep({
         id: '3.1',
         name: 'Elaboración de bases administrativas y técnicas',
-        responsible: { unit: 'Dirección de Obras / DAF Abastecimiento', role: 'Usuario', name: 'Felipe Rojas' },
+        responsible: { unit: 'Dirección de Obras / DAF Abastecimiento', role: 'Gestor de compra', name: 'Felipe Rojas' },
         secondaryLine: 'Criterios estructurados · Pesos suman 100% · Estado: approved',
       }),
       doneStep({
         id: '3.2',
         name: 'Revisión jurídica de bases',
-        responsible: { unit: 'Departamento Jurídico', role: 'Aprobador', name: 'Elena Vargas' },
+        responsible: { unit: 'Departamento Jurídico', role: 'Aprobador de modalidad', name: 'Elena Vargas' },
         secondaryLine: 'V°B° sin observaciones · LegalReview completed',
       }),
       doneStep({
         id: '3.3',
         name: 'Acto administrativo que aprueba las bases',
-        responsible: { unit: 'Alcaldía', role: 'Aprobador', name: 'Alcalde(sa)' },
+        responsible: { unit: 'Alcaldía', role: 'Aprobador de modalidad', name: 'Alcalde(sa)' },
         secondaryLine: 'Decreto bases N° 045-2026 · FirmaGob confirmada',
       }),
       doneStep({
         id: '3.4',
         name: 'Toma de Razón de las bases (Contraloría)',
-        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
         secondaryLine: 'Condicional por umbral · Toma de razón aprobada · Oficio CGR registrado',
         origin: { kind: 'external', label: 'Contraloría', mode: 'registro manual' },
       }),
       doneStep({
         id: '3.5',
         name: 'Publicación en Mercado Público y vinculación',
-        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
         secondaryLine: 'ID Licitación: 4021-12-LP26 · Vinculación diferida desde 2.3',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
       doneStep({
         id: '3.6',
         name: 'Foro de preguntas y aclaraciones',
-        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
         secondaryLine: 'Período cerrado · Aclaración a las bases publicada en MP',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
       doneStep({
         id: '3.7',
         name: 'Recepción y custodia de Garantía de Seriedad',
-        responsible: { unit: 'Tesorería', role: 'Usuario', name: 'Patricia Vega' },
+        responsible: { unit: 'Tesorería', role: 'Gestor de compra', name: 'Patricia Vega' },
         secondaryLine: 'Condicional · 5 instrumentos en custodia · bid_bond',
         origin: { kind: 'module', label: 'Tesorería', mode: 'dependencia' },
         borderModules: ['Tesorería'],
@@ -227,27 +227,27 @@ export function buildStage3LicitacionPublica() {
       doneStep({
         id: '3.9',
         name: 'Comisión evaluadora y acta de evaluación',
-        responsible: { unit: 'Comisión ad hoc', role: 'Aprobador', name: 'Integrantes' },
+        responsible: { unit: 'Comisión ad hoc', role: 'Gestor de compra / Aprobador de modalidad', name: 'Integrantes' },
         secondaryLine: 'Ranking + propuesta · Firma acta · Conflictos declarados',
       }),
       doneStep({
         id: '3.10',
         name: 'Resolución de adjudicación',
-        responsible: { unit: 'Alcaldía', role: 'Aprobador', name: 'Alcalde(sa)' },
+        responsible: { unit: 'Alcaldía', role: 'Aprobador de modalidad', name: 'Alcalde(sa)' },
         secondaryLine: 'Adjudicada a Taller Municipal SpA · $ 178.500.000 · Preobligación ajustada',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
       doneStep({
         id: '3.11',
         name: 'Toma de Razón de la adjudicación',
-        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
         secondaryLine: 'Condicional por umbral · Toma de razón de adjudicación OK',
         origin: { kind: 'external', label: 'Contraloría', mode: 'registro manual' },
       }),
       doneStep({
         id: '3.12',
         name: 'Garantía de Fiel Cumplimiento',
-        responsible: { unit: 'Tesorería', role: 'Usuario', name: 'Patricia Vega' },
+        responsible: { unit: 'Tesorería', role: 'Gestor de compra', name: 'Patricia Vega' },
         secondaryLine: 'Condicional · performance_bond en custodia previo a contrato',
         origin: { kind: 'module', label: 'Tesorería', mode: 'dependencia' },
         borderModules: ['Tesorería'],
@@ -255,13 +255,13 @@ export function buildStage3LicitacionPublica() {
       doneStep({
         id: '3.13',
         name: 'Contrato',
-        responsible: { unit: 'Departamento Jurídico / Alcaldía', role: 'Usuario / Aprobador', name: 'Elena Vargas' },
+        responsible: { unit: 'Departamento Jurídico / Alcaldía', role: 'Gestor de compra / Aprobador de modalidad', name: 'Elena Vargas' },
         secondaryLine: 'Condicional · Contrato suscrito · Vigencia 12 meses',
       }),
       doneStep({
         id: '3.14',
         name: 'Emisión y aceptación de la OC',
-        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
         secondaryLine: 'OC N° 4021-12-LP26-OC · Aceptada · Compromiso cierto',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
@@ -316,7 +316,7 @@ export function buildStage4({
     {
       id: '4.1',
       name: 'Registro de la recepción',
-      responsible: { unit: serviceProfile ? 'Unidad Solicitante' : 'Bodega', role: 'Usuario', name: serviceProfile ? 'Juan Astorga' : 'Ana Pérez' },
+      responsible: { unit: serviceProfile ? 'Unidad Solicitante' : 'Bodega', role: 'Recepcionista', name: serviceProfile ? 'Juan Astorga' : 'Ana Pérez' },
       status: 'done',
       action: { type: 'secondary', label: 'Ver recepción' },
       secondaryLine: allDone
@@ -326,7 +326,7 @@ export function buildStage4({
     {
       id: '4.2',
       name: 'Verificación de conformidad',
-      responsible: { unit: 'Unidad Solicitante', role: 'Aprobador', name: 'Juan Astorga' },
+      responsible: { unit: 'Unidad Solicitante', role: 'Confirmante de recepción', name: 'Juan Astorga' },
       status: 'done',
       action: { type: 'secondary', label: 'Ver conformidad' },
       secondaryLine: allDone
@@ -339,7 +339,7 @@ export function buildStage4({
     steps.push({
       id: '4.3',
       name: 'Alta en inventario / activo fijo',
-      responsible: { unit: 'Bodega', role: 'Usuario', name: 'Ana Pérez' },
+      responsible: { unit: 'Bodega', role: 'Recepcionista', name: 'Ana Pérez' },
       status: 'done',
       action: { type: 'secondary', label: 'Ver alta' },
       secondaryLine: allDone
@@ -350,7 +350,7 @@ export function buildStage4({
     steps.push({
       id: '4.3',
       name: 'Alta en inventario / activo fijo',
-      responsible: { unit: 'Bodega', role: 'Usuario', name: '—' },
+      responsible: { unit: 'Bodega', role: 'Recepcionista', name: '—' },
       status: 'omitted',
       omitted: true,
       action: { type: 'badge', label: 'Omitido (optativo)' },
@@ -412,7 +412,7 @@ export function buildStage5({ allDone = false, ocNumber, provider }) {
       {
         id: '5.2',
         name: 'Registro de Devengado',
-        responsible: { unit: 'Contabilidad', role: 'Aprobador', name: 'Luis Morales' },
+        responsible: { unit: 'Contabilidad', role: 'Operador de pago', name: 'Luis Morales' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver devengado' },
         secondaryLine: allDone ? 'Tiempo transcurrido: 0 d 1 h · Devengado registrado' : 'Requiere match validado (5.1)',
@@ -422,7 +422,7 @@ export function buildStage5({ allDone = false, ocNumber, provider }) {
       {
         id: '5.3',
         name: 'Generación de Decreto de Pago',
-        responsible: { unit: 'Contabilidad', role: 'Aprobador', name: 'Luis Morales' },
+        responsible: { unit: 'Contabilidad', role: 'Operador de pago', name: 'Luis Morales' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver decreto' },
         secondaryLine: allDone ? 'Tiempo transcurrido: 0 d 2 h · Firma vía FirmaGob' : 'Firma vía FirmaGob al emitir',
@@ -430,8 +430,7 @@ export function buildStage5({ allDone = false, ocNumber, provider }) {
       {
         id: '5.4',
         name: 'Ejecución del pago',
-        responsible: { unit: 'Tesorería', role: 'Aprobador', name: 'Patricia Vega' },
-        status: 'done',
+        responsible: { unit: 'Tesorería', role: 'Operador de pago', name: 'Patricia Vega' },        status: 'done',
         action: { type: 'secondary', label: 'Ver pago' },
         secondaryLine: allDone
           ? 'Tiempo transcurrido: 12 d 0 h · Pago ejecutado dentro del plazo legal'

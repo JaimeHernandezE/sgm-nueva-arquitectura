@@ -1,6 +1,7 @@
 # Wireframe: Rechazo de la OC
 
-**Sub-paso:** 3.5 — Rechazo de la OC *(Compra Ágil, excluyente con 3.4)*
+**Sub-paso:** 3.5 — Rechazo de la OC *(Compra Ágil, excluyente con 3.4)*  
+**Rol:** Gestor de compra (`adq.gestor_compra`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
 **Sin operación de registro propia** — reflejo de lectura MP (`readMpProcess`, deseada) → evento `PurchaseOrderRejected`.
 
 ## Layout

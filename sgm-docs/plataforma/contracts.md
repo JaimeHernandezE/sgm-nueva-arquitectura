@@ -67,7 +67,7 @@ Rutas sin prefijo de tenant hasta resolver **[P-03]**.
 - **Uso:** catálogo de roles del módulo (consola «Por módulo/proceso»); agrupable por `process_area`
 - **Entrada:** filtros `module`, `process_area` (opcionales)
 - **Respuesta:** colección de `Role`
-- **Nota:** contenido canónico de prueba en [`catalogo-roles.md`](./catalogo-roles.md) (**P-24**)
+- **Nota:** contenido canónico de prueba en [`arquitectura/catalogo-roles.md`](../arquitectura/catalogo-roles.md) (**P-24**)
 
 #### `GET /role-assignments` — `listRoleAssignments`
 - **Entrada:** filtros `user_id`, `organizational_unit_id`, `module`

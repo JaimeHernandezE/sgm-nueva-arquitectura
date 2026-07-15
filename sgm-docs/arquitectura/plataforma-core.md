@@ -49,7 +49,7 @@ Consecuencias:
 | # | Servicio | Qué resuelve | Base normativa ya escrita | Estado |
 |---|---|---|---|---|
 | C1 | **Identidad y autenticación** | Plano personas (Clave Única) y plano sistemas (M2M, scopes por módulo y municipio) | `seguridad.md` §2, `estandares-api.md` §8 | Exigencias definidas; diseño abierto (**P-02**, **P-22**, **P-23**) |
-| C2 | **Autorización (RBAC + SoD)** | Roles por módulo asignados por tenant y unidad; incompatibilidades SoD aplicadas por el motor; administración delegada | `seguridad.md` §3–§4 | Modelo exigido; catálogo abierto (**P-24**, **P-25**) |
+| C2 | **Autorización (RBAC + SoD)** | Roles por módulo asignados por tenant y unidad; incompatibilidades SoD aplicadas por el motor; administración delegada | `seguridad.md` §3–§4; [`catalogo-roles.md`](./catalogo-roles.md) | Modelo exigido; catálogo en **Borrador** (**P-24**, **P-25**) |
 | C3 | **Gestión de tenants** | Ciclo de vida del municipio: alta, aprovisionamiento de schema, configuración, suspensión, baja; catálogo de módulos habilitados por tenant | `principios-no-negociables.md` §2, `musts-arquitectura.md` §3 | **Nuevo en este documento** (§5) |
 | C4 | **Parámetros** | Dos familias: `NormativeParameter` (legal, administrado por SUBDERE, doble control, vigencia temporal) y parámetros operativos por tenant (perfil de recepción, vistos buenos configurables) | Fichas etapa 2; **P-37**, **P-39**, **P-42** | Entidad definida; administración sin especificar (§6) |
 | C5 | **Auditoría** | Registro inmutable append-only, consultable vía API con scope restringido | `seguridad.md` §5 | Exigencias definidas; retención abierta (**P-26**) |
@@ -75,7 +75,7 @@ Entidades transversales que hoy las fichas usan de forma implícita (columnas Un
 | `OrganizationalUnit` | Estructura orgánica del tenant en dos niveles: `department` (Finanzas, Tránsito, DOM…) → `unit` (Abastecimiento, Presupuestos…); clonada desde plantilla de plataforma y editable por el municipio | Expuesta |
 | `OrgStructureTemplate` | Catálogo base de departamentos/unidades de plataforma; se clona al aprovisionar el tenant | Expuesta (admin SUBDERE) |
 | `User` | Funcionario municipal o de SUBDERE; identidad ligada a RUN (Clave Única); estado activo/suspendido/baja | Expuesta (subconjunto mínimo, Ley 21.719) |
-| `Role` / `Permission` | Rol por módulo (`code`, `process_area`); permiso = operación del contrato (`seguridad.md` §3.1); catálogo borrador P-24 | Expuesta |
+| `Role` / `Permission` | Rol por módulo (`code`, `process_area`); permiso = operación del contrato (`seguridad.md` §3.1); catálogo transversal [`catalogo-roles.md`](./catalogo-roles.md) (P-24) | Expuesta |
 | `RoleAssignment` | Otorgamiento de rol a usuario en contexto tenant + unidad, con vigencia | Expuesta |
 | `Delegation` | Subrogancia/suplencia: asignación temporal con fecha de término obligatoria y reversión automática | Expuesta |
 | `SodRule` / `SodException` | Incompatibilidad entre roles y excepción configurada por tenant (explícita, registrada, auditada) | Interna; excepciones consultables |

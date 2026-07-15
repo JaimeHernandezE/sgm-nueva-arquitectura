@@ -2,12 +2,14 @@
 
 *Proceso transversal — documentado en el piloto [Compra Ágil](../1.%20compra-agil/overview.md). Aplica conceptualmente a las 4 modalidades; extensión a otras modalidades pendiente de validación del piloto.*
 
+*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md) (P-24).*
+
 ## 1.1 — Creación de solicitud
 
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Unidad Solicitante |
-| Rol | Usuario |
+| Rol | Solicitante ([`adq.solicitante`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Falso |
 
@@ -49,7 +51,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Unidad Solicitante |
-| Rol | Aprobador |
+| Rol | Aprobador de unidad ([`adq.aprobador_unidad`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Falso |
 
@@ -82,7 +84,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Finanzas |
-| Rol | Usuario |
+| Rol | Formulador DAF / verificación ([`adq.formulador_presupuesto`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Falso |
 
@@ -114,7 +116,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Unidad Solicitante / DAF Finanzas |
-| Rol | Usuario |
+| Rol | Solicitante ([`adq.solicitante`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Verdadero |
 
@@ -144,11 +146,11 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Finanzas |
-| Rol | Aprobador |
+| Rol | Firmante CDP ([`adq.firmante_cdp`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Falso |
 
-**Detalle:** El aprobador de DAF Finanzas emite y firma el **Certificado de Disponibilidad Presupuestaria** (CDP) sobre la SOLPED con verificación confirmada en 1.3. El verificador (1.3) y el firmante del CDP deben ser personas distintas (QA ítem 9 P1). La firma admite **dos caminos**, mutuamente excluyentes:
+**Detalle:** El Firmante CDP de DAF Finanzas emite y firma el **Certificado de Disponibilidad Presupuestaria** (CDP) sobre la SOLPED con verificación confirmada en 1.3. El Formulador DAF / verificación (1.3, `adq.formulador_presupuesto`) y el Firmante CDP (`adq.firmante_cdp`) deben ser personas distintas (QA ítem 9 P1 / SoD S2). La firma admite **dos caminos**, mutuamente excluyentes:
 
 | Camino | Cuándo | Mecanismo |
 |---|---|---|
@@ -186,7 +188,7 @@ En ambos caminos se ejecuta `checkBudgetAvailability` antes de cerrar el paso. E
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Finanzas |
-| Rol | Usuario |
+| Rol | Firmante CDP ([`adq.firmante_cdp`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Falso |
 

@@ -1,6 +1,7 @@
 # Wireframe: Aceptación de la OC (perfeccionamiento del vínculo)
 
-**Sub-paso:** 3.4 — Aceptación de la OC *(Compra Ágil)* — **hito crítico de la etapa**
+**Sub-paso:** 3.4 — Aceptación de la OC *(Compra Ágil)* — **hito crítico de la etapa**  
+**Rol:** N/A (automático / gatillado por lectura MP confirmada)  
 **Operación:** `syncPurchaseOrderAccepted` · Dependencias: `readMpProcess` — OC Aceptada (**confirmada**), `commitBudget` (Presupuestos, síncrona bloqueante)
 
 ## Layout

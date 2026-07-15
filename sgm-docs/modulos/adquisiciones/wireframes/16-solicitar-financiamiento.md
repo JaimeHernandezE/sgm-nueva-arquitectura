@@ -1,6 +1,7 @@
 # Wireframe: Solicitar financiamiento a DAF
 
 **Sub-paso:** 1.4 — Solicitar financiamiento a DAF *(optativo)*  
+**Rol:** Solicitante (`adq.solicitante`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
 **Operación:** `requestBudgetFinancing`
 
 ## Layout
@@ -36,7 +37,7 @@
 
 ## Estados de pantalla
 
-- **En trámite:** pantalla informativa; usuario espera resolución de Presupuestos.
+- **En trámite:** pantalla informativa; el Solicitante espera resolución de Presupuestos.
 - **Resuelto:** notificación; retorno a sub-paso 1.3 para nueva verificación.
 - **Denegado:** SOLPED bloqueada; opción cancelar o reformular.
 

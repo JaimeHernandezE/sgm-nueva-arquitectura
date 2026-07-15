@@ -6,6 +6,8 @@
 
 *Estándar MP ↔ SGM según plantilla §5. Lectura confirmada: OC Aceptada. Todas las demás lecturas de esta etapa son **deseadas**, con modo degradado = registro manual con `entry_mode = manual`; MP prevalece si la lectura llega después.*
 
+*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md) (P-24).*
+
 ---
 
 ## 3.1 — Elaboración de bases administrativas y técnicas
@@ -13,7 +15,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Unidad Solicitante (técnicas) + DAF Abastecimiento (administrativas) |
-| Rol | Usuario |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Obligatoriedad | **Obligatorio** |
 
@@ -30,7 +32,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Departamento Jurídico *(unidad nueva en el catálogo — agregar a plantilla §3.2)* |
-| Rol | Aprobador |
+| Rol | Aprobador de modalidad ([`adq.aprobador_modalidad`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Obligatoriedad | **Obligatorio** |
 
@@ -47,7 +49,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Alcaldía / autoridad con delegación |
-| Rol | Aprobador |
+| Rol | Aprobador de modalidad ([`adq.aprobador_modalidad`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Obligatoriedad | **Obligatorio** |
 
@@ -64,7 +66,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Abastecimiento (tramita) / — (resuelve CGR) |
-| Rol | Usuario |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | SGM / Otra (plataforma CGR) |
 | Obligatoriedad | **Condicional** — solo si el monto supera el umbral de Toma de Razón vigente (`NormativeParameter`, fijado por resolución de la propia CGR) |
 
@@ -81,7 +83,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Abastecimiento |
-| Rol | Usuario |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | Mercado Público → SGM |
 | Obligatoriedad | **Obligatorio** |
 | Interacción MP | **Gestión** (registro del ID); luego informativo |
@@ -97,7 +99,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Abastecimiento + Unidad Solicitante (insumos técnicos) |
-| Rol | Usuario |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | Mercado Público |
 | Obligatoriedad | **Obligatorio como período**; la gestión es **condicional a que existan preguntas** |
 | Interacción MP | **Gestión condicional** |
@@ -113,7 +115,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Tesorería (custodia) + DAF Abastecimiento (verifica) |
-| Rol | Usuario |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Obligatoriedad | **Condicional** — solo si las bases la exigen (obligatoria sobre umbral `NormativeParameter`; facultativa bajo él) |
 
@@ -146,7 +148,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Comisión ad hoc (integrantes designados) + DAF Abastecimiento (secretaría) |
-| Rol | Usuario / Aprobador (integrantes firman el acta) |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) / Aprobador de modalidad ([`adq.aprobador_modalidad`](../../../arquitectura/catalogo-roles.md)) — integrantes de comisión (v1; sin rol comisión aparte) |
 | Plataforma | SGM |
 | Obligatoriedad | **Condicional** — comisión formal obligatoria sobre umbral (`NormativeParameter`); bajo él, evaluación por funcionario responsable con el mismo registro estructurado |
 
@@ -165,7 +167,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Alcaldía / autoridad + Departamento Jurídico (revisión previa) |
-| Rol | Aprobador |
+| Rol | Aprobador de modalidad ([`adq.aprobador_modalidad`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | SGM → Mercado Público |
 | Obligatoriedad | **Obligatorio** (en alguna de sus variantes: adjudica, declara desierta o revoca) |
 | Interacción MP | **Gestión** |
@@ -181,7 +183,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Abastecimiento (tramita) / — (resuelve CGR) |
-| Rol | Usuario |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | SGM / Otra (plataforma CGR) |
 | Obligatoriedad | **Condicional** — según umbral vigente de Toma de Razón (`NormativeParameter`) |
 
@@ -194,7 +196,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Tesorería (custodia) + DAF Abastecimiento (verifica) |
-| Rol | Usuario |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Obligatoriedad | **Condicional** — obligatoria sobre umbral (`NormativeParameter`); las bases pueden exigirla bajo él |
 
@@ -209,7 +211,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Departamento Jurídico (redacción) + Alcaldía (firma) |
-| Rol | Usuario / Aprobador |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) / Aprobador de modalidad ([`adq.aprobador_modalidad`](../../../arquitectura/catalogo-roles.md)) — integrantes (v1) |
 | Plataforma | SGM |
 | Obligatoriedad | **Condicional** — obligatorio sobre umbral o cuando las bases lo establecen; bajo él, las bases pueden disponer que la OC formaliza el contrato |
 
@@ -226,7 +228,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Abastecimiento |
-| Rol | Usuario |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | Mercado Público → SGM |
 | Obligatoriedad | **Obligatorio** |
 | Interacción MP | **Gestión — hito contable de la etapa** |

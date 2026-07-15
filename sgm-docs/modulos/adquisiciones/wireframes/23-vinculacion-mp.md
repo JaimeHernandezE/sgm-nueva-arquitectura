@@ -1,6 +1,7 @@
 # Wireframe: Vinculación del proceso en Mercado Público
 
-**Sub-paso:** 2.3 — Vinculación del proceso en Mercado Público (momento según modalidad)
+**Sub-paso:** 2.3 — Vinculación del proceso en Mercado Público (momento según modalidad)  
+**Rol:** Gestor de compra (`adq.gestor_compra`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
 **Operación:** `linkMpProcess` · Dependencia: `readMpProcess` (Core (Mercado Público), síncrona bloqueante solo en la vinculación)
 
 Este wireframe cubre la **ejecución inmediata** (Compra Ágil / Convenio Marco, al cierre de la etapa 2). Para Licitación Pública y Trato Directo la misma operación se ejecuta de forma **diferida** dentro de su propio subproceso (LP §3.5, TD en su publicación) — ver `procesos-transversales/2-modalidad-compra.md` §2.3.

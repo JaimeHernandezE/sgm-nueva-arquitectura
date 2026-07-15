@@ -1,6 +1,7 @@
 # Wireframe: Ratificación o selección de modalidad
 
-**Sub-paso:** 2.1 — Ratificación o selección de modalidad
+**Sub-paso:** 2.1 — Ratificación o selección de modalidad  
+**Rol:** Gestor de compra (`adq.gestor_compra`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
 **Operaciones:** `confirmProcurementModality` · Dependencias: `getUtmValue` (SII, cacheada), `checkCatalogAvailability` (catálogo CM espejado, cacheada)
 
 ## Layout

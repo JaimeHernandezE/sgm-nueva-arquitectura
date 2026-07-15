@@ -1,6 +1,7 @@
 # Wireframe: Generación de preobligación
 
 **Sub-paso:** 1.6 — Generación de preobligación  
+**Rol:** Firmante CDP (`adq.firmante_cdp`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
 **Operación:** `createBudgetPreCommitment`
 
 ## Layout

@@ -1,6 +1,7 @@
 # Wireframe: Creación de SOLPED
 
 **Sub-paso:** 1.1 — Creación de solicitud  
+**Rol:** Solicitante (`adq.solicitante`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
 **Operaciones:** `createPurchaseRequest`, `submitPurchaseRequest`, `previewBudgetAvailability` *(informativa)*
 
 ## Layout

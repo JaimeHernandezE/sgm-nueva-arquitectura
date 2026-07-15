@@ -1,8 +1,9 @@
 # Catálogo de roles (borrador P-24)
 
 > **Estado:** borrador para discusión interna con el equipo / DM.  
-> **Marco:** [`arquitectura/seguridad.md`](../arquitectura/seguridad.md) §3 · [`modelo-datos/entidades-plataforma.md`](../modelo-datos/entidades-plataforma.md)  
-> **Consola:** [`wireframes/municipal/02-roles-unidades.md`](./wireframes/municipal/02-roles-unidades.md) (vistas por usuario y por módulo/proceso)
+> **Documento transversal** de arquitectura: una sola fuente para todos los módulos (no duplicar catálogos por módulo).  
+> **Marco:** [`seguridad.md`](./seguridad.md) §3 · [`modelo-datos/entidades-plataforma.md`](../modelo-datos/entidades-plataforma.md)  
+> **Consola:** [`plataforma/wireframes/municipal/02-roles-unidades.md`](../plataforma/wireframes/municipal/02-roles-unidades.md) (vistas por usuario y por módulo/proceso)
 
 La unidad de permiso es la **`operationId` del contrato**, no la pantalla. Un rol es un paquete estable de operaciones. La UI (wireframes, árbol de proceso) solo **declara** qué roles se necesitan para actuar; no inventa ACLs por vista.
 
@@ -18,11 +19,17 @@ RoleAssignment (usuario + nodo orgánico + rol)
 
 | Campo | Significado |
 |---|---|
-| `code` | Identificador estable (`adq.solicitante`). Prefijo = módulo. |
+| `code` | **Código (sistema).** Identificador estable, único, sin espacios (`adq.solicitante`). Prefijo = módulo. Usado en RBAC, `RoleAssignment`, contratos, matrices SoD y Rol→`operationId`. No se cambia por redacción de UI. |
+| `name` | **Nombre (usuarios).** Etiqueta en español para fichas, wireframes y consolas (`Solicitante`). Puede afinarse la redacción sin cambiar el `code`. |
 | `module` | `adquisiciones` \| `plataforma` |
 | `process_area` | Nodo del árbol de proceso (vista admin “Por módulo/proceso”) |
-| `name` | Etiqueta humana |
 | Nodo orgánico típico | Dónde suele asignarse el `RoleAssignment` (departamento › unidad) |
+
+**Regla de presentación:**
+
+- Fichas de proceso (fila Rol): `Nombre ([code](enlace a este catálogo))` — ejemplo: `Solicitante ([adq.solicitante](./catalogo-roles.md))`.
+- Wireframes y prosa: preferir el `name`; el `code` en notas RBAC / QA.
+- Matrices técnicas de este documento (§4, §7): solo `code`.
 
 Roles de plataforma SUBDERE se asignan con alcance de plataforma (no tenant municipal), salvo nota en contrario.
 
@@ -80,18 +87,18 @@ plat.subdere
 
 ## 3. Roles Adquisiciones
 
-| `code` | `name` | `process_area` | Nodo orgánico típico | Origen en fichas |
+| Nombre (usuarios) | Código (sistema) | `process_area` | Nodo orgánico típico | Origen en fichas |
 |---|---|---|---|---|
-| `adq.solicitante` | Solicitante | `adq.solped` | Unidad / depto solicitante (Obras, Tránsito, …) | Rol Usuario 1.1, 1.4 |
-| `adq.aprobador_unidad` | Aprobador de unidad | `adq.solped` | Misma unidad solicitante (jefatura) | Rol Aprobador 1.2 |
-| `adq.formulador_presupuesto` | Formulador DAF / verificación | `adq.solped` | Finanzas › Presupuestos | Rol Usuario 1.3 |
-| `adq.firmante_cdp` | Firmante CDP | `adq.solped` | Finanzas › Presupuestos | Rol Aprobador 1.5 (+ 1.6 borrador) |
-| `adq.gestor_compra` | Gestor de compra | `adq.modalidad`, `adq.resolucion` | Finanzas › Abastecimiento | Rol Usuario etapas 2–3 |
-| `adq.aprobador_modalidad` | Aprobador de modalidad | `adq.modalidad` | Abastecimiento / jefatura DAF | Rol Aprobador 2.2 (P-38) |
-| `adq.recepcionista` | Recepcionista | `adq.recepcion` | Unidad receptora | Rol Usuario 4.1 |
-| `adq.confirmante_recepcion` | Confirmante de recepción | `adq.recepcion` | Unidad receptora / control | Rol Aprobador 4.2 |
-| `adq.operador_pago` | Operador de pago | `adq.pago` | Finanzas › Tesorería | Rol Aprobador 5.x |
-| `adq.lector` | Lector de expediente | `adq` | Cualquier unidad con necesidad de consulta | Lectura transversal |
+| Solicitante | `adq.solicitante` | `adq.solped` | Unidad / depto solicitante (Obras, Tránsito, …) | [`1-solped.md`](../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.1, §1.4 |
+| Aprobador de unidad | `adq.aprobador_unidad` | `adq.solped` | Misma unidad solicitante (jefatura) | [`1-solped.md`](../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.2 |
+| Formulador DAF / verificación | `adq.formulador_presupuesto` | `adq.solped` | Finanzas › Presupuestos | [`1-solped.md`](../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.3 |
+| Firmante CDP | `adq.firmante_cdp` | `adq.solped` | Finanzas › Presupuestos | [`1-solped.md`](../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.5, §1.6 |
+| Gestor de compra | `adq.gestor_compra` | `adq.modalidad`, `adq.resolucion` | Finanzas › Abastecimiento | [`2-modalidad-compra.md`](../modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md) §2.1, §2.3; resoluciones CA/CM/LP/TD (etapa 3); [`4-recepcion-conforme.md`](../modulos/adquisiciones/procesos-transversales/4-recepcion-conforme.md) §4.5 |
+| Aprobador de modalidad | `adq.aprobador_modalidad` | `adq.modalidad` | Abastecimiento / jefatura DAF | [`2-modalidad-compra.md`](../modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md) §2.2 (P-38); LP acto bases / adjudicación / comisión (v1) |
+| Recepcionista | `adq.recepcionista` | `adq.recepcion` | Unidad receptora | [`4-recepcion-conforme.md`](../modulos/adquisiciones/procesos-transversales/4-recepcion-conforme.md) §4.1, §4.3 |
+| Confirmante de recepción | `adq.confirmante_recepcion` | `adq.recepcion` | Unidad receptora / control | [`4-recepcion-conforme.md`](../modulos/adquisiciones/procesos-transversales/4-recepcion-conforme.md) §4.2 |
+| Operador de pago | `adq.operador_pago` | `adq.pago` | Finanzas › Tesorería | [`5-pago.md`](../modulos/adquisiciones/procesos-transversales/5-pago.md) §5.1–§5.4 |
+| Lector de expediente | `adq.lector` | `adq` | Cualquier unidad con necesidad de consulta | Lectura transversal |
 
 ---
 
@@ -99,7 +106,9 @@ plat.subdere
 
 Operaciones según [`modulos/adquisiciones/contracts.md`](../modulos/adquisiciones/contracts.md). Lectura compartida: quienes tienen un rol de escritura del módulo también pueden las `list*`/`get*` del expediente, salvo que se asigne solo `adq.lector`.
 
-| Rol | Operaciones |
+La columna usa **código (sistema)**; el nombre de usuario está en §3.
+
+| Código (sistema) | Operaciones |
 |---|---|
 | `adq.lector` | `listProcurementCases`, `getProcurementCase`, `listProcurementCaseSteps`, `listPurchaseRequests`, `getPurchaseRequest`, `listPurchaseOrders`, `getPurchaseOrder` |
 | `adq.solicitante` | (+ lector) `createPurchaseRequest`, `submitPurchaseRequest`, `previewBudgetAvailability`, `requestBudgetFinancing` |
@@ -120,24 +129,24 @@ Operaciones según [`modulos/adquisiciones/contracts.md`](../modulos/adquisicion
 
 ### 5.1 Municipal
 
-| `code` | `name` | `process_area` | Notas |
+| Nombre (usuarios) | Código (sistema) | `process_area` | Notas |
 |---|---|---|---|
-| `plat.admin_municipal` | Administrador municipal | `plat.municipal` | Paquete completo de consola municipal (v1 de prueba) |
+| Administrador municipal | `plat.admin_municipal` | `plat.municipal` | Paquete completo de consola municipal (v1 de prueba) |
 
-**Operaciones** (`plataforma/contracts.md` §2 + §2.11):  
+**Operaciones** ([`plataforma/contracts.md`](../plataforma/contracts.md) §2 + §2.11):  
 `listUsers`, `createUser`, `updateUser`, `revokeUser`, `getUser`, `listOrganizationalUnits`, `createOrganizationalUnit`, `updateOrganizationalUnit`, `listRoles`, `listRoleAssignments`, `createRoleAssignment`, `revokeRoleAssignment`, `listDelegations`, `createDelegation`, `revokeDelegation`, `listSodExceptions`, `createSodException`, `revokeSodException`, `listTenantParameters`, `upsertTenantParameter`, `getTenantParameter`, `listTenantIntegrations`, `upsertTenantIntegration`, `rotateIntegrationCredential`, `getTenantStorage`, `upsertTenantStorage`, `listAccessRecertificationReport`, `listAuditRecords` (scope tenant).
 
 > Partición en roles más finos (solo accesos vs. solo integraciones) queda como pregunta al equipo (§8).
 
 ### 5.2 SUBDERE
 
-| `code` | `name` | `process_area` | Operaciones (principales) |
+| Nombre (usuarios) | Código (sistema) | `process_area` | Operaciones (principales) |
 |---|---|---|---|
-| `plat.operador_tenants` | Operador de tenants | `plat.subdere.tenants` | `listTenants`, `getTenant`, `createTenant`, `updateTenant`, `suspendTenant`, `setEnabledModules`, `provisionPlatformBucket` |
-| `plat.proponente_normativo` | Proponente parámetros normativos | `plat.subdere.normative` | `listNormativeParameters`, `getNormativeParameter`, `proposeNormativeParameter` |
-| `plat.aprobador_normativo` | Aprobador parámetros normativos | `plat.subdere.normative` | `listNormativeParameters`, `approveNormativeParameter` (≠ proponente) |
-| `plat.operador_m2m` | Operador clientes M2M | `plat.subdere.m2m` | `listApiClients`, `createApiClient`, `rotateApiClientSecret`, `revokeApiClient` |
-| `plat.operador_plataforma` | Operador integraciones / auditoría | `plat.subdere.integrations` / audit | `listDmsAdapters`, `upsertPlatformIntegration`, `listAuditRecords`, `listEventSubscriptions`, `registerWebhook` |
+| Operador de tenants | `plat.operador_tenants` | `plat.subdere.tenants` | `listTenants`, `getTenant`, `createTenant`, `updateTenant`, `suspendTenant`, `setEnabledModules`, `provisionPlatformBucket` |
+| Proponente parámetros normativos | `plat.proponente_normativo` | `plat.subdere.normative` | `listNormativeParameters`, `getNormativeParameter`, `proposeNormativeParameter` |
+| Aprobador parámetros normativos | `plat.aprobador_normativo` | `plat.subdere.normative` | `listNormativeParameters`, `approveNormativeParameter` (≠ proponente) |
+| Operador clientes M2M | `plat.operador_m2m` | `plat.subdere.m2m` | `listApiClients`, `createApiClient`, `rotateApiClientSecret`, `revokeApiClient` |
+| Operador integraciones / auditoría | `plat.operador_plataforma` | `plat.subdere.integrations` / audit | `listDmsAdapters`, `upsertPlatformIntegration`, `listAuditRecords`, `listEventSubscriptions`, `registerWebhook` |
 
 ---
 
@@ -145,20 +154,23 @@ Operaciones según [`modulos/adquisiciones/contracts.md`](../modulos/adquisicion
 
 No es fuente de autorización. Sirve al prototipo y a QA de pantallas.
 
-| Pantalla / área | Roles que habilitan la acción principal |
+| Pantalla / área | Rol (nombre + código) |
 |---|---|
-| `11-creacion-solped` | `adq.solicitante` |
-| `12-visto-bueno-jefatura` | `adq.aprobador_unidad` |
-| `13` verificación DAF | `adq.formulador_presupuesto` |
-| `14-emision-cdp` | `adq.firmante_cdp` |
-| Modalidad 2.1 / vinculación MP | `adq.gestor_compra` |
-| `22-aprobacion-jefatura` (modalidad) | `adq.aprobador_modalidad` |
-| Registro recepción | `adq.recepcionista` |
-| Confirmación recepción | `adq.confirmante_recepcion` |
-| Pago 5.x | `adq.operador_pago` |
-| Consola municipal `01`–`08` | `plat.admin_municipal` |
-| Consola SUBDERE parámetros | `plat.proponente_normativo` / `plat.aprobador_normativo` |
-| `02-roles-unidades` (ambas vistas) | `plat.admin_municipal` |
+| `11-creacion-solped` | Solicitante (`adq.solicitante`) |
+| `12-visto-bueno-jefatura` | Aprobador de unidad (`adq.aprobador_unidad`) |
+| `13` verificación DAF | Formulador DAF / verificación (`adq.formulador_presupuesto`) |
+| `14-emision-cdp` | Firmante CDP (`adq.firmante_cdp`) |
+| `15-preobligacion` | Firmante CDP (`adq.firmante_cdp`) |
+| `16-solicitar-financiamiento` | Solicitante (`adq.solicitante`) |
+| Modalidad 2.1 / vinculación MP (`21`, `23`) | Gestor de compra (`adq.gestor_compra`) |
+| `22-aprobacion-jefatura` (modalidad) | Aprobador de modalidad (`adq.aprobador_modalidad`) |
+| Resolución CA `32`–`33`, `35`–`36` | Gestor de compra (`adq.gestor_compra`) |
+| `41-recepcion-conforme` | Recepcionista (`adq.recepcionista`) |
+| Confirmación recepción | Confirmante de recepción (`adq.confirmante_recepcion`) |
+| `51-cruce-tres-vias` / Pago 5.x | Operador de pago (`adq.operador_pago`) |
+| Consola municipal `01`–`08` | Administrador municipal (`plat.admin_municipal`) |
+| Consola SUBDERE parámetros | Proponente / Aprobador parámetros normativos (`plat.proponente_normativo` / `plat.aprobador_normativo`) |
+| `02-roles-unidades` (ambas vistas) | Administrador municipal (`plat.admin_municipal`) |
 
 ---
 
@@ -166,7 +178,7 @@ No es fuente de autorización. Sirve al prototipo y a QA de pantallas.
 
 Incompatibilidades **bloqueantes** ya exigidas en fichas/QA. Régimen de excepciones: ver consola `04-excepciones-sod` y **P-25**.
 
-| # | Rol A | Rol B (mismo usuario, contexto aplicable) | Base |
+| # | Código A | Código B (mismo usuario, contexto aplicable) | Base |
 |---|---|---|---|
 | S1 | `adq.solicitante` | `adq.aprobador_unidad` | Quien solicita no aprueba (misma SOLPED / misma unidad) |
 | S2 | `adq.formulador_presupuesto` | `adq.firmante_cdp` | QA 9 P1 — verificador ≠ firmante CDP |
@@ -174,7 +186,7 @@ Incompatibilidades **bloqueantes** ya exigidas en fichas/QA. Régimen de excepci
 | S4 | `plat.proponente_normativo` | `plat.aprobador_normativo` | Doble control parámetros normativos |
 | S5 | `adq.gestor_compra` (decisor 2.1) | `adq.aprobador_modalidad` | **P-38** — pendiente confirmar alcance con DM |
 
-Los intentos que violen SoD se rechazan y se auditan (`SEGREGATION_OF_DUTIES_VIOLATION`).
+Los intentos que violen SoD se rechazan y se auditan (`SEGREGATION_OF_DUTIES_VIOLATION`). La consola municipal muestra el **nombre (usuarios)** homólogo (§3 / §5); el motor evalúa por **código**.
 
 ---
 
@@ -192,6 +204,6 @@ Los intentos que violen SoD se rechazan y se auditan (`SEGREGATION_OF_DUTIES_VIO
 ## 9. Referencias
 
 - Contrato Adquisiciones: [`modulos/adquisiciones/contracts.md`](../modulos/adquisiciones/contracts.md)
-- Contrato plataforma: [`contracts.md`](./contracts.md)
+- Contrato plataforma: [`plataforma/contracts.md`](../plataforma/contracts.md)
 - Fichas: `procesos-transversales/1-solped.md`, `4-recepcion-conforme.md`, `5-pago.md`; etapas 2–3 por modalidad
 - Pendiente: **P-24** (este documento), **P-25** (SoD completo), **P-38**, **P-51**

@@ -27,7 +27,7 @@ Registro centralizado de pendientes de los documentos de arquitectura. En cada d
 | P-21 | Mapeo de obligaciones DS N°7/2023 → controles exigibles en bases | seguridad §1, §14 | jurídica | Abierto |
 | P-22 | Duración de sesión y política de renovación (plano personas, Clave Única) | seguridad §2.1, §14 | ninguna | Abierto |
 | P-23 | Formato y verificación de la identidad del funcionario originante en escrituras M2M | seguridad §2.2, §14 | ninguna | Abierto |
-| P-24 | Catálogo inicial de roles por módulo (derivable de fichas de flujo) — borrador en [`plataforma/catalogo-roles.md`](../plataforma/catalogo-roles.md); consola con vistas por usuario y por módulo/proceso | seguridad §3, §14 | ninguna | **Borrador** |
+| P-24 | Catálogo inicial de roles por módulo (derivable de fichas de flujo) — documento transversal [`arquitectura/catalogo-roles.md`](./catalogo-roles.md); consola con vistas por usuario y por módulo/proceso | seguridad §3, §14 | ninguna | **Borrador** |
 | P-25 | Matriz de incompatibilidades SoD y régimen de excepciones para dotaciones pequeñas | seguridad §4, §14 | DAF / jurídica | Abierto |
 | P-26 | Plazos de retención de auditoría por tipo de registro | seguridad §5, §14 | Contraloría / archivística | Abierto |
 | P-27 | Catastro de datos personales sobre las entidades existentes | seguridad §6, §14 | ninguna | Abierto |

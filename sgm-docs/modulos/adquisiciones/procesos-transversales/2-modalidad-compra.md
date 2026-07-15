@@ -2,12 +2,14 @@
 
 *Proceso transversal — documentado en el piloto [Compra Ágil](../1.%20compra-agil/overview.md). La **entrada** de la etapa es común a las 4 modalidades (ratificación con validaciones y vinculación MP); la **salida** deriva al subproceso específico de la modalidad confirmada. Extensión a otras modalidades pendiente de validación del piloto.*
 
+*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md) (P-24).*
+
 ## 2.1 — Ratificación o selección de modalidad
 
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Finanzas |
-| Rol | Usuario |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Falso |
 
@@ -71,7 +73,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Finanzas |
-| Rol | Aprobador |
+| Rol | Aprobador de modalidad ([`adq.aprobador_modalidad`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Condicional a `ModalityDecision.requires_jefatura_approval` (capturado en 2.1) — ⚠ existencia formal aún por confirmar con DM |
 
@@ -100,7 +102,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Finanzas / DAF Abastecimiento |
-| Rol | Usuario |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
 | Plataforma | SGM → MP (deep link) / SGM |
 | Optativo | Condicional por modalidad — inmediata en CA/CM; diferida en LP y TD (ver tabla) |
 

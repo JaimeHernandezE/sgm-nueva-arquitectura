@@ -1,6 +1,7 @@
 # Wireframe: Emisión de la Orden de Compra
 
-**Sub-paso:** 3.3 — Emisión de la Orden de Compra *(Compra Ágil)*
+**Sub-paso:** 3.3 — Emisión de la Orden de Compra *(Compra Ágil)*  
+**Rol:** Gestor de compra (`adq.gestor_compra`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
 **Operación:** `registerPurchaseOrder` · Dependencia: `readMpProcess` (deseada)
 
 ## Layout

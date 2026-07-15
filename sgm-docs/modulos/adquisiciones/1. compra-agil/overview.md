@@ -36,7 +36,7 @@ Alineadas con [`plantilla-maestra-sgm.md`](../../../arquitectura/plantilla-maest
 | Materia | Valores | Notas |
 |---|---|---|
 | Unidad municipal | Unidad Solicitante / DAF Finanzas / DAF Abastecimiento / Contabilidad / Tesorería / `—` | Departamento u oficina del municipio responsable del paso |
-| Rol | Usuario / Aprobador / N/A | Rol funcional según RBAC del módulo (`seguridad.md` §3; catálogo en P-24) |
+| Rol | Nombre (usuarios) + código (sistema) del catálogo transversal [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md) (P-24), p. ej. `Solicitante ([adq.solicitante](…))`. `N/A` si automático o actor externo. |
 | Plataforma | SGM / Mercado Público / Otra | Sistema donde se ejecuta la acción principal del sub-paso |
 | Optativo | Verdadero / Falso | Si el sub-paso puede omitirse en el flujo (`Verdadero`) o es obligatorio (`Falso`) |
 

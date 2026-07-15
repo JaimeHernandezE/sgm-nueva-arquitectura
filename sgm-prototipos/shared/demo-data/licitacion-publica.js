@@ -13,7 +13,7 @@ export const stages = [
       {
         id: '1.1',
         name: 'Creación de solicitud',
-        responsible: { unit: 'Dirección de Obras', role: 'Usuario', name: 'Felipe Rojas' },
+        responsible: { unit: 'Dirección de Obras', role: 'Solicitante', name: 'Felipe Rojas' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver formulario' },
         secondaryLine: 'Tiempo transcurrido: 0 d 5 h · Modalidad indicada: Licitación Pública · Monto estimado: $ 185.000.000 (> 100 UTM)',
@@ -21,7 +21,7 @@ export const stages = [
       {
         id: '1.2',
         name: 'Visto bueno de jefatura',
-        responsible: { unit: 'Dirección de Obras', role: 'Aprobador', name: 'Claudia Muñoz' },
+        responsible: { unit: 'Dirección de Obras', role: 'Aprobador de unidad', name: 'Claudia Muñoz' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver aprobación' },
         secondaryLine: 'Tiempo transcurrido: 1 d 3 h · Última modificación: 16-01-2026',
@@ -29,7 +29,7 @@ export const stages = [
       {
         id: '1.3',
         name: 'Verificación de disponibilidad presupuestaria',
-        responsible: { unit: 'DAF Finanzas', role: 'Usuario', name: 'Carla Fuentes' },
+        responsible: { unit: 'DAF Finanzas', role: 'Formulador DAF / verificación', name: 'Carla Fuentes' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver verificación' },
         secondaryLine: 'Tiempo transcurrido: 0 d 8 h · Partida 22.04.01.002',
@@ -39,7 +39,7 @@ export const stages = [
       {
         id: '1.4',
         name: 'Solicitar financiamiento a DAF',
-        responsible: { unit: 'Dirección de Obras', role: 'Usuario', name: '—' },
+        responsible: { unit: 'Dirección de Obras', role: 'Solicitante', name: '—' },
         status: 'omitted',
         action: { type: 'badge', label: 'Omitido (optativo)' },
         secondaryLine: 'No requerido: disponibilidad verificada en 1.3',
@@ -50,7 +50,7 @@ export const stages = [
       {
         id: '1.5',
         name: 'Emisión de CDP firmado',
-        responsible: { unit: 'DAF Finanzas', role: 'Aprobador', name: 'Pedro Soto' },
+        responsible: { unit: 'DAF Finanzas', role: 'Firmante CDP', name: 'Pedro Soto' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver CDP' },
         secondaryLine: 'Tiempo transcurrido: 1 d 4 h · CDP N° 2026-0089',
@@ -60,7 +60,7 @@ export const stages = [
       {
         id: '1.6',
         name: 'Generación de preobligación',
-        responsible: { unit: 'DAF Finanzas', role: 'Usuario', name: 'Carla Fuentes' },
+        responsible: { unit: 'DAF Finanzas', role: 'Firmante CDP', name: 'Carla Fuentes' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver preobligación' },
         secondaryLine: 'Tiempo transcurrido: 0 d 3 h · Monto preobligado: $ 185.000.000 (estimado — ajuste al adjudicar)',
@@ -81,7 +81,7 @@ export const stages = [
       {
         id: '2.1',
         name: 'Ratificación o selección de modalidad',
-        responsible: { unit: 'DAF Finanzas', role: 'Usuario', name: 'Carla Fuentes' },
+        responsible: { unit: 'DAF Finanzas', role: 'Gestor de compra', name: 'Carla Fuentes' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver decisión' },
         secondaryLine: 'Tiempo transcurrido: 0 d 4 h · LP confirmada · V7: tramo medio, plazo mín. 20 días · V8: garantías seriedad y fiel cumplimiento informadas',
@@ -89,7 +89,7 @@ export const stages = [
       {
         id: '2.2',
         name: 'Aprobación de modalidad por jefatura',
-        responsible: { unit: 'DAF Finanzas', role: 'Aprobador', name: 'Marcela Iturra' },
+        responsible: { unit: 'DAF Finanzas', role: 'Aprobador de modalidad', name: 'Marcela Iturra' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver aprobación' },
         secondaryLine: 'Tiempo transcurrido: 0 d 2 h · Aprobada — monto alto',
@@ -97,7 +97,7 @@ export const stages = [
       {
         id: '2.3',
         name: 'Vinculación del proceso en Mercado Público',
-        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: '—' },
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: '—' },
         status: 'omitted',
         action: { type: 'badge', label: 'Omitido (optativo)' },
         secondaryLine: 'Diferido al sub-paso 3.5 de Licitación Pública (tras bases aprobadas y Toma de Razón si aplicó)',

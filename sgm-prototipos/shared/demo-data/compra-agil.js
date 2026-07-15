@@ -13,7 +13,7 @@ export const stages = [
       {
         id: '1.1',
         name: 'Creación de solicitud',
-        responsible: { unit: 'Unidad Solicitante', role: 'Usuario', name: 'Juan Astorga' },
+        responsible: { unit: 'Unidad Solicitante', role: 'Solicitante', name: 'Juan Astorga' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver formulario' },
         secondaryLine: 'Tiempo transcurrido: 0 d 3 h · Última modificación: 24-06-2026 · Modalidad indicada: Compra Ágil · Monto estimado: $ 1.250.000 (≤ 100 UTM)',
@@ -21,7 +21,7 @@ export const stages = [
       {
         id: '1.2',
         name: 'Visto bueno de jefatura',
-        responsible: { unit: 'Unidad Solicitante', role: 'Aprobador', name: 'María Rojas' },
+        responsible: { unit: 'Unidad Solicitante', role: 'Aprobador de unidad', name: 'María Rojas' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver aprobación' },
         secondaryLine: 'Tiempo transcurrido: 1 d 2 h · Última modificación: 25-06-2026',
@@ -29,7 +29,7 @@ export const stages = [
       {
         id: '1.3',
         name: 'Verificación de disponibilidad presupuestaria',
-        responsible: { unit: 'DAF Finanzas', role: 'Usuario', name: 'Carla Fuentes' },
+        responsible: { unit: 'DAF Finanzas', role: 'Formulador DAF / verificación', name: 'Carla Fuentes' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver verificación' },
         secondaryLine: 'Tiempo transcurrido: 0 d 5 h · Última modificación: 25-06-2026',
@@ -39,7 +39,7 @@ export const stages = [
       {
         id: '1.4',
         name: 'Solicitar financiamiento a DAF',
-        responsible: { unit: 'Unidad Solicitante', role: 'Usuario', name: '—' },
+        responsible: { unit: 'Unidad Solicitante', role: 'Solicitante', name: '—' },
         status: 'omitted',
         action: { type: 'badge', label: 'Omitido (optativo)' },
         secondaryLine: 'No requerido: disponibilidad verificada en 1.3',
@@ -50,7 +50,7 @@ export const stages = [
       {
         id: '1.5',
         name: 'Emisión de CDP firmado',
-        responsible: { unit: 'DAF Finanzas', role: 'Aprobador', name: 'Pedro Soto' },
+        responsible: { unit: 'DAF Finanzas', role: 'Firmante CDP', name: 'Pedro Soto' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver CDP' },
         secondaryLine: 'Tiempo transcurrido: 1 d 0 h · Última modificación: 26-06-2026 · Firma electrónica (FirmaGob)',
@@ -60,7 +60,7 @@ export const stages = [
       {
         id: '1.6',
         name: 'Generación de preobligación',
-        responsible: { unit: 'DAF Finanzas', role: 'Usuario', name: 'Carla Fuentes' },
+        responsible: { unit: 'DAF Finanzas', role: 'Firmante CDP', name: 'Carla Fuentes' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver preobligación' },
         secondaryLine: 'Tiempo transcurrido: 0 d 1 h · Monto preobligado: $ 1.250.000 · También: Contabilidad',
@@ -81,7 +81,7 @@ export const stages = [
       {
         id: '2.1',
         name: 'Ratificación o selección de modalidad',
-        responsible: { unit: 'DAF Finanzas', role: 'Usuario', name: 'Carla Fuentes' },
+        responsible: { unit: 'DAF Finanzas', role: 'Gestor de compra', name: 'Carla Fuentes' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver decisión' },
         secondaryLine: 'Tiempo transcurrido: 0 d 2 h · Compra Ágil ratificada (gateway V1–V8 OK) · Aprobación de jefatura solicitada',
@@ -89,7 +89,7 @@ export const stages = [
       {
         id: '2.2',
         name: 'Aprobación de modalidad por jefatura',
-        responsible: { unit: 'DAF Finanzas', role: 'Aprobador', name: 'Marcela Iturra' },
+        responsible: { unit: 'DAF Finanzas', role: 'Aprobador de modalidad', name: 'Marcela Iturra' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver aprobación' },
         secondaryLine: 'Tiempo transcurrido: 0 d 1 h · Aprobada sin observaciones — sub-paso condicional (P-38)',
@@ -97,7 +97,7 @@ export const stages = [
       {
         id: '2.3',
         name: 'Vinculación del proceso en Mercado Público',
-        responsible: { unit: 'DAF Abastecimiento', role: 'Usuario', name: 'Rodrigo Muñoz' },
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver vínculo MP' },
         secondaryLine: 'Tiempo transcurrido: 0 d 2 h · ID Cotización: 4021-33-COT26 · Vinculación inmediata (CA)',

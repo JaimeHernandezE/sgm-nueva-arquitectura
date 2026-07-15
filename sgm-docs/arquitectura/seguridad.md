@@ -40,7 +40,7 @@ Hoy las fichas de proceso usan Rol = Usuario / Aprobador, pero no existe un mode
 1. **Modelo RBAC explícito y documentado:** roles definidos por módulo, permisos como operaciones del contrato (la unidad de permiso es la operación de API, no la pantalla — consecuencia directa del API-first).
 2. **Asignación por municipio y unidad:** un rol se otorga en el contexto de un tenant y una unidad municipal; ninguna asignación es global salvo los roles de administración de plataforma (SUBDERE).
 3. **Administración delegada:** cada municipio administra los roles de sus funcionarios dentro de su tenant; SUBDERE administra la plataforma. Las acciones de administración de roles son a su vez operaciones auditadas del contrato.
-4. **[PENDIENTE P-24]** Catálogo inicial de roles por módulo, derivable de las columnas Unidad municipal/Rol de las fichas de flujo — mismo método que el mapa de bordes.
+4. **[PENDIENTE P-24]** Catálogo inicial de roles por módulo, derivable de las columnas Unidad municipal/Rol de las fichas de flujo — mismo método que el mapa de bordes. Borrador transversal (única fuente, no duplicar por módulo): [`catalogo-roles.md`](./catalogo-roles.md).
 
 ## 4. Segregación de funciones (SoD)
 
