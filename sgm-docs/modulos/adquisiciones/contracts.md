@@ -8,7 +8,7 @@
 > OpenAPI: [`openapi/adquisiciones.openapi.yaml`](./openapi/adquisiciones.openapi.yaml) — estructura: [`openapi/README.md`](./openapi/README.md)
 > Fixtures sandbox: [`fixtures/catalogo.md`](./fixtures/catalogo.md)
 
-**Alcance:** las etapas transversales (1, 2, 4) y la etapa 3 de Compra Ágil están cubiertas en profundidad. La etapa 3 de Licitación Pública ya tiene ficha de flujo (`3. licitacion-publica/3-resolucion-compra.md`, 14 sub-pasos) pero sus entidades y operaciones específicas (`TenderBases`, `Guarantee`, `Contract`, Comisión Evaluadora, etc.) aún no están completamente incorporadas a este contrato ni a `entidades-core.md` — solo se propagó aquí la concordancia de vinculación MP (§2.3 ↔ §3.5). Convenio Marco y Trato Directo se extenderán tras validar el piloto.
+**Alcance:** las etapas transversales (1, 2, 4) y la etapa 3 de Compra Ágil y Licitación Pública están cubiertas en profundidad. Convenio Marco y Trato Directo se extenderán tras validar el piloto — ver `brechas-etapa3-modalidades.md` para el diagnóstico de esas dos modalidades restantes.
 
 ---
 
@@ -39,8 +39,18 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | `Accrual` | Expuesta | `id`, `three_way_match_id`, `budget_commitment_id`, `accrual_amount`, `accrual_date` | 5.2 — ver también `recordAccrual` (4.4) <!-- REVISAR: dos eventos de devengado, ver §4 --> |
 | `PaymentDecree` | Expuesta | `id`, `accrual_id`, `decree_number`, `decree_date`, `approver_id` | 5.3 |
 | `Payment` | Expuesta | `id`, `payment_decree_id`, `payment_date`, `payment_method`, `payment_status` | 5.4 |
+| `TenderBases` | Expuesta | `id`, `procurement_case_id`, `status`, `technical_bases_ref`, `administrative_bases_ref`, `requires_bid_bond`, `requires_performance_bond`, `version` | 3.1 *(LP)* |
+| `EvaluationCriterion` | Expuesta | `id`, `tender_bases_id`, `name`, `weight_percent`, `scoring_rule` | 3.1 *(LP)* |
+| `LegalReview` | Expuesta | `id`, `subject_type`, `subject_id`, `reviewer_id`, `outcome`, `observations`, `reviewed_at` | 3.2, 3.10 *(LP)* — polimórfica, transversal |
+| `AdministrativeAct` | Expuesta | `id`, `procurement_case_id`, `act_type`, `subject_id`, `act_number`, `status`, `signed_by`, `signed_at` | 3.3, 3.9, 3.10 *(LP)* — polimórfica, transversal <!-- REVISAR: candidata a absorber `PaymentDecree`, ver entidades-core.md --> |
+| `ComptrollerReview` | Expuesta | `id`, `administrative_act_id`, `submitted_at`, `outcome`, `outcome_at` | 3.4, 3.11 *(LP)* — transversal, reutilizable en Trato Directo |
+| `Guarantee` | Expuesta | `id`, `procurement_case_id`, `guarantee_type`, `provider_rut`, `instrument_type`, `amount`, `expiry_date`, `status` | 3.7, 3.12 *(LP)* — transversal |
+| `EvaluationCommittee` | Expuesta | `id`, `procurement_case_id`, `designation_act_id`, `status` | 3.9 *(LP)* |
+| `OfferRecord` | Expuesta | `id`, `procurement_case_id`, `provider_rut`, `provider_name`, `offered_amount`, `admissibility_status`, `entry_mode` | 3.9 *(LP)* |
+| `EvaluationReport` | Expuesta | `id`, `evaluation_committee_id`, `ranking`, `proposed_award_offer_id`, `status`, `signed_at` | 3.9 *(LP)* |
+| `Contract` | Expuesta | `id`, `procurement_case_id`, `awarded_offer_ref`, `amount`, `start_date`, `end_date`, `status` | 3.13 *(LP)* |
 
-**Internas (no expuestas en contrato):** `PriceReference` (dato de validación embebido en línea), `GoodsReceiptLine` (confirmada, candidata a exposición futura), `MpProcessSnapshot` (bitácora de sincronización), `UtmValue` (obtenida vía dependencia `getUtmValue`), `NormativeParameter` (referencia global de plataforma, no administrada por este módulo).
+**Internas (no expuestas en contrato):** `PriceReference` (dato de validación embebido en línea), `GoodsReceiptLine` (confirmada, candidata a exposición futura), `MpProcessSnapshot` (bitácora de sincronización), `UtmValue` (obtenida vía dependencia `getUtmValue`), `NormativeParameter` (referencia global de plataforma, no administrada por este módulo), `CommitteeMember` (detalle de `EvaluationCommittee`, expuesta agregada vía `EvaluationReport`), `EvaluationScore` (detalle de evaluación, expuesta agregada vía `EvaluationReport`).
 
 ---
 
@@ -270,7 +280,123 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 - **Dependencias:** `releasePreCommitment` (Presupuestos, síncrona bloqueante)
 - **Evento emitido:** `ProcurementProcessFailed`
 
-### 2.4 Recepción Conforme
+### 2.4 Resolución de Compra — Licitación Pública
+
+Vinculación con Mercado Público diferida al sub-paso 3.5 — reutiliza íntegramente `linkMpProcess`/`readMpProcess` de §2.2. Firma electrónica vía `requestSignature`/`confirmSignature` (Core FirmaGob) en 3.3, 3.9, 3.10, 3.13.
+
+#### `POST /procurement-cases/{id}/tender-bases` — `createTenderBases`
+- **Sub-pasos:** 3.1
+- **Entrada:** `TenderBases` (`technical_bases_ref`, `administrative_bases_ref`, `requires_bid_bond`, `requires_performance_bond`) + `EvaluationCriterion[]`
+- **Reglas:**
+  | Regla | Severidad | Error |
+  |---|---|---|
+  | Suma de `weight_percent` de los criterios = 100 | blocking | `CRITERIA_WEIGHTS_INVALID` |
+  | Documentos de bases técnicas y administrativas presentes | blocking | `MISSING_REQUIRED_FIELDS` |
+- **Respuesta:** `TenderBases` con `status = draft`
+
+#### `POST /tender-bases/{id}/submit-legal-review` — `submitBasesForLegalReview`
+- **Sub-pasos:** 3.1
+- **Reglas:** `TenderBases.status = draft` → `legal_review`; error `INVALID_STATUS` si no
+
+#### `POST /tender-bases/{id}/legal-review` — `recordLegalReview`
+- **Sub-pasos:** 3.2
+- **Entrada:** `outcome` (`approved` \| `observations`), `observations` (obligatorio si `observations`)
+- **Reglas:** `TenderBases.status = legal_review` requerido (`INVALID_STATUS`); `outcome = approved` → `status = approved`; `outcome = observations` → `status = draft` (retorna a 3.1, ciclo iterable)
+- **Evento emitido:** `LegalReviewCompleted`
+
+#### `POST /tender-bases/{id}/approve` — `approveTenderBases`
+- **Sub-pasos:** 3.3
+- **Reglas:** `TenderBases.status = approved` (VB jurídico) requerido (`LEGAL_REVIEW_REQUIRED`)
+- **Respuesta:** `AdministrativeAct` (`act_type = bases_approval`, `status = pending_signature`)
+- **Dependencias:** `requestSignature`, `confirmSignature` (Core FirmaGob, síncrona bloqueante)
+- **Evento emitido:** `AdministrativeActSigned`
+- **Comportamiento ante falla:** FirmaGob no disponible → acto no perfeccionado, reintento; nunca `signed` sin confirmación del servicio
+
+#### `POST /administrative-acts/{id}/comptroller-submission` — `submitToComptroller`
+- **Sub-pasos:** 3.4, 3.11 *(mismo mecanismo, distinto `AdministrativeAct` de origen — bases o adjudicación)*
+- **Entrada:** `submitted_at`
+- **Reglas:** solo si el monto supera el umbral de Toma de Razón vigente (`NormativeParameter`)
+- **Respuesta:** `ComptrollerReview` con `outcome` pendiente
+- **Dependencias:** Contraloría — registro manual, sin integración API asumida (**[PENDIENTE P-64]**)
+
+#### `POST /comptroller-reviews/{id}/outcome` — `recordComptrollerOutcome`
+- **Sub-pasos:** 3.4, 3.11
+- **Entrada:** `outcome` (`approved` \| `approved_with_remarks` \| `rejected`), `official_document_ref`
+- **Reglas:** `outcome = rejected` (representación) → el acto de origen se cae; 3.4 revierte a 3.1, 3.11 revierte a 3.10
+- **Evento emitido:** `ComptrollerReviewRecorded`
+
+#### `POST /procurement-cases/{id}/clarifications` — `recordClarification`
+- **Sub-pasos:** 3.6
+- **Entrada:** `clarification_document_ref`, `modifies_bases` (booleano)
+- **Reglas:** `modifies_bases = true` → advertencia, puede requerir `AdministrativeAct` complementario y extensión de plazo — criterio exacto **[PENDIENTE P-65]**
+- **Dependencias:** `readMpProcess` — preguntas recibidas / aclaración publicada (deseada); degradado: registro manual del documento
+- **Evento emitido:** `ClarificationRecorded`
+
+#### *(sin operación de escritura — reflejo de apertura MP)*
+- **Sub-pasos:** 3.8
+- **Dependencias:** `readMpProcess` — cierre y apertura, n° de ofertas (deseada); degradado: registro manual del hito
+- **Evento emitido:** `BidOpeningRecorded`
+
+#### `POST /procurement-cases/{id}/evaluation-committee` — `designateEvaluationCommittee`
+- **Sub-pasos:** 3.9a *(designación)*
+- **Entrada:** `CommitteeMember[]` (`user_id`, `conflict_declaration_ref`)
+- **Reglas:**
+  | Regla | Severidad | Error |
+  |---|---|---|
+  | Cada integrante con `conflict_declaration_ref` | blocking | `CONFLICT_DECLARATION_REQUIRED` |
+  | Integrante ≠ requirente SOLPED ni elaborador de bases técnicas | blocking ⚠ | `COMMITTEE_MEMBER_CONFLICT` — alcance exacto **[PENDIENTE P-66]** |
+- **Respuesta:** `EvaluationCommittee` + `AdministrativeAct` (`act_type = committee_designation`)
+- **Dependencias:** `requestSignature`, `confirmSignature`
+- **Evento emitido:** `EvaluationCommitteeDesignated`
+
+#### `POST /evaluation-committees/{id}/offers` — `recordOfferAdmissibility`
+- **Sub-pasos:** 3.9b *(admisibilidad)*
+- **Entrada:** `OfferRecord[]` (`provider_rut`, `provider_name`, `offered_amount`, `admissibility_status`, `inadmissibility_cause`, `entry_mode`)
+- **Reglas:** `inadmissibility_cause` obligatorio si `admissibility_status = inadmissible`; oferta inadmisible queda fuera de evaluación aunque tenga mejor precio
+
+#### `POST /evaluation-committees/{id}/scores` — `recordEvaluationScores`
+- **Sub-pasos:** 3.9c *(evaluación)*
+- **Entrada:** `EvaluationScore[]` (`offer_id`, `criterion_id`, `score`, `rationale`)
+- **Reglas:**
+  | Regla | Severidad | Error |
+  |---|---|---|
+  | Puntaje total por oferta cuadra con los pesos de `EvaluationCriterion` | blocking | `SCORES_INCONSISTENT_WITH_CRITERIA` |
+- **Respuesta:** `EvaluationReport` con `ranking` recalculado (`status = draft`)
+
+#### `POST /evaluation-committees/{id}/report/sign` — `signEvaluationReport`
+- **Sub-pasos:** 3.9c
+- **Reglas:** bloqueado si algún `EvaluationScore` dispara `SCORES_INCONSISTENT_WITH_CRITERIA`
+- **Dependencias:** `requestSignature`, `confirmSignature` (integrantes de comisión)
+- **Evento emitido:** `EvaluationCompleted`
+
+#### `POST /procurement-cases/{id}/award-resolution` — `issueAwardResolution`
+- **Sub-pasos:** 3.10
+- **Entrada:** `resolution_type` (`award` \| `desertion` \| `revocation`), `awarded_offer_id` (obligatorio si `award`), `justification`
+- **Reglas:**
+  | Regla | Severidad | Error |
+  |---|---|---|
+  | `justification` si `awarded_offer_id` ≠ primero del ranking | blocking | `AWARD_JUSTIFICATION_REQUIRED` |
+  | Revisión jurídica previa registrada | blocking | `LEGAL_REVIEW_REQUIRED` |
+- **Respuesta:** `AdministrativeAct` (`act_type = award` \| `desertion` \| `revocation`); reutiliza `LegalReview` (revisión previa)
+- **Dependencias:** `requestSignature`, `confirmSignature`; `adjustPreCommitment` (Presupuestos) si `award` — ajuste al monto adjudicado, antes del Compromiso Cierto (3.14)
+- **Evento emitido:** `AwardResolutionIssued`
+- **Edge cases:** deserción → relicitar (nuevo proceso MP, mismo expediente) o Trato Directo por causal de licitación desierta (reversión a `2-modalidad-compra.md` §2.1 con la causal precargada)
+
+#### `POST /procurement-cases/{id}/contract` — `draftContract`
+- **Sub-pasos:** 3.13
+- **Entrada:** `Contract` (`awarded_offer_ref`, `amount`, `start_date`, `end_date`, `administrative_act_id`)
+- **Reglas:** `AdministrativeAct` de adjudicación firmado y (si aplica) tomado de razón, requerido
+
+#### `POST /contracts/{id}/sign` — `signContract`
+- **Sub-pasos:** 3.13
+- **Entrada:** `contractor_signature_mode` — mecanismo de firma del contratista **[PENDIENTE P-67]**
+- **Dependencias:** `requestSignature`, `confirmSignature` (firma municipal); firma del proveedor según canal a definir (P-67)
+- **Evento emitido:** `ContractSigned`
+- **Edge cases (crítico):** adjudicatario no suscribe en plazo → ejecución de la Garantía de Seriedad (`Guarantee.status = executed`, borde a Tesorería) y facultad de readjudicar al siguiente del ranking (reejecuta `issueAwardResolution` con el acta vigente) o declarar desierta
+
+> `registerGuaranteeCustody` (3.7, 3.12) y `syncPurchaseOrderAccepted`/`commitBudget` (3.14) ya están declarados en §2.3 y §3 — reutilizados sin cambio en Licitación Pública.
+
+### 2.5 Recepción Conforme
 
 #### `POST /purchase-orders/{id}/goods-receipts` — `registerReceipt`
 - **Sub-pasos:** 4.1
@@ -305,7 +431,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 - **Sub-pasos:** 4.5
 - **Evento emitido:** `ReceiptRejected`
 
-### 2.5 Pago
+### 2.6 Pago
 
 #### `POST /purchase-orders/{id}/three-way-match` — `performThreeWayMatch`
 - **Sub-pasos:** 5.1
@@ -369,6 +495,7 @@ Contrato del core: [`plataforma/contracts.md`](../../plataforma/contracts.md) §
 |---|---|---|---|
 | `executePayment` | 5.4 | Síncrona bloqueante | `TREASURY_PROVIDER_UNAVAILABLE` o `PAYMENT_REJECTED`; `payment_status = failed` |
 | `registerGuaranteeCustody` | 3.7, 3.12 *(LP)* | Asíncrona | Custodia de garantías de seriedad/fiel cumplimiento; nueva dependencia de módulo desde la ficha LP |
+| Ejecución de garantía *(sin operación de escritura separada — transición de `Guarantee.status = executed`)* | 3.13 *(LP)* | Asíncrona | Adjudicatario no suscribe en plazo — cobro de la Garantía de Seriedad |
 
 ### 3.4 Core — integraciones externas
 
@@ -396,8 +523,17 @@ Ver [`integracion-mercado-publico.md`](../../arquitectura/integracion-mercado-pu
 
 | Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
 |---|---|---|---|
-| `requestSignature` | 1.2, 1.5, 4.1, 5.3 | Síncrona bloqueante | `SIGNATURE_PROVIDER_UNAVAILABLE`; documento queda `pending_signature` |
-| `confirmSignature` | 1.2, 1.5 | Síncrona bloqueante | `SIGNATURE_REJECTED`; no transiciona estado |
+| `requestSignature` | 1.2, 1.5, 4.1, 5.3, 3.3, 3.9, 3.10, 3.13 *(LP)* | Síncrona bloqueante | `SIGNATURE_PROVIDER_UNAVAILABLE`; documento queda `pending_signature` |
+| `confirmSignature` | 1.2, 1.5, 3.3, 3.9, 3.10, 3.13 *(LP)* | Síncrona bloqueante | `SIGNATURE_REJECTED`; no transiciona estado |
+
+#### Contraloría (sin integración API asumida)
+
+Registro manual del envío y del resultado, con documento de respaldo — no hay integración API asumida con el sistema de tramitación de la CGR. Canal de consulta integrable **[PENDIENTE P-64]**.
+
+| Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
+|---|---|---|---|
+| `submitToComptroller` | 3.4, 3.11 *(LP)* | Registro manual | N/A — no hay llamada a proveedor externo |
+| `recordComptrollerOutcome` | 3.4, 3.11 *(LP)* | Registro manual | N/A |
 
 #### SII y referencias (C9)
 
@@ -447,7 +583,17 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 | `QuotationClosed` | 3.2 | `quotation_result_id`, `procurement_case_id` |
 | `ProviderIneligibleBlocked` | 3.3 | `purchase_order_id`, `provider_rut` |
 | `PurchaseOrderRejected` | 3.5 | `purchase_order_id`, `rejection_reason` |
-| `ProcurementProcessFailed` | 3.6 | `procurement_case_id`, causa (`deserted`/`all_rejected`), decisión |
+| `ProcurementProcessFailed` | 3.6 *(CA)* | `procurement_case_id`, causa (`deserted`/`all_rejected`), decisión |
+| `LegalReviewCompleted` | 3.2 *(LP)* | `legal_review_id`, `subject_type`, `subject_id`, `outcome` |
+| `AdministrativeActSigned` | 3.3 *(LP)* | `administrative_act_id`, `act_type`, `signed_at` |
+| `GuaranteeRegistered` | 3.7, 3.12 *(LP)* | `guarantee_id`, `guarantee_type`, `amount`, `expiry_date` |
+| `ComptrollerReviewRecorded` | 3.4, 3.11 *(LP)* | `comptroller_review_id`, `administrative_act_id`, `outcome` |
+| `ClarificationRecorded` | 3.6 *(LP)* | `procurement_case_id`, `clarification_document_ref`, `modifies_bases` |
+| `BidOpeningRecorded` | 3.8 *(LP)* | `procurement_case_id`, `offers_count` |
+| `EvaluationCommitteeDesignated` | 3.9 *(LP)* | `evaluation_committee_id`, `member_ids` |
+| `EvaluationCompleted` | 3.9 *(LP)* | `evaluation_committee_id`, `evaluation_report_id`, `ranking` |
+| `AwardResolutionIssued` | 3.10 *(LP)* | `administrative_act_id`, `resolution_type`, `awarded_offer_id` |
+| `ContractSigned` | 3.13 *(LP)* | `contract_id`, `signed_at`, `contractor_signature_mode` |
 | `GoodsReceiptConfirmed` | 4.2 *(antes 4.1 — renumerado)* | `goods_receipt_id`, `purchase_order_id`, `status` |
 | `ReceiptRejected` | 4.5 | `receipt_rejection_case_id`, `goods_receipt_line_ids` |
 | `ThreeWayMatchCompleted` | 5.1 | `three_way_match_id`, `match_status`, `match_date` |
@@ -477,7 +623,7 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 | 32 | P1 | Recepción sin adjuntos | `confirmReceipt` | `MISSING_REQUIRED_ATTACHMENTS` |
 | 53 | P0 | Cantidad cero | `createPurchaseRequest` | `INVALID_QUANTITY` |
 
-Ítems QA de otras modalidades (Comisión Evaluadora, etc.) **excluidos** del alcance del piloto Compra Ágil; la ficha de Licitación Pública (`3. licitacion-publica/3-resolucion-compra.md`) ya documenta Comisión Evaluadora (3.9) pero sus ítems QA e integración a esta sección quedan pendientes de una pasada dedicada a esa modalidad.
+La ficha QA original solo cubrió el piloto Compra Ágil. Las operaciones de Licitación Pública (§2.4) ya están formalizadas en este contrato, pero no existe todavía una ficha QA dedicada a LP que audite Comisión Evaluadora, Toma de Razón, garantías y Contrato con la misma profundidad P0/P1 — levantarla queda pendiente de una pasada dedicada a esa modalidad.
 
 ---
 
@@ -501,12 +647,19 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 | 3.4 *(CA)* | `syncPurchaseOrderAccepted` | MP, `commitBudget` (Presupuestos) | `PurchaseOrderAccepted`, `BudgetCommitmentCreated` |
 | 3.5 *(CA)* | — *(lectura MP)* | `readMpProcess` | `PurchaseOrderRejected` |
 | 3.6 *(CA)* | `releasePreCommitment` | `readMpProcess`, `releasePreCommitment` (Presupuestos) | `ProcurementProcessFailed` |
-| 3.1–3.3 *(LP)* | — *(bases, revisión jurídica, acto aprobatorio — sin cruce salvo firma)* | `requestSignature`/`confirmSignature` (3.3) | `LegalReviewCompleted` (3.2), `AdministrativeActSigned` (3.3) |
-| 3.4, 3.11 *(LP)* | — *(registro manual, sin API)* | Contraloría (sin integración asumida) | — |
-| 3.5 *(LP)* | `linkMpProcess` *(reutiliza 2.3, vinculación diferida)* | `readMpProcess` | `MpProcessLinked` |
-| 3.6–3.9 *(LP)* | — | `readMpProcess` (foro, apertura), `registerGuaranteeCustody` (3.7), `Core (FirmaGob)` (3.9 condicional) | `GuaranteeRegistered` (3.7), `EvaluationCompleted` (3.9) |
-| 3.10 *(LP)* | — *(resolución de adjudicación/deserción/revocación)* | `adjustPreCommitment` (Presupuestos) | — |
-| 3.12–3.13 *(LP)* | — | `registerGuaranteeCustody`, `Core (FirmaGob)` (3.13) | — |
+| 3.1 *(LP)* | `createTenderBases`, `submitBasesForLegalReview` | — | — |
+| 3.2 *(LP)* | `recordLegalReview` | — | `LegalReviewCompleted` |
+| 3.3 *(LP)* | `approveTenderBases` | `requestSignature`, `confirmSignature` | `AdministrativeActSigned` |
+| 3.4 *(LP)* | `submitToComptroller`, `recordComptrollerOutcome` | Contraloría (sin integración asumida) | `ComptrollerReviewRecorded` |
+| 3.5 *(LP)* | `linkMpProcess` *(reutiliza 2.2, vinculación diferida)* | `readMpProcess` | `MpProcessLinked` |
+| 3.6 *(LP)* | `recordClarification` | `readMpProcess` (deseada) | `ClarificationRecorded` |
+| 3.7 *(LP)* | `registerGuaranteeCustody` | Tesorería | `GuaranteeRegistered` |
+| 3.8 *(LP)* | — *(lectura MP)* | `readMpProcess` (deseada) | `BidOpeningRecorded` |
+| 3.9 *(LP)* | `designateEvaluationCommittee`, `recordOfferAdmissibility`, `recordEvaluationScores`, `signEvaluationReport` | `requestSignature`, `confirmSignature` | `EvaluationCommitteeDesignated`, `EvaluationCompleted` |
+| 3.10 *(LP)* | `issueAwardResolution` | `requestSignature`, `confirmSignature`, `adjustPreCommitment` (Presupuestos) | `AwardResolutionIssued` |
+| 3.11 *(LP)* | `submitToComptroller`, `recordComptrollerOutcome` *(reutiliza 3.4)* | Contraloría (sin integración asumida) | `ComptrollerReviewRecorded` |
+| 3.12 *(LP)* | `registerGuaranteeCustody` *(reutiliza 3.7)* | Tesorería | `GuaranteeRegistered` |
+| 3.13 *(LP)* | `draftContract`, `signContract` | `requestSignature`, `confirmSignature` | `ContractSigned` |
 | 3.14 *(LP)* | `syncPurchaseOrderAccepted` | MP, `commitBudget` (Presupuestos) | `PurchaseOrderAccepted`, `BudgetCommitmentCreated` |
 | 4.1 | `registerReceipt` | — | — |
 | 4.2 | `confirmReceipt` *(inferido)* | `requestSignature` (condicional) | `GoodsReceiptConfirmed` |

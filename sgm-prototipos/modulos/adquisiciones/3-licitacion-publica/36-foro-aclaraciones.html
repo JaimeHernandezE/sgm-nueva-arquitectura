@@ -16,19 +16,43 @@
       <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
-    
 
     <div class="form-card">
       <div class="form-card__header">
         <span>ADQ-2026-00045 — Foro de preguntas y aclaraciones</span>
-        <span class="badge badge--active" id="header-badge">Cerrado</span>
+        <span class="badge badge--active" id="header-badge">Período abierto</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">Período obligatorio; gestión condicional si hay preguntas. Aclaración publicada en MP; documento en expediente.</div>
+        <div class="form-row">
+          <label>Simular lectura MP <em>(solo demo — no existe en la ficha)</em></label>
+          <select id="simulate-questions">
+            <option value="none">Sin preguntas recibidas</option>
+            <option value="some" selected>3 preguntas recibidas</option>
+          </select>
+        </div>
+
+        <div class="info-panel hidden" id="questions-panel">Preguntas recibidas en MP: 3 (gestionadas y respondidas en el portal).</div>
+
+        <div id="clarification-panel">
+          <div class="form-row"><label>Documento de Aclaración a las Bases (adjunto) <span class="required">*</span></label><input type="text" id="clarification-ref" placeholder="aclaracion-bases-v1.pdf" /></div>
+          <div class="form-row">
+            <label>¿La aclaración modifica sustantivamente las bases?</label>
+            <select id="modifies-bases">
+              <option value="no" selected>No</option>
+              <option value="yes">Sí</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.7</a>
+        </div>
       </div>
       <div class="form-actions">
-        <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+        <button class="btn btn--secondary" type="button" id="skip">Sin preguntas — continuar</button>
+        <button class="btn btn--primary" type="button" id="record">Registrar aclaración</button>
       </div>
     </div>
       </div>
@@ -38,7 +62,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -46,21 +70,55 @@
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
-      stageName: 'Etapa 3 · Resolución de Compra',
+      stageName: 'Etapa 3 · Resolución de Compra (LP)',
       stepName: 'Foro de preguntas y aclaraciones',
       stepId: '3.6',
     });
-
     document.getElementById('origin-banner').innerHTML = renderOriginBanner({
       kind: 'external',
       label: 'Mercado Público',
       mode: 'solo lectura',
     });
 
-    document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
-    document.getElementById('confirm').addEventListener('click', () => {
-      demoAction('demo');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+    const questionsSelect = document.getElementById('simulate-questions');
+    const questionsPanel = document.getElementById('questions-panel');
+    function toggleQuestionsPanel() {
+      questionsPanel.classList.toggle('hidden', questionsSelect.value !== 'some');
+    }
+    questionsSelect.addEventListener('change', toggleQuestionsPanel);
+    toggleQuestionsPanel();
+
+    const resultBanner = document.getElementById('result-banner');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    document.getElementById('next-step-link').href = relativeFormHref('37-garantia-seriedad.html');
+
+    document.getElementById('skip').addEventListener('click', () => {
+      resultBanner.classList.remove('hidden');
+      resultBanner.className = 'banner banner--info';
+      resultBanner.textContent = 'Período sin preguntas — sub-paso completado sin gestión adicional.';
+      document.getElementById('header-badge').textContent = 'Sin preguntas';
+      nextStepText.textContent = 'Continuar a 3.7 (Garantía de Seriedad).';
+      nextStepPanel.classList.remove('hidden');
+    });
+
+    document.getElementById('record').addEventListener('click', () => {
+      if (!document.getElementById('clarification-ref').value.trim()) {
+        alert('Documento de aclaración obligatorio (demo).');
+        return;
+      }
+      demoAction('recordClarification');
+      resultBanner.classList.remove('hidden');
+      resultBanner.className = 'banner banner--info';
+
+      if (document.getElementById('modifies-bases').value === 'yes') {
+        resultBanner.textContent = 'Aclaración registrada — modifica sustantivamente las bases: puede requerir acto administrativo complementario y extensión de plazo (criterio exacto PENDIENTE P-65, no resuelto automáticamente).';
+      } else {
+        resultBanner.textContent = 'Aclaración registrada — evento ClarificationRecorded. No modifica sustantivamente las bases.';
+      }
+      document.getElementById('header-badge').textContent = 'Aclaración registrada';
+      nextStepText.textContent = 'Continuar a 3.7 (Garantía de Seriedad).';
+      nextStepPanel.classList.remove('hidden');
     });
   </script>
 </body>

@@ -16,20 +16,39 @@
       <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
-    <!-- Operaciones: registerGuaranteeCustody -->
 
     <div class="form-card">
       <div class="form-card__header">
         <span>ADQ-2026-00045 — Garantía de Fiel Cumplimiento</span>
-        <span class="badge badge--active" id="header-badge">En custodia</span>
+        <span class="badge badge--active" id="header-badge">Condicional</span>
       </div>
       <div class="form-card__body">
-        <div class="form-row"><label>Tipo</label><input value="performance_bond" readonly /></div>
-        <div class="info-panel">Previo a contrato / OC. Borde Tesorería.</div>
+        <div class="info-panel">
+          Adjudicatario: Taller Municipal SpA · Monto adjudicado: $178.500.000<br />
+          Bases exigen Garantía de Fiel Cumplimiento: Sí · Mínimo $9.025.000
+        </div>
+
+        <div class="form-row"><label>Tipo de instrumento <span class="required">*</span></label>
+          <select id="instrument-type">
+            <option value="poliza" selected>Póliza de seguro</option>
+            <option value="boleta">Boleta de garantía</option>
+            <option value="vale_vista">Vale vista</option>
+            <option value="fianza">Certificado de fianza</option>
+          </select>
+        </div>
+        <div class="form-row"><label>Monto <span class="required">*</span></label><input type="text" id="amount" value="9.250.000" /></div>
+        <div class="form-row"><label>Fecha de vencimiento <span class="required">*</span></label><input type="date" id="expiry" value="2027-03-15" /></div>
+        <div class="form-row"><label>Documento del instrumento <span class="required">*</span></label><input type="text" id="document-ref" placeholder="garantia-fiel-cumplimiento-taller-municipal.pdf" /></div>
+
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.13</a>
+        </div>
       </div>
       <div class="form-actions">
-        <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+        <button class="btn btn--secondary" type="button" id="skip">No aplica (bajo umbral) — continuar</button>
+        <button class="btn btn--primary" type="button" id="register">Registrar en custodia de Tesorería</button>
       </div>
     </div>
       </div>
@@ -39,7 +58,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -47,21 +66,43 @@
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
-      stageName: 'Etapa 3 · Resolución de Compra',
+      stageName: 'Etapa 3 · Resolución de Compra (LP)',
       stepName: 'Garantía de Fiel Cumplimiento',
       stepId: '3.12',
     });
-
     document.getElementById('origin-banner').innerHTML = renderOriginBanner({
       kind: 'module',
       label: 'Tesorería',
       mode: 'dependencia',
     });
 
-    document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
-    document.getElementById('confirm').addEventListener('click', () => {
+    const resultBanner = document.getElementById('result-banner');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    document.getElementById('next-step-link').href = relativeFormHref('313-contrato.html');
+
+    document.getElementById('register').addEventListener('click', () => {
+      if (!document.getElementById('document-ref').value.trim()) {
+        alert('Documento del instrumento obligatorio (demo).');
+        return;
+      }
       demoAction('registerGuaranteeCustody');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+      resultBanner.classList.remove('hidden');
+      resultBanner.className = 'banner banner--info';
+      resultBanner.textContent = 'Garantía de Fiel Cumplimiento en custodia de Tesorería. Evento GuaranteeRegistered.';
+      document.getElementById('header-badge').textContent = 'En custodia';
+      nextStepText.textContent = 'Continuar a 3.13 (Contrato).';
+      nextStepPanel.classList.remove('hidden');
+      document.getElementById('register').disabled = true;
+    });
+
+    document.getElementById('skip').addEventListener('click', () => {
+      resultBanner.classList.remove('hidden');
+      resultBanner.className = 'banner banner--info';
+      resultBanner.textContent = 'Bajo el umbral y las bases no la exigen — sub-paso omitido. La OC (3.14) puede formalizar el contrato directamente.';
+      document.getElementById('header-badge').textContent = 'No aplica';
+      nextStepText.textContent = 'Continuar a 3.13 (Contrato) o directo a 3.14 si las bases así lo disponen.';
+      nextStepPanel.classList.remove('hidden');
     });
   </script>
 </body>

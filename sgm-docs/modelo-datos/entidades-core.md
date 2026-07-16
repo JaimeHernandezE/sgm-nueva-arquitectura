@@ -407,6 +407,184 @@ Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validac
 | `resolved_at` | fecha | **Opcional** hasta resolución |
 | `outcome` | texto | **Obligatorio si** `resolved_at` presente |
 
+### `TenderBases` (Bases de Licitación)
+**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `status`, `technical_bases_ref`, `administrative_bases_ref`, `requires_bid_bond`, `requires_performance_bond`
+
+1:1 con `ProcurementCase` (una versión vigente por proceso; versiona con cada reenvío a revisión). Específica de Licitación Pública. Origen: ficha `3. licitacion-publica/3-resolucion-compra.md` §3.1.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
+| `status` | enum | **Obligatorio**. Valores: `draft`, `legal_review`, `approved` |
+| `technical_bases_ref` | ref. `DocumentRef` | **Obligatorio** — almacenado vía C10 |
+| `administrative_bases_ref` | ref. `DocumentRef` | **Obligatorio** — almacenado vía C10 |
+| `requires_bid_bond` | booleano | **Obligatorio** — exige Garantía de Seriedad |
+| `bid_bond_min_amount` | número | **Obligatorio si** `requires_bid_bond = true` |
+| `requires_performance_bond` | booleano | **Obligatorio** — exige Garantía de Fiel Cumplimiento |
+| `performance_bond_min_amount` | número | **Obligatorio si** `requires_performance_bond = true` |
+| `version` | número | **Obligatorio** (generado por sistema) — incrementa en cada reenvío a `draft` tras observaciones |
+
+### `EvaluationCriterion`
+**Visibilidad:** expuesta — campos en contrato: `id`, `tender_bases_id`, `name`, `weight_percent`, `scoring_rule`
+
+1:N con `TenderBases`. La suma de `weight_percent` de todos los criterios de una `TenderBases` debe ser 100 — validación bloqueante `CRITERIA_WEIGHTS_INVALID`. `EvaluationScore` puntúa contra estos criterios. Origen: ficha LP §3.1.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `tender_bases_id` | ref. `TenderBases` | **Obligatorio** |
+| `name` | texto | **Obligatorio** |
+| `weight_percent` | número | **Obligatorio** — suma de todos los criterios de la misma `TenderBases` = 100 |
+| `scoring_rule` | texto | **Obligatorio** — método de puntuación (ej. escala, fórmula) |
+
+### `LegalReview` (Revisión Jurídica)
+**Visibilidad:** expuesta — campos en contrato: `id`, `subject_type`, `subject_id`, `reviewer_id`, `outcome`, `observations`, `reviewed_at`
+
+**Transversal** — polimórfica (`subject_type`/`subject_id`): revisión de `TenderBases` (LP §3.2), de la Resolución de Adjudicación (LP §3.10, sobre `AdministrativeAct`), y candidata para la Resolución Fundada de Trato Directo. Origen: ficha LP §3.2.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
+| `subject_type` | enum | **Obligatorio**. Valores: `tender_bases`, `administrative_act` |
+| `subject_id` | ref. polimórfica | **Obligatorio** — apunta a `TenderBases.id` o `AdministrativeAct.id` según `subject_type` |
+| `reviewer_id` | ref. `User` | **Obligatorio** |
+| `outcome` | enum | **Obligatorio**. Valores: `approved`, `observations` |
+| `observations` | texto | **Obligatorio si** `outcome = observations` |
+| `reviewed_at` | fecha/hora | **Obligatorio** (generado por sistema al registrar) |
+
+### `AdministrativeAct` (Acto Administrativo)
+**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `act_type`, `subject_id`, `act_number`, `signed_by`, `signed_at`, `status`
+
+**Transversal** — polimórfica por `act_type`, cubre decretos/resoluciones de aprobación de bases (3.3), designación de comisión (3.9a), adjudicación/deserción/revocación (3.10). Generaliza el patrón de `PaymentDecree`.
+
+<!-- REVISAR: `AdministrativeAct` generaliza el patrón de `PaymentDecree` — candidata a absorberlo a futuro. No fusionar ahora; ambas entidades coexisten hasta validación explícita. -->
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
+| `act_type` | enum | **Obligatorio**. Valores: `bases_approval`, `committee_designation`, `award`, `desertion`, `revocation` |
+| `subject_id` | ref. polimórfica | **Opcional** — entidad sobre la que recae el acto (ej. `TenderBases.id`), según `act_type` |
+| `act_number` | texto | **Obligatorio** (generado por sistema en modo electrónico; ingreso manual en escaneado) |
+| `status` | enum | **Obligatorio**. Valores: `pending_signature`, `signed`, `failed` |
+| `signed_by` | ref. `User` | **Obligatorio si** `status = signed` |
+| `signed_at` | fecha/hora | **Obligatorio si** `status = signed` (generado por sistema al confirmar firma) |
+| `document_ref` | ref. `DocumentRef` | **Obligatorio si** `status = signed` — vía C10 |
+
+### `ComptrollerReview` (Toma de Razón)
+**Visibilidad:** expuesta — campos en contrato: `id`, `administrative_act_id`, `submitted_at`, `outcome`, `outcome_at`
+
+**Transversal — reutilizable en Trato Directo** (mismo trámite para su Resolución Fundada). Sin integración API asumida con Contraloría: registro manual del envío y del resultado. Origen: ficha LP §3.4 (reutilizada en §3.11).
+
+> ⚠ Pendiente: explorar si existe canal de consulta de estado de trámites CGR integrable; no asumir su existencia — **[PENDIENTE P-64]**.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `administrative_act_id` | ref. `AdministrativeAct` | **Obligatorio** |
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
+| `submitted_at` | fecha | **Obligatorio** — fecha de remisión a Contraloría |
+| `outcome` | enum | **Obligatorio si** resuelto. Valores: `approved`, `approved_with_remarks`, `rejected` |
+| `outcome_at` | fecha | **Obligatorio si** `outcome` presente |
+| `official_document_ref` | ref. `DocumentRef` | **Obligatorio si** `outcome` presente — oficio de respaldo, vía C10 |
+
+### `Guarantee` (Garantía)
+**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `guarantee_type`, `provider_rut`, `instrument_type`, `amount`, `expiry_date`, `status`
+
+**Transversal** — Garantía de Seriedad de la Oferta (LP §3.7) y Garantía de Fiel Cumplimiento (LP §3.12) comparten esta entidad, distinguidas por `guarantee_type`. Custodia en Tesorería — borde de módulo.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
+| `guarantee_type` | enum | **Obligatorio**. Valores: `bid_bond`, `performance_bond` |
+| `provider_rut` | texto | **Obligatorio** |
+| `instrument_type` | enum | **Obligatorio** — vale vista, boleta, póliza, certificado de fianza |
+| `amount` | número | **Obligatorio** |
+| `expiry_date` | fecha | **Obligatorio** |
+| `status` | enum | **Obligatorio**. Valores: `in_custody`, `returned`, `executed` |
+| `document_ref` | ref. `DocumentRef` | **Obligatorio** — vía C10 |
+
+### `EvaluationCommittee` (Comisión Evaluadora)
+**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `designation_act_id`, `status`
+
+1:1 con `ProcurementCase` — condicional, obligatoria sobre umbral `NormativeParameter`; bajo él, evaluación por funcionario responsable con el mismo registro estructurado (sin `EvaluationCommittee` formal). Origen: ficha LP §3.9.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio** |
+| `designation_act_id` | ref. `AdministrativeAct` | **Obligatorio** — `act_type = committee_designation` |
+| `status` | enum | **Obligatorio**. Valores: `designated`, `active`, `closed` |
+
+### `CommitteeMember` (Integrante de Comisión)
+**Visibilidad:** interna — detalle de `EvaluationCommittee`; expuesta agregada vía `EvaluationReport`
+
+1:N con `EvaluationCommittee`. La declaración de ausencia de conflictos de interés es **bloqueante**: sin ella el integrante no está habilitado a evaluar. Origen: ficha LP §3.9.
+
+> Regla SoD propuesta: los integrantes no pueden ser el requirente de la SOLPED ni quien elaboró las bases técnicas — alcance exacto de las inhabilidades **[PENDIENTE P-66]**, validar con jurídica.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `evaluation_committee_id` | ref. `EvaluationCommittee` | **Obligatorio** |
+| `user_id` | ref. `User` | **Obligatorio** |
+| `conflict_declaration_ref` | ref. `DocumentRef` | **Obligatorio** — bloqueante; sin ella el integrante no habilita a evaluar |
+| `conflict_declared_at` | fecha/hora | **Obligatorio** (generado por sistema al registrar) |
+| `replaced_by_member_id` | ref. `CommitteeMember` | **Opcional** — reemplazo por conflicto sobreviniente, trazado vía acto modificatorio |
+
+### `OfferRecord` (Oferta)
+**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `provider_rut`, `provider_name`, `offered_amount`, `admissibility_status`, `entry_mode`
+
+1:N con `ProcurementCase` — una por oferente. Espejo mínimo de cada oferta recibida en MP (el detalle completo de la oferta se gestiona en MP; SGM solo traza lo necesario para admisibilidad y evaluación). Origen: ficha LP §3.9.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio** |
+| `provider_rut` | texto | **Obligatorio** |
+| `provider_name` | texto | **Obligatorio** |
+| `offered_amount` | número | **Obligatorio** |
+| `admissibility_status` | enum | **Obligatorio**. Valores: `admissible`, `inadmissible` |
+| `inadmissibility_cause` | texto | **Obligatorio si** `admissibility_status = inadmissible` |
+| `entry_mode` | enum | **Obligatorio**. Valores: `mp_read`, `manual` |
+
+### `EvaluationScore` (Puntaje de Evaluación)
+**Visibilidad:** interna — detalle de evaluación; expuesta agregada vía `EvaluationReport`
+
+1:N con `OfferRecord` y con `EvaluationCriterion`. El sistema calcula el total por oferta y bloquea actas cuyos puntajes no cuadren con los pesos declarados en `EvaluationCriterion` — validación `SCORES_INCONSISTENT_WITH_CRITERIA`. Origen: ficha LP §3.9.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `offer_id` | ref. `OfferRecord` | **Obligatorio** |
+| `criterion_id` | ref. `EvaluationCriterion` | **Obligatorio** |
+| `score` | número | **Obligatorio** |
+| `rationale` | texto | **Obligatorio** |
+
+### `EvaluationReport` (Acta de Evaluación)
+**Visibilidad:** expuesta — campos en contrato: `id`, `evaluation_committee_id`, `ranking`, `proposed_award_offer_id`, `status`, `signed_at`
+
+1:1 con `EvaluationCommittee`. Acta con ranking y propuesta de adjudicación, firmada por los integrantes. Bloqueada mientras existan `EvaluationScore` inconsistentes con los pesos de `EvaluationCriterion` (`SCORES_INCONSISTENT_WITH_CRITERIA`). Origen: ficha LP §3.9.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `evaluation_committee_id` | ref. `EvaluationCommittee` | **Obligatorio** |
+| `ranking` | JSON | **Obligatorio** (generado por sistema) — deriva de `EvaluationScore` agregados por oferta |
+| `proposed_award_offer_id` | ref. `OfferRecord` | **Obligatorio** |
+| `status` | enum | **Obligatorio**. Valores: `draft`, `signed` — bloqueado en `draft` si hay inconsistencia de puntajes |
+| `signed_by` | ref. `User[]` | **Obligatorio si** `status = signed` — integrantes firmantes |
+| `signed_at` | fecha/hora | **Obligatorio si** `status = signed` |
+
+### `Contract` (Contrato)
+**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `awarded_offer_ref`, `amount`, `start_date`, `end_date`, `status`
+
+1:1 con `ProcurementCase` — condicional (obligatorio sobre umbral `NormativeParameter` o cuando las bases lo establecen; bajo él, la OC puede formalizar el contrato). Origen: ficha LP §3.13.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio** |
+| `awarded_offer_ref` | ref. `OfferRecord` | **Obligatorio** |
+| `administrative_act_id` | ref. `AdministrativeAct` | **Obligatorio** — acto aprobatorio del contrato |
+| `amount` | número | **Obligatorio** |
+| `start_date` | fecha | **Obligatorio** |
+| `end_date` | fecha | **Obligatorio** |
+| `document_ref` | ref. `DocumentRef` | **Obligatorio** — vía C10 |
+| `contractor_signature_mode` | enum | **Obligatorio**. Mecanismo de firma del contratista **[PENDIENTE P-67]** — valores candidatos: `fea_propia`, `firma_papel_digitalizada`, `plataforma_externa` |
+| `status` | enum | **Obligatorio**. Valores: `draft`, `signed`, `not_subscribed` |
+
 ---
 
 ## Patrones transversales pendientes de definir

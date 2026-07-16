@@ -16,20 +16,45 @@
       <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
-    <!-- Operaciones: linkMpProcess -->
 
     <div class="form-card">
       <div class="form-card__header">
-        <span>ADQ-2026-00045 — Publicación en Mercado Público y vinculación</span>
-        <span class="badge badge--active" id="header-badge">Vinculada</span>
+        <span>ADQ-2026-00045 — Publicación en MP y vinculación</span>
+        <span class="badge badge--active" id="header-badge">Bases listas</span>
       </div>
       <div class="form-card__body">
-        <div class="form-row"><label>ID licitación MP <span class="required">*</span></label><input value="4021-12-LP26" /></div>
-        <div class="info-panel">Vinculación diferida desde 2.3 (tras bases aprobadas). Mismos bloqueos que linkMpProcess transversal.</div>
+        <div class="info-panel">
+          Bases aprobadas ✓ · Toma de Razón: OK (o N/A si bajo umbral)<br />
+          Plazo mínimo de publicación (V7, informado desde etapa 2): 20 días
+        </div>
+
+        <p>
+          <button class="btn btn--secondary" type="button" id="deep-link-btn">Publicar licitación en Mercado Público</button>
+        </p>
+
+        <div class="form-row">
+          <label>ID de la licitación en MP <span class="required">*</span></label>
+          <input type="text" id="mp-id" value="4021-12-LP26" />
+        </div>
+        <div class="form-row">
+          <label>Simular resultado de vinculación <em>(solo demo — no existe en la ficha)</em></label>
+          <select id="simulate-result">
+            <option value="ok" selected>Vinculación exitosa</option>
+            <option value="not_found">MP_PROCESS_NOT_FOUND</option>
+            <option value="organism_mismatch">MP_PROCESS_ORGANISM_MISMATCH</option>
+            <option value="type_mismatch">MP_PROCESS_TYPE_MISMATCH</option>
+            <option value="already_linked">MP_PROCESS_ALREADY_LINKED</option>
+          </select>
+        </div>
+
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          Vinculado — SGM entra en modo monitor. <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.6</a>
+        </div>
       </div>
       <div class="form-actions">
-        <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+        <span></span>
+        <button class="btn btn--primary" type="button" id="validate">Validar y vincular</button>
       </div>
     </div>
       </div>
@@ -39,7 +64,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -47,21 +72,55 @@
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
-      stageName: 'Etapa 3 · Resolución de Compra',
+      stageName: 'Etapa 3 · Resolución de Compra (LP)',
       stepName: 'Publicación en Mercado Público y vinculación',
       stepId: '3.5',
     });
-
     document.getElementById('origin-banner').innerHTML = renderOriginBanner({
       kind: 'external',
       label: 'Mercado Público',
       mode: 'solo lectura',
     });
 
-    document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
-    document.getElementById('confirm').addEventListener('click', () => {
-      demoAction('linkMpProcess');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+    document.getElementById('deep-link-btn').addEventListener('click', () => {
+      demoAction('Deep link a Mercado Público (publicación de la licitación)');
+    });
+
+    const resultBanner = document.getElementById('result-banner');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    document.getElementById('next-step-link').href = relativeFormHref('36-foro-aclaraciones.html');
+
+    const errorMessages = {
+      not_found: 'MP_PROCESS_NOT_FOUND — no existe un proceso con ese ID en Mercado Público.',
+      organism_mismatch: 'MP_PROCESS_ORGANISM_MISMATCH — el organismo comprador no coincide con el tenant.',
+      type_mismatch: 'MP_PROCESS_TYPE_MISMATCH — el tipo de proceso MP no es Licitación Pública.',
+      already_linked: 'MP_PROCESS_ALREADY_LINKED — este código MP ya está vinculado a otro expediente.',
+    };
+
+    document.getElementById('validate').addEventListener('click', () => {
+      const mpId = document.getElementById('mp-id').value.trim();
+      if (!mpId) {
+        alert('ID de la licitación en MP obligatorio (demo).');
+        return;
+      }
+      const scenario = document.getElementById('simulate-result').value;
+      resultBanner.classList.remove('hidden');
+
+      if (scenario === 'ok') {
+        demoAction('linkMpProcess');
+        resultBanner.className = 'banner banner--info';
+        resultBanner.textContent = `Vinculado — ProcurementCase.mp_process_id = ${mpId}. Evento MpProcessLinked.`;
+        document.getElementById('header-badge').textContent = 'Vinculada';
+        document.getElementById('validate').disabled = true;
+        document.getElementById('mp-id').disabled = true;
+        document.getElementById('simulate-result').disabled = true;
+        nextStepPanel.classList.remove('hidden');
+      } else {
+        resultBanner.className = 'banner';
+        resultBanner.style.color = '#a33333';
+        resultBanner.textContent = errorMessages[scenario];
+        document.getElementById('header-badge').textContent = 'Bloqueada';
+      }
     });
   </script>
 </body>

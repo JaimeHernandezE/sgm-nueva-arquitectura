@@ -16,20 +16,44 @@
       <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
-    <!-- Operaciones: requestSignature, confirmSignature -->
 
     <div class="form-card">
       <div class="form-card__header">
         <span>ADQ-2026-00045 — Acto administrativo que aprueba las bases</span>
-        <span class="badge badge--active" id="header-badge">Firmado</span>
+        <span class="badge badge--active" id="header-badge">VB jurídico OK</span>
       </div>
       <div class="form-card__body">
-        <div class="form-row"><label>N° acto <span class="required">*</span></label><input value="045-2026" /></div>
-        <div class="banner banner--info">FirmaGob síncrona bloqueante — nunca "firmado" sin confirmSignature.</div>
+        <div class="info-panel">
+          <strong>Bases aprobadas jurídicamente — solo lectura</strong><br />
+          Bases técnicas + administrativas · Revisión jurídica: VB
+        </div>
+
+        <div class="form-row"><label>Tipo de acto</label><input value="Decreto/Resolución — aprobación de bases" readonly /></div>
+        <div class="form-row" id="threshold-row">
+          <label>¿Supera umbral de Toma de Razón?</label>
+          <select id="over-threshold">
+            <option value="yes" selected>Sí — aplica Toma de Razón (3.4)</option>
+            <option value="no">No — continúa directo a 3.5</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>Simular respuesta FirmaGob <em>(solo demo — no existe en la ficha)</em></label>
+          <select id="simulate-signature">
+            <option value="signed" selected>Firmado</option>
+            <option value="failed">Falla del servicio (reintento)</option>
+          </select>
+        </div>
+
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
+        </div>
       </div>
       <div class="form-actions">
-        <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+        <span></span>
+        <button class="btn btn--primary" type="button" id="generate">Generar acto y solicitar firma</button>
       </div>
     </div>
       </div>
@@ -39,7 +63,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -47,17 +71,47 @@
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
-      stageName: 'Etapa 3 · Resolución de Compra',
+      stageName: 'Etapa 3 · Resolución de Compra (LP)',
       stepName: 'Acto administrativo que aprueba las bases',
       stepId: '3.3',
     });
-
     document.getElementById('origin-banner').innerHTML = '';
 
-    document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
-    document.getElementById('confirm').addEventListener('click', () => {
-      demoAction('requestSignature');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+    const resultBanner = document.getElementById('result-banner');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    const nextStepLink = document.getElementById('next-step-link');
+    const thresholdSelect = document.getElementById('over-threshold');
+    const signatureSelect = document.getElementById('simulate-signature');
+
+    document.getElementById('generate').addEventListener('click', () => {
+      demoAction('approveTenderBases');
+      resultBanner.classList.remove('hidden');
+
+      if (signatureSelect.value === 'signed') {
+        demoAction('requestSignature');
+        demoAction('confirmSignature');
+        resultBanner.className = 'banner banner--info';
+        resultBanner.textContent = 'Acto firmado — AdministrativeAct N° 045-2026, status = signed. Evento AdministrativeActSigned.';
+        document.getElementById('header-badge').textContent = 'Firmado';
+        document.getElementById('generate').disabled = true;
+        signatureSelect.disabled = true;
+        thresholdSelect.disabled = true;
+
+        if (thresholdSelect.value === 'yes') {
+          nextStepText.textContent = 'Monto sobre umbral — continuar a 3.4 (Toma de Razón de las bases).';
+          nextStepLink.href = relativeFormHref('34-toma-razon-bases.html');
+        } else {
+          nextStepText.textContent = 'Bajo umbral — continuar directo a 3.5 (Publicación en MP y vinculación).';
+          nextStepLink.href = relativeFormHref('35-publicacion-vinculacion-mp.html');
+        }
+        nextStepPanel.classList.remove('hidden');
+      } else {
+        resultBanner.className = 'banner';
+        resultBanner.style.color = '#a33333';
+        resultBanner.textContent = 'SIGNATURE_PROVIDER_UNAVAILABLE — el acto no se perfecciona (queda pending_signature). Reintento disponible; nunca "firmado" sin confirmación del servicio.';
+        document.getElementById('header-badge').textContent = 'Pendiente de firma';
+      }
     });
   </script>
 </body>

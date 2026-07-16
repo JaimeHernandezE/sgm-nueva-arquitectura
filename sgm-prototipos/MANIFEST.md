@@ -98,9 +98,30 @@ Enlazada desde el shell del expediente vía manifiestos de modalidad (`form-shel
 
 Navegación condicional: 3.2→3.3→3.4 (camino feliz); 3.5 y 3.6 se listan en el expediente demo como caminos explorables.
 
-### Convenio Marco / Licitación Pública / Trato Directo
+### Licitación Pública
 
-Prototipos HTML generados desde las fichas de etapa 3 (wireframes `.md` específicos pendientes). Ver tablas de `processFicha` / `prototypeHtml` en los respectivos `steps-manifest-*.js`.
+| stepId | Wireframe | Prototipo | Operaciones principales |
+|---|---|---|---|
+| 3.1 | `licitacion-publica/31-elaboracion-bases.md` | `3-licitacion-publica/31-elaboracion-bases.html` | `createTenderBases`, `submitBasesForLegalReview` |
+| 3.2 | `licitacion-publica/32-revision-juridica-bases.md` | `3-licitacion-publica/32-revision-juridica-bases.html` | `recordLegalReview` |
+| 3.3 | `licitacion-publica/33-acto-aprueba-bases.md` | `3-licitacion-publica/33-acto-aprueba-bases.html` | `approveTenderBases` |
+| 3.4 | `licitacion-publica/34-toma-razon-bases.md` | `3-licitacion-publica/34-toma-razon-bases.html` | `submitToComptroller`, `recordComptrollerOutcome` (condicional) |
+| 3.5 | `licitacion-publica/35-publicacion-vinculacion-mp.md` | `3-licitacion-publica/35-publicacion-vinculacion-mp.html` | `linkMpProcess` (reutiliza 2.3) |
+| 3.6 | `licitacion-publica/36-foro-aclaraciones.md` | `3-licitacion-publica/36-foro-aclaraciones.html` | `recordClarification` |
+| 3.7 | `licitacion-publica/37-garantia-seriedad.md` | `3-licitacion-publica/37-garantia-seriedad.html` | `registerGuaranteeCustody` (condicional) |
+| 3.8 | `licitacion-publica/38-apertura-electronica.md` | `3-licitacion-publica/38-apertura-electronica.html` | — (sin operación, solo lectura MP) |
+| 3.9 | `licitacion-publica/39-comision-evaluadora.md` | `3-licitacion-publica/39-comision-evaluadora.html` | `designateEvaluationCommittee`, `recordOfferAdmissibility`, `recordEvaluationScores`, `signEvaluationReport` (condicional sobre umbral) |
+| 3.10 | `licitacion-publica/310-resolucion-adjudicacion.md` | `3-licitacion-publica/310-resolucion-adjudicacion.html` | `issueAwardResolution` |
+| 3.11 | `licitacion-publica/311-toma-razon-adjudicacion.md` | `3-licitacion-publica/311-toma-razon-adjudicacion.html` | `submitToComptroller`, `recordComptrollerOutcome` (reutiliza 3.4) |
+| 3.12 | `licitacion-publica/312-garantia-fiel-cumplimiento.md` | `3-licitacion-publica/312-garantia-fiel-cumplimiento.html` | `registerGuaranteeCustody` (reutiliza 3.7) |
+| 3.13 | `licitacion-publica/313-contrato.md` | `3-licitacion-publica/313-contrato.html` | `draftContract`, `signContract` (condicional) |
+| 3.14 | `licitacion-publica/314-aceptacion-oc.md` | `3-licitacion-publica/314-aceptacion-oc.html` | `syncPurchaseOrderAccepted` (hito contable) |
+
+Navegación condicional: camino feliz 3.1→3.2→3.3→(3.4 si sobre umbral)→3.5→3.6→(3.7 si bases lo exigen)→3.8→3.9→3.10→(3.11 si sobre umbral)→(3.12 si bases lo exigen)→3.13→3.14. Ramas de retorno: 3.2 con observaciones → 3.1; 3.4/3.11 representación → 3.1/3.10; 3.13 no suscripción en plazo → 3.10 (readjudicación). Probado end-to-end con Playwright (camino feliz completo + las 3 ramas de retorno).
+
+### Convenio Marco / Trato Directo
+
+Prototipos HTML generados desde las fichas de etapa 3 (wireframes `.md` específicos pendientes — ver `brechas-etapa3-modalidades.md`). Ver tablas de `processFicha` / `prototypeHtml` en los respectivos `steps-manifest-*.js`.
 
 Etapa 4 (Recepción Conforme, transversal) tiene prototipo HTML para 4.1; el flujo post-aceptación de OC enlaza al expediente o a 4.1 según estado demo.
 

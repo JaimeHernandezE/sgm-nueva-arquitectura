@@ -16,20 +16,89 @@
       <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
-    <!-- Operaciones: requestSignature -->
 
     <div class="form-card">
       <div class="form-card__header">
         <span>ADQ-2026-00045 — Comisión evaluadora y acta de evaluación</span>
-        <span class="badge badge--active" id="header-badge">Acta firmada</span>
+        <span class="badge badge--active" id="header-badge">3.9a Designación</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">Designación + conflictos declarados + admisibilidad + puntajes vs. pesos de bases (SCORES_INCONSISTENT_WITH_CRITERIA bloqueante).</div>
-        <div class="form-row"><label>Propuesta adjudicación</label><input value="Taller Municipal SpA" readonly /></div>
-      </div>
-      <div class="form-actions">
-        <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+
+        <!-- 3.9a Designación -->
+        <div id="panel-a">
+          <strong>3.9a — Designación de integrantes</strong>
+          <table class="form-table">
+            <thead><tr><th>Nombre</th><th>Declaración de ausencia de conflictos</th></tr></thead>
+            <tbody>
+              <tr><td>Marcela Iturra</td><td><label><input type="checkbox" class="conflict-decl" /> Declaración registrada</label></td></tr>
+              <tr><td>Pedro Soto</td><td><label><input type="checkbox" class="conflict-decl" /> Declaración registrada</label></td></tr>
+              <tr><td>Carla Fuentes</td><td><label><input type="checkbox" class="conflict-decl" /> Declaración registrada</label></td></tr>
+            </tbody>
+          </table>
+          <div class="banner hidden" id="banner-a"></div>
+          <button class="btn btn--primary" type="button" id="designate-btn">Generar acto de designación y solicitar firma</button>
+        </div>
+
+        <!-- 3.9b Admisibilidad -->
+        <div class="hidden" id="panel-b">
+          <hr />
+          <strong>3.9b — Admisibilidad de ofertas</strong>
+          <table class="form-table">
+            <thead><tr><th>Proveedor</th><th>Monto</th><th>Admisible</th><th>Causal (si inadmisible)</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Taller Municipal SpA</td><td>$ 178.500.000</td>
+                <td><select class="admissible"><option value="yes" selected>Sí</option><option value="no">No</option></select></td>
+                <td><input type="text" class="cause" placeholder="—" /></td>
+              </tr>
+              <tr>
+                <td>Mecánica Diesel Ñuble Ltda.</td><td>$ 182.300.000</td>
+                <td><select class="admissible"><option value="yes" selected>Sí</option><option value="no">No</option></select></td>
+                <td><input type="text" class="cause" placeholder="—" /></td>
+              </tr>
+              <tr>
+                <td>Servicios Los Andes SpA</td><td>$ 177.900.000</td>
+                <td><select class="admissible"><option value="yes">Sí</option><option value="no" selected>No</option></select></td>
+                <td><input type="text" class="cause" value="Garantía de seriedad vencida" /></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="banner hidden" id="banner-b"></div>
+          <button class="btn btn--primary" type="button" id="admissibility-btn">Registrar admisibilidad</button>
+        </div>
+
+        <!-- 3.9c Evaluación -->
+        <div class="hidden" id="panel-c">
+          <hr />
+          <strong>3.9c — Evaluación y acta</strong>
+          <div class="info-panel">Criterios (de 3.1): Precio 40% · Experiencia 30% · Plazo 30%</div>
+          <table class="form-table" id="scores-table">
+            <thead><tr><th>Oferta</th><th>Precio (0-100)</th><th>Experiencia (0-100)</th><th>Plazo (0-100)</th><th>Total ponderado</th></tr></thead>
+            <tbody>
+              <tr data-offer="Taller Municipal SpA">
+                <td>Taller Municipal SpA</td>
+                <td><input type="number" class="score" data-weight="40" value="100" /></td>
+                <td><input type="number" class="score" data-weight="30" value="80" /></td>
+                <td><input type="number" class="score" data-weight="30" value="90" /></td>
+                <td class="score-total">—</td>
+              </tr>
+              <tr data-offer="Mecánica Diesel Ñuble Ltda.">
+                <td>Mecánica Diesel Ñuble Ltda.</td>
+                <td><input type="number" class="score" data-weight="40" value="98" /></td>
+                <td><input type="number" class="score" data-weight="30" value="70" /></td>
+                <td><input type="number" class="score" data-weight="30" value="85" /></td>
+                <td class="score-total">—</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="info-panel" id="ranking-panel">Ranking: (se calcula al puntuar)</div>
+          <div class="banner hidden" id="banner-c"></div>
+          <button class="btn btn--primary" type="button" id="sign-btn">Firmar Acta de Evaluación</button>
+        </div>
+
+        <div class="info-panel hidden" id="next-step-panel">
+          Acta firmada — ranking cerrado. <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.10</a>
+        </div>
       </div>
     </div>
       </div>
@@ -39,7 +108,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -47,17 +116,83 @@
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
-      stageName: 'Etapa 3 · Resolución de Compra',
+      stageName: 'Etapa 3 · Resolución de Compra (LP)',
       stepName: 'Comisión evaluadora y acta de evaluación',
       stepId: '3.9',
     });
-
     document.getElementById('origin-banner').innerHTML = '';
 
-    document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
-    document.getElementById('confirm').addEventListener('click', () => {
-      demoAction('requestSignature');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+    const headerBadge = document.getElementById('header-badge');
+
+    // 3.9a
+    document.getElementById('designate-btn').addEventListener('click', () => {
+      const checks = [...document.querySelectorAll('.conflict-decl')];
+      const bannerA = document.getElementById('banner-a');
+      bannerA.classList.remove('hidden');
+      if (checks.some((c) => !c.checked)) {
+        bannerA.className = 'banner';
+        bannerA.style.color = '#a33333';
+        bannerA.textContent = 'CONFLICT_DECLARATION_REQUIRED — todos los integrantes deben tener declaración de ausencia de conflictos antes de habilitarse a evaluar.';
+        return;
+      }
+      demoAction('designateEvaluationCommittee');
+      bannerA.className = 'banner banner--info';
+      bannerA.textContent = 'Comisión designada — acto firmado. Evento EvaluationCommitteeDesignated.';
+      headerBadge.textContent = '3.9b Admisibilidad';
+      document.getElementById('designate-btn').disabled = true;
+      checks.forEach((c) => { c.disabled = true; });
+      document.getElementById('panel-b').classList.remove('hidden');
+    });
+
+    // 3.9b
+    document.getElementById('admissibility-btn').addEventListener('click', () => {
+      demoAction('recordOfferAdmissibility');
+      const rows = [...document.querySelectorAll('#panel-b tbody tr')];
+      rows.forEach((row) => {
+        const admissible = row.querySelector('.admissible').value === 'yes';
+        const cause = row.querySelector('.cause');
+        if (!admissible && !cause.value.trim()) cause.value = 'Sin causal registrada (demo)';
+        row.querySelectorAll('select, input').forEach((el) => { el.disabled = true; });
+      });
+      const bannerB = document.getElementById('banner-b');
+      bannerB.classList.remove('hidden');
+      bannerB.className = 'banner banner--info';
+      bannerB.textContent = 'Admisibilidad registrada. Servicios Los Andes SpA queda fuera de la evaluación (oferta inadmisible), aunque tenga mejor precio.';
+      headerBadge.textContent = '3.9c Evaluación';
+      document.getElementById('admissibility-btn').disabled = true;
+      document.getElementById('panel-c').classList.remove('hidden');
+    });
+
+    // 3.9c
+    const rankingPanel = document.getElementById('ranking-panel');
+    function recalcScores() {
+      const rows = [...document.querySelectorAll('#scores-table tbody tr')];
+      const totals = rows.map((row) => {
+        const scores = [...row.querySelectorAll('.score')];
+        const total = scores.reduce((sum, el) => sum + (Number(el.value) || 0) * (Number(el.dataset.weight) / 100), 0);
+        row.querySelector('.score-total').textContent = total.toFixed(1);
+        return { offer: row.dataset.offer, total };
+      });
+      totals.sort((a, b) => b.total - a.total);
+      rankingPanel.textContent = 'Ranking: ' + totals.map((t, i) => `${i + 1}° ${t.offer} (${t.total.toFixed(1)})`).join(' · ');
+      return totals;
+    }
+    document.getElementById('scores-table').addEventListener('input', recalcScores);
+    recalcScores();
+
+    document.getElementById('sign-btn').addEventListener('click', () => {
+      demoAction('recordEvaluationScores');
+      recalcScores();
+      demoAction('signEvaluationReport');
+      const bannerC = document.getElementById('banner-c');
+      bannerC.classList.remove('hidden');
+      bannerC.className = 'banner banner--info';
+      bannerC.textContent = 'Acta de Evaluación firmada por los integrantes. Evento EvaluationCompleted — ranking cerrado, habilita 3.10.';
+      headerBadge.textContent = 'Acta firmada';
+      document.getElementById('sign-btn').disabled = true;
+      document.querySelectorAll('#scores-table .score').forEach((el) => { el.disabled = true; });
+      document.getElementById('next-step-panel').classList.remove('hidden');
+      document.getElementById('next-step-link').href = relativeFormHref('310-resolucion-adjudicacion.html');
     });
   </script>
 </body>

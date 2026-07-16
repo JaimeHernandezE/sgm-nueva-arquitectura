@@ -16,19 +16,47 @@
       <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
-    <!-- Operaciones: syncPurchaseOrderAccepted, commitBudget -->
+
+    <div class="banner banner--info">
+      Hito contable de la etapa — la preobligación ya fue ajustada al monto adjudicado en 3.10, así que la diferencia esperable con el Compromiso Cierto es cero.
+    </div>
 
     <div class="form-card">
       <div class="form-card__header">
         <span>ADQ-2026-00045 — Emisión y aceptación de la OC</span>
-        <span class="badge badge--active" id="header-badge">Aceptada</span>
+        <span class="badge badge--active" id="header-badge">En espera</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel"><strong>Hito contable</strong><br />OC N° 4021-12-LP26-OC · Taller Municipal SpA · commitBudget por monto adjudicado · Avance a etapa 4.</div>
+        <div class="info-panel">
+          <strong>Contrato suscrito — solo lectura</strong><br />
+          Contrato N° 045-2026-CT · Taller Municipal SpA · $ 178.500.000
+        </div>
+
+        <p>
+          <button class="btn btn--secondary" type="button" id="deep-link-btn">Emitir OC en Mercado Público</button>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Deep link — OC referida a la adjudicación</span>
+        </p>
+
+        <div class="form-row">
+          <label>Simular lectura MP <em>(solo demo — no existe en la ficha)</em></label>
+          <select id="simulate-result">
+            <option value="accepted_ok" selected>OC Aceptada — compromiso OK</option>
+            <option value="accepted_budget_unavailable">OC Aceptada — BUDGET_UNAVAILABLE (monto real sin saldo)</option>
+            <option value="accepted_provider_down">OC Aceptada — Presupuestos no disponible (reintento)</option>
+            <option value="rejected_post_contract">OC Rechazada post-contrato (anomalía grave)</option>
+          </select>
+        </div>
+
+        <div class="banner hidden" id="result-banner"></div>
+
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
+        </div>
       </div>
       <div class="form-actions">
-        <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+        <span></span>
+        <button class="btn btn--primary" type="button" id="execute">Ejecutar</button>
       </div>
     </div>
       </div>
@@ -46,21 +74,59 @@
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
-      stageName: 'Etapa 3 · Resolución de Compra',
+      stageName: 'Etapa 3 · Resolución de Compra (LP)',
       stepName: 'Emisión y aceptación de la OC',
       stepId: '3.14',
     });
-
     document.getElementById('origin-banner').innerHTML = renderOriginBanner({
       kind: 'external',
       label: 'Mercado Público',
       mode: 'solo lectura',
     });
 
-    document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
-    document.getElementById('confirm').addEventListener('click', () => {
-      demoAction('syncPurchaseOrderAccepted');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+    document.getElementById('deep-link-btn').addEventListener('click', () => {
+      demoAction('Deep link a Mercado Público (emisión de OC referida a la adjudicación)');
+    });
+
+    const simulateSelect = document.getElementById('simulate-result');
+    const resultBanner = document.getElementById('result-banner');
+    const executeBtn = document.getElementById('execute');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    const nextStepLink = document.getElementById('next-step-link');
+
+    executeBtn.addEventListener('click', () => {
+      const scenario = simulateSelect.value;
+      resultBanner.classList.remove('hidden');
+      resultBanner.className = 'banner';
+      resultBanner.style.color = '';
+
+      if (scenario === 'accepted_ok') {
+        demoAction('syncPurchaseOrderAccepted');
+        resultBanner.classList.add('banner--info');
+        resultBanner.textContent = 'OC Aceptada (confirmada) · commitBudget OK · Compromiso Cierto registrado por el monto adjudicado (diferencia con la preobligación ajustada en 3.10: cero).';
+        document.getElementById('header-badge').textContent = 'Aceptada';
+        nextStepText.textContent = 'Expediente avanza a Recepción Conforme (etapa 4, transversal). Vuelve al expediente.';
+        nextStepLink.href = getExpedienteUrl(expedienteId);
+        executeBtn.disabled = true;
+        simulateSelect.disabled = true;
+        nextStepPanel.classList.remove('hidden');
+      } else if (scenario === 'accepted_budget_unavailable') {
+        demoAction('syncPurchaseOrderAccepted (commitBudget: BUDGET_UNAVAILABLE)');
+        resultBanner.style.color = '#a33333';
+        resultBanner.textContent = 'BUDGET_UNAVAILABLE — situación anómala grave: la OC ya está aceptada (vínculo legal existe) pero el compromiso contable no puede registrarse. Tarea urgente a DAF Finanzas (PENDIENTE P-40).';
+        document.getElementById('header-badge').textContent = 'Aceptada — compromiso pendiente';
+      } else if (scenario === 'accepted_provider_down') {
+        demoAction('syncPurchaseOrderAccepted (Presupuestos no disponible)');
+        resultBanner.classList.add('banner--info');
+        resultBanner.textContent = 'Presupuestos no disponible — reintento con retroceso exponencial. Estado intermedio "aceptada, compromiso pendiente". Idempotencia por purchase_order_ref.';
+        document.getElementById('header-badge').textContent = 'Aceptada — compromiso pendiente';
+      } else if (scenario === 'rejected_post_contract') {
+        demoAction('PurchaseOrderRejected (post-contrato)');
+        resultBanner.style.color = '#a33333';
+        resultBanner.textContent = 'Anomalía grave — hay contrato suscrito y la OC fue rechazada. Tarea a jurídica, no auto-resolución.';
+        document.getElementById('header-badge').textContent = 'Rechazada — anomalía';
+      }
     });
   </script>
 </body>

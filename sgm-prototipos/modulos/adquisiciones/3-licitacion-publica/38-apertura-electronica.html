@@ -16,19 +16,36 @@
       <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
-    
+
+    <div class="banner banner--info">Rol N/A: ocurre en Mercado Público, SGM en modo monitor — sin acción de usuario.</div>
 
     <div class="form-card">
       <div class="form-card__header">
         <span>ADQ-2026-00045 — Acto de apertura electrónica</span>
-        <span class="badge badge--active" id="header-badge">Hecho</span>
+        <span class="badge badge--active" id="header-badge">En espera</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">Apertura en MP · Ofertas reflejadas: 5 (demo). Informativo; detalle de ofertas en MP.</div>
+        <div class="info-panel">
+          Cierre de recepción de ofertas: 20-04-2026 10:00<br />
+          Apertura electrónica: pendiente…
+        </div>
+
+        <div class="form-row">
+          <label>Simular lectura MP <em>(solo demo — no existe en la ficha)</em></label>
+          <select id="simulate-result">
+            <option value="ok" selected>Apertura realizada — 4 ofertas</option>
+          </select>
+        </div>
+
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.9</a>
+        </div>
       </div>
       <div class="form-actions">
-        <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+        <span></span>
+        <button class="btn btn--primary" type="button" id="consult">Consultar</button>
       </div>
     </div>
       </div>
@@ -38,7 +55,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -46,21 +63,28 @@
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
-      stageName: 'Etapa 3 · Resolución de Compra',
+      stageName: 'Etapa 3 · Resolución de Compra (LP)',
       stepName: 'Acto de apertura electrónica',
       stepId: '3.8',
     });
-
     document.getElementById('origin-banner').innerHTML = renderOriginBanner({
       kind: 'external',
       label: 'Mercado Público',
       mode: 'solo lectura',
     });
 
-    document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
-    document.getElementById('confirm').addEventListener('click', () => {
-      demoAction('demo');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+    const resultBanner = document.getElementById('result-banner');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    document.getElementById('next-step-link').href = relativeFormHref('39-comision-evaluadora.html');
+
+    document.getElementById('consult').addEventListener('click', () => {
+      demoAction('readMpProcess');
+      resultBanner.classList.remove('hidden');
+      resultBanner.className = 'banner banner--info';
+      resultBanner.textContent = 'Apertura reflejada — 4 ofertas recibidas. Evento BidOpeningRecorded.';
+      document.getElementById('header-badge').textContent = 'Apertura realizada';
+      document.getElementById('consult').disabled = true;
+      nextStepPanel.classList.remove('hidden');
     });
   </script>
 </body>

@@ -16,20 +16,47 @@
       <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
-    <!-- Operaciones: registerGuaranteeCustody -->
 
     <div class="form-card">
       <div class="form-card__header">
-        <span>ADQ-2026-00045 — Recepción y custodia de Garantía de Seriedad</span>
-        <span class="badge badge--active" id="header-badge">En custodia</span>
+        <span>ADQ-2026-00045 — Garantía de Seriedad de la Oferta</span>
+        <span class="badge badge--active" id="header-badge">Condicional</span>
       </div>
       <div class="form-card__body">
-        <div class="form-row"><label>Instrumentos en custodia</label><input value="5 · bid_bond" readonly /></div>
-        <div class="info-panel">Borde Tesorería · Condicional según bases / umbral NormativeParameter.</div>
+        <div class="info-panel">Bases exigen Garantía de Seriedad: Sí · Monto mínimo $1.850.000 (por oferente)</div>
+
+        <div class="form-row"><label>Proveedor / oferente <span class="required">*</span></label>
+          <select id="provider">
+            <option value="taller_municipal" selected>Taller Municipal SpA</option>
+            <option value="mecanica_diesel_nuble">Mecánica Diesel Ñuble Ltda.</option>
+          </select>
+        </div>
+        <div class="form-row"><label>Tipo de instrumento <span class="required">*</span></label>
+          <select id="instrument-type">
+            <option value="boleta" selected>Boleta de garantía</option>
+            <option value="vale_vista">Vale vista</option>
+            <option value="poliza">Póliza de seguro</option>
+            <option value="fianza">Certificado de fianza</option>
+          </select>
+        </div>
+        <div class="form-row"><label>Monto <span class="required">*</span></label><input type="text" id="amount" value="1.850.000" /></div>
+        <div class="form-row"><label>Fecha de vencimiento <span class="required">*</span></label><input type="date" id="expiry" value="2026-05-15" /></div>
+        <div class="form-row"><label>Documento del instrumento <span class="required">*</span></label><input type="text" id="document-ref" placeholder="garantia-seriedad-taller-municipal.pdf" /></div>
+
+        <table class="form-table" id="registered-table" style="display:none;">
+          <thead><tr><th>Proveedor</th><th>Monto</th><th>Vence</th><th>Estado</th></tr></thead>
+          <tbody id="registered-body"></tbody>
+        </table>
+
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.8</a>
+        </div>
       </div>
       <div class="form-actions">
-        <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+        <button class="btn btn--secondary" type="button" id="skip">No aplica (bajo umbral) — continuar</button>
+        <button class="btn btn--primary" type="button" id="register">Registrar en custodia de Tesorería</button>
       </div>
     </div>
       </div>
@@ -39,7 +66,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -47,21 +74,50 @@
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
-      stageName: 'Etapa 3 · Resolución de Compra',
+      stageName: 'Etapa 3 · Resolución de Compra (LP)',
       stepName: 'Recepción y custodia de Garantía de Seriedad',
       stepId: '3.7',
     });
-
     document.getElementById('origin-banner').innerHTML = renderOriginBanner({
       kind: 'module',
       label: 'Tesorería',
       mode: 'dependencia',
     });
 
-    document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
-    document.getElementById('confirm').addEventListener('click', () => {
+    const resultBanner = document.getElementById('result-banner');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    document.getElementById('next-step-link').href = relativeFormHref('38-apertura-electronica.html');
+    const registeredTable = document.getElementById('registered-table');
+    const registeredBody = document.getElementById('registered-body');
+
+    document.getElementById('register').addEventListener('click', () => {
+      if (!document.getElementById('document-ref').value.trim()) {
+        alert('Documento del instrumento obligatorio (demo).');
+        return;
+      }
       demoAction('registerGuaranteeCustody');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+      const providerLabel = document.getElementById('provider').selectedOptions[0].textContent;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${providerLabel}</td><td>$ ${document.getElementById('amount').value}</td><td>${document.getElementById('expiry').value}</td><td>En custodia</td>`;
+      registeredBody.appendChild(tr);
+      registeredTable.style.display = '';
+
+      resultBanner.classList.remove('hidden');
+      resultBanner.className = 'banner banner--info';
+      resultBanner.textContent = `Garantía de ${providerLabel} en custodia de Tesorería. Evento GuaranteeRegistered.`;
+      document.getElementById('header-badge').textContent = 'En custodia';
+      nextStepText.textContent = 'Continuar a 3.8 (Acto de apertura electrónica).';
+      nextStepPanel.classList.remove('hidden');
+    });
+
+    document.getElementById('skip').addEventListener('click', () => {
+      resultBanner.classList.remove('hidden');
+      resultBanner.className = 'banner banner--info';
+      resultBanner.textContent = 'Bajo el umbral y las bases no la exigen — sub-paso omitido.';
+      document.getElementById('header-badge').textContent = 'No aplica';
+      nextStepText.textContent = 'Continuar a 3.8 (Acto de apertura electrónica).';
+      nextStepPanel.classList.remove('hidden');
     });
   </script>
 </body>

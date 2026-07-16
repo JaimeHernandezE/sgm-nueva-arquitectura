@@ -16,21 +16,52 @@
       <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
-    <!-- Operaciones: adjustPreCommitment -->
 
     <div class="form-card">
       <div class="form-card__header">
         <span>ADQ-2026-00045 — Resolución de adjudicación</span>
-        <span class="badge badge--active" id="header-badge">Adjudicada</span>
+        <span class="badge badge--active" id="header-badge">Acta firmada</span>
       </div>
       <div class="form-card__body">
-        <div class="form-row"><label>Variante</label><select><option selected>Adjudicación</option><option>Deserción</option><option>Revocación</option></select></div>
-        <div class="form-row"><label>Monto adjudicado</label><input value="178500000" /></div>
-        <div class="info-panel">adjustPreCommitment al monto adjudicado. Compromiso cierto espera a 3.14.</div>
+        <div class="info-panel">
+          <strong>Acta de Evaluación — solo lectura</strong><br />
+          Ranking: 1° Taller Municipal SpA (91,0) · 2° Mecánica Diesel Ñuble Ltda. (85,7)
+        </div>
+
+        <div class="form-row">
+          <label>Tipo de resolución <span class="required">*</span></label>
+          <select id="resolution-type">
+            <option value="award" selected>Adjudicar</option>
+            <option value="desertion">Declarar desierta</option>
+            <option value="revocation">Revocar</option>
+          </select>
+        </div>
+
+        <div id="award-panel">
+          <div class="form-row">
+            <label>Oferta a adjudicar <span class="required">*</span></label>
+            <select id="awarded-offer">
+              <option value="1" selected>1° Taller Municipal SpA ($178.500.000)</option>
+              <option value="2">2° Mecánica Diesel Ñuble Ltda. ($182.300.000)</option>
+            </select>
+          </div>
+          <div class="form-row" id="justification-row">
+            <label>Fundamentación (obligatoria si no es el 1° del ranking)</label>
+            <textarea id="justification"></textarea>
+          </div>
+        </div>
+
+        <div class="info-panel">Revisión jurídica previa: VB obtenido ✓ (reutiliza LegalReview)</div>
+
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
+        </div>
       </div>
       <div class="form-actions">
-        <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+        <span></span>
+        <button class="btn btn--primary" type="button" id="generate">Generar acto y solicitar firma</button>
       </div>
     </div>
       </div>
@@ -40,7 +71,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -48,21 +79,68 @@
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
-      stageName: 'Etapa 3 · Resolución de Compra',
+      stageName: 'Etapa 3 · Resolución de Compra (LP)',
       stepName: 'Resolución de adjudicación',
       stepId: '3.10',
     });
-
     document.getElementById('origin-banner').innerHTML = renderOriginBanner({
       kind: 'external',
       label: 'Mercado Público',
       mode: 'solo lectura',
     });
 
-    document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
-    document.getElementById('confirm').addEventListener('click', () => {
-      demoAction('adjustPreCommitment');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+    const resolutionType = document.getElementById('resolution-type');
+    const awardPanel = document.getElementById('award-panel');
+    function toggleAwardPanel() {
+      awardPanel.classList.toggle('hidden', resolutionType.value !== 'award');
+    }
+    resolutionType.addEventListener('change', toggleAwardPanel);
+    toggleAwardPanel();
+
+    const resultBanner = document.getElementById('result-banner');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    const nextStepLink = document.getElementById('next-step-link');
+
+    document.getElementById('generate').addEventListener('click', () => {
+      const type = resolutionType.value;
+      resultBanner.classList.remove('hidden');
+
+      if (type === 'award') {
+        const offer = document.getElementById('awarded-offer').value;
+        if (offer !== '1' && !document.getElementById('justification').value.trim()) {
+          alert('AWARD_JUSTIFICATION_REQUIRED — fundamentación obligatoria al adjudicar a una oferta distinta del 1° del ranking (demo).');
+          return;
+        }
+        demoAction('issueAwardResolution');
+        demoAction('requestSignature');
+        demoAction('confirmSignature');
+        demoAction('adjustPreCommitment');
+        resultBanner.className = 'banner banner--info';
+        resultBanner.textContent = 'Adjudicación firmada y publicada en MP — adjustPreCommitment ajustó la preobligación al monto adjudicado. Evento AwardResolutionIssued.';
+        document.getElementById('header-badge').textContent = 'Adjudicada';
+        nextStepText.textContent = 'Continuar a 3.11 (Toma de Razón de la adjudicación, si aplica umbral) o directo a 3.12/3.13.';
+        nextStepLink.href = relativeFormHref('311-toma-razon-adjudicacion.html');
+      } else if (type === 'desertion') {
+        demoAction('issueAwardResolution');
+        resultBanner.className = 'banner';
+        resultBanner.style.color = '#a33333';
+        resultBanner.textContent = 'Proceso declarado desierto — decisión posterior fuera de este paso: relicitar (nuevo proceso MP, mismo expediente) o Trato Directo por causal de licitación desierta.';
+        document.getElementById('header-badge').textContent = 'Desierta';
+        nextStepText.textContent = 'Fin de esta ruta — decisión de relicitar o Trato Directo se toma en 2-modalidad-compra.md §2.1 (fuera del alcance de este prototipo).';
+        nextStepLink.href = '#';
+      } else {
+        demoAction('issueAwardResolution');
+        resultBanner.className = 'banner';
+        resultBanner.style.color = '#a33333';
+        resultBanner.textContent = 'Proceso revocado por interés público.';
+        document.getElementById('header-badge').textContent = 'Revocada';
+        nextStepText.textContent = 'Fin de esta ruta.';
+        nextStepLink.href = '#';
+      }
+      document.getElementById('generate').disabled = true;
+      resolutionType.disabled = true;
+      nextStepPanel.classList.remove('hidden');
     });
   </script>
 </body>

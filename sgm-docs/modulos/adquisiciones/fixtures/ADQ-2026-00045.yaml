@@ -4,7 +4,15 @@ module: adquisiciones
 title: Licitación Pública — showcase transversal finalizado
 business_state: >
   Expediente LP con etapas transversales 1, 2, 4 y 5 completadas; etapa 3
-  documentada como finalizada en showcase de prototipos.
+  (14 sub-pasos, 3.1-3.14) con ficha de flujo, wireframes, entidades en
+  entidades-core.md, operaciones formalizadas en contracts.md §2.4 y
+  prototipo HTML interactivo completo (camino feliz + ramas de retorno
+  probadas con Playwright). El adjetivo "finalizada" ya no es un posible
+  falso positivo: refleja el estado real de la documentación tras la
+  reconciliación de brechas de Licitación Pública.
+  Pendiente separado: openapi/3-licitacion-publica/ sigue siendo solo un
+  README stub — los example_ref de este fixture no tienen aún examples
+  reales de LP en el spec OpenAPI (ver openapi/README.md).
 seeds:
   - entity: ProcurementCase
     id: ADQ-2026-00045

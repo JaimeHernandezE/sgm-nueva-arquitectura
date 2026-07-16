@@ -16,21 +16,46 @@
       <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
-    <!-- Operaciones: requestSignature -->
 
     <div class="form-card">
       <div class="form-card__header">
         <span>ADQ-2026-00045 — Contrato</span>
-        <span class="badge badge--active" id="header-badge">Suscrito</span>
+        <span class="badge badge--active" id="header-badge">Adjudicación firme</span>
       </div>
       <div class="form-card__body">
-        <div class="form-row"><label>Monto contrato</label><input value="178500000" /></div>
-        <div class="form-row"><label>Vigencia</label><input value="12 meses" /></div>
-        <div class="info-panel">Condicional por umbral/bases. FirmaGob municipio; firma contratista pendiente de mecanismo.</div>
+        <div class="info-panel">
+          Adjudicatario: Taller Municipal SpA · Monto: $178.500.000<br />
+          Garantía de Fiel Cumplimiento: En custodia ✓
+        </div>
+
+        <div class="form-row"><label>Fecha de inicio <span class="required">*</span></label><input type="date" id="start-date" value="2026-04-01" /></div>
+        <div class="form-row"><label>Fecha de término <span class="required">*</span></label><input type="date" id="end-date" value="2027-03-31" /></div>
+        <div class="form-row"><label>Documento del contrato (adjunto) <span class="required">*</span></label><input type="text" id="document-ref" placeholder="contrato-taller-municipal.pdf" /></div>
+
+        <div class="banner hidden" id="draft-banner"></div>
+
+        <div class="hidden" id="signature-panel">
+          <div class="form-row"><label>Firma municipal (FirmaGob)</label><span class="badge" id="municipal-sig-badge">Pendiente</span></div>
+          <div class="form-row"><label>Firma del proveedor <em>mecanismo PENDIENTE P-67</em></label><span class="badge" id="provider-sig-badge">Pendiente</span></div>
+          <button class="btn btn--secondary" type="button" id="sign-municipal">Simular firma FirmaGob (demo)</button>
+          <button class="btn btn--secondary" type="button" id="sign-provider">Simular firma proveedor (demo)</button>
+        </div>
+
+        <div class="info-panel hidden" id="no-subscription-panel">
+          <strong>Adjudicatario no suscribe en plazo</strong><br />
+          Ejecución de la Garantía de Seriedad (3.7, status = executed, borde a Tesorería) y facultad de readjudicar al siguiente del ranking.
+          <a class="btn btn--secondary" id="reaward-link" href="#" style="margin-left:8px;">Readjudicar (vuelve a 3.10)</a>
+        </div>
+
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          Contrato suscrito. <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.14</a>
+        </div>
       </div>
       <div class="form-actions">
-        <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+        <button class="btn btn--secondary" type="button" id="not-subscribed">Simular no suscripción en plazo</button>
+        <button class="btn btn--primary" type="button" id="draft">Redactar contrato</button>
+        <button class="btn btn--primary hidden" type="button" id="confirm-signed">Confirmar contrato suscrito</button>
       </div>
     </div>
       </div>
@@ -40,7 +65,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -48,17 +73,75 @@
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
-      stageName: 'Etapa 3 · Resolución de Compra',
+      stageName: 'Etapa 3 · Resolución de Compra (LP)',
       stepName: 'Contrato',
       stepId: '3.13',
     });
-
     document.getElementById('origin-banner').innerHTML = '';
 
-    document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
-    document.getElementById('confirm').addEventListener('click', () => {
+    const nextStepPanel = document.getElementById('next-step-panel');
+    document.getElementById('next-step-link').href = relativeFormHref('314-aceptacion-oc.html');
+    document.getElementById('reaward-link').href = relativeFormHref('310-resolucion-adjudicacion.html');
+
+    document.getElementById('draft').addEventListener('click', () => {
+      if (!document.getElementById('document-ref').value.trim()) {
+        alert('Documento del contrato obligatorio (demo).');
+        return;
+      }
+      demoAction('draftContract');
+      const draftBanner = document.getElementById('draft-banner');
+      draftBanner.classList.remove('hidden');
+      draftBanner.className = 'banner banner--info';
+      draftBanner.textContent = 'Contrato redactado — Contract.status = draft.';
+      document.getElementById('header-badge').textContent = 'Redactado';
+      document.getElementById('draft').disabled = true;
+      document.getElementById('not-subscribed').disabled = true;
+      document.getElementById('signature-panel').classList.remove('hidden');
+      document.getElementById('confirm-signed').classList.remove('hidden');
+    });
+
+    document.getElementById('sign-municipal').addEventListener('click', () => {
       demoAction('requestSignature');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+      demoAction('confirmSignature');
+      document.getElementById('municipal-sig-badge').textContent = 'Firmado';
+      document.getElementById('municipal-sig-badge').classList.add('badge--active');
+      document.getElementById('sign-municipal').disabled = true;
+    });
+
+    document.getElementById('sign-provider').addEventListener('click', () => {
+      document.getElementById('provider-sig-badge').textContent = 'Firmado (canal PENDIENTE P-67)';
+      document.getElementById('provider-sig-badge').classList.add('badge--active');
+      document.getElementById('sign-provider').disabled = true;
+    });
+
+    document.getElementById('confirm-signed').addEventListener('click', () => {
+      const municipalSigned = document.getElementById('sign-municipal').disabled;
+      const providerSigned = document.getElementById('sign-provider').disabled;
+      if (!municipalSigned || !providerSigned) {
+        alert('Ambas firmas (municipal y proveedor) son necesarias antes de confirmar (demo).');
+        return;
+      }
+      demoAction('signContract');
+      const resultBanner = document.getElementById('result-banner');
+      resultBanner.classList.remove('hidden');
+      resultBanner.className = 'banner banner--info';
+      resultBanner.textContent = 'Contrato suscrito por ambas partes. Evento ContractSigned.';
+      document.getElementById('header-badge').textContent = 'Suscrito';
+      document.getElementById('confirm-signed').disabled = true;
+      nextStepPanel.classList.remove('hidden');
+    });
+
+    document.getElementById('not-subscribed').addEventListener('click', () => {
+      demoAction('signContract (plazo vencido)');
+      const resultBanner = document.getElementById('result-banner');
+      resultBanner.classList.remove('hidden');
+      resultBanner.className = 'banner';
+      resultBanner.style.color = '#a33333';
+      resultBanner.textContent = 'Adjudicatario no suscribe en el plazo — Contract.status = not_subscribed.';
+      document.getElementById('header-badge').textContent = 'No suscrito';
+      document.getElementById('no-subscription-panel').classList.remove('hidden');
+      document.getElementById('draft').disabled = true;
+      document.getElementById('not-subscribed').disabled = true;
     });
   </script>
 </body>

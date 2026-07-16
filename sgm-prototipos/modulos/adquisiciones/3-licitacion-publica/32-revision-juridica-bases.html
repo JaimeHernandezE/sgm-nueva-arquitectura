@@ -16,20 +16,40 @@
       <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
-    
 
     <div class="form-card">
       <div class="form-card__header">
         <span>ADQ-2026-00045 — Revisión jurídica de bases</span>
-        <span class="badge badge--active" id="header-badge">V°B°</span>
+        <span class="badge badge--active" id="header-badge">En revisión</span>
       </div>
       <div class="form-card__body">
-        <div class="form-row"><label>Resultado</label><select><option selected>approved</option><option>observations</option></select></div>
-        <div class="form-row"><label>Observaciones (opcional)</label><textarea placeholder="Sin observaciones"></textarea></div>
+        <div class="info-panel">
+          <strong>Bases — solo lectura</strong><br />
+          Bases técnicas: bases-tecnicas-v1.pdf · Bases administrativas: bases-admin-v1.pdf<br />
+          Criterios: Precio 40% · Experiencia 30% · Plazo 30% · Garantías: Seriedad $1.850.000 / Fiel cumplimiento $9.250.000
+        </div>
+
+        <div class="form-row">
+          <label>Resultado <span class="required">*</span></label>
+          <select id="outcome">
+            <option value="approved" selected>Visto bueno</option>
+            <option value="observations">Con observaciones</option>
+          </select>
+        </div>
+        <div class="form-row" id="observations-row">
+          <label>Observaciones</label>
+          <textarea id="observations" placeholder="Detalle de las observaciones..."></textarea>
+        </div>
+
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
+        </div>
       </div>
       <div class="form-actions">
-        <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+        <span></span>
+        <button class="btn btn--primary" type="button" id="record">Registrar resultado</button>
       </div>
     </div>
       </div>
@@ -39,7 +59,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -47,17 +67,51 @@
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
-      stageName: 'Etapa 3 · Resolución de Compra',
+      stageName: 'Etapa 3 · Resolución de Compra (LP)',
       stepName: 'Revisión jurídica de bases',
       stepId: '3.2',
     });
-
     document.getElementById('origin-banner').innerHTML = '';
 
-    document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
-    document.getElementById('confirm').addEventListener('click', () => {
-      demoAction('demo');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+    const outcomeSelect = document.getElementById('outcome');
+    const observationsRow = document.getElementById('observations-row');
+    function toggleObservations() {
+      observationsRow.classList.toggle('hidden', outcomeSelect.value !== 'observations');
+    }
+    outcomeSelect.addEventListener('change', toggleObservations);
+    toggleObservations();
+
+    const resultBanner = document.getElementById('result-banner');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    const nextStepLink = document.getElementById('next-step-link');
+
+    document.getElementById('record').addEventListener('click', () => {
+      const outcome = outcomeSelect.value;
+      if (outcome === 'observations' && !document.getElementById('observations').value.trim()) {
+        alert('Observaciones obligatorias si el resultado es "Con observaciones" (demo).');
+        return;
+      }
+      demoAction('recordLegalReview');
+      resultBanner.classList.remove('hidden');
+
+      if (outcome === 'approved') {
+        resultBanner.className = 'banner banner--info';
+        resultBanner.textContent = 'Visto bueno registrado — TenderBases.status = approved. Evento LegalReviewCompleted.';
+        document.getElementById('header-badge').textContent = 'VB jurídico';
+        nextStepText.textContent = 'Continuar a 3.3 (Acto administrativo que aprueba las bases).';
+        nextStepLink.href = relativeFormHref('33-acto-aprueba-bases.html');
+      } else {
+        resultBanner.className = 'banner';
+        resultBanner.style.color = '#a33333';
+        resultBanner.textContent = 'Observaciones registradas — TenderBases.status vuelve a draft. El ciclo revisión ↔ corrección es iterable y trazado.';
+        document.getElementById('header-badge').textContent = 'Con observaciones';
+        nextStepText.textContent = 'Vuelve a 3.1 (Elaboración de bases) para corregir.';
+        nextStepLink.href = relativeFormHref('31-elaboracion-bases.html');
+      }
+      document.getElementById('record').disabled = true;
+      outcomeSelect.disabled = true;
+      nextStepPanel.classList.remove('hidden');
     });
   </script>
 </body>
