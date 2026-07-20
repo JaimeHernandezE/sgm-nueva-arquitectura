@@ -1,7 +1,7 @@
 # Wireframe: Verificación de disponibilidad presupuestaria
 
 **Sub-paso:** 1.3 — Verificación de disponibilidad presupuestaria  
-**Rol:** Formulador DAF / verificación (`adq.formulador_presupuesto`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
+**Rol:** Formulador DAF / verificación (`adq.formulador_presupuesto`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)  
 **Operación:** `verifyBudgetAvailability`
 
 ## Layout

@@ -2,9 +2,9 @@
 
 Wireframes de **baja fidelidad** (borrador). Especifican estructura y comportamiento, no diseño visual.
 
-Patrón transversal de la vista de expediente (filas, tintes, botones): [`../../../arquitectura/patron-vista-expediente.md`](../../../arquitectura/patron-vista-expediente.md).
+Patrón transversal de la vista de expediente (filas, tintes, botones): [`../../../arquitectura/instrucciones/patron-vista-expediente.md`](../../../arquitectura/instrucciones/patron-vista-expediente.md).
 
-Patrón de secciones y subtítulos en formularios: [`../../../arquitectura/patron-formularios-secciones.md`](../../../arquitectura/patron-formularios-secciones.md) — el layout ASCII debe mostrar títulos de sección alineados con el prototipo HTML.
+Patrón de secciones y subtítulos en formularios: [`../../../arquitectura/instrucciones/patron-formularios-secciones.md`](../../../arquitectura/instrucciones/patron-formularios-secciones.md) — el layout ASCII debe mostrar títulos de sección alineados con el prototipo HTML.
 
 | Archivo | Sub-paso | Operación principal |
 |---|---|---|

@@ -1,9 +1,9 @@
 # Capa analítica de Adquisiciones: catálogo semántico y contrato de consulta
 
 > Documento de trabajo — módulo Adquisiciones / analítica
-> Estado: borrador para discusión interna (julio 2026). Propuesta para `modulos/adquisiciones/analitica.md`.
+> Estado: borrador para discusión interna (julio 2026). Documento del módulo Adquisiciones.
 > Origen: decisión de incluir un dashboard de resumen configurable para municipios. El **diseño del dashboard es entregable del adjudicatario**; lo que este documento especifica es la capa que lo hace posible: qué datos agregados existen, qué significan y cómo se consultan.
-> Pendientes registrados en [`pendientes.md`](../../arquitectura/pendientes.md).
+> Pendientes registrados en [`pendientes.md`](../../arquitectura/decisiones/pendientes.md).
 
 ---
 
@@ -84,7 +84,7 @@ Cada medida declara: definición exacta, entidad/campo fuente, **fecha ancla** (
 
 ## 5. Contrato de consulta agregada (propuesta)
 
-Una operación genérica sobre el catálogo cerrado, en el `contracts.md` del módulo y su OpenAPI según [`estandar-openapi-fixtures.md`](../../arquitectura/estandar-openapi-fixtures.md):
+Una operación genérica sobre el catálogo cerrado, en el `contracts.md` del módulo y su OpenAPI según [`estandares-api.md`](../../arquitectura/especificacion/estandares-api.md) Parte II:
 
 ```
 GET /analytics/procurement-cases
@@ -151,10 +151,10 @@ Nuevos pendientes formales para el registro: **P-54** (9.1), **P-55** (9.2), **P
 
 ## 10. Referencias
 
-- [`entregable-licitacion.md`](../../arquitectura/entregable-licitacion.md) — criterio de nivel de detalle (§3) y modelo de entregable
-- [`musts-arquitectura.md`](../../arquitectura/musts-arquitectura.md) — §4 capa de lectura, §7 carga, §10 estados consultables
-- [`estandar-openapi-fixtures.md`](../../arquitectura/estandar-openapi-fixtures.md) — formato de la spec y fixtures analíticos
-- [`decisiones-macro-stack.md`](../../arquitectura/decisiones-macro-stack.md) — §7.1 categoría reportería del ecosistema
-- [`seguridad.md`](../../arquitectura/seguridad.md) — scopes, RBAC, datos personales
-- [`plataforma-core.md`](../../arquitectura/plataforma-core.md) — parámetros normativos con vigencia temporal
+- [`entregable-licitacion.md`](../../arquitectura/licitacion/entregable-licitacion.md) — criterio de nivel de detalle (§3) y modelo de entregable
+- [`musts-arquitectura.md`](../../arquitectura/especificacion/musts-arquitectura.md) — §4 capa de lectura, §7 carga, §10 estados consultables
+- [`estandares-api.md`](../../arquitectura/especificacion/estandares-api.md) Parte II — formato de la spec y fixtures analíticos
+- [`decisiones-macro-stack.md`](../../arquitectura/decisiones/decisiones-macro-stack.md) — §7.1 categoría reportería del ecosistema
+- [`seguridad.md`](../../arquitectura/especificacion/seguridad.md) — scopes, RBAC, datos personales
+- [`plataforma-core.md`](../../arquitectura/especificacion/plataforma-core.md) — parámetros normativos con vigencia temporal
 - `modelo-datos/entidades-core.md` — fuente canónica de dimensiones y medidas

@@ -1,6 +1,6 @@
 # Catálogo de fixtures — Adquisiciones
 
-Índice de estados de negocio reproducibles en el sandbox. Formato: [`estandares-api.md`](../../arquitectura/estandares-api.md) Parte II §14.
+Índice de estados de negocio reproducibles en el sandbox. Formato: [`estandares-api.md`](../../arquitectura/especificacion/estandares-api.md) Parte II §14.
 
 | Fixture ID | Tenant | Modalidad | Estado de negocio | Uso principal | Reset |
 |---|---|---|---|---|---|

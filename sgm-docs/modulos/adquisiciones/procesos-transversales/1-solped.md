@@ -4,14 +4,14 @@
 
 *Entrada al módulo (listado / nuevo expediente):* [`0-consulta-expedientes.md`](./0-consulta-expedientes.md).
 
-*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md) (P-24).*
+*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24).*
 
 ## 1.0 — Verificación previa (Inventario / catálogo CM)
 
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Unidad Solicitante |
-| Rol | Solicitante ([`adq.solicitante`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Solicitante ([`adq.solicitante`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | **Verdadero** — se omite si el tenant no tiene inventario utilizable (interno ni externo) **y** no tiene catálogo Convenio Marco integrado vía ChileCompra |
 
@@ -53,7 +53,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Unidad Solicitante |
-| Rol | Solicitante ([`adq.solicitante`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Solicitante ([`adq.solicitante`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Falso |
 
@@ -97,7 +97,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Unidad Solicitante |
-| Rol | Aprobador de unidad ([`adq.aprobador_unidad`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Aprobador de unidad ([`adq.aprobador_unidad`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Falso |
 
@@ -130,7 +130,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Finanzas |
-| Rol | Formulador DAF / verificación ([`adq.formulador_presupuesto`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Formulador DAF / verificación ([`adq.formulador_presupuesto`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Falso |
 
@@ -162,7 +162,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Unidad Solicitante / DAF Finanzas |
-| Rol | Solicitante ([`adq.solicitante`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Solicitante ([`adq.solicitante`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Verdadero |
 
@@ -192,7 +192,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Finanzas |
-| Rol | Firmante CDP ([`adq.firmante_cdp`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Firmante CDP ([`adq.firmante_cdp`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Falso |
 
@@ -234,7 +234,7 @@ En ambos caminos se ejecuta `checkBudgetAvailability` antes de cerrar el paso. E
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Finanzas |
-| Rol | Firmante CDP ([`adq.firmante_cdp`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Firmante CDP ([`adq.firmante_cdp`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Falso |
 

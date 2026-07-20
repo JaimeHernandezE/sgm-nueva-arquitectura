@@ -93,9 +93,9 @@ paths:
 components:
   securitySchemes:
     bearerPersonas:
-      $ref: ../../../arquitectura/openapi/comunes.yaml#/components/securitySchemes/bearerPersonas
+      $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/securitySchemes/bearerPersonas
     bearerM2M:
-      $ref: ../../../arquitectura/openapi/comunes.yaml#/components/securitySchemes/bearerM2M
+      $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/securitySchemes/bearerM2M
   parameters:
     CaseId:
       name: case_id
@@ -117,7 +117,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+            $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
           example:
             error_code: UNAUTHENTICATED
             rule: Token de autenticación inválido o ausente
@@ -127,7 +127,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+            $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
           example:
             error_code: FORBIDDEN
             rule: El token no tiene scope suficiente para esta operación
@@ -137,13 +137,13 @@ components:
       content:
         application/json:
           schema:
-            $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+            $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
     ProcurementCaseNotFound:
       description: Expediente no encontrado.
       content:
         application/json:
           schema:
-            $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+            $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
           example:
             error_code: PROCUREMENT_CASE_NOT_FOUND
             field: id
@@ -154,7 +154,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+            $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
           example:
             error_code: PURCHASE_REQUEST_NOT_FOUND
             field: id

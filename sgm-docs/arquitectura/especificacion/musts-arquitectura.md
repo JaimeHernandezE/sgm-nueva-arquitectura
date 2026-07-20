@@ -3,7 +3,7 @@
 > Documento de trabajo — arquitectura / requisitos no funcionales
 > Estado: borrador. Complementa `decisiones-macro-stack.md` y `contrato-api-first.md`.
 > Principio rector: todo requisito de este documento debe ser **verificable en recepción**. La escalabilidad no es una promesa del oferente; se mide antes de pagar.
-> Pendientes registrados en [`pendientes.md`](./pendientes.md).
+> Pendientes registrados en [`pendientes.md`](../decisiones/pendientes.md).
 
 ---
 
@@ -115,4 +115,4 @@ Todo lo anterior se traduce en cláusulas de bases bajo la lógica de propiedade
 
 ## 12. Pendientes abiertos
 
-Los pendientes de este documento están registrados en [`pendientes.md`](./pendientes.md): P-05, P-06, P-07, P-08, P-09, P-10, P-11, P-12.
+Los pendientes de este documento están registrados en [`pendientes.md`](../decisiones/pendientes.md): P-05, P-06, P-07, P-08, P-09, P-10, P-11, P-12.

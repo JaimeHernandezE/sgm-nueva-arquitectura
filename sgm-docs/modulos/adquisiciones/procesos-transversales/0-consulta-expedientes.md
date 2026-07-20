@@ -2,7 +2,7 @@
 
 *Proceso transversal del módulo Adquisiciones — entrada al ciclo de compra (listado, apertura de expediente y arranque de creación). No es específico de una modalidad. El patrón de **consulta con alcance por rol** es reutilizable como patrón de plataforma; las operaciones y el esquema viven en el contrato de Adquisiciones.*
 
-*Roles:* nombre (usuarios) + código (sistema) según [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md) (P-24).
+*Roles:* nombre (usuarios) + código (sistema) según [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24).
 
 *Contrato / API:* [`../contracts.md`](../contracts.md) §2.0 · OpenAPI [`../openapi/expediente.yaml`](../openapi/expediente.yaml) · ensamblado [`../openapi/adquisiciones.openapi.yaml`](../openapi/adquisiciones.openapi.yaml).
 
@@ -15,7 +15,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Según rol: Unidad Solicitante (scope restringido) o DAF / unidades con lectura amplia (tenant) |
-| Rol | Lectura con alcance: Solicitante ([`adq.solicitante`](../../../arquitectura/catalogo-roles.md)) y Aprobador de unidad ([`adq.aprobador_unidad`](../../../arquitectura/catalogo-roles.md)) → solo expedientes de su unidad; resto de roles Adquisiciones (p. ej. [`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md), [`adq.lector`](../../../arquitectura/catalogo-roles.md), formulador/firmante DAF, etc.) → tenant completo |
+| Rol | Lectura con alcance: Solicitante ([`adq.solicitante`](../../../arquitectura/especificacion/catalogo-roles.md)) y Aprobador de unidad ([`adq.aprobador_unidad`](../../../arquitectura/especificacion/catalogo-roles.md)) → solo expedientes de su unidad; resto de roles Adquisiciones (p. ej. [`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md), [`adq.lector`](../../../arquitectura/especificacion/catalogo-roles.md), formulador/firmante DAF, etc.) → tenant completo |
 | Plataforma | SGM |
 | Optativo | Falso *(pantalla de entrada del módulo; siempre disponible para quien tenga `listProcurementCases`)* |
 
@@ -71,7 +71,7 @@ Query de `listProcurementCases` (todos **opcionales** salvo paginación estánda
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Unidad Solicitante |
-| Rol | Solicitante ([`adq.solicitante`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Solicitante ([`adq.solicitante`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Falso *(la acción de crear es parte de la entrada; el **camino** puede omitir 1.0)* |
 

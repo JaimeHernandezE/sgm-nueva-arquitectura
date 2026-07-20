@@ -33,7 +33,7 @@ Aunque el contenido interno de las etapas 2 y 3 difiere, las 4 modalidades compa
 
 ## Integración con Mercado Público
 
-Lecturas y sincronización vía **core (C7)** — contraparte en fichas: `Core (Mercado Público)`. Ver [`integracion-mercado-publico.md`](../../arquitectura/integracion-mercado-publico.md). Adjuntos y archivos vía **core (C10)** — `DocumentRef` / `storeDocument`.
+Lecturas y sincronización vía **core (C7)** — contraparte en fichas: `Core (Mercado Público)`. Ver [`integracion-mercado-publico.md`](../../arquitectura/especificacion/integracion-mercado-publico.md). Adjuntos y archivos vía **core (C10)** — `DocumentRef` / `storeDocument`.
 
 ## Ficha QA
 
@@ -45,8 +45,8 @@ Lecturas y sincronización vía **core (C7)** — contraparte en fichas: `Core (
 
 ## Contrato API
 
-[`contracts.md`](./contracts.md) — contrato del módulo (piloto Compra Ágil). Estándares transversales en [`arquitectura/estandares-api.md`](../../arquitectura/estandares-api.md).
+[`contracts.md`](./contracts.md) — contrato del módulo (piloto Compra Ágil). Estándares transversales en [`arquitectura/especificacion/estandares-api.md`](../../arquitectura/especificacion/estandares-api.md).
 
 ## Vista de expediente (UI)
 
-Patrón transversal de filas, tintes y botones: [`arquitectura/patron-vista-expediente.md`](../../arquitectura/patron-vista-expediente.md). Wireframes por sub-paso: [`wireframes/`](./wireframes/README.md).
+Patrón transversal de filas, tintes y botones: [`arquitectura/instrucciones/patron-vista-expediente.md`](../../arquitectura/instrucciones/patron-vista-expediente.md). Wireframes por sub-paso: [`wireframes/`](./wireframes/README.md).

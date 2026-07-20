@@ -4,13 +4,13 @@ Repositorio de documentación funcional y técnica del Sistema de Gestión Munic
 
 ## Qué es esto
 
-Este repo documenta, en Markdown versionado, los macroprocesos y modelo de datos del SGM — el ERP municipal en desarrollo para SUBDERE, actualmente en definición de bases de licitación tras la decisión de descontinuar la base Odoo (julio 2026, ver `arquitectura/decisiones/2026-07-eliminacion-odoo.md`).
+Este repo documenta, en Markdown versionado, los macroprocesos y modelo de datos del SGM — el ERP municipal en desarrollo para SUBDERE, actualmente en definición de bases de licitación tras la decisión de descontinuar la base Odoo (julio 2026, ver [`arquitectura/decisiones/2026-07-eliminacion-odoo.md`](arquitectura/decisiones/2026-07-eliminacion-odoo.md)).
 
 **No es** el repositorio de código. El código vive en GitLab, en `ci-cd-sgm/` (infraestructura) y `addons/odoo_subdere/` (addons Odoo, legado). Este repo es insumo de especificación — está pensado para ser leído tanto por personas como por herramientas de agentes de código (Claude Code, Cursor) como contexto de proyecto al momento de diseñar o implementar.
 
 ## Cómo navegar
 
-- **`arquitectura/`** — principios no negociables ([`principios-no-negociables.md`](arquitectura/principios-no-negociables.md)), estándares API, seguridad, decisiones de arquitectura y el diseño de integración con Mercado Público. Modelo de entregable de licitación (API + sandbox): [`entregable-licitacion.md`](arquitectura/entregable-licitacion.md). Pendientes de arquitectura centralizados en [`pendientes.md`](arquitectura/pendientes.md).
+- **`arquitectura/`** — índice en [`arquitectura/README.md`](arquitectura/README.md). Organizada en `decisiones/`, `licitacion/`, `especificacion/` e `instrucciones/`. Principios no negociables: [`licitacion/principios-no-negociables.md`](arquitectura/licitacion/principios-no-negociables.md). Entregable de licitación (API + sandbox): [`licitacion/entregable-licitacion.md`](arquitectura/licitacion/entregable-licitacion.md). Pendientes centralizados: [`decisiones/pendientes.md`](arquitectura/decisiones/pendientes.md). ADR eliminación Odoo: [`decisiones/2026-07-eliminacion-odoo.md`](arquitectura/decisiones/2026-07-eliminacion-odoo.md).
 <!-- REVISAR: la sección Convenciones más abajo dice que los pendientes viven incrustados en cada subproceso, sin backlog centralizado — eso aplica a fichas de proceso, pero ya no a documentos de arquitectura. -->
 - **`modelo-datos/`** — fuente única de entidades de dominio (`entidades-core.md`), entidades de plataforma (`entidades-plataforma.md`) y el glosario de términos de dominio. Los macroprocesos referencian estas entidades, no las redefinen.
 - **`plataforma/`** — core de plataforma: [`overview.md`](plataforma/overview.md), [`contracts.md`](plataforma/contracts.md) y wireframes de consolas admin (SUBDERE y municipal) en [`plataforma/wireframes/`](plataforma/wireframes/README.md).

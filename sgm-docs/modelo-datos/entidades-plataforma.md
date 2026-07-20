@@ -2,7 +2,7 @@
 
 Fuente canónica de entidades del **core de plataforma**: identidad, RBAC, tenants, parámetros, auditoría, integraciones externas y gestión documental. Los módulos funcionales **referencian** estas entidades — no las redefinen.
 
-Marco: [`arquitectura/plataforma-core.md`](../arquitectura/plataforma-core.md)  
+Marco: [`arquitectura/especificacion/plataforma-core.md`](../arquitectura/especificacion/plataforma-core.md)  
 Contrato HTTP: [`plataforma/contracts.md`](../plataforma/contracts.md)
 
 **Convención de nombres:** inglés, PascalCase para entidades; snake_case para campos.
@@ -92,7 +92,7 @@ Catálogo **base de plataforma** que el sistema ofrece al aprovisionar un tenant
 
 ### `Role` / `Permission`
 
-Catálogo transversal (única fuente): [`arquitectura/catalogo-roles.md`](../arquitectura/catalogo-roles.md) (**P-24**).
+Catálogo transversal (única fuente): [`arquitectura/especificacion/catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) (**P-24**).
 
 #### `Role`
 **Visibilidad:** expuesta (lectura; administración de definiciones = plataforma / SUBDERE)

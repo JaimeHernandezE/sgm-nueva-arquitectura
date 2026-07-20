@@ -3,7 +3,7 @@
 > Documento normativo — arquitectura / seguridad
 > Estado: borrador. Complementa `principios-no-negociables.md`, `estandares-api.md` y `musts-arquitectura.md`.
 > Principio rector: mismo estándar que el resto de la arquitectura — **propiedades verificables, no declaraciones de intención**. La seguridad se demuestra en recepción y se audita en operación.
-> Pendientes registrados en [`pendientes.md`](./pendientes.md).
+> Pendientes registrados en [`pendientes.md`](../decisiones/pendientes.md).
 
 ---
 
@@ -14,8 +14,8 @@
 | **Ley 21.719** | Protección de datos personales: RRHH/Remuneraciones, proveedores personas naturales, ciudadanos en módulos futuros. Define roles de responsable y encargado de tratamiento según modo de consumo (ver `decisiones-macro-stack.md` §2). |
 | **DS N°7/2023** | Ciberseguridad: incidentes, coordinación con CSIRT de Gobierno, estándares mínimos para plataformas del Estado. |
 | **DS N°4/2020 (Ley 21.180)** | Normas técnicas de autenticación e interoperabilidad. |
-| **DS N°10/2023 (NTDEE)** | Documentos y expedientes electrónicos: metadatos, estructura, formatos, actuaciones, retención, enlaces persistentes. Diagnóstico y propuestas en [`brechas-estandarizacion-ntdee-pisee.md`](./brechas-estandarizacion-ntdee-pisee.md). |
-| **DS N°12/2023 (NTI / PISEE)** | Interoperabilidad OAE↔OAE vía nodo, Catálogo y Portal PISEE; traza PISEE distinta de auditoría interna. Diagnóstico y propuestas en [`brechas-estandarizacion-ntdee-pisee.md`](./brechas-estandarizacion-ntdee-pisee.md). |
+| **DS N°10/2023 (NTDEE)** | Documentos y expedientes electrónicos: metadatos, estructura, formatos, actuaciones, retención, enlaces persistentes. Diagnóstico y propuestas en [`brechas-estandarizacion-ntdee-pisee.md`](../decisiones/brechas-estandarizacion-ntdee-pisee.md). |
+| **DS N°12/2023 (NTI / PISEE)** | Interoperabilidad OAE↔OAE vía nodo, Catálogo y Portal PISEE; traza PISEE distinta de auditoría interna. Diagnóstico y propuestas en [`brechas-estandarizacion-ntdee-pisee.md`](../decisiones/brechas-estandarizacion-ntdee-pisee.md). |
 | **Ley 19.799** | Firma electrónica (FirmaGob/FEA en actos administrativos). |
 
 **[PENDIENTE P-21]** Mapeo detallado de obligaciones DS N°7/2023 → controles exigibles en bases (candidato a asesoría jurídico-técnica).
@@ -62,7 +62,7 @@ En compras públicas la segregación no es buena práctica: es control interno e
 1. **Catálogo de datos personales por módulo:** qué entidades y campos contienen datos personales, con su finalidad legal declarada — extensión natural de `entidades-core.md` (campo adicional de clasificación). **[PENDIENTE P-27]** Ejecutar el catastro sobre las 14 entidades existentes; crítico antes de especificar RRHH/Remuneraciones, el módulo más sensible.
 2. **Minimización en los contratos:** las entidades expuestas en `contracts.md` cruzan el borde con el subconjunto mínimo de campos; los datos personales no viajan en payloads que no los requieren para su finalidad.
 3. Derechos ARCO-P: los flujos de acceso, rectificación y supresión sobre datos personales deben estar especificados como operaciones, no improvisarse.
-4. Roles de responsable y encargado de tratamiento definidos por modo de consumo (**[PENDIENTE P-01]**, ver [`pendientes.md`](./pendientes.md)).
+4. Roles de responsable y encargado de tratamiento definidos por modo de consumo (**[PENDIENTE P-01]**, ver [`pendientes.md`](../decisiones/pendientes.md)).
 
 ## 7. Cifrado y gestión de secretos
 
@@ -128,4 +128,4 @@ Mismo principio que las pruebas de carga — cumple o no cumple:
 
 ## 14. Pendientes abiertos
 
-Los pendientes de este documento están registrados en [`pendientes.md`](./pendientes.md): P-21, P-22, P-23, P-24, P-25, P-26, P-27, P-28, P-29, P-30, P-31.
+Los pendientes de este documento están registrados en [`pendientes.md`](../decisiones/pendientes.md): P-21, P-22, P-23, P-24, P-25, P-26, P-27, P-28, P-29, P-30, P-31.

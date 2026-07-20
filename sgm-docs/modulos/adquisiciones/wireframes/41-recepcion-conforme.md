@@ -1,7 +1,7 @@
 # Wireframe: Registro recepción conforme
 
 **Sub-paso:** 4.1 — Registro de recepción física  
-**Rol:** Recepcionista (`adq.recepcionista`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
+**Rol:** Recepcionista (`adq.recepcionista`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)  
 **Operaciones:** `createGoodsReceipt`, `confirmGoodsReceipt`
 
 ## Layout

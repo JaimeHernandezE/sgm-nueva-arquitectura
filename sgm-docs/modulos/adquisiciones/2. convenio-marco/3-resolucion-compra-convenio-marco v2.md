@@ -6,7 +6,7 @@
 
 *⚠ **Nota de ajuste a la etapa 2:** para CM, la vinculación MP (`mp_process_id`) ocurre en este sub-paso 3.2 (Compra Directa) o 3.3 (Gran Compra), no al cierre de la etapa 2 — la lógica es idéntica a la corrección ya documentada en LP §3.5. Propagar a `2-modalidad-compra.md` §2.3 la tabla de vinculación diferida por modalidad.*
 
-*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md) (P-24).*
+*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24).*
 
 ---
 
@@ -53,7 +53,7 @@
 | Materia | Valor |
 |---|---|
 | **Unidad municipal** | DAF Abastecimiento |
-| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
+| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | **Plataforma** | SGM → Mercado Público (deep link) |
 | **Obligatoriedad** | **Obligatorio** *(condicional a `procurement_route = compra_directa`)* |
 | **Interacción MP** | **Gestión** |
@@ -87,7 +87,7 @@
 | Materia | Valor |
 |---|---|
 | **Unidad municipal** | DAF Abastecimiento |
-| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
+| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | **Plataforma** | SGM → Mercado Público (deep link) |
 | **Obligatoriedad** | **Obligatorio** *(condicional a `procurement_route = gran_compra`)* |
 | **Interacción MP** | **Gestión** |
@@ -154,7 +154,7 @@
 | Materia | Valor |
 |---|---|
 | **Unidad municipal** | DAF Abastecimiento |
-| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
+| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | **Plataforma** | Mercado Público |
 | **Obligatoriedad** | **Obligatorio** *(condicional a `gran_compra` con al menos una oferta)* |
 | **Interacción MP** | **Informativo** ⚠ *(candidato a Gestión optativa — ver pendiente)* |
@@ -187,7 +187,7 @@
 | Materia | Valor |
 |---|---|
 | **Unidad municipal** | DAF Abastecimiento |
-| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
+| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | **Plataforma** | SGM |
 | **Obligatoriedad** | **Condicional** *(solo si el período de competencia cierra sin ofertas)* |
 | **Interacción MP** | **Gestión** |
@@ -254,7 +254,7 @@
 | Materia | Valor |
 |---|---|
 | **Unidad municipal** | DAF Abastecimiento |
-| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
+| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | **Plataforma** | Mercado Público → SGM |
 | **Obligatoriedad** | **Condicional** *(excluyente con 3.7; solo ocurre si el proveedor rechaza)* |
 | **Interacción MP** | **Gestión** |

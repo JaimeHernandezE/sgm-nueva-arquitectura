@@ -3,7 +3,7 @@
 > Documento operativo — arquitectura / ecosistema
 > Estado: borrador (julio 2026). Cierra el detalle de **[P-16]**.
 > Marco estratégico: [`entregable-licitacion.md`](./entregable-licitacion.md) §5.
-> Formato de fixtures: [`estandares-api.md`](./estandares-api.md) Parte II §14.
+> Formato de fixtures: [`estandares-api.md`](../especificacion/estandares-api.md) Parte II §14.
 
 ---
 
@@ -117,7 +117,7 @@ Piloto Adquisiciones: cuatro expedientes demo + `escenarios-transaccionales.yaml
 ## 9. Referencias
 
 - [`entregable-licitacion.md`](./entregable-licitacion.md)
-- [`estandares-api.md`](./estandares-api.md)
-- [`plataforma-core.md`](./plataforma-core.md)
-- [`plataforma/contracts.md`](../plataforma/contracts.md)
-- [`modulos/adquisiciones/fixtures/catalogo.md`](../modulos/adquisiciones/fixtures/catalogo.md)
+- [`estandares-api.md`](../especificacion/estandares-api.md)
+- [`plataforma-core.md`](../especificacion/plataforma-core.md)
+- [`plataforma/contracts.md`](../../plataforma/contracts.md)
+- [`modulos/adquisiciones/fixtures/catalogo.md`](../../modulos/adquisiciones/fixtures/catalogo.md)

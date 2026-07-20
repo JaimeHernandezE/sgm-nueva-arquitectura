@@ -1,7 +1,7 @@
 # Wireframe: Visto bueno de jefatura
 
 **Sub-paso:** 1.2 — Visto bueno de jefatura  
-**Rol:** Aprobador de unidad (`adq.aprobador_unidad`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)
+**Rol:** Aprobador de unidad (`adq.aprobador_unidad`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)
 **Operaciones:** `approvePurchaseRequest`, `rejectPurchaseRequest`, `previewBudgetAvailability` *(informativa)*
 
 ## Layout

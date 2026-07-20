@@ -1,7 +1,7 @@
 # Wireframe: Emisión de CDP firmado
 
 **Sub-paso:** 1.5 — Emisión de CDP firmado  
-**Rol:** Firmante CDP (`adq.firmante_cdp`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
+**Rol:** Firmante CDP (`adq.firmante_cdp`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)  
 **Operación:** `issueBudgetAvailabilityCertificate` · `registerScannedBudgetAvailabilityCertificate` *(modo degradado)*
 
 ## Layout — firma electrónica (camino preferido)

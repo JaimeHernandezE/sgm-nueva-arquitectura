@@ -20,10 +20,10 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Page
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/PageSize
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Sort
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Order
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Page
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/PageSize
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Sort
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Order
         - name: q
           in: query
           description: >
@@ -104,7 +104,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               example:
                 error_code: PROCUREMENT_CASE_NOT_FOUND
                 field: case_id
@@ -144,7 +144,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               example:
                 error_code: PROCUREMENT_CASE_NOT_FOUND
                 field: case_id
@@ -162,10 +162,10 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Page
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/PageSize
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Sort
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Order
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Page
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/PageSize
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Sort
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Order
         - name: procurement_case_id
           in: query
           schema:
@@ -210,7 +210,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               example:
                 error_code: PURCHASE_REQUEST_NOT_FOUND
                 field: id
@@ -228,10 +228,10 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Page
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/PageSize
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Sort
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Order
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Page
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/PageSize
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Sort
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Order
         - name: procurement_case_id
           in: query
           schema:
@@ -276,7 +276,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               example:
                 error_code: PURCHASE_ORDER_NOT_FOUND
                 field: id

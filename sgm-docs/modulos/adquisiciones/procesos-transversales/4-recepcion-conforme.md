@@ -4,7 +4,7 @@
 
 *Herencia por modalidad (única variación remanente): en Licitación Pública y contratos de servicios continuos, la recepción es recurrente (N conformidades periódicas sobre el mismo contrato); en Compra Ágil típicamente es única o parcial. El mecanismo es el mismo.*
 
-*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md) (P-24).*
+*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24).*
 
 ---
 
@@ -13,7 +13,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Bodega / Unidad Solicitante *(según perfil de recepción configurado por el municipio y el tipo de objeto)* |
-| Rol | Recepcionista ([`adq.recepcionista`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Recepcionista ([`adq.recepcionista`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Falso |
 
@@ -46,7 +46,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Bodega / Unidad Solicitante *(quien recepciona; la unidad requirente valida siempre si el receptor fue Bodega)* |
-| Rol | Confirmante de recepción ([`adq.confirmante_recepcion`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Confirmante de recepción ([`adq.confirmante_recepcion`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Falso |
 
@@ -75,7 +75,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Bodega |
-| Rol | Recepcionista ([`adq.recepcionista`](../../../arquitectura/catalogo-roles.md)) / N/A (automático si el proveedor de inventario lo permite) |
+| Rol | Recepcionista ([`adq.recepcionista`](../../../arquitectura/especificacion/catalogo-roles.md)) / N/A (automático si el proveedor de inventario lo permite) |
 | Plataforma | SGM |
 | Optativo | Verdadero *(no aplica a servicios)* |
 
@@ -139,7 +139,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Bodega / Unidad Solicitante (constata) + DAF Abastecimiento (gestiona con proveedor) |
-| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Verdadero *(solo si hay rechazo total o parcial)* |
 

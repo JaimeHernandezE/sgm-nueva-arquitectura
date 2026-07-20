@@ -3,7 +3,7 @@
 > Documento de trabajo — arquitectura / cumplimiento normativo  
 > Estado: **propuesta / borrador** (julio 2026).  
 > Alcance: diagnóstico y propuestas. **No** modifica aún `entidades-core.md`, OpenAPI ni el contrato C10; esos cambios se canalizan por los pendientes P-60…P-63.  
-> Complementa [`principios-no-negociables.md`](./principios-no-negociables.md) §4, [`seguridad.md`](./seguridad.md) §1, [`plataforma-core.md`](./plataforma-core.md) §7–§7bis.
+> Complementa [`principios-no-negociables.md`](../licitacion/principios-no-negociables.md) §4, [`seguridad.md`](../especificacion/seguridad.md) §1, [`plataforma-core.md`](../especificacion/plataforma-core.md) §7–§7bis.
 
 ---
 
@@ -54,12 +54,12 @@ flowchart LR
 
 | Capacidad SGM | Evidencia | Encaje |
 |---|---|---|
-| Expediente raíz con timeline | `ProcurementCase`, `CaseStep` en [`entidades-core.md`](../modelo-datos/entidades-core.md) | Agregación de procedimiento y actuaciones de negocio |
-| Documentos centralizados, sin BLOB en módulos | `Document` / `DocumentRef`, C10 en [`entidades-plataforma.md`](../modelo-datos/entidades-plataforma.md), [`plataforma-core.md`](./plataforma-core.md) §7bis | Gestión documental como capacidad de plataforma |
-| Contrato HTTP versionado | OpenAPI Adquisiciones, [`contracts.md`](../modulos/adquisiciones/contracts.md), mandato API | Publicación gobernada de operaciones (base para Catálogo) |
-| Auditoría append-only + origen de escrituras M2M | [`seguridad.md`](./seguridad.md) §2.2, §5 | Trazabilidad administrativa (distinta de traza PISEE, ver §4) |
-| ClaveÚnica + FirmaGob | [`seguridad.md`](./seguridad.md) §2.1; `SignatureRequest` | Autenticación Estado y firma en actos administrativos |
-| Integraciones externas en el core (C7/C9) | [`contrato-api-first.md`](./contrato-api-first.md), [`integracion-mercado-publico.md`](./integracion-mercado-publico.md) | Mismo patrón aplicable a un futuro C-PISEE |
+| Expediente raíz con timeline | `ProcurementCase`, `CaseStep` en [`entidades-core.md`](../../modelo-datos/entidades-core.md) | Agregación de procedimiento y actuaciones de negocio |
+| Documentos centralizados, sin BLOB en módulos | `Document` / `DocumentRef`, C10 en [`entidades-plataforma.md`](../../modelo-datos/entidades-plataforma.md), [`plataforma-core.md`](../especificacion/plataforma-core.md) §7bis | Gestión documental como capacidad de plataforma |
+| Contrato HTTP versionado | OpenAPI Adquisiciones, [`contracts.md`](../../modulos/adquisiciones/contracts.md), mandato API | Publicación gobernada de operaciones (base para Catálogo) |
+| Auditoría append-only + origen de escrituras M2M | [`seguridad.md`](../especificacion/seguridad.md) §2.2, §5 | Trazabilidad administrativa (distinta de traza PISEE, ver §4) |
+| ClaveÚnica + FirmaGob | [`seguridad.md`](../especificacion/seguridad.md) §2.1; `SignatureRequest` | Autenticación Estado y firma en actos administrativos |
+| Integraciones externas en el core (C7/C9) | [`contrato-api-first.md`](../especificacion/contrato-api-first.md), [`integracion-mercado-publico.md`](../especificacion/integracion-mercado-publico.md) | Mismo patrón aplicable a un futuro C-PISEE |
 | Multi-tenant por municipio | [`decisiones-macro-stack.md`](./decisiones-macro-stack.md) | Cada OAE (municipio) como proveedor/consumidor aislado |
 
 ---
@@ -92,7 +92,7 @@ Leyenda de estado: **cubierto** · **parcial** · **ausente**.
 | Nodo como único medio autorizado de intercambio inter-OAE | ausente | No hay capacidad core de cliente/adaptador al nodo; integraciones son MP/FirmaGob/SII (C7/C9) | Cualquier consumo OAE↔OAE por API directa incumple la guía |
 | SGM no es el nodo: hospedaje en infraestructura del OAE | — (decisión) | Hosting SUBDERE / híbrido documentado; **quién opera el nodo** (municipio vs. SUBDERE por tenant) no está decidido | Bloquea diseño de C-PISEE y operación |
 | Publicación / consumo vía Catálogo de Servicios y Portal PISEE | ausente | OpenAPI existe para M2M municipal y ecosistemas; no hay perfil “servicio de interoperabilidad” ni alta en Catálogo | Otros OAE no pueden descubrir/consumir datos SGM por la Red |
-| Autenticación mutua, cifrado E2E y protocolos autorizados | ausente en borde PISEE | TLS y secretos sí en perímetro SGM ([`seguridad.md`](./seguridad.md) §7); no equivalen a requisitos del nodo | No sustituible “solo con HTTPS propio” |
+| Autenticación mutua, cifrado E2E y protocolos autorizados | ausente en borde PISEE | TLS y secretos sí en perímetro SGM ([`seguridad.md`](../especificacion/seguridad.md) §7); no equivalen a requisitos del nodo | No sustituible “solo con HTTPS propio” |
 | Registro de trazabilidad PISEE (metadatos de transacción inter-nodo) | ausente | Auditoría SGM (§5 seguridad) es **otra** capa — no genera traza hacia servicios centralizados PISEE | Doble registro: hay que diseñar ambos, no fusionarlos |
 | Gestor de Autorizaciones para datos sensibles | ausente | Scopes OAuth M2M por módulo/municipio; sin integración al Gestor de Autorizaciones | Consumos sensibles inter-OAE sin permiso normativo |
 | Prohibición de vías paralelas al Catálogo para OAE↔OAE | ausente (regla) | Modelo abierto API favorece ecosistema; falta regla explícita: M2M del *mismo* OAE OK; OAE distinto → nodo | Riesgo de diseñareludir el nodo “porque ya hay OpenAPI” |
@@ -174,7 +174,7 @@ Escrituras inter-OAE quedan fuera del alcance inicial.
 
 | Capa | Para qué | Dónde vive |
 |---|---|---|
-| Auditoría SGM | Contraloría municipal, SoD, Ley 21.719, recepción | Core auditoría ([`seguridad.md`](./seguridad.md) §5) |
+| Auditoría SGM | Contraloría municipal, SoD, Ley 21.719, recepción | Core auditoría ([`seguridad.md`](../especificacion/seguridad.md) §5) |
 | Trazabilidad PISEE | Metadatos de mensaje inter-nodo exigidos por NTI | Emitidos por el nodo / C-PISEE hacia servicios centralizados |
 
 No fusionar ambas en un solo log.

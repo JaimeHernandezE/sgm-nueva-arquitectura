@@ -4,7 +4,7 @@ Etapa del macroproceso **Trato Directo (SGM Integrado)** en la que Mercado Públ
 
 **Fuente base:** diagrama BPMN de carriles `Adquisiciones: Trato Directo (SGM Integrado)`.
 
-*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md) (P-24). Esta etapa es automática / actor externo → `N/A`.*
+*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24). Esta etapa es automática / actor externo → `N/A`.*
 
 ---
 

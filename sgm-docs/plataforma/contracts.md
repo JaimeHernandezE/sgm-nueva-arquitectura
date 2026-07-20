@@ -1,9 +1,9 @@
 # Contrato del core de plataforma
 
 > Estado: borrador funcional — subset mínimo para dependencias de Adquisiciones y sandbox.
-> Marco: [`arquitectura/plataforma-core.md`](../arquitectura/plataforma-core.md)
-> Estándares: [`arquitectura/estandares-api.md`](../arquitectura/estandares-api.md)
-> Metodología: [`arquitectura/contrato-api-first.md`](../arquitectura/contrato-api-first.md)
+> Marco: [`arquitectura/especificacion/plataforma-core.md`](../arquitectura/especificacion/plataforma-core.md)
+> Estándares: [`arquitectura/especificacion/estandares-api.md`](../arquitectura/especificacion/estandares-api.md)
+> Metodología: [`arquitectura/especificacion/contrato-api-first.md`](../arquitectura/especificacion/contrato-api-first.md)
 > Pendiente completo: **[P-48]**
 
 **Alcance de este borrador:** operaciones que Adquisiciones y el sandbox requieren para autenticación, identidad, autorización, parámetros normativos y auditoría. Ciclo de vida completo de tenants y consolas admin se extienden en iteraciones posteriores.
@@ -67,7 +67,7 @@ Rutas sin prefijo de tenant hasta resolver **[P-03]**.
 - **Uso:** catálogo de roles del módulo (consola «Por módulo/proceso»); agrupable por `process_area`
 - **Entrada:** filtros `module`, `process_area` (opcionales)
 - **Respuesta:** colección de `Role`
-- **Nota:** contenido canónico de prueba en [`arquitectura/catalogo-roles.md`](../arquitectura/catalogo-roles.md) (**P-24**)
+- **Nota:** contenido canónico de prueba en [`arquitectura/especificacion/catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) (**P-24**)
 
 #### `GET /role-assignments` — `listRoleAssignments`
 - **Entrada:** filtros `user_id`, `organizational_unit_id`, `module`

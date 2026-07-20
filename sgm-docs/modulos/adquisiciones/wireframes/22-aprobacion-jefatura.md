@@ -1,7 +1,7 @@
 # Wireframe: Aprobación de modalidad por jefatura
 
 **Sub-paso:** 2.2 — Aprobación de modalidad por jefatura *(condicional a `ModalityDecision.requires_jefatura_approval`, marcado en 2.1 — existencia formal pendiente de ratificar con la DM, **[PENDIENTE P-38]**)*  
-**Rol:** Aprobador de modalidad (`adq.aprobador_modalidad`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
+**Rol:** Aprobador de modalidad (`adq.aprobador_modalidad`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)  
 **Operaciones:** `approveModalityDecision`, `rejectModalityDecision` *(nombres inferidos — no declarados literalmente en la ficha)* · Dependencia condicional: `requestSignature`/`confirmSignature` (Core (FirmaGob))
 
 ## Layout

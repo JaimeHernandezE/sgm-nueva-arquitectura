@@ -2,7 +2,7 @@
 
 **Consola:** Municipal  
 **Operaciones:** `listRoleAssignments`, `listRoles` *(inferida)*; *(inferidas)* `createRoleAssignment`, `revokeRoleAssignment`, `listOrganizationalUnits`, `createOrganizationalUnit`, `updateOrganizationalUnit`  
-**Catálogo:** [`arquitectura/catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)
+**Catálogo:** [`arquitectura/especificacion/catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)
 
 ## Regla de modelo (jerarquía)
 

@@ -4,7 +4,7 @@
 
 Inventario de lo que falta para llevar Convenio Marco (CM), Licitación Pública (LP) y Trato Directo (TD) al mismo nivel de madurez que ya tiene Compra Ágil (CA) en su etapa 3. **Este documento solo diagnostica — no resuelve nada.** Es el insumo para la siguiente fase de trabajo (reconciliación de entidades, contratos, wireframes, prototipos), que a su vez debe cerrar con una revisión humana del equipo de la división de municipalidades antes de darse por definitiva, especialmente en los puntos marcados **[requiere decisión/validación humana]**.
 
-Metodología: para cada modalidad se releyó su ficha `3-resolucion-compra*.md` completa y se cruzó contra `modelo-datos/entidades-core.md`, `modulos/adquisiciones/contracts.md`, `arquitectura/pendientes.md`, `wireframes/`, `openapi/` y `fixtures/`. Compra Ágil se usa como referencia porque es la única modalidad con este ciclo completo (ficha → entidades reconciliadas → `contracts.md` → wireframe → prototipo HTML probado end-to-end).
+Metodología: para cada modalidad se releyó su ficha `3-resolucion-compra*.md` completa y se cruzó contra `modelo-datos/entidades-core.md`, `modulos/adquisiciones/contracts.md`, `arquitectura/decisiones/pendientes.md`, `wireframes/`, `openapi/` y `fixtures/`. Compra Ágil se usa como referencia porque es la única modalidad con este ciclo completo (ficha → entidades reconciliadas → `contracts.md` → wireframe → prototipo HTML probado end-to-end).
 
 ---
 

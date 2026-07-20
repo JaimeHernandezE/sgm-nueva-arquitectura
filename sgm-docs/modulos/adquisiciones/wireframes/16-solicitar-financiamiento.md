@@ -1,7 +1,7 @@
 # Wireframe: Solicitar financiamiento a DAF
 
 **Sub-paso:** 1.4 — Solicitar financiamiento a DAF *(optativo)*  
-**Rol:** Solicitante (`adq.solicitante`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
+**Rol:** Solicitante (`adq.solicitante`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)  
 **Operación:** `requestBudgetFinancing`
 
 ## Layout

@@ -25,7 +25,7 @@ Sin subtítulos de sección, los campos quedan en una lista plana bajo el títul
 
 ## Markup canónico
 
-Implementación en [`sgm-prototipos/shared/forms.css`](../../sgm-prototipos/shared/forms.css).
+Implementación en [`sgm-prototipos/shared/forms.css`](../../../sgm-prototipos/shared/forms.css).
 
 ```html
 <div class="form-card__body">

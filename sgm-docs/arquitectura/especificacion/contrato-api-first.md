@@ -2,7 +2,7 @@
 
 > Documento de trabajo — arquitectura / contratos
 > Estado: borrador metodológico. Define cómo se empieza a construir el contrato API-first del nuevo SGM, usando Compra Ágil (Adquisiciones) como piloto.
-> Pendientes registrados en [`pendientes.md`](./pendientes.md).
+> Pendientes registrados en [`pendientes.md`](../decisiones/pendientes.md).
 
 ---
 
@@ -89,7 +89,7 @@ El modelo entidad-relación y las fichas de flujo de Compra Ágil son la materia
 
 ## 8. Próximos pasos concretos
 
-1. ~~Crear `sgm-docs/arquitectura/estandares-api.md`~~ — **hecho**, ver [`estandares-api.md`](./estandares-api.md).
+1. ~~Crear `sgm-docs/arquitectura/especificacion/estandares-api.md`~~ — **hecho**, ver [`estandares-api.md`](./estandares-api.md).
 2. Crear `sgm-docs/modulos/adquisiciones/contracts.md` con la plantilla de la sección 3. *(Hecho — piloto Compra Ágil.)*
 3. Ejecutar el recorrido de los 17 sub-pasos de Compra Ágil (sesión de trabajo dedicada). *(Hecho — bordes §3.5 en fichas.)*
 4. Resolver los pendientes estructurales antes del primer contrato definitivo: multitenancy en el contrato (**P-03**), plano M2M (**P-02**), política de deprecación (**P-04**).

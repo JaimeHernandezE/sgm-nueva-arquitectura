@@ -3,7 +3,7 @@
 **Sub-paso:** 1.0 — Verificación previa *(optativo)*  
 **Prototipo:** [`sgm-prototipos/modulos/adquisiciones/procesos-transversales/10-verificacion-previa.html`](../../../../sgm-prototipos/modulos/adquisiciones/procesos-transversales/10-verificacion-previa.html)  
 **Ficha:** [`../procesos-transversales/1-solped.md`](../procesos-transversales/1-solped.md) §1.0  
-**Rol:** Solicitante (`adq.solicitante`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
+**Rol:** Solicitante (`adq.solicitante`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)  
 **Operaciones (deps):** `checkStockAvailability` *(si Inventario)*, `checkCatalogAvailability` *(si catálogo CM ChileCompra)*
 
 ## Layout

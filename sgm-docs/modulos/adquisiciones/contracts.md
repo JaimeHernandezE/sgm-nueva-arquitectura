@@ -2,8 +2,8 @@
 
 > Piloto: macroproceso **Compra Ágil** (SOLPED → Pago). Etapas 1 (SOLPED), 2 (Modalidad de Compra) y 4 (Recepción Conforme) son transversales a las 4 modalidades; etapa 3 (Resolución de Compra) es específica por modalidad.
 > Estado: borrador funcional derivado de fichas de flujo y ficha QA.
-> Estándares transversales: [`arquitectura/estandares-api.md`](../../arquitectura/estandares-api.md)
-> Metodología: [`arquitectura/contrato-api-first.md`](../../arquitectura/contrato-api-first.md)
+> Estándares transversales: [`arquitectura/especificacion/estandares-api.md`](../../arquitectura/especificacion/estandares-api.md)
+> Metodología: [`arquitectura/especificacion/contrato-api-first.md`](../../arquitectura/especificacion/contrato-api-first.md)
 > Entidades canónicas: [`modelo-datos/entidades-core.md`](../../modelo-datos/entidades-core.md)
 > OpenAPI: [`openapi/adquisiciones.openapi.yaml`](./openapi/adquisiciones.openapi.yaml) — estructura: [`openapi/README.md`](./openapi/README.md)
 > Fixtures sandbox: [`fixtures/catalogo.md`](./fixtures/catalogo.md)
@@ -47,11 +47,11 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 
 ## 2. Operaciones que ofrece
 
-Convenciones de error y paginación según [`estandares-api.md`](../../arquitectura/estandares-api.md). Rutas sin prefijo de tenant hasta resolver multitenancy (**[PENDIENTE P-03]**).
+Convenciones de error y paginación según [`estandares-api.md`](../../arquitectura/especificacion/estandares-api.md). Rutas sin prefijo de tenant hasta resolver multitenancy (**[PENDIENTE P-03]**).
 
 ### 2.0 Expediente (lecturas)
 
-Operaciones de consulta del expediente y recursos asociados. Requisito de [`musts-arquitectura.md`](../../arquitectura/musts-arquitectura.md) §10.2 y [`entregable-licitacion.md`](../../arquitectura/entregable-licitacion.md) §6.3.
+Operaciones de consulta del expediente y recursos asociados. Requisito de [`musts-arquitectura.md`](../../arquitectura/especificacion/musts-arquitectura.md) §10.2 y [`entregable-licitacion.md`](../../arquitectura/licitacion/entregable-licitacion.md) §6.3.
 
 **Autorización (placeholder hasta P-02):** scope `adquisiciones:read` (personas) / `adquisiciones.read` (M2M).
 
@@ -398,7 +398,7 @@ Consolidado en torno a `readMpProcess`, operación única de lectura que atiende
 | `readMpProcess` — foro/apertura/adjudicación *(LP)* | 3.6, 3.8, 3.10 | Deseada | Asíncrona | Modo degradado: registro manual del hito |
 | `checkCatalogAvailability` | 1.0 *(si sync ChileCompra)*, 2.1 | — | Cacheada (frescura diaria) | Advertencia `CATALOG_STALE`; en 1.0 la banda CM se omite si no hay integración |
 
-Ver [`integracion-mercado-publico.md`](../../arquitectura/integracion-mercado-publico.md): sin escritura API hacia MP.
+Ver [`integracion-mercado-publico.md`](../../arquitectura/especificacion/integracion-mercado-publico.md): sin escritura API hacia MP.
 
 #### FirmaGob (C9)
 

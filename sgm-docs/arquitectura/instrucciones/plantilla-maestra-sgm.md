@@ -4,9 +4,9 @@ Documento normativo del repositorio `sgm-docs`. Define la estructura obligatoria
 
 **Criterio de calidad general (heredado del estándar de Etapa 1):** la especificación debe ser suficiente para que dos equipos independientes puedan construir sistemas funcionalmente equivalentes a partir de ella sola.
 
-**Principio arquitectónico rector (mandato API):** cada módulo expone un contrato de entrada/salida versionado; ningún módulo accede a datos o funcionalidad de otro salvo a través de ese contrato. La documentación de procesos debe hacer visibles los bordes de módulo — cada vez que un flujo cruza de un módulo a otro, ahí vive un contrato. Detalle normativo en [`estandares-api.md`](./estandares-api.md) y [`contrato-api-first.md`](./contrato-api-first.md).
+**Principio arquitectónico rector (mandato API):** cada módulo expone un contrato de entrada/salida versionado; ningún módulo accede a datos o funcionalidad de otro salvo a través de ese contrato. La documentación de procesos debe hacer visibles los bordes de módulo — cada vez que un flujo cruza de un módulo a otro, ahí vive un contrato. Detalle normativo en [`estandares-api.md`](../especificacion/estandares-api.md) y [`contrato-api-first.md`](../especificacion/contrato-api-first.md).
 
-**Contrato en tres capas (mismo módulo):** además de las fichas de proceso y `contracts.md`, todo cambio que afecte el borde del módulo debe propagarse a **OpenAPI** (`modulos/<módulo>/openapi/`, seccionada como los procesos) y, cuando corresponda, a **fixtures de sandbox** (`modulos/<módulo>/fixtures/`). Los tres artefactos son una sola especificación: vista funcional, vista técnica formal y estados reproducibles de prueba. Norma de formato en [`estandares-api.md`](./estandares-api.md) Parte II; modelo de entregable en [`entregable-licitacion.md`](./entregable-licitacion.md).
+**Contrato en tres capas (mismo módulo):** además de las fichas de proceso y `contracts.md`, todo cambio que afecte el borde del módulo debe propagarse a **OpenAPI** (`modulos/<módulo>/openapi/`, seccionada como los procesos) y, cuando corresponda, a **fixtures de sandbox** (`modulos/<módulo>/fixtures/`). Los tres artefactos son una sola especificación: vista funcional, vista técnica formal y estados reproducibles de prueba. Norma de formato en [`estandares-api.md`](../especificacion/estandares-api.md) Parte II; modelo de entregable en [`entregable-licitacion.md`](../licitacion/entregable-licitacion.md).
 
 ---
 
@@ -28,7 +28,7 @@ Documento normativo del repositorio `sgm-docs`. Define la estructura obligatoria
 - **Contrato por módulo:** cada módulo tiene un `modulos/<módulo>/contracts.md` (estructura en sección 4). Es un documento de nivel módulo, no de macroproceso: los macroprocesos alimentan el contrato, no lo duplican.
 - **OpenAPI por módulo:** carpeta hermana `modulos/<módulo>/openapi/` — espejo de la estructura de procesos; entrada única `<módulo>.openapi.yaml` (sección 4.1).
 - **Fixtures de sandbox por módulo:** `modulos/<módulo>/fixtures/` — catálogo (`catalogo.md`) y un YAML por expediente o escenario reproducible (sección 4.1).
-- **Componentes transversales OpenAPI:** `arquitectura/openapi/comunes.yaml` — errores, paginación y seguridad; referenciados vía `$ref`, no redefinidos por módulo.
+- **Componentes transversales OpenAPI:** `arquitectura/especificacion/openapi/comunes.yaml` — errores, paginación y seguridad; referenciados vía `$ref`, no redefinidos por módulo.
 
 ---
 
@@ -60,7 +60,7 @@ Metadatos del sub-paso: quién del municipio actúa, con qué rol, en qué siste
 | Materia | Valor |
 |---|---|
 | **Unidad municipal** | Departamento u oficina del municipio que ejecuta o es titular del paso. Valores típicos: Unidad Solicitante / DAF Finanzas / DAF Abastecimiento / Contabilidad / Tesorería / `—` (sin unidad municipal: paso automático o actor externo). |
-| **Rol** | Rol funcional del actor humano según el catálogo RBAC transversal ([`catalogo-roles.md`](./catalogo-roles.md) — **[PENDIENTE P-24]**; [`seguridad.md`](./seguridad.md) §3). Formato: **nombre (usuarios)** + **código (sistema)** enlazado — ej. `Solicitante ([adq.solicitante](./catalogo-roles.md))`. El `name` es la etiqueta legible; el `code` ancla RBAC. Valor `N/A` si el paso es automático o el actor es externo. Legado en fichas no migradas: Usuario / Aprobador. |
+| **Rol** | Rol funcional del actor humano según el catálogo RBAC transversal ([`catalogo-roles.md`](../especificacion/catalogo-roles.md) — **[PENDIENTE P-24]**; [`seguridad.md`](../especificacion/seguridad.md) §3). Formato: **nombre (usuarios)** + **código (sistema)** enlazado — ej. `Solicitante ([adq.solicitante](../especificacion/catalogo-roles.md))`. El `name` es la etiqueta legible; el `code` ancla RBAC. Valor `N/A` si el paso es automático o el actor es externo. Legado en fichas no migradas: Usuario / Aprobador. |
 | **Plataforma** | Sistema donde se realiza la acción principal de este sub-paso (no todos los sistemas tocados; las integraciones adicionales van en §3.5). Valores: SGM / Mercado Público / Otra (especificar) / secuencia explícita (ej. `SGM → MP (deep link)`). |
 | **Optativo** | `Verdadero` si el sub-paso puede omitirse en el flujo sin invalidar el proceso; `Falso` si es obligatorio para continuar. Si la omisión es condicional, documentar la condición en §3.3. |
 | **Interacción MP** *(solo si aplica)* | Obligatoria en todo sub-paso con Plataforma = Mercado Público o cuyo avance dependa de una lectura MP. Valores: Informativo / Gestión / Gestión condicional, según el estándar de §5.1. |
@@ -125,7 +125,7 @@ Documento único por módulo, en `modulos/<módulo>/contracts.md`. Es la vista d
 Reglas:
 - Nomenclatura inglesa técnica, consistente con el modelo de datos (`PascalCase` para eventos y entidades, `camelCase` para operaciones).
 - Cada operación, dependencia y evento indica en qué sub-paso(s) se origina (trazabilidad proceso ↔ contrato en ambas direcciones).
-- Los estándares transversales (esquema de error, versionamiento, paginación, idempotencia, autenticación) **no se repiten** en cada contrato: viven en [`estandares-api.md`](./estandares-api.md) y los contratos los referencian.
+- Los estándares transversales (esquema de error, versionamiento, paginación, idempotencia, autenticación) **no se repiten** en cada contrato: viven en [`estandares-api.md`](../especificacion/estandares-api.md) y los contratos los referencian.
 - Ante discrepancia entre una ficha de sub-paso y `contracts.md`, se resuelve la inconsistencia antes de dar por cerrado cualquiera de los dos — misma lógica que wireframe vs. entidades.
 
 ### 4.1 OpenAPI y fixtures (obligatorios junto a `contracts.md`)
@@ -138,7 +138,7 @@ Cuando una operación, entidad expuesta, código de error o ejemplo de request/r
 |---|---|---|
 | **Entrada `<módulo>.openapi.yaml`** | Sandbox, CI, Swagger/Redoc, adjudicatario, SUBDERE en recepción | Contrato HTTP publicado del módulo: `paths` ensamblados + `components` (schemas, responses, examples) |
 | **Fragmentos por proceso/modalidad** (`.yaml` bajo `openapi/`) | Autores de especificación y herramientas que resuelven `$ref` | Editar operaciones cerca del borde de negocio sin un monolito; se reagrupan en la entrada |
-| **`arquitectura/openapi/comunes.yaml`** | Todas las OpenAPI de módulo | Errores, paginación, idempotencia y security schemes transversales |
+| **`arquitectura/especificacion/openapi/comunes.yaml`** | Todas las OpenAPI de módulo | Errores, paginación, idempotencia y security schemes transversales |
 | **Fixtures** (`fixtures/*.yaml` + `catalogo.md`) | Sandbox y recepción | Estados sintéticos reproducibles; `example_ref` apunta a `components/examples` de la entrada OpenAPI |
 
 Las fichas `.md` (proceso y `contracts.md`) **no** las consume el sandbox: son la vista funcional. El sandbox se ancla a la OpenAPI + fixtures.
@@ -175,7 +175,7 @@ Reglas de nomenclatura OpenAPI:
 3. La entrada `<módulo>.openapi.yaml` referencia cada path (o verbo HTTP) con `$ref` al fragmento; no duplica el cuerpo de la operación.
 4. Schemas, responses y `examples` viven en la entrada (o en `comunes.yaml` si son transversales), no se copian en cada fragmento.
 
-Referencia concreta (piloto): [`modulos/adquisiciones/openapi/README.md`](../modulos/adquisiciones/openapi/README.md).
+Referencia concreta (piloto): [`modulos/adquisiciones/openapi/README.md`](../../modulos/adquisiciones/openapi/README.md).
 
 #### Sincronización
 
@@ -184,9 +184,9 @@ Referencia concreta (piloto): [`modulos/adquisiciones/openapi/README.md`](../mod
 | **OpenAPI (entrada)** | `modulos/<módulo>/openapi/<módulo>.openapi.yaml` | Índice de `paths`, `components` (esquemas, errores, `examples`), tags |
 | **OpenAPI (fragmentos)** | `openapi/procesos-transversales/*.yaml`, `openapi/<modalidad>/*.yaml`, etc. | Cuerpo de cada operación (`operationId`, request/response, `x-subpasos` / `x-emits` / `x-validation-class`) |
 | **Fixtures** | `modulos/<módulo>/fixtures/*.yaml` + `catalogo.md` | IDs estables, `seeds`, operaciones canónicas (`operations`), `example_ref` → entrada OpenAPI |
-| **Comunes** | `arquitectura/openapi/comunes.yaml` | Solo si cambia error/paginación/seguridad (Parte I de `estandares-api.md`) |
+| **Comunes** | `arquitectura/especificacion/openapi/comunes.yaml` | Solo si cambia error/paginación/seguridad (Parte I de `estandares-api.md`) |
 
-Reglas de sincronización (detalle en [`estandares-api.md`](./estandares-api.md) Parte II §13–§14):
+Reglas de sincronización (detalle en [`estandares-api.md`](../especificacion/estandares-api.md) Parte II §13–§14):
 
 1. **Correspondencia biunívoca:** toda operación de `contracts.md` §2 existe como `operationId` en la OpenAPI del módulo (entrada + fragmentos resueltos), y viceversa. Toda entidad expuesta en §1 existe como esquema.
 2. **Resolución de discrepancias:** ante conflicto entre `contracts.md` y OpenAPI, se resuelve antes de dar por cerrado cualquiera de los dos; el código del adjudicatario se valida contra OpenAPI.
@@ -195,13 +195,13 @@ Reglas de sincronización (detalle en [`estandares-api.md`](./estandares-api.md)
 5. **Cuándo crear o actualizar un fixture:** nueva operación `GET` de lectura del expediente; escenario de error bloqueante frecuente del catálogo QA; nuevo estado de negocio demostrable en sandbox o recepción.
 6. **Cuándo crear un fragmento OpenAPI:** al abrir una etapa transversal o una etapa 3 de modalidad; hasta entonces basta el placeholder (`README.md` en la carpeta de modalidad).
 
-El core de plataforma sigue la misma disciplina: `plataforma/contracts.md` + `plataforma/openapi/` (ver [`plataforma-core.md`](./plataforma-core.md)).
+El core de plataforma sigue la misma disciplina: `plataforma/contracts.md` + `plataforma/openapi/` (ver [`plataforma-core.md`](../especificacion/plataforma-core.md)).
 
 ---
 
 ## 5. Estándar de la relación Mercado Público ↔ SGM
 
-Aplica a todo sub-paso cuyo avance depende de un proceso en Mercado Público. Principio base (inmutable, ver [`integracion-mercado-publico.md`](./integracion-mercado-publico.md)): integración **unidireccional de solo lectura** — deep links para actuar (la persona opera en MP) y lecturas de estado para sincronizar; SGM jamás escribe hacia MP vía API.
+Aplica a todo sub-paso cuyo avance depende de un proceso en Mercado Público. Principio base (inmutable, ver [`integracion-mercado-publico.md`](../especificacion/integracion-mercado-publico.md)): integración **unidireccional de solo lectura** — deep links para actuar (la persona opera en MP) y lecturas de estado para sincronizar; SGM jamás escribe hacia MP vía API.
 
 ### 5.1 Clasificación obligatoria: Informativo / Gestión
 

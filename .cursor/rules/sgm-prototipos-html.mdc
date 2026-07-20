@@ -17,4 +17,4 @@ alwaysApply: false
 - Perfiles demo en `expedientes-demo.js`; query `?expediente=` para contexto de compras.
 - Acciones demo: `demoAction('nombreOperacion')` — stub silencioso (sin `alert`); sin backend.
 - Etiquetas de campo: obligatorio → `<span class="required">*</span>`; opcional → `(opcional)` en label; condicional → `(obligatorio si …)` — alineado con wireframe y modelo de datos.
-- Secciones de formulario: agrupar campos en `<section class="form-section">` con `<h3 class="form-section__title">` (y `.form-section__hint` si aplica). No usar `h3` con `style=` inline. Norma: `sgm-docs/arquitectura/patron-formularios-secciones.md`.
+- Secciones de formulario: agrupar campos en `<section class="form-section">` con `<h3 class="form-section__title">` (y `.form-section__hint` si aplica). No usar `h3` con `style=` inline. Norma: `sgm-docs/arquitectura/instrucciones/patron-formularios-secciones.md`.

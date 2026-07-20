@@ -2,8 +2,8 @@
 
 > Documento de trabajo — arquitectura / licitación
 > Estado: borrador para discusión interna, **v2** (julio 2026).
-> Origen: conversación de arquitectura sobre el modelo «API como producto», el ambiente sandbox y la paridad contrato ↔ implementación. La v2 incorpora: el criterio de nivel de detalle de la especificación (§3), el core de plataforma como parte del entregable (§4), y la adopción del estándar OpenAPI + fixtures ([`estandares-api.md`](./estandares-api.md)).
-> Pendientes relacionados registrados en [`pendientes.md`](./pendientes.md).
+> Origen: conversación de arquitectura sobre el modelo «API como producto», el ambiente sandbox y la paridad contrato ↔ implementación. La v2 incorpora: el criterio de nivel de detalle de la especificación (§3), el core de plataforma como parte del entregable (§4), y la adopción del estándar OpenAPI + fixtures ([`estandares-api.md`](../especificacion/estandares-api.md)).
+> Pendientes relacionados registrados en [`pendientes.md`](../decisiones/pendientes.md).
 
 ---
 
@@ -13,7 +13,7 @@ Este documento consolida lo discutido antes de ampliar la especificación. Defin
 
 No sustituye los documentos normativos existentes (`principios-no-negociables.md`, `estandares-api.md`, `musts-arquitectura.md`, fichas de proceso, `contracts.md`). Los **organiza en un modelo de entregable único** e identifica los huecos que hoy impiden cerrar ese modelo.
 
-**Lectura recomendada en paralelo:** [`decisiones-macro-stack.md`](./decisiones-macro-stack.md) §1, §6 y §7; [`plataforma-core.md`](./plataforma-core.md).
+**Lectura recomendada en paralelo:** [`decisiones-macro-stack.md`](../decisiones/decisiones-macro-stack.md) §1, §6 y §7; [`plataforma-core.md`](../especificacion/plataforma-core.md).
 
 ---
 
@@ -23,12 +23,12 @@ SGM se concibe como **motor backend API-first**. El frontend base de SUBDERE es 
 
 **Consecuencia para la licitación:** el adjudicatario no entrega «una aplicación web con backend adjunto». Entrega:
 
-1. Un **motor** que implementa contratos versionados — módulos funcionales **y core de plataforma** ([`plataforma-core.md`](./plataforma-core.md)).
+1. Un **motor** que implementa contratos versionados — módulos funcionales **y core de plataforma** ([`plataforma-core.md`](../especificacion/plataforma-core.md)).
 2. Un **frontend base** que consume exclusivamente esos contratos, incluidas las consolas de administración.
 3. Un **sandbox público** donde cualquier tercero reproduce la integración antes de producción.
 4. La **documentación ejecutable** que hace verificable cada uno de los puntos anteriores.
 
-La ventaja competitiva legítima de un integrador o tercero debe ser calidad de servicio y dominio, nunca acceso privilegiado a endpoints o datos no publicados ([`decisiones-macro-stack.md`](./decisiones-macro-stack.md) §7.2.5).
+La ventaja competitiva legítima de un integrador o tercero debe ser calidad de servicio y dominio, nunca acceso privilegiado a endpoints o datos no publicados ([`decisiones-macro-stack.md`](../decisiones/decisiones-macro-stack.md) §7.2.5).
 
 ---
 
@@ -102,13 +102,13 @@ flowchart TB
 
 | Artefacto | Ubicación | Rol en el entregable |
 |---|---|---|
-| Principios no negociables | `arquitectura/principios-no-negociables.md` | Cláusulas de bases no delegables |
-| Estándares API transversales | `arquitectura/estandares-api.md` | Errores, paginación, idempotencia, auth |
-| Estándar OpenAPI y fixtures | `arquitectura/estandares-api.md` | Formato de specs y catálogo sandbox |
-| Metodología contract-first | `arquitectura/contrato-api-first.md` | Estructura de `contracts.md`, criterio de recepción |
-| **Core de plataforma** | `arquitectura/plataforma-core.md` | Servicios transversales, entidades de plataforma, consolas admin |
-| Musts NFR | `arquitectura/musts-arquitectura.md` | SLOs, carga, observabilidad, flujos consultables |
-| Seguridad | `arquitectura/seguridad.md` | Personas (Clave Única) y sistemas (M2M) |
+| Principios no negociables | `arquitectura/licitacion/principios-no-negociables.md` | Cláusulas de bases no delegables |
+| Estándares API transversales | `arquitectura/especificacion/estandares-api.md` | Errores, paginación, idempotencia, auth |
+| Estándar OpenAPI y fixtures | `arquitectura/especificacion/estandares-api.md` | Formato de specs y catálogo sandbox |
+| Metodología contract-first | `arquitectura/especificacion/contrato-api-first.md` | Estructura de `contracts.md`, criterio de recepción |
+| **Core de plataforma** | `arquitectura/especificacion/plataforma-core.md` | Servicios transversales, entidades de plataforma, consolas admin |
+| Musts NFR | `arquitectura/especificacion/musts-arquitectura.md` | SLOs, carga, observabilidad, flujos consultables |
+| Seguridad | `arquitectura/especificacion/seguridad.md` | Personas (Clave Única) y sistemas (M2M) |
 | Modelo de datos canónico | `modelo-datos/entidades-core.md` (+ `entidades-plataforma.md`, a crear) | Fuente única de entidades y campos |
 | Fichas de proceso | `modulos/*/procesos-transversales/`, modalidades | Reglas de negocio, materias, bordes §3.5 |
 | Contrato funcional por módulo | `modulos/*/contracts.md` + `plataforma/contracts.md` (**P-48**) | Operaciones, entradas `{a}`, salidas `{b}`, eventos |
@@ -116,7 +116,7 @@ flowchart TB
 | Wireframes | `modulos/*/wireframes/*.md` + consolas admin (**P-52**) | Entregable de licitación — estructura UI |
 | Prototipos HTML | `sgm-prototipos/` | Validación UX; **no** sustituye API ni sandbox |
 
-**Regla de oro ([`estandares-api.md`](./estandares-api.md) §1):** ante discrepancia entre `contracts.md` y OpenAPI, se resuelve la inconsistencia antes de dar por cerrado cualquiera de los dos. El código se valida contra OpenAPI, no al revés.
+**Regla de oro ([`estandares-api.md`](../especificacion/estandares-api.md) §1):** ante discrepancia entre `contracts.md` y OpenAPI, se resuelve la inconsistencia antes de dar por cerrado cualquiera de los dos. El código se valida contra OpenAPI, no al revés.
 
 ### 4.2 Capa 2 — Implementación (adjudicatario)
 
@@ -124,7 +124,7 @@ El implementador debe construir, como mínimo:
 
 | Componente | Exigencia verificable |
 |---|---|
-| **Core de plataforma** | Contrato propio cumplido; consolas admin como consumidores sin privilegios; ciclo de tenants demostrable ([`plataforma-core.md`](./plataforma-core.md) §10) |
+| **Core de plataforma** | Contrato propio cumplido; consolas admin como consumidores sin privilegios; ciclo de tenants demostrable ([`plataforma-core.md`](../especificacion/plataforma-core.md) §10) |
 | API REST por módulo | Cumple OpenAPI publicada; sin endpoints no documentados |
 | Multitenancy por schema | Separación por municipio; pooling y migraciones demostrables |
 | Frontend base | Consume la misma API que un tercero; sin rutas internas privilegiadas |
@@ -138,7 +138,7 @@ El implementador debe construir, como mínimo:
 
 | Mecanismo | Qué demuestra |
 |---|---|
-| Pruebas de integración entre módulos | Cada módulo consume **solo** contratos publicados; BD de otros inaccesibles ([`contrato-api-first.md`](./contrato-api-first.md) §1) |
+| Pruebas de integración entre módulos | Cada módulo consume **solo** contratos publicados; BD de otros inaccesibles ([`contrato-api-first.md`](../especificacion/contrato-api-first.md) §1) |
 | Pruebas de carga | SLOs bajo perfil de pico (`musts-arquitectura.md` §6–7) |
 | Trazabilidad BPMN | Comportamiento demostrable contra especificación de flujo |
 | **Sandbox público** | Tercero integra sin convenio previo; misma API que producción |
@@ -150,7 +150,7 @@ El implementador debe construir, como mínimo:
 
 ### 5.1 Lo que ya está decidido
 
-En [`decisiones-macro-stack.md`](./decisiones-macro-stack.md) §7.2, el sandbox es condición habilitante del ecosistema:
+En [`decisiones-macro-stack.md`](../decisiones/decisiones-macro-stack.md) §7.2, el sandbox es condición habilitante del ecosistema:
 
 > *Ambiente sandbox con datos sintéticos. Cualquier empresa debe poder desarrollar y demostrar su servicio sin convenio previo, contra un ambiente de prueba públicamente accesible.*
 
@@ -171,7 +171,7 @@ Hoy está registrado como **[PENDIENTE P-16]**; detalle operativo en [`sandbox-d
 2. **Mismos endpoints, esquemas y errores** que OpenAPI publicada — incluido el contrato del core (autenticación, consulta de identidad y roles, auditoría), necesario para que un integrador pruebe el flujo completo.
 3. **Credenciales M2M de prueba** obtenibles sin convenio (self-service o registro simple), alineado con **[P-02]** y **[P-15]**.
 4. **Datos sintéticos** — nunca datos reales de municipios (Ley 21.719).
-5. **Catálogo de fixtures versionado** según [`estandares-api.md`](./estandares-api.md) §6 — expedientes y escenarios con IDs estables y respuestas documentadas.
+5. **Catálogo de fixtures versionado** según [`estandares-api.md`](../especificacion/estandares-api.md) §6 — expedientes y escenarios con IDs estables y respuestas documentadas.
 6. **Portal de desarrollador** — OpenAPI navegable, guías de inicio, ejemplos `{a}`/`{b}` por operación.
 7. **Stubs controlados** de dependencias externas (Mercado Público, FirmaGob) con comportamiento documentado.
 
@@ -195,7 +195,7 @@ Cada operación publicada define:
 - **Response `{b}`:** código HTTP, body de éxito o error estructurado (`error_code`, `rule`, `severity`, etc.).
 - **Reglas:** qué validaciones bloquean, qué dependencias se invocan, qué eventos se emiten.
 
-El sandbox debe permitir ejecutar esa operación y obtener `{b}` conforme a OpenAPI. Los fixtures publican **ejemplos canónicos** para operaciones de lectura y para errores de dominio frecuentes. El formato técnico de ambos está normado en [`estandares-api.md`](./estandares-api.md) §4 y §6.
+El sandbox debe permitir ejecutar esa operación y obtener `{b}` conforme a OpenAPI. Los fixtures publican **ejemplos canónicos** para operaciones de lectura y para errores de dominio frecuentes. El formato técnico de ambos está normado en [`estandares-api.md`](../especificacion/estandares-api.md) §4 y §6.
 
 ### 6.2 Estado actual del piloto Adquisiciones
 
@@ -228,7 +228,7 @@ Para que un implementador — o un municipio en modo à la carte — pueda «con
 
 Estas operaciones deben exponer `ProcurementCase` y `CaseStep` en `contracts.md` §1 y generar entradas en OpenAPI con `examples` que alimenten el catálogo de fixtures del sandbox.
 
-**Criterio de cierre:** dos equipos independientes construyen un visor de expediente consumiendo solo el contrato publicado — misma prueba de calidad que [`contrato-api-first.md`](./contrato-api-first.md) §6.4.
+**Criterio de cierre:** dos equipos independientes construyen un visor de expediente consumiendo solo el contrato publicado — misma prueba de calidad que [`contrato-api-first.md`](../especificacion/contrato-api-first.md) §6.4.
 
 ---
 
@@ -273,7 +273,7 @@ flowchart LR
 | ¿Qué reglas de negocio aplican? | Fichas de proceso + QA | Parcial por modalidad |
 | ¿Qué entidades y campos existen? | `entidades-core.md` (+ `entidades-plataforma.md`) | En curso |
 | ¿Qué operaciones expone el módulo? | `contracts.md` | Piloto CA; lecturas incompletas |
-| **¿Qué hay debajo de los módulos (identidad, roles, tenants, admin)?** | [`plataforma-core.md`](./plataforma-core.md) | **Marco definido; contrato P-48** |
+| **¿Qué hay debajo de los módulos (identidad, roles, tenants, admin)?** | [`plataforma-core.md`](../especificacion/plataforma-core.md) | **Marco definido; contrato P-48** |
 | ¿Cuál es el JSON exacto de request/response? | OpenAPI según `estandares-api.md` | Estándar definido; specs por crear |
 | ¿Cómo se ve la pantalla? | Wireframes + prototipos | Adquisiciones transversal avanzado; consolas admin P-52 |
 | ¿Cómo pruebo sin producción? | Sandbox | Marco en §5; detalle operativo P-16 |
@@ -284,7 +284,7 @@ flowchart LR
 
 ## 8. Catálogo de fixtures sandbox
 
-El formato y las reglas del catálogo están normados en [`estandares-api.md`](./estandares-api.md) §6. Los cuatro fixtures iniciales propuestos (IDs alineados con `sgm-prototipos/shared/expedientes-demo.js`):
+El formato y las reglas del catálogo están normados en [`estandares-api.md`](../especificacion/estandares-api.md) §6. Los cuatro fixtures iniciales propuestos (IDs alineados con `sgm-prototipos/shared/expedientes-demo.js`):
 
 | Fixture ID | Tenant demo | Estado de negocio | Uso principal |
 |---|---|---|---|
@@ -312,14 +312,14 @@ Lista consolidada para traducir a cláusulas de licitación. Detalle normativo e
 ### 9.1 Especificación y contrato
 
 - [ ] OpenAPI versionada por módulo **y por el core** en repositorio estatal, según `estandares-api.md`; código validado contra spec.
-- [ ] `contracts.md` por módulo con las cuatro secciones de [`contrato-api-first.md`](./contrato-api-first.md) §3; ídem para el core (**[P-48]**).
+- [ ] `contracts.md` por módulo con las cuatro secciones de [`contrato-api-first.md`](../especificacion/contrato-api-first.md) §3; ídem para el core (**[P-48]**).
 - [ ] Política de deprecación publicada (**[P-04]**).
 - [ ] Multitenancy explícita en contrato (**[P-03]**).
 - [ ] Operaciones de lectura que permitan integración sin UI (expediente, estado de flujo).
 
 ### 9.2 Implementación
 
-- [ ] Core de plataforma según [`plataforma-core.md`](./plataforma-core.md) §10: sin orquestador central de procesos; ciclo de tenants demostrable; parámetros con gobernanza diferenciada.
+- [ ] Core de plataforma según [`plataforma-core.md`](../especificacion/plataforma-core.md) §10: sin orquestador central de procesos; ciclo de tenants demostrable; parámetros con gobernanza diferenciada.
 - [ ] Consolas de administración (SUBDERE y municipal) como consumidores sin privilegios; toda acción administrativa es operación de API auditada.
 - [ ] Frontend base sin privilegios sobre la API pública.
 - [ ] Errores estructurados en toda respuesta `4xx`/`5xx` de negocio.
@@ -368,7 +368,7 @@ Orden sugerido de trabajo en el repositorio (sin implementar código aún):
 
 ## 11. Relación con consulta al mercado
 
-[`decisiones-macro-stack.md`](./decisiones-macro-stack.md) §9 establece que SUBDERE llega a la consulta al mercado con **borrador de estándares**, no con página en blanco. Este documento — junto con `plataforma-core.md`, el estándar OpenAPI + fixtures y la especificación de sandbox — forma parte del **borrador mínimo** que permite al mercado estimar viabilidad y costo de integración (**[P-19]**).
+[`decisiones-macro-stack.md`](../decisiones/decisiones-macro-stack.md) §9 establece que SUBDERE llega a la consulta al mercado con **borrador de estándares**, no con página en blanco. Este documento — junto con `plataforma-core.md`, el estándar OpenAPI + fixtures y la especificación de sandbox — forma parte del **borrador mínimo** que permite al mercado estimar viabilidad y costo de integración (**[P-19]**).
 
 La mesa técnica de estándares (API, contratos, sandbox, convenio de acceso) es el foro para iterar este modelo antes y después de la licitación del motor.
 
@@ -386,10 +386,10 @@ La mesa técnica de estándares (API, contratos, sandbox, convenio de acceso) es
 | D-06 | El catálogo de fixtures es un activo versionado en repo, no documentación informal del proveedor. |
 | D-07 | Este documento es insumo para cerrar **[P-16]** y fortalecer **[P-19]**; los cambios en `contracts.md` y OpenAPI son el siguiente paso acordado. |
 | D-08 *(v2)* | El nivel de detalle de la especificación se decide por **reversibilidad** (§3): lo estructural se especifica completo; el *cómo* se recibe contra propiedades; lo aditivo tolera corrección post-recepción con mecanismo especificado. |
-| D-09 *(v2)* | El core de plataforma es parte del entregable licitado, con contrato y OpenAPI propios y el mismo estándar de recepción que un módulo ([`plataforma-core.md`](./plataforma-core.md)). |
+| D-09 *(v2)* | El core de plataforma es parte del entregable licitado, con contrato y OpenAPI propios y el mismo estándar de recepción que un módulo ([`plataforma-core.md`](../especificacion/plataforma-core.md)). |
 | D-10 *(v2)* | No existe orquestador central de procesos de negocio; la coordinación entre módulos es por contratos y eventos. |
-| D-11 *(v2)* | El formato de OpenAPI y fixtures queda normado en [`estandares-api.md`](./estandares-api.md); las brechas 2 y 4 de la v1 pasan de «sin estándar» a «estándar definido, artefactos por crear». |
-| D-12 *(v2)* | Integraciones transversales (MP, FirmaGob, SII) y gestión documental (C10) son responsabilidad del core; módulos solo `DocumentRef` y dependencias declaradas ([`plataforma-core.md`](./plataforma-core.md) §7–§7bis). |
+| D-11 *(v2)* | El formato de OpenAPI y fixtures queda normado en [`estandares-api.md`](../especificacion/estandares-api.md); las brechas 2 y 4 de la v1 pasan de «sin estándar» a «estándar definido, artefactos por crear». |
+| D-12 *(v2)* | Integraciones transversales (MP, FirmaGob, SII) y gestión documental (C10) son responsabilidad del core; módulos solo `DocumentRef` y dependencias declaradas ([`plataforma-core.md`](../especificacion/plataforma-core.md) §7–§7bis). |
 | D-13 *(v2)* | Backends documentales `platform` y `tenant_owned` demostrables en recepción; interfaz `external_dms` definida y extensible sin cambiar contratos de módulo. |
 
 ---
@@ -414,15 +414,15 @@ La mesa técnica de estándares (API, contratos, sandbox, convenio de acceso) es
 
 **Referencias:**
 
-- [`decisiones-macro-stack.md`](./decisiones-macro-stack.md)
-- [`plataforma-core.md`](./plataforma-core.md)
-- [`estandares-api.md`](./estandares-api.md)
-- [`contrato-api-first.md`](./contrato-api-first.md)
-- [`estandares-api.md`](./estandares-api.md)
-- [`musts-arquitectura.md`](./musts-arquitectura.md)
+- [`decisiones-macro-stack.md`](../decisiones/decisiones-macro-stack.md)
+- [`plataforma-core.md`](../especificacion/plataforma-core.md)
+- [`estandares-api.md`](../especificacion/estandares-api.md)
+- [`contrato-api-first.md`](../especificacion/contrato-api-first.md)
+- [`estandares-api.md`](../especificacion/estandares-api.md)
+- [`musts-arquitectura.md`](../especificacion/musts-arquitectura.md)
 - [`principios-no-negociables.md`](./principios-no-negociables.md)
-- [`modulos/adquisiciones/contracts.md`](../modulos/adquisiciones/contracts.md)
-- [`sgm-prototipos/README.md`](../../sgm-prototipos/README.md)
+- [`modulos/adquisiciones/contracts.md`](../../modulos/adquisiciones/contracts.md)
+- [`sgm-prototipos/README.md`](../../../sgm-prototipos/README.md)
 
 ---
 
