@@ -34,6 +34,7 @@ Documentación transversal de arquitectura, organizada por propósito.
 - [`estandares-api.md`](./especificacion/estandares-api.md) — estándares API y OpenAPI / fixtures
 - [`contrato-api-first.md`](./especificacion/contrato-api-first.md) — metodología contract-first
 - [`catalogo-roles.md`](./especificacion/catalogo-roles.md) — catálogo RBAC transversal (P-24)
+- [`catalogo-documentos-firmables.md`](./especificacion/catalogo-documentos-firmables.md) — tipología de documentos firmables (anclas + roles)
 - [`integracion-mercado-publico.md`](./especificacion/integracion-mercado-publico.md) — integración SGM ↔ MP
 - [`estandar-firma-electronica.md`](./especificacion/estandar-firma-electronica.md) — firma electrónica
 - [`openapi/comunes.yaml`](./especificacion/openapi/comunes.yaml) — componentes OpenAPI transversales
@@ -43,6 +44,7 @@ Documentación transversal de arquitectura, organizada por propósito.
 - [`plantilla-maestra-sgm.md`](./instrucciones/plantilla-maestra-sgm.md) — norma de documentación de procesos
 - [`patron-vista-expediente.md`](./instrucciones/patron-vista-expediente.md) — patrón UI de expediente
 - [`patron-formularios-secciones.md`](./instrucciones/patron-formularios-secciones.md) — patrón UI de formularios
+- [`patron-edicion-anclas-firma.md`](./instrucciones/patron-edicion-anclas-firma.md) — patrón UI de anclas en plantillas firmables
 
 ## Nota
 

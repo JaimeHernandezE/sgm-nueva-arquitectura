@@ -264,6 +264,17 @@
       els.awaiting.addEventListener(evt, render);
     });
 
+    const modalityFromUrl = new URLSearchParams(window.location.search).get('modality');
+    const allowedModalities = [
+      'agile_purchase',
+      'framework_agreement',
+      'public_tender',
+      'direct_procurement',
+    ];
+    if (modalityFromUrl && allowedModalities.includes(modalityFromUrl)) {
+      els.modality.value = modalityFromUrl;
+    }
+
     render();
   </script>
 </body>

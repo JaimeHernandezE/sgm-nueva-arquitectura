@@ -40,6 +40,7 @@ export const modules = [
 export const adquisicionesNav = [
   { id: 'home', label: 'Inicio', path: 'modulos/adquisiciones/index.html' },
   { id: 'expedientes', label: 'Expedientes', path: 'modulos/adquisiciones/01-listado-expedientes.html' },
+  { id: 'config', label: 'Configuraciones', path: 'modulos/adquisiciones/configuraciones/index.html' },
 ];
 
 export const plataformaHubNav = [

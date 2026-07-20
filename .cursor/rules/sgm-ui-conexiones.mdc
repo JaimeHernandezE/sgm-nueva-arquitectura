@@ -14,6 +14,7 @@ Antes de cambiar un sub-paso, pantalla o fila del expediente:
 4. Verificar campos en `sgm-docs/modelo-datos/entidades-core.md`.
 5. Si cambia tinte/origen: reglas 2a/2b en `sgm-docs/arquitectura/instrucciones/patron-vista-expediente.md`.
 6. Si cambia layout de formulario: secciones tituladas según `sgm-docs/arquitectura/instrucciones/patron-formularios-secciones.md` (wireframe ASCII + HTML `.form-section`).
+7. Si cambia configuración de anclas de firma: `patron-edicion-anclas-firma.md` + catálogo de documentos firmables.
 
 ## Reglas
 
@@ -26,3 +27,4 @@ Antes de cambiar un sub-paso, pantalla o fila del expediente:
 - Specs `.md`/`.svg` permanecen en `sgm-docs/`; HTML solo en `sgm-prototipos/`.
 - Patrón transversal de filas/tintes del expediente: `arquitectura/instrucciones/patron-vista-expediente.md` (no vive en un módulo).
 - Patrón de secciones en formularios: `arquitectura/instrucciones/patron-formularios-secciones.md`.
+- Patrón de anclas en plantillas firmables: `arquitectura/instrucciones/patron-edicion-anclas-firma.md`.

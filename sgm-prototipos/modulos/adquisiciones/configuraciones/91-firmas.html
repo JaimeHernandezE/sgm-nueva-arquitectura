@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Firmas — Configuraciones Adquisiciones</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header"><span>Documentos firmables del módulo</span></div>
+          <div class="form-card__body">
+            <section class="form-section">
+              <h3 class="form-section__title">Plantillas</h3>
+              <p class="form-section__hint">
+                Anclas por rol; la persona se resuelve al firmar según departamento
+                (RoleAssignment). Editor de muestra disponible para CDP.
+              </p>
+              <table class="form-table" id="docs-table">
+                <thead>
+                  <tr>
+                    <th>Documento</th>
+                    <th>Etapa</th>
+                    <th>Rol firmante</th>
+                    <th>Modo</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </section>
+          </div>
+          <div class="form-actions">
+            <a class="btn btn--secondary" id="volver-config" href="index.html">Volver a configuraciones</a>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, siteUrl, renderAdqBreadcrumb } from '../../../shared/app-shell.js';
+
+    const docs = [
+      { code: 'adq.solped_vb', name: 'V°B° / aprobación SOLPED', stage: '1.2', role: 'adq.aprobador_unidad', mode: 'Desatendida', sample: false },
+      { code: 'adq.cdp', name: 'CDP', stage: '1.5', role: 'adq.firmante_cdp', mode: 'Desatendida', sample: true },
+      { code: 'adq.modalidad_aprobacion', name: 'Aprobación de modalidad', stage: '2.2', role: 'adq.aprobador_modalidad', mode: 'Desatendida', sample: false },
+      { code: 'adq.acto_bases', name: 'Decreto/resolución aprueba bases', stage: 'LP 3.3', role: 'adq.aprobador_modalidad', mode: 'Desatendida', sample: false },
+      { code: 'adq.acto_comision', name: 'Acto designación comisión', stage: 'LP 3.9', role: 'adq.aprobador_modalidad', mode: 'Desatendida', sample: false },
+      { code: 'adq.acta_evaluacion', name: 'Acta de evaluación', stage: 'LP 3.9', role: 'Comisión (v1)', mode: 'Atendida', sample: false },
+      { code: 'adq.acto_adjudicacion', name: 'Resolución adjudicación / deserción', stage: 'LP 3.10', role: 'adq.aprobador_modalidad', mode: 'Desatendida', sample: false },
+      { code: 'adq.contrato', name: 'Contrato', stage: 'LP 3.13', role: 'adq.aprobador_modalidad', mode: 'Atendida', sample: false },
+      { code: 'adq.recepcion_confirmacion', name: 'Confirmación recepción conforme', stage: '4.2', role: 'adq.confirmante_recepcion', mode: 'Desatendida', sample: false },
+      { code: 'adq.decreto_pago', name: 'Decreto de pago', stage: '5.3', role: 'adq.operador_pago', mode: 'Desatendida', sample: false },
+    ];
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'config' });
+    document.getElementById('breadcrumb').innerHTML = renderAdqBreadcrumb({
+      items: [
+        { label: 'Adquisiciones', href: 'modulos/adquisiciones/index.html' },
+        { label: 'Configuraciones', href: 'modulos/adquisiciones/configuraciones/index.html' },
+        { label: 'Firmas' },
+      ],
+    });
+    document.getElementById('volver-config').href = siteUrl(
+      'modulos/adquisiciones/configuraciones/index.html',
+    );
+
+    const editorUrl = siteUrl('modulos/adquisiciones/configuraciones/92-editor-anclas.html');
+    const tbody = document.querySelector('#docs-table tbody');
+    tbody.innerHTML = docs
+      .map((d) => {
+        const action = d.sample
+          ? `<a href="${editorUrl}?doc=${d.code}">Editar anclas</a>`
+          : `<span class="subtitle">Plantilla demo: CDP</span>`;
+        return `<tr>
+          <td><strong>${d.name}</strong><br><span class="subtitle">${d.code}</span></td>
+          <td>${d.stage}</td>
+          <td><code>${d.role}</code></td>
+          <td>${d.mode}</td>
+          <td>${action}</td>
+        </tr>`;
+      })
+      .join('');
+  </script>
+</body>
+</html>

@@ -41,10 +41,14 @@ Mecanismos existentes en la industria, del más rígido al más flexible:
 | Mecanismo | Descripción | Riesgo |
 |---|---|---|
 | **Coordenadas absolutas** | Página + coordenadas (x, y) fijas por firmante | Se desfasa cuando el contenido varía de largo (una glosa más extensa corre todo el documento) |
-| **Ancla de texto** | Marcador en el documento (ej. `{{firma:jefe_daf}}`); la posición se calcula relativa al ancla | Robusto ante contenido variable; requiere disciplina en las plantillas |
-| **Campo de firma embebido** (AcroForm) | El PDF trae campos de firma nombrados; el motor solo los llena | El más limpio cuando el propio sistema genera el PDF |
+| **Ancla de texto** | Marcador en el documento (ej. `{{firma:adq.firmante_cdp}}`); la posición se calcula relativa al ancla | Robusto ante contenido variable; requiere disciplina en las plantillas |
+| **Campo de firma embebido** (AcroForm) | El PDF trae campos de firma nombrados; el motor solo los llena | Equivalente semántico a ancla cuando SGM genera el PDF |
 
-**Regla SGM (propuesta):** las plantillas posicionan las firmas mediante **anclas o campos de firma nombrados, nunca coordenadas absolutas**. Dado que los documentos de SGM se generan con contenido variable (glosas, tablas de ítems), las coordenadas fijas garantizan el desfase que este estándar busca eliminar. Si el proveedor de firma exige coordenadas (caso FirmaGob, que recibe un *layout* con posición explícita), SGM **calcula** esas coordenadas a partir del ancla al momento de generar el documento — la coordenada es un dato derivado, nunca configurado a mano.
+**Regla SGM:** las plantillas posicionan las firmas mediante **ancla de texto** (`{{firma:<role_code>}}`). Está **prohibido** configurar coordenadas absolutas a mano. Si el proveedor de firma exige coordenadas (caso FirmaGob, que recibe un *layout* con posición explícita), SGM **calcula** esas coordenadas a partir del ancla al momento de generar el documento — la coordenada es un dato derivado, nunca un parámetro de configuración.
+
+Cuando SGM genera el PDF con campos AcroForm nombrados, el nombre del campo es la ancla semántica (mismo `anchor` del punto de firma); no es un mecanismo distinto.
+
+Convención del token: `{{firma:<role_code>}}` donde `<role_code>` es el código del catálogo RBAC (ej. `adq.firmante_cdp`). El catálogo de documentos firmables declara el `anchor` canónico por punto de firma — ver [`catalogo-documentos-firmables.md`](./catalogo-documentos-firmables.md).
 
 ---
 
@@ -52,27 +56,37 @@ Mecanismos existentes en la industria, del más rígido al más flexible:
 
 Toda plantilla de documento firmable declara sus **puntos de firma**. Cada punto de firma define:
 
-- `role` (obligatorio): rol funcional que firma, según el catálogo RBAC (`seguridad.md` §3; catálogo en **[PENDIENTE P-24]**). Nunca una persona.
-- `anchor` (obligatorio): ancla o nombre de campo que determina la posición de la representación gráfica.
+- `role` (obligatorio): rol funcional que firma, según el catálogo RBAC ([`catalogo-roles.md`](./catalogo-roles.md); marco en `seguridad.md` §3). Nunca una persona.
+- `anchor` (obligatorio): token de ancla de texto (`{{firma:<role_code>}}`) o nombre de campo AcroForm equivalente. Debe coincidir con el declarado en el [catálogo de documentos firmables](./catalogo-documentos-firmables.md).
 - `order` (obligatorio si hay más de un firmante): orden de firma cuando el circuito es secuencial; los circuitos paralelos se declaran explícitamente.
 - `mode` (obligatorio): desatendida / atendida.
 - `optional` (obligatorio): si el punto puede quedar sin firmar sin invalidar el documento (default: falso).
 
-**Resolución de identidad al momento de firmar:** cuando el documento se genera, el rol se resuelve a la persona titular vigente (o subrogante, según las subrogancias configurables con expiración automática de `seguridad.md`). Nombre, RUT y cargo se toman de la fuente de identidad en ese momento. Un cambio de cargo o corrección de nombre se hace en el módulo de identidad y se refleja automáticamente en la siguiente generación — nunca editando el documento.
+**Resolución de identidad al momento de firmar:** el `role` se resuelve a la persona titular vigente (o subrogante) mediante el `RoleAssignment` en el **nodo orgánico (departamento/unidad)** del expediente o del departamento dueño del acto. Nombre, RUT y cargo se toman de la fuente de identidad en ese momento. Un cambio de cargo o corrección de nombre se hace en el módulo de identidad y se refleja automáticamente en la siguiente generación — nunca editando el documento.
+
+### Configuración de plantillas (quién coloca las anclas)
+
+La colocación y edición de anclas ocurre en la **vista de configuración de plantillas** del módulo (no en el acto de firma). Patrón UI: [`patron-edicion-anclas-firma.md`](../instrucciones/patron-edicion-anclas-firma.md).
+
+| Actor | Qué hace | Qué no hace |
+|---|---|---|
+| Administrador municipal / operador de plantillas del módulo (`configureDocumentTemplate`, alcance por `process_area` / departamento dueño) | Define o mueve anclas en la plantilla versionada; asocia cada ancla a un `role` del catálogo | No firma documentos de expediente |
+| Firmante (rol funcional del punto) | Firma, rechaza o devuelve (§2) | No edita plantillas ni mueve anclas al firmar |
+| Editor (solo modo atendido, preparación caso a caso) | Selecciona anclas predefinidas de la plantilla o marca comparecientes | No inventa coordenadas libres |
 
 ### Entidades (sugeridas, no confirmadas en fuente)
 
-- `DocumentTemplate` — plantilla versionada con sus puntos de firma.
+- `DocumentTemplate` — plantilla versionada con sus puntos de firma; tipificada por `code` del [catálogo de documentos firmables](./catalogo-documentos-firmables.md).
 - `SignaturePoint` — punto de firma: `role` (obligatorio), `anchor` (obligatorio), `order` (obligatorio si multi-firmante), `mode` (obligatorio), `optional` (obligatorio).
 - `SignatureRequest` — solicitud de firma en curso: documento, firmante resuelto, estado (`pending` / `signed` / `rejected` / `returned`), timestamps.
 
-Estas entidades deben incorporarse a `modelo-datos/entidades-core.md` antes de ser referenciadas por fichas de sub-paso (regla 1 del modelo de datos).
+Estas entidades deben incorporarse a `modelo-datos/entidades-plataforma.md` (o `entidades-core.md` según corresponda) antes de ser referenciadas por fichas de sub-paso (regla 1 del modelo de datos).
 
 ---
 
 ## 5. Flujo de firma atendida: preparación y comparecientes
 
-1. **Preparación:** el editor arma el documento y marca los puntos de firma — quiénes comparecen (por rol o, excepcionalmente, por persona si el compareciente es externo al municipio) y dónde firma cada uno (seleccionando anclas predefinidas o marcando posición sobre el documento). Sin puntos de firma marcados, el documento no puede entrar al circuito.
+1. **Preparación:** el editor arma el documento y marca los puntos de firma — quiénes comparecen (por rol o, excepcionalmente, por persona si el compareciente es externo al municipio) y dónde firma cada uno (**seleccionando anclas predefinidas** de la plantilla). Sin puntos de firma marcados, el documento no puede entrar al circuito. No se marcan coordenadas libres sobre la página.
 2. **Circuito:** cada firmante recibe la solicitud según el `order` definido. Comparece, se autentica ante el proveedor de firma y firma.
 3. **Detección de error por un firmante:** si el firmante detecta cualquier error (contenido, glosa, posición de firma, compareciente faltante), **devuelve con observaciones** al editor. No corrige él mismo: cualquier modificación invalidaría las firmas ya estampadas por comparecientes anteriores (§1, consecuencia 2).
 4. **Repreparación:** el editor corrige y el circuito **reinicia desde cero** — los firmantes que ya habían firmado deben volver a firmar sobre el documento corregido. Esto no es una molestia evitable: es una consecuencia criptográfica, y las bases deben decirlo explícitamente para que ningún oferente prometa lo contrario.
@@ -120,11 +134,12 @@ Reglas de diseño:
 ## 8. Resumen de pendientes
 
 1. Normativa técnica vigente de firma electrónica avanzada del Estado (verificar decretos actualizados).
-2. Catálogo RBAC de roles firmantes (**[PENDIENTE P-24]**).
+2. Catálogo RBAC de roles firmantes (**[PENDIENTE P-24]** — borrador en [`catalogo-roles.md`](./catalogo-roles.md)).
 3. Comparecientes externos sin cuenta SGM: mecanismo de autenticación (candidato a regla transversal).
 4. Capacidades exactas de la API FirmaGob (mesa técnica con Gobierno Digital).
 5. Umbral de escalamiento ante indisponibilidad de FirmaGob.
 6. Regla reasignar vs. regenerar ante cambio de titular con firma pendiente (candidato a regla transversal).
+7. Incorporar `DocumentTemplate` / `SignaturePoint` al modelo de datos y operación `configureDocumentTemplate` a contratos de plataforma/módulo.
 
 ---
 

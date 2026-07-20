@@ -19,13 +19,33 @@
             Ciclo de compras públicas municipales: desde la solicitud interna (SOLPED)
             hasta el pago al proveedor, en cuatro modalidades según la Ley 19.886.
           </p>
-          <p><strong>Modalidades:</strong></p>
-          <ul>
-            <li>Compra Ágil</li>
-            <li>Convenio Marco</li>
-            <li>Licitación Pública</li>
-            <li>Trato Directo</li>
-          </ul>
+          <ol class="stage-flow" aria-label="Cinco etapas del ciclo de compra">
+            <li class="stage-flow__step">
+              <span class="stage-flow__num">1</span>
+              <span class="stage-flow__label">SOLPED</span>
+              <span class="stage-flow__hint">Transversal</span>
+            </li>
+            <li class="stage-flow__step">
+              <span class="stage-flow__num">2</span>
+              <span class="stage-flow__label">Modalidad</span>
+              <span class="stage-flow__hint">Por modalidad</span>
+            </li>
+            <li class="stage-flow__step">
+              <span class="stage-flow__num">3</span>
+              <span class="stage-flow__label">Resolución</span>
+              <span class="stage-flow__hint">Por modalidad</span>
+            </li>
+            <li class="stage-flow__step">
+              <span class="stage-flow__num">4</span>
+              <span class="stage-flow__label">Recepción</span>
+              <span class="stage-flow__hint">Transversal</span>
+            </li>
+            <li class="stage-flow__step">
+              <span class="stage-flow__num">5</span>
+              <span class="stage-flow__label">Pago</span>
+              <span class="stage-flow__hint">Transversal</span>
+            </li>
+          </ol>
           <p>
             Las etapas transversales (SOLPED, Recepción Conforme y Pago) son compartidas;
             las etapas 2 y 3 varían según la modalidad.
@@ -34,6 +54,74 @@
             <a class="btn btn--primary" id="ver-expedientes" href="01-listado-expedientes.html">Ver expedientes</a>
           </p>
         </div>
+
+        <h2 class="hub-section-title">Modalidades</h2>
+        <div class="modality-grid">
+          <article class="modality-card">
+            <div class="modality-card__header">
+              <h3>Compra Ágil</h3>
+              <span class="badge">Piloto</span>
+            </div>
+            <p>
+              Cotización en Mercado Público y emisión de orden de compra.
+              Etapa 3: periodo de cotización → selección → OC → aceptación.
+            </p>
+            <p class="modality-card__actions">
+              <a class="btn btn--secondary" data-modality="agile_purchase" href="01-listado-expedientes.html">Ver expedientes</a>
+            </p>
+          </article>
+          <article class="modality-card">
+            <div class="modality-card__header">
+              <h3>Convenio Marco</h3>
+              <span class="badge">En progreso</span>
+            </div>
+            <p>
+              Compra sobre catálogo ChileCompra. Etapa 3: intención de compra /
+              gran compra según umbral UTM → OC en MP.
+            </p>
+            <p class="modality-card__actions">
+              <a class="btn btn--secondary" data-modality="framework_agreement" href="01-listado-expedientes.html">Ver expedientes</a>
+            </p>
+          </article>
+          <article class="modality-card">
+            <div class="modality-card__header">
+              <h3>Licitación Pública</h3>
+              <span class="badge">En progreso</span>
+            </div>
+            <p>
+              Bases, comisión evaluadora, adjudicación y eventual contrato.
+              Concentra la mayoría de actos administrativos firmables del módulo.
+            </p>
+            <p class="modality-card__actions">
+              <a class="btn btn--secondary" data-modality="public_tender" href="01-listado-expedientes.html">Ver expedientes</a>
+            </p>
+          </article>
+          <article class="modality-card">
+            <div class="modality-card__header">
+              <h3>Trato Directo</h3>
+              <span class="badge">En progreso</span>
+            </div>
+            <p>
+              Compra directa fundada. Requiere Resolución Fundada (adjunto en v1);
+              etapa 3 específica de la modalidad.
+            </p>
+            <p class="modality-card__actions">
+              <a class="btn btn--secondary" data-modality="direct_procurement" href="01-listado-expedientes.html">Ver expedientes</a>
+            </p>
+          </article>
+        </div>
+
+        <section class="config-teaser">
+          <h2 class="hub-section-title">Configuraciones</h2>
+          <p>
+            Plantillas de documentos firmables y anclas de firma por rol funcional
+            (resueltas por departamento al momento de firmar).
+          </p>
+          <p>
+            <a class="btn btn--secondary" id="abrir-config" href="configuraciones/index.html">Abrir configuraciones</a>
+          </p>
+        </section>
+
         <p class="subtitle">Prototipo interactivo para validación UX — no es diseño visual de licitación.</p>
       </div>
     </main>
@@ -42,11 +130,17 @@
   <script type="module">
     import { initAppShell, siteUrl } from '../../shared/app-shell.js';
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'home' });
-    // Absolute: with cleanUrls the URL is /modulos/adquisiciones (no trailing slash),
-    // so a relative href would resolve to /modulos/01-listado-expedientes (404).
     document.getElementById('ver-expedientes').href = siteUrl(
       'modulos/adquisiciones/01-listado-expedientes.html',
     );
+    document.getElementById('abrir-config').href = siteUrl(
+      'modulos/adquisiciones/configuraciones/index.html',
+    );
+    document.querySelectorAll('[data-modality]').forEach((link) => {
+      link.href = siteUrl(
+        `modulos/adquisiciones/01-listado-expedientes.html?modality=${link.dataset.modality}`,
+      );
+    });
   </script>
 </body>
 </html>

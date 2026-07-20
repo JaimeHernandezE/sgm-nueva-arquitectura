@@ -6,8 +6,11 @@ Patrón transversal de la vista de expediente (filas, tintes, botones): [`../../
 
 Patrón de secciones y subtítulos en formularios: [`../../../arquitectura/instrucciones/patron-formularios-secciones.md`](../../../arquitectura/instrucciones/patron-formularios-secciones.md) — el layout ASCII debe mostrar títulos de sección alineados con el prototipo HTML.
 
+Patrón de anclas en plantillas firmables: [`../../../arquitectura/instrucciones/patron-edicion-anclas-firma.md`](../../../arquitectura/instrucciones/patron-edicion-anclas-firma.md).
+
 | Archivo | Sub-paso | Operación principal |
 |---|---|---|
+| [00-hub-modulo.md](./00-hub-modulo.md) | Hub módulo | — (navegación) |
 | [01-listado-expedientes.md](./01-listado-expedientes.md) | 0.1 | `listProcurementCases` |
 | [10-verificacion-previa.md](./10-verificacion-previa.md) | 1.0 *(optativo)* | `checkStockAvailability`, `checkCatalogAvailability` |
 | [11-creacion-solped.md](./11-creacion-solped.md) | 1.1 | `createPurchaseRequest` |
@@ -27,5 +30,9 @@ Patrón de secciones y subtítulos en formularios: [`../../../arquitectura/instr
 | [36-proceso-desierto-fallido.md](./36-proceso-desierto-fallido.md) | 3.6 *(CA, optativo)* | `releasePreCommitment` |
 | [41-recepcion-conforme.md](./41-recepcion-conforme.md) | 4.1 | `confirmGoodsReceipt` |
 | [51-cruce-tres-vias.md](./51-cruce-tres-vias.md) | 5.1 | `performThreeWayMatch` |
+| [90-configuraciones.md](./90-configuraciones.md) | Config | — (navegación) |
+| [91-config-firmas-lista.md](./91-config-firmas-lista.md) | Config › Firmas | — (lista catálogo) |
+| [92-config-firmas-editor-anclas.md](./92-config-firmas-editor-anclas.md) | Config › Firmas › CDP | `configureDocumentTemplate` |
 
 Contrato: [`../contracts.md`](../contracts.md)
+Catálogo documentos firmables: [`../catalogo-documentos-firmables.md`](../catalogo-documentos-firmables.md)

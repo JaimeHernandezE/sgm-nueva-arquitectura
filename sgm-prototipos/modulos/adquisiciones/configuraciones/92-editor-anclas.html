@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Editor de anclas — CDP</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header">
+            <span>Plantilla CDP — anclas de firma</span>
+            <span class="badge">adq.cdp</span>
+          </div>
+          <div class="form-card__body">
+            <div class="anchor-editor">
+              <div
+                class="anchor-editor__preview"
+                id="doc-preview"
+                contenteditable="true"
+                spellcheck="false"
+                aria-label="Vista previa de la plantilla"
+              >
+                <h4>CERTIFICADO DE DISPONIBILIDAD PRESUPUESTARIA</h4>
+                <p class="doc-preview__meta">Folio: CDP-2026-00891 · Expediente: ADQ-2026-00081</p>
+                <div class="doc-preview__body">
+                  <p>
+                    Se certifica que existe disponibilidad presupuestaria suficiente para
+                    la solicitud de compra referenciada, por el monto indicado, con cargo
+                    a la línea presupuestaria asignada.
+                  </p>
+                  <p><strong>Monto certificado:</strong> $ 1.250.000</p>
+                  <p><strong>Ítem presupuestario:</strong> 22.04.001 — Bienes y servicios</p>
+                  <p>
+                    Emitido para efectos del proceso de adquisición municipal conforme a la
+                    normativa vigente.
+                  </p>
+                  <p id="anchor-slot">
+                    <span class="signature-anchor is-selected" data-role="adq.firmante_cdp">{{firma:adq.firmante_cdp}}</span>
+                  </p>
+                </div>
+              </div>
+              <aside class="anchor-editor__panel">
+                <section class="form-section">
+                  <h3 class="form-section__title">Puntos de firma</h3>
+                  <ul class="anchor-points-list" id="points-list"></ul>
+                </section>
+                <section class="form-section">
+                  <h3 class="form-section__title">Insertar ancla</h3>
+                  <p class="form-section__hint">Token canónico: {{firma:&lt;role_code&gt;}}</p>
+                  <div class="form-row">
+                    <label for="role-select">Rol <span class="required">*</span></label>
+                    <select id="role-select">
+                      <option value="adq.firmante_cdp" selected>Firmante CDP (adq.firmante_cdp)</option>
+                    </select>
+                  </div>
+                  <button class="btn btn--secondary" type="button" id="btn-insert">Insertar en cursor</button>
+                </section>
+              </aside>
+            </div>
+          </div>
+          <div class="form-actions">
+            <a class="btn btn--secondary" id="volver-lista" href="91-firmas.html">Volver</a>
+            <button class="btn btn--primary" type="button" id="btn-save">Guardar plantilla</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, siteUrl, renderAdqBreadcrumb } from '../../../shared/app-shell.js';
+    import { demoAction } from '../../../shared/form-shell.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'config' });
+    document.getElementById('breadcrumb').innerHTML = renderAdqBreadcrumb({
+      items: [
+        { label: 'Adquisiciones', href: 'modulos/adquisiciones/index.html' },
+        { label: 'Configuraciones', href: 'modulos/adquisiciones/configuraciones/index.html' },
+        { label: 'Firmas', href: 'modulos/adquisiciones/configuraciones/91-firmas.html' },
+        { label: 'CDP' },
+      ],
+    });
+    document.getElementById('volver-lista').href = siteUrl(
+      'modulos/adquisiciones/configuraciones/91-firmas.html',
+    );
+
+    const pointsList = document.getElementById('points-list');
+    const preview = document.getElementById('doc-preview');
+
+    function syncPointsPanel() {
+      const anchors = [...preview.querySelectorAll('.signature-anchor')];
+      if (!anchors.length) {
+        pointsList.innerHTML = '<li class="subtitle">Sin anclas en la plantilla.</li>';
+        return;
+      }
+      pointsList.innerHTML = anchors
+        .map((el, i) => {
+          const role = el.dataset.role || '—';
+          return `<li>
+            <strong>${i + 1}. ${role}</strong><br>
+            <span class="anchor-token">${el.textContent}</span><br>
+            orden: ${i + 1} · obligatorio
+          </li>`;
+        })
+        .join('');
+    }
+
+    function insertAnchorAtCursor(role) {
+      const token = `{{firma:${role}}}`;
+      const sel = window.getSelection();
+      const span = document.createElement('span');
+      span.className = 'signature-anchor is-selected';
+      span.dataset.role = role;
+      span.textContent = token;
+
+      preview.querySelectorAll('.signature-anchor').forEach((a) => a.classList.remove('is-selected'));
+
+      if (sel && sel.rangeCount && preview.contains(sel.anchorNode)) {
+        const range = sel.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(span);
+        range.setStartAfter(span);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } else {
+        const slot = document.getElementById('anchor-slot') || preview;
+        slot.appendChild(document.createTextNode(' '));
+        slot.appendChild(span);
+      }
+      syncPointsPanel();
+    }
+
+    preview.addEventListener('click', (e) => {
+      const anchor = e.target.closest('.signature-anchor');
+      preview.querySelectorAll('.signature-anchor').forEach((a) => a.classList.remove('is-selected'));
+      if (anchor) anchor.classList.add('is-selected');
+    });
+
+    document.getElementById('btn-insert').addEventListener('click', () => {
+      const role = document.getElementById('role-select').value;
+      insertAnchorAtCursor(role);
+    });
+
+    document.getElementById('btn-save').addEventListener('click', () => {
+      demoAction('configureDocumentTemplate (adq.cdp)');
+    });
+
+    syncPointsPanel();
+  </script>
+</body>
+</html>

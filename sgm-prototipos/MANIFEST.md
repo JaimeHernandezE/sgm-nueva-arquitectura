@@ -20,15 +20,16 @@ entidades-core.md            →  campos de formulario
 ## Navegación del prototipo
 
 ```
-index.html → modulos/adquisiciones/index.html (bienvenida)
+index.html → modulos/adquisiciones/index.html (hub: modalidades + configuraciones)
            → 01-listado-expedientes.html
            → 00-expediente/index.html?expediente=<id>
+           → configuraciones/ (firmas / editor anclas)
 
 Sidebar «Plataforma» → plataforma/index.html (hub consolas)
                      → subdere/* | municipal/*
 ```
 
-- Sidebar derecho: módulos SGM (`shared/app-shell.js`, `shared/modules-registry.js`) — incluye **Plataforma** (core) y Adquisiciones.
+- Sidebar derecho: módulos SGM (`shared/app-shell.js`, `shared/modules-registry.js`) — incluye **Plataforma** (core) y Adquisiciones (nav: Inicio, Expedientes, **Configuraciones**).
 - Perfiles de expediente: [`shared/expedientes-demo.js`](./shared/expedientes-demo.js) — **5** expedientes con detalle completo (4 modalidades + caso sin saldo `ADQ-2026-00142`). La etapa 3 es específica por modalidad.
 - Datos demo por expediente: [`shared/demo-data/`](./shared/demo-data/) (`getStages(expedienteId)`).
 - Datos demo core: [`shared/demo-data/plataforma.js`](./shared/demo-data/plataforma.js).
@@ -158,6 +159,19 @@ No usa expediente ni `?expediente=`. Breadcrumb: Plataforma › Consola › Pant
 | Integraciones municipio | `06-integraciones-municipio.md` | `06-integraciones-municipio.html` | `upsertTenantIntegration`, `rotateIntegrationCredential` |
 | Almacenamiento | `07-almacenamiento-documentos.md` | `07-almacenamiento-documentos.html` | `upsertTenantStorage`, `getTenantStorage` |
 | Recertificación | `08-recertificacion-accesos.md` | `08-recertificacion-accesos.html` | `listAccessRecertificationReport` |
+
+## Configuraciones de módulo (Adquisiciones)
+
+Pantallas fuera del flujo de expediente (no viven en `steps-manifest`). Nav: `adquisicionesNav` → Configuraciones.
+
+| Pantalla | Wireframe | Prototipo | Operación |
+|---|---|---|---|
+| Hub módulo | `wireframes/00-hub-modulo.md` | `modulos/adquisiciones/index.html` | — |
+| Configuraciones | `90-configuraciones.md` | `configuraciones/index.html` | — |
+| Firmas (lista) | `91-config-firmas-lista.md` | `configuraciones/91-firmas.html` | — |
+| Editor anclas CDP | `92-config-firmas-editor-anclas.md` | `configuraciones/92-editor-anclas.html` | `configureDocumentTemplate` |
+
+Catálogo: [`sgm-docs/modulos/adquisiciones/catalogo-documentos-firmables.md`](../sgm-docs/modulos/adquisiciones/catalogo-documentos-firmables.md) · patrón: [`patron-edicion-anclas-firma.md`](../sgm-docs/arquitectura/instrucciones/patron-edicion-anclas-firma.md).
 
 ## Reglas de tinte (resumen)
 
