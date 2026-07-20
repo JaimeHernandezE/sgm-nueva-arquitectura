@@ -12,8 +12,9 @@ export const expedientesDemo = [
     unitId: 'ou-solicitante',
     status: 'in_progress',
     awaitingMyAction: false,
-    globalStatus: 'Demo · 5 etapas · Resolución de Compra completa',
+    globalStatus: 'En curso · recepción conforme (4.1)',
     fullDetail: true,
+    currentStep: { id: '4.1', name: 'Registro de la recepción' },
   },
   {
     id: 'ADQ-2026-00089',
@@ -26,8 +27,9 @@ export const expedientesDemo = [
     unitId: 'ou-abas',
     status: 'in_progress',
     awaitingMyAction: true,
-    globalStatus: 'Demo · Gran Compra · Resolución de Compra completa',
+    globalStatus: 'Gran Compra · pendiente selección en MP (3.5)',
     fullDetail: true,
+    currentStep: { id: '3.5', name: 'Selección de oferta Gran Compra' },
   },
   {
     id: 'ADQ-2026-00045',
@@ -38,10 +40,11 @@ export const expedientesDemo = [
     departmentId: 'ou-obras',
     unit: 'Dirección de Obras',
     unitId: 'ou-obras',
-    status: 'completed',
-    awaitingMyAction: false,
-    globalStatus: 'Finalizado (demo transversal)',
+    status: 'in_progress',
+    awaitingMyAction: true,
+    globalStatus: 'En evaluación · comisión (3.9)',
     fullDetail: true,
+    currentStep: { id: '3.9', name: 'Comisión evaluadora y acta de evaluación' },
   },
   {
     id: 'ADQ-2026-00012',
@@ -54,8 +57,9 @@ export const expedientesDemo = [
     unitId: 'ou-abas',
     status: 'in_progress',
     awaitingMyAction: false,
-    globalStatus: 'Demo · Resolución de Compra completa',
+    globalStatus: 'OC aceptada · recepción (4.1)',
     fullDetail: true,
+    currentStep: { id: '4.1', name: 'Registro de la recepción' },
   },
   {
     id: 'ADQ-2026-00142',
@@ -70,6 +74,7 @@ export const expedientesDemo = [
     awaitingMyAction: true,
     globalStatus: 'Sin saldo · pendiente financiamiento (1.4)',
     fullDetail: true,
+    currentStep: { id: '1.4', name: 'Solicitar financiamiento a DAF' },
   },
   // --- Stubs solo listado (sin timeline / sin detalle) ---
   {
