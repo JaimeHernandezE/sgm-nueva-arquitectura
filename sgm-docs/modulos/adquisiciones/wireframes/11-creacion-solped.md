@@ -10,6 +10,7 @@
 +----------------------------------------------------------+
 | SOLPED — Nueva solicitud                          [Borrador]|
 +----------------------------------------------------------+
+| Datos de la solicitud                                     |
 | Unidad solicitante *  [ Unidad X          v ]             |
 | Descripción *         [________________________]          |
 | Justificación *       [________________________]          |
@@ -17,7 +18,6 @@
 | Modalidad de compra (opcional) [ (sin indicar)        v ]          |
 |                       Compra Ágil / Convenio Marco /      |
 |                       Licitación Pública / Trato Directo  |
-+----------------------------------------------------------+
 | Resolución Fundada *  [ Subir → storeDocument (core) ]     |
 | (visible y obligatorio solo si Modalidad = Trato Directo)|
 +----------------------------------------------------------+
@@ -29,8 +29,18 @@
 | +--------+----------+----+-------+--------+-------------+ |
 | [+ Agregar línea]                                         |
 +----------------------------------------------------------+
-| Documentos adjuntos (opcional) [ Subir → storeDocument ]    |
+| Documentos de respaldo (opcional)                         |
+| Tipos: cotizaciones, fotos referenciales del producto,    |
+|        fichas técnicas u otros antecedentes               |
+| +----------+---------------------+---------------------+  |
+| | Tipo *   | Descripción *       | Archivo *           |  |
+| | Cotiz. v | Cotización ACME …   | [Subir→storeDocument]| |
+| +----------+---------------------+---------------------+  |
+| [+ Agregar adjunto]                                       |
++----------------------------------------------------------+
+| Pista presupuestaria (opcional)                           |
 | Línea presupuestaria       [ (opcional) Cuenta/Programa v ]|
+| Año fiscal propuesto (opcional) [ 2026 ]                  |
 | [ Consultar saldo en línea presupuestaria ]  (enlace → panel)|
 +----------------------------------------------------------+
 | [ Guardar borrador ]              [ Enviar a aprobación ] |
@@ -54,7 +64,10 @@
 | Cantidad línea | `PurchaseRequestLine.quantity` | Sí |
 | Precio unitario | `PurchaseRequestLine.unit_price` | Sí |
 | Referencia precio | `PriceReference` (vía `getPriceReference`) | Sí |
-| Documentos adjuntos (opcional) | — | No |
+| Documentos de respaldo (lista) | `PurchaseRequestAttachment` | No (0..N) |
+| Tipo de adjunto | `PurchaseRequestAttachment.attachment_type` | Sí si hay adjunto |
+| Descripción del adjunto | `PurchaseRequestAttachment.description` | Sí si hay adjunto |
+| Archivo adjunto | `PurchaseRequestAttachment.document_ref` (`DocumentRef` vía `storeDocument`) | Sí si hay adjunto |
 
 ## Acciones
 
@@ -69,15 +82,18 @@
 +----------------------------------------------------------+
 | Consulta de saldo (informativa)                    [ X ] |
 +----------------------------------------------------------+
+| Criterios de consulta                                     |
 | Línea presupuestaria *  [ Cuenta / Programa ...    v ]   |
 | Año fiscal *              [ 2026 ]                        |
 | Monto estimado SOLPED     [ $ 1.250.000 ] (precargado)   |
 +----------------------------------------------------------+
+| Resultado                                                 |
 | Disponible: $ 2.100.000 | Comprometido otros: $ 800.000  |
 | Saldo proyectado: $ 1.300.000                             |
 +----------------------------------------------------------+
-| Aviso: consulta orientativa — la verificación formal      |
-|        ocurre en Finanzas (paso 1.3).                     |
+| Aviso                                                     |
+| Consulta orientativa — la verificación formal ocurre     |
+| en Finanzas (paso 1.3).                                   |
 +----------------------------------------------------------+
 | [ Cerrar ]                                                |
 +----------------------------------------------------------+
@@ -105,4 +121,5 @@
 
 - Si `checkStockAvailability` se adopta (QA 4): banner informativo "Stock disponible en bodega — ¿retirar en lugar de comprar?"
 - El enlace de autoconsulta presupuestaria es **opcional** y **no sustituye** 1.3.
+- Documentos de respaldo: opcionales; si se agrega una fila, tipo, descripción y archivo son obligatorios. Valores de `attachment_type`: `quote` (cotización), `product_reference_photo` (foto referencial del producto), `technical_sheet` (ficha técnica), `other` (otro antecedente).
 - ⚠ Pendiente: fuente concreta de `PriceReference` y % tolerancia de desviación.

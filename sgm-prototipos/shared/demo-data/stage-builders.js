@@ -158,7 +158,7 @@ export function buildStage3ConvenioMarco() {
   };
 }
 
-/** LP showcase completo (14 sub-pasos). */
+/** LP demo completo (14 sub-pasos). */
 export function buildStage3LicitacionPublica() {
   return {
     id: 3,

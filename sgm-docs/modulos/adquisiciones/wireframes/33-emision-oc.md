@@ -10,11 +10,13 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Emisión de la Orden de Compra       [Pendiente]  |
 +----------------------------------------------------------------+
-| [Selección de oferta — solo lectura]                            |
+| Contexto de la oferta (solo lectura)                          |
 | Proveedor: Comercial Sur SpA · Monto ofertado: $ 1.240.000       |
 +----------------------------------------------------------------+
+| Acceso a Mercado Público                                       |
 | [ Gestionar en MP ]  (deep link — emite la OC en el portal)      |
 +----------------------------------------------------------------+
+| Registro de la OC                                              |
 | N° de OC en Mercado Público *                                    |
 | [ 4021-33-SE26                                ]                  |
 |                                                                   |
@@ -22,6 +24,7 @@
 |                                                                   |
 | [ Validar y registrar OC ]                                       |
 +----------------------------------------------------------------+
+| Resultado de validación                                        |
 | (banner de éxito, o de bloqueo por inhabilidad con alternativas) |
 +----------------------------------------------------------------+
 ```

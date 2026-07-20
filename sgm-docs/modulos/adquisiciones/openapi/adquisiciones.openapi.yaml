@@ -197,6 +197,16 @@ components:
         - framework_agreement
         - public_tender
         - direct_procurement
+    PurchaseRequestAttachmentType:
+      type: string
+      enum:
+        - quote
+        - product_reference_photo
+        - technical_sheet
+        - other
+      description: >
+        Cotización, foto referencial del producto, ficha técnica u otro antecedente
+        de respaldo de la SOLPED.
     SignatureMode:
       type: string
       enum:
@@ -432,6 +442,28 @@ components:
         price_source:
           type: string
           nullable: true
+    PurchaseRequestAttachment:
+      type: object
+      required:
+        - id
+        - purchase_request_id
+        - attachment_type
+        - description
+        - document_ref
+      properties:
+        id:
+          type: string
+        purchase_request_id:
+          type: string
+        attachment_type:
+          $ref: "#/components/schemas/PurchaseRequestAttachmentType"
+        description:
+          type: string
+          description: Qué respalda el archivo (ej. Cotización ACME — resmas)
+        document_ref:
+          type: string
+          format: uuid
+          description: DocumentRef — subida previa vía core POST /documents (plataforma/contracts.md §2.10)
     PurchaseRequestWithLines:
       allOf:
         - $ref: "#/components/schemas/PurchaseRequest"
@@ -443,6 +475,11 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/PurchaseRequestLine"
+            attachments:
+              type: array
+              items:
+                $ref: "#/components/schemas/PurchaseRequestAttachment"
+              description: Documentos de respaldo opcionales (0..N)
     CreatePurchaseRequestRequest:
       type: object
       required:
@@ -495,6 +532,24 @@ components:
               unit_price:
                 type: number
                 format: double
+        attachments:
+          type: array
+          description: Documentos de respaldo opcionales — cotizaciones, fotos referenciales, fichas técnicas u otros
+          items:
+            type: object
+            required:
+              - attachment_type
+              - description
+              - document_ref
+            properties:
+              attachment_type:
+                $ref: "#/components/schemas/PurchaseRequestAttachmentType"
+              description:
+                type: string
+              document_ref:
+                type: string
+                format: uuid
+                description: DocumentRef — subida previa vía core POST /documents
     ApprovalDecisionRequest:
       type: object
       required:

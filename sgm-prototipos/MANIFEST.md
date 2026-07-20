@@ -46,8 +46,9 @@ Antes de modificar un sub-paso `N.M`:
 4. Verificar **operaciones** en `contracts.md` — ningún botón sin operación.
 5. Verificar **campos** en `entidades-core.md`.
 6. Verificar **obligatoriedad explícita** en los tres niveles: `entidades-core.md` (obligatorio / opcional / obligatorio si), tabla **Obligatorio** del wireframe spec, y etiqueta del HTML (`*`, `(opcional)` o `(obligatorio si …)`).
-7. Si cambia tinte/origen: revisar reglas 2a/2b en [`patron-vista-expediente.md`](../sgm-docs/arquitectura/patron-vista-expediente.md).
-8. Actualizar **prototipo HTML**, **expediente** (`shared/demo-data/<modalidad>.js`) y **preset** (`form-presets.js`) en el mismo cambio.
+7. Verificar **secciones tituladas** del formulario (`.form-section` / subtítulos) según [`patron-formularios-secciones.md`](../sgm-docs/arquitectura/patron-formularios-secciones.md) — wireframe ASCII y HTML con los mismos títulos.
+8. Si cambia tinte/origen: revisar reglas 2a/2b en [`patron-vista-expediente.md`](../sgm-docs/arquitectura/patron-vista-expediente.md).
+9. Actualizar **prototipo HTML**, **expediente** (`shared/demo-data/<modalidad>.js`) y **preset** (`form-presets.js`) en el mismo cambio.
 
 ## Etapa 1 — SOLPED (transversal, 4 modalidades)
 

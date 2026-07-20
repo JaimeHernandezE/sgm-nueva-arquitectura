@@ -10,11 +10,11 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Rechazo de la OC                    [Rechazada]  |
 +----------------------------------------------------------------+
-| [OC rechazada — solo lectura / registro manual]                 |
+| Contexto de la OC (solo lectura)                              |
 | OC N° 4021-33-SE26 · Proveedor: Comercial Sur SpA                |
 | Motivo (opcional — si MP lo trae) [________________________]              |
 +----------------------------------------------------------------+
-| Tarea de decisión *                                              |
+| Tarea de decisión                                              |
 | ( ) Emitir OC a la segunda mejor oferta (vuelve a 3.2/3.3)       |
 | ( ) Cancelar y republicar (nueva cotización, re-vinculación 2.3) |
 +----------------------------------------------------------------+

@@ -10,8 +10,10 @@
 +----------------------------------------------------------+
 | OC #5678 — Recepción conforme                             |
 +----------------------------------------------------------+
+| Contexto de la OC (solo lectura)                           |
 | OC: MP-12345 | Proveedor: 76.xxx.xxx-x | Monto: $XXX      |
 +----------------------------------------------------------+
+| Datos de recepción                                        |
 | Fecha recepción *     [ __ / __ / ____ ]                  |
 | Recibido por          [ Usuario actual    ]               |
 | Conformidad *         ( ) Conforme  ( ) No conforme       |

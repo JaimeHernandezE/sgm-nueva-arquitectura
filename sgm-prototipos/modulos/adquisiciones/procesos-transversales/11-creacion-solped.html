@@ -22,83 +22,120 @@
         <span class="badge badge--draft">Borrador</span>
       </div>
       <div class="form-card__body">
-        <div class="form-row">
-          <label>Unidad solicitante <span class="required">*</span></label>
-          <select>
-            <option>Unidad X</option>
-            <option>DAF Abastecimiento</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label>Descripción <span class="required">*</span></label>
-          <input type="text" value="Adquisición de insumos de oficina" />
-        </div>
-        <div class="form-row">
-          <label>Justificación <span class="required">*</span></label>
-          <textarea>Reposición de stock según plan anual.</textarea>
-        </div>
-        <div class="form-row">
-          <label>Fecha solicitada <span class="required">*</span></label>
-          <input type="date" value="2026-06-24" />
-        </div>
-        <div class="form-row">
-          <label>Modalidad de compra (opcional)</label>
-          <select id="purchase-modality">
-            <option value="">(sin indicar)</option>
-            <option value="agile_purchase">Compra Ágil</option>
-            <option value="framework_agreement">Convenio Marco</option>
-            <option value="public_tender">Licitación Pública</option>
-            <option value="direct_procurement">Trato Directo</option>
-          </select>
-        </div>
-        <div id="resolution-row" class="form-row hidden">
-          <label>Resolución Fundada (obligatorio si Trato Directo) <span class="required">*</span></label>
-          <button class="btn btn--secondary" type="button">Subir archivo</button>
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Datos de la solicitud</h3>
+          <div class="form-row">
+            <label>Unidad solicitante <span class="required">*</span></label>
+            <select>
+              <option>Unidad X</option>
+              <option>DAF Abastecimiento</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Descripción <span class="required">*</span></label>
+            <input type="text" value="Adquisición de insumos de oficina" />
+          </div>
+          <div class="form-row">
+            <label>Justificación <span class="required">*</span></label>
+            <textarea>Reposición de stock según plan anual.</textarea>
+          </div>
+          <div class="form-row">
+            <label>Fecha solicitada <span class="required">*</span></label>
+            <input type="date" value="2026-06-24" />
+          </div>
+          <div class="form-row">
+            <label>Modalidad de compra (opcional)</label>
+            <select id="purchase-modality">
+              <option value="">(sin indicar)</option>
+              <option value="agile_purchase">Compra Ágil</option>
+              <option value="framework_agreement">Convenio Marco</option>
+              <option value="public_tender">Licitación Pública</option>
+              <option value="direct_procurement">Trato Directo</option>
+            </select>
+          </div>
+          <div id="resolution-row" class="form-row hidden">
+            <label>Resolución Fundada (obligatorio si Trato Directo) <span class="required">*</span></label>
+            <button class="btn btn--secondary" type="button">Subir archivo</button>
+          </div>
+        </section>
 
-        <h3 style="font-size:14px;margin:20px 0 8px;">Líneas de bienes/servicios</h3>
-        <table class="form-table">
-          <thead>
-            <tr>
-              <th>Descr. <span class="required">*</span></th>
-              <th>Cant. <span class="required">*</span></th>
-              <th>UM <span class="required">*</span></th>
-              <th>Precio <span class="required">*</span></th>
-              <th>Ref.</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><input type="text" value="Resma papel carta" /></td>
-              <td><input type="number" value="50" /></td>
-              <td><select><option>Un</option></select></td>
-              <td><input type="text" value="4500" /></td>
-              <td>SII 42k</td>
-              <td><button class="btn btn--secondary" type="button">Eliminar</button></td>
-            </tr>
-          </tbody>
-        </table>
-        <button class="btn btn--secondary" type="button">+ Agregar línea</button>
+        <section class="form-section">
+          <h3 class="form-section__title">Líneas de bienes/servicios</h3>
+          <table class="form-table">
+            <thead>
+              <tr>
+                <th>Descr. <span class="required">*</span></th>
+                <th>Cant. <span class="required">*</span></th>
+                <th>UM <span class="required">*</span></th>
+                <th>Precio <span class="required">*</span></th>
+                <th>Ref.</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="text" value="Resma papel carta" /></td>
+                <td><input type="number" value="50" /></td>
+                <td><select><option>Un</option></select></td>
+                <td><input type="text" value="4500" /></td>
+                <td>SII 42k</td>
+                <td><button class="btn btn--secondary" type="button">Eliminar</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <button class="btn btn--secondary" type="button">+ Agregar línea</button>
+        </section>
 
-        <div class="form-row" style="margin-top:16px;">
-          <label>Documentos adjuntos (opcional)</label>
-          <button class="btn btn--secondary" type="button">Subir archivo</button>
-        </div>
-        <div class="form-row">
-          <label>Línea presupuestaria (opcional)</label>
-          <select>
-            <option value="">(opcional) Cuenta/Programa</option>
-            <option>22.01.03 — Insumos oficina</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label>Año fiscal propuesto (opcional)</label>
-          <input type="number" value="2026" />
-        </div>
-        <p>
-          <button class="btn btn--link" type="button" id="balance-trigger">Consultar saldo en línea presupuestaria</button>
-        </p>
+        <section class="form-section">
+          <h3 class="form-section__title">Documentos de respaldo (opcional)</h3>
+          <p class="form-section__hint">
+            Cotizaciones, fotos referenciales del producto, fichas técnicas u otros antecedentes.
+          </p>
+          <table class="form-table">
+            <thead>
+              <tr>
+                <th>Tipo <span class="required">*</span></th>
+                <th>Descripción <span class="required">*</span></th>
+                <th>Archivo <span class="required">*</span></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <select>
+                    <option value="quote">Cotización</option>
+                    <option value="product_reference_photo">Foto referencial del producto</option>
+                    <option value="technical_sheet">Ficha técnica</option>
+                    <option value="other">Otro antecedente</option>
+                  </select>
+                </td>
+                <td><input type="text" value="Cotización referencial ACME — resmas" /></td>
+                <td><button class="btn btn--secondary" type="button">Subir archivo</button></td>
+                <td><button class="btn btn--secondary" type="button">Eliminar</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <button class="btn btn--secondary" type="button">+ Agregar adjunto</button>
+        </section>
+
+        <section class="form-section">
+          <h3 class="form-section__title">Pista presupuestaria (opcional)</h3>
+          <div class="form-row">
+            <label>Línea presupuestaria (opcional)</label>
+            <select>
+              <option value="">(opcional) Cuenta/Programa</option>
+              <option>22.01.03 — Insumos oficina</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Año fiscal propuesto (opcional)</label>
+            <input type="number" value="2026" />
+          </div>
+          <p>
+            <button class="btn btn--link" type="button" id="balance-trigger">Consultar saldo en línea presupuestaria</button>
+          </p>
+        </section>
       </div>
       <div class="form-actions">
         <button class="btn btn--secondary" type="button" id="save-draft">Guardar borrador</button>

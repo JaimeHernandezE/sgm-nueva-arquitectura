@@ -23,27 +23,32 @@
         <span class="badge badge--active">Rechazada</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">
-          <strong>OC rechazada — registro manual (modo degradado)</strong><br />
-          OC N° 4021-33-SE26 · Proveedor: Comercial Sur SpA
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Contexto del rechazo</h3>
+          <div class="info-panel">
+            <strong>OC rechazada — registro manual (modo degradado)</strong><br />
+            OC N° 4021-33-SE26 · Proveedor: Comercial Sur SpA
+          </div>
 
-        <div class="form-row">
-          <label>Motivo (opcional — si MP lo trae)</label>
-          <input type="text" id="reason" placeholder="Motivo del rechazo…" />
-        </div>
+          <div class="form-row">
+            <label>Motivo (opcional — si MP lo trae)</label>
+            <input type="text" id="reason" placeholder="Motivo del rechazo…" />
+          </div>
+        </section>
 
-        <h3 style="font-size:14px;margin:16px 0 8px;">Tarea de decisión <span class="required">*</span></h3>
-        <div class="form-row">
-          <label>
-            <input type="radio" name="decision" value="reselect" style="width:auto;display:inline-block;margin-right:6px;" checked />
-            Emitir OC a la segunda mejor oferta
-          </label>
-          <label>
-            <input type="radio" name="decision" value="cancel" style="width:auto;display:inline-block;margin-right:6px;" />
-            Cancelar y republicar (nueva cotización, re-vinculación 2.3)
-          </label>
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Tarea de decisión <span class="required">*</span></h3>
+          <div class="form-row">
+            <label>
+              <input type="radio" name="decision" value="reselect" style="width:auto;display:inline-block;margin-right:6px;" checked />
+              Emitir OC a la segunda mejor oferta
+            </label>
+            <label>
+              <input type="radio" name="decision" value="cancel" style="width:auto;display:inline-block;margin-right:6px;" />
+              Cancelar y republicar (nueva cotización, re-vinculación 2.3)
+            </label>
+          </div>
+        </section>
       </div>
       <div class="form-actions">
         <span></span>

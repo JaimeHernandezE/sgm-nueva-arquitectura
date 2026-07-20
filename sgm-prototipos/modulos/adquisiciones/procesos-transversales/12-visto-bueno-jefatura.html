@@ -22,37 +22,45 @@
         <span class="badge badge--active">Pendiente V°B°</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">
-          <strong>Datos SOLPED — solo lectura</strong><br />
-          Unidad: Unidad Solicitante · Monto total: $1.250.000 · Líneas: 1<br />
-          Línea presup. indicada: Cuenta 22.01.03 (opcional)
-        </div>
-        <p>
-          <button class="btn btn--link" type="button" id="balance-trigger">Consultar saldo en línea presupuestaria</button>
-        </p>
+        <section class="form-section">
+          <h3 class="form-section__title">Contexto SOLPED</h3>
+          <div class="info-panel">
+            <strong>Datos SOLPED — solo lectura</strong><br />
+            Unidad: Unidad Solicitante · Monto total: $1.250.000 · Líneas: 1<br />
+            Línea presup. indicada: Cuenta 22.01.03 (opcional)
+          </div>
+          <p>
+            <button class="btn btn--link" type="button" id="balance-trigger">Consultar saldo en línea presupuestaria</button>
+          </p>
+        </section>
 
-        <h3 style="font-size:14px;margin:16px 0 8px;">Seguimiento de firmas</h3>
-        <table class="form-table">
-          <thead>
-            <tr>
-              <th>Interviniente</th>
-              <th>Tipo</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Jefatura Unidad</td>
-              <td>FirmaGob</td>
-              <td><span class="badge badge--active">Pendiente</span></td>
-            </tr>
-          </tbody>
-        </table>
+        <section class="form-section">
+          <h3 class="form-section__title">Seguimiento de firmas</h3>
+          <table class="form-table">
+            <thead>
+              <tr>
+                <th>Interviniente</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Jefatura Unidad</td>
+                <td>FirmaGob</td>
+                <td><span class="badge badge--active">Pendiente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
 
-        <div class="form-row">
-          <label>Comentarios (obligatorio si rechazo)</label>
-          <textarea placeholder="Comentarios de la decisión…"></textarea>
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Decisión</h3>
+          <div class="form-row">
+            <label>Comentarios (obligatorio si rechazo)</label>
+            <textarea placeholder="Comentarios de la decisión…"></textarea>
+          </div>
+        </section>
       </div>
       <div class="form-actions">
         <button class="btn btn--secondary" type="button" id="reject">Rechazar</button>

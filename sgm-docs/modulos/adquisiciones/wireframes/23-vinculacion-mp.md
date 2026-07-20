@@ -12,11 +12,13 @@ Este wireframe cubre la **ejecución inmediata** (Compra Ágil / Convenio Marco,
 +----------------------------------------------------------------+
 | SOLPED #1234 — Vinculación con Mercado Público    [Pendiente]    |
 +----------------------------------------------------------------+
-| [Decisión de modalidad — solo lectura]                          |
+| Contexto de modalidad (solo lectura)                          |
 | Modalidad confirmada: Compra Ágil · Gateway: OK                  |
 +----------------------------------------------------------------+
+| Acceso a Mercado Público                                       |
 | [ Gestionar en MP ]  (deep link — abre Mercado Público)          |
 +----------------------------------------------------------------+
+| Vinculación del proceso                                        |
 | Código / ID del proceso en Mercado Público *                    |
 | [ 4021-33-COT26                              ]                  |
 |                                                                   |

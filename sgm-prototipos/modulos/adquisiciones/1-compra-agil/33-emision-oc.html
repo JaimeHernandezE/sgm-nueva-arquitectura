@@ -23,41 +23,47 @@
         <span class="badge badge--active" id="header-badge">Pendiente</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">
-          <strong>Selección de oferta — solo lectura</strong><br />
-          Proveedor: Comercial Sur SpA · Monto ofertado: $ 1.240.000
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Contexto de la selección</h3>
+          <div class="info-panel">
+            <strong>Selección de oferta — solo lectura</strong><br />
+            Proveedor: Comercial Sur SpA · Monto ofertado: $ 1.240.000
+          </div>
+        </section>
 
-        <p>
-          <button class="btn btn--secondary" type="button" id="deep-link-btn">Gestionar en MP</button>
-          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Deep link — emite la OC en el portal</span>
-        </p>
+        <section class="form-section">
+          <h3 class="form-section__title">Registro de la Orden de Compra</h3>
+          <p>
+            <button class="btn btn--secondary" type="button" id="deep-link-btn">Gestionar en MP</button>
+            <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Deep link — emite la OC en el portal</span>
+          </p>
 
-        <div class="form-row">
-          <label>N° de OC en Mercado Público <span class="required">*</span></label>
-          <input type="text" id="oc-number" value="4021-33-SE26" />
-        </div>
+          <div class="form-row">
+            <label>N° de OC en Mercado Público <span class="required">*</span></label>
+            <input type="text" id="oc-number" value="4021-33-SE26" />
+          </div>
 
-        <div class="form-row">
-          <label>Simular revalidación de habilidad <em>(solo demo — no existe en la ficha)</em></label>
-          <select id="simulate-eligibility">
-            <option value="ok" selected>Hábil — emisión procede</option>
-            <option value="ineligible">Inhábil — bloqueo de emisión</option>
-          </select>
-        </div>
+          <div class="form-row">
+            <label>Simular revalidación de habilidad <em>(solo demo — no existe en la ficha)</em></label>
+            <select id="simulate-eligibility">
+              <option value="ok" selected>Hábil — emisión procede</option>
+              <option value="ineligible">Inhábil — bloqueo de emisión</option>
+            </select>
+          </div>
 
-        <div class="banner hidden" id="result-banner"></div>
+          <div class="banner hidden" id="result-banner"></div>
 
-        <div class="info-panel hidden" id="task-panel">
-          <strong>Tarea: proveedor inhábil al emitir</strong><br />
-          <a class="btn btn--secondary" id="reselect-link" href="#">Seleccionar siguiente oferta (vuelve a 3.2)</a>
-          <a class="btn btn--secondary" id="cancel-link" href="#" style="margin-left:8px;">Cancelar (va a 3.6)</a>
-        </div>
+          <div class="info-panel hidden" id="task-panel">
+            <strong>Tarea: proveedor inhábil al emitir</strong><br />
+            <a class="btn btn--secondary" id="reselect-link" href="#">Seleccionar siguiente oferta (vuelve a 3.2)</a>
+            <a class="btn btn--secondary" id="cancel-link" href="#" style="margin-left:8px;">Cancelar (va a 3.6)</a>
+          </div>
 
-        <div class="info-panel hidden" id="next-step-panel">
-          OC registrada — evento <code>PurchaseOrderIssued</code> emitido.
-          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.4</a>
-        </div>
+          <div class="info-panel hidden" id="next-step-panel">
+            OC registrada — evento <code>PurchaseOrderIssued</code> emitido.
+            <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.4</a>
+          </div>
+        </section>
       </div>
       <div class="form-actions">
         <span></span>

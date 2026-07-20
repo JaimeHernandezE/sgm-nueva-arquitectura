@@ -23,44 +23,50 @@
         <span class="badge badge--active" id="header-badge">Pendiente</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">
-          <strong>Período de cotización — solo lectura</strong><br />
-          Cerrado: 30-06-2026 · 4 cotizaciones recibidas (demo)
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Contexto del período</h3>
+          <div class="info-panel">
+            <strong>Período de cotización — solo lectura</strong><br />
+            Cerrado: 30-06-2026 · 4 cotizaciones recibidas (demo)
+          </div>
+        </section>
 
-        <div class="form-row">
-          <label>RUT proveedor seleccionado <span class="required">*</span></label>
-          <input type="text" id="provider-rut" value="76.123.456-7" />
-        </div>
-        <div class="form-row">
-          <label>Nombre proveedor seleccionado <span class="required">*</span></label>
-          <input type="text" id="provider-name" value="Comercial Sur SpA" />
-        </div>
-        <div class="form-row">
-          <label>Monto ofertado (CLP) <span class="required">*</span></label>
-          <input type="text" id="offered-amount" value="1240000" />
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Selección de oferta</h3>
+          <div class="form-row">
+            <label>RUT proveedor seleccionado <span class="required">*</span></label>
+            <input type="text" id="provider-rut" value="76.123.456-7" />
+          </div>
+          <div class="form-row">
+            <label>Nombre proveedor seleccionado <span class="required">*</span></label>
+            <input type="text" id="provider-name" value="Comercial Sur SpA" />
+          </div>
+          <div class="form-row">
+            <label>Monto ofertado (CLP) <span class="required">*</span></label>
+            <input type="text" id="offered-amount" value="1240000" />
+          </div>
 
-        <div class="form-row">
-          <label>
-            <input type="checkbox" id="lowest-price" style="width:auto;display:inline-block;margin-right:6px;" checked />
-            ¿Es la oferta de menor precio?
-          </label>
-        </div>
+          <div class="form-row">
+            <label>
+              <input type="checkbox" id="lowest-price" style="width:auto;display:inline-block;margin-right:6px;" checked />
+              ¿Es la oferta de menor precio?
+            </label>
+          </div>
 
-        <div class="form-row hidden" id="justification-row">
-          <label>Justificación (obligatorio si NO es la de menor precio) <span class="required">*</span></label>
-          <textarea id="justification" placeholder="Motivo por el que no se eligió la oferta de menor precio…"></textarea>
-        </div>
+          <div class="form-row hidden" id="justification-row">
+            <label>Justificación (obligatorio si NO es la de menor precio) <span class="required">*</span></label>
+            <textarea id="justification" placeholder="Motivo por el que no se eligió la oferta de menor precio…"></textarea>
+          </div>
 
-        <div class="banner banner--info">
-          Modo de registro: <strong>Manual (modo degradado)</strong> — MP prevalece si la lectura llega después y difiere.
-        </div>
+          <div class="banner banner--info">
+            Modo de registro: <strong>Manual (modo degradado)</strong> — MP prevalece si la lectura llega después y difiere.
+          </div>
 
-        <div class="info-panel hidden" id="next-step-panel">
-          Selección confirmada.
-          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.3</a>
-        </div>
+          <div class="info-panel hidden" id="next-step-panel">
+            Selección confirmada.
+            <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.3</a>
+          </div>
+        </section>
       </div>
       <div class="form-actions">
         <button class="btn btn--secondary" type="button" id="cancel">Cancelar</button>

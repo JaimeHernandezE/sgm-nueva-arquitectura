@@ -263,6 +263,10 @@ La vista principal de una compra (y de otros flujos con expediente) es la **vist
 
 Detalle normativo de filas, tintes de origen (plataforma externa vs borde de módulo), botones vs badges y correlación UI ↔ `CaseStep` / contrato: [`patron-vista-expediente.md`](./patron-vista-expediente.md). Es documento de **arquitectura UI transversal**, no wireframe de un sub-paso concreto; Compra Ágil ilustra el piloto.
 
+### Patrón secciones en formularios
+
+Toda pantalla de captura/revisión (`form-card`) agrupa campos en **secciones con subtítulo y corte visual**. Sin títulos de sección, el formulario queda como lista plana y dificulta la comprensión. Norma completa (markup, criterios, contraejemplos): [`patron-formularios-secciones.md`](./patron-formularios-secciones.md).
+
 ### Ubicación
 `modulos/<módulo>/<macroproceso>/wireframes/` — un archivo por pantalla, nombrado `NN-nombre-pantalla.<ext>` donde `NN` correlaciona con el sub-paso que la motiva (ej. `11-creacion-solped.png` para el sub-paso 1.1).
 
@@ -272,10 +276,11 @@ Imagen exportada (PNG/SVG) + fuente editable si existe (Excalidraw, draw.io). Pa
 ### Contenido obligatorio por wireframe
 1. **Identificación:** nombre de pantalla + sub-paso(s) que la motivan.
 2. **Todos los campos del formulario**, correlacionados con los campos de entidad del sub-paso — si el wireframe muestra un campo que no existe en `entidades-core.md`, o viceversa, hay una inconsistencia que resolver antes de dar por cerrada la pantalla.
-3. **Tabla Campos ↔ entidad** con columna **Obligatorio** (`Sí` / `No` / `Sí si <condición>`). Toda fila debe tener valor en esa columna; es el ancla de trazabilidad entre modelo, wireframe y prototipo.
-4. **Acciones disponibles** (botones/enlaces), a dónde navega o qué transición de estado dispara cada una, y **qué operación de contrato invoca** (nombre de la operación en `contracts.md`).
-5. **Estados de la pantalla:** al menos el estado normal + estados de bloqueo/solo lectura si el proceso los define (ej. SOLPED "En proceso de cotización").
-6. **Validaciones visibles:** qué campos son obligatorios, opcionales o condicionales, y qué condiciones bloquean el avance. Recordatorio de diseño: la validación bloqueante vive en el servidor y llega como error estructurado de la API; el wireframe la refleja, no la reemplaza.
+3. **Secciones tituladas:** el layout ASCII agrupa campos en bloques con subtítulo visible (misma jerarquía que el prototipo). Norma: [`patron-formularios-secciones.md`](./patron-formularios-secciones.md).
+4. **Tabla Campos ↔ entidad** con columna **Obligatorio** (`Sí` / `No` / `Sí si <condición>`). Toda fila debe tener valor en esa columna; es el ancla de trazabilidad entre modelo, wireframe y prototipo.
+5. **Acciones disponibles** (botones/enlaces), a dónde navega o qué transición de estado dispara cada una, y **qué operación de contrato invoca** (nombre de la operación en `contracts.md`).
+6. **Estados de la pantalla:** al menos el estado normal + estados de bloqueo/solo lectura si el proceso los define (ej. SOLPED "En proceso de cotización").
+7. **Validaciones visibles:** qué campos son obligatorios, opcionales o condicionales, y qué condiciones bloquean el avance. Recordatorio de diseño: la validación bloqueante vive en el servidor y llega como error estructurado de la API; el wireframe la refleja, no la reemplaza.
 
 ### Obligatoriedad en wireframe y prototipo HTML
 

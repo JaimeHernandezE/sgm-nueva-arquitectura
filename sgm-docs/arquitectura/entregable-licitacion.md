@@ -290,7 +290,7 @@ El formato y las reglas del catálogo están normados en [`estandares-api.md`](.
 |---|---|---|---|
 | `ADQ-2026-00123` | `municipio-demo-norte` | Compra Ágil — post etapa 2, etapa 3 pendiente | Tutorial integrador; GET expediente |
 | `ADQ-2026-00089` | `municipio-demo-norte` | Convenio Marco — ruta por definir en etapa 3 | Variante modalidad |
-| `ADQ-2026-00045` | `municipio-demo-sur` | Licitación — showcase finalizado transversal | Lectura estado terminal |
+| `ADQ-2026-00045` | `municipio-demo-sur` | Licitación — demo finalizado transversal | Lectura estado terminal |
 | `ADQ-2026-00012` | `municipio-demo-sur` | Trato Directo — etapa 3 pendiente | Causal y resolución fundada |
 
 Escenarios transaccionales adicionales (no solo lectura):

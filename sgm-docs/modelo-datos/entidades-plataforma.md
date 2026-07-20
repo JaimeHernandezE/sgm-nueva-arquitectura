@@ -263,7 +263,7 @@ Identificador opaco. Los módulos persisten `DocumentRef` en campos `*_attachmen
 |---|---|---|
 | `id` | UUID | **Obligatorio** — string en APIs de módulo |
 
-En payloads de módulo, los campos `founded_resolution_attachment`, `scanned_certificate_attachment`, `supporting_document_ref` y listas `attachments` son **UUID de `DocumentRef`**.
+En payloads de módulo, los campos `founded_resolution_attachment`, `scanned_certificate_attachment`, `supporting_document_ref`, `PurchaseRequestAttachment.document_ref` y listas `attachments` son **UUID de `DocumentRef`**.
 
 ### `SignatureRequest`
 **Visibilidad:** interna — subconjunto consultable vía C9

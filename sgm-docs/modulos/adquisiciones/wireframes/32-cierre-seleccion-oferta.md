@@ -10,9 +10,10 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Cierre y selección de oferta        [Pendiente]  |
 +----------------------------------------------------------------+
-| [Período de cotización — solo lectura]                          |
+| Contexto del período (solo lectura)                           |
 | Cerrado: 30-06-2026 · 4 cotizaciones recibidas (demo)            |
 +----------------------------------------------------------------+
+| Selección de proveedor                                        |
 | RUT proveedor seleccionado *                                    |
 | [ ______________________ ]                                      |
 | Nombre proveedor seleccionado *                                  |
@@ -24,8 +25,9 @@
 | Justificación (obligatoria si NO es la de menor precio) *        |
 | [________________________________________________] [oculto]     |
 +----------------------------------------------------------------+
-| Modo de registro: Manual (modo degradado) — MP prevalece si       |
-| la lectura llega después y difiere.                              |
+| Modo de registro                                              |
+| Manual (modo degradado) — MP prevalece si la lectura llega       |
+| después y difiere.                                              |
 +----------------------------------------------------------------+
 | [ Cancelar ]                        [ Confirmar selección ]      |
 +----------------------------------------------------------------+

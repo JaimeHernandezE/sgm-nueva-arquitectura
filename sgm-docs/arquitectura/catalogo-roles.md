@@ -156,6 +156,7 @@ No es fuente de autorización. Sirve al prototipo y a QA de pantallas.
 
 | Pantalla / área | Rol (nombre + código) |
 |---|---|
+| `01-listado-expedientes` | Lectura: `adq.solicitante` / `adq.aprobador_unidad` → solo expedientes de su unidad; resto de roles Adquisiciones (DAF / `adq.lector`, etc.) → tenant completo. Operación: `listProcurementCases` |
 | `11-creacion-solped` | Solicitante (`adq.solicitante`) |
 | `12-visto-bueno-jefatura` | Aprobador de unidad (`adq.aprobador_unidad`) |
 | `13` verificación DAF | Formulador DAF / verificación (`adq.formulador_presupuesto`) |

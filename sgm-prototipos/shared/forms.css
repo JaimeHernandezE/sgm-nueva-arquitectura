@@ -79,6 +79,31 @@
   padding: 16px;
 }
 
+.form-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-light);
+}
+
+.form-section:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.form-section__title {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0 0 12px;
+  color: var(--text-primary, #222);
+}
+
+.form-section__hint {
+  font-size: 13px;
+  color: var(--text-muted, #666);
+  margin: -4px 0 12px;
+}
+
 .form-row {
   margin-bottom: 14px;
 }

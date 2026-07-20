@@ -12,9 +12,9 @@
 +----------------------------------------------------------+
 | SOLPED #1234 — Solicitud de financiamiento presupuestario |
 +----------------------------------------------------------+
+| Solicitud de financiamiento                               |
 | Motivo / justificación *  [________________________]      |
 |                           [________________________]      |
-+----------------------------------------------------------+
 | Estado: En trámite — modificación/reasignación presupuesto|
 | (proceso externo a Adquisiciones)                         |
 +----------------------------------------------------------+

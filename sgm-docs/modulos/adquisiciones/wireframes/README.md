@@ -4,8 +4,11 @@ Wireframes de **baja fidelidad** (borrador). Especifican estructura y comportami
 
 Patrón transversal de la vista de expediente (filas, tintes, botones): [`../../../arquitectura/patron-vista-expediente.md`](../../../arquitectura/patron-vista-expediente.md).
 
+Patrón de secciones y subtítulos en formularios: [`../../../arquitectura/patron-formularios-secciones.md`](../../../arquitectura/patron-formularios-secciones.md) — el layout ASCII debe mostrar títulos de sección alineados con el prototipo HTML.
+
 | Archivo | Sub-paso | Operación principal |
 |---|---|---|
+| [01-listado-expedientes.md](./01-listado-expedientes.md) | — *(consulta transversal)* | `listProcurementCases` |
 | [11-creacion-solped.md](./11-creacion-solped.md) | 1.1 | `createPurchaseRequest` |
 | [12-visto-bueno-jefatura.md](./12-visto-bueno-jefatura.md) | 1.2 | `approvePurchaseRequest` |
 | [13-verificacion-disponibilidad.md](./13-verificacion-disponibilidad.md) | 1.3 | `verifyBudgetAvailability` |

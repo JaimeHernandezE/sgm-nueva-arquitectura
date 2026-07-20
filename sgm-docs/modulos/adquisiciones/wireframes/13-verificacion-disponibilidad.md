@@ -12,11 +12,12 @@
 +----------------------------------------------------------+
 | SOLPED #1234 — Verificación presupuestaria                |
 +----------------------------------------------------------+
+| Verificación presupuestaria                               |
 | Línea presupuestaria *    [ Cuenta / Programa ...    v ]  |
 | Monto estimado *          [ $ ____________ ]              |
 | Año fiscal *              [ 2026 ]                        |
 +----------------------------------------------------------+
-| Panel: Disponibilidad presupuestaria (QA 8 P1)            |
+| Disponibilidad presupuestaria                             |
 | +------------------------------------------------------+  |
 | | Saldo disponible actual:        $ 1.200.000          |  |
 | | Comprometido otras SOLPED:      $   300.000          |  |
@@ -24,8 +25,8 @@
 | | Saldo proyectado:               $   450.000  [OK]    |  |
 | +------------------------------------------------------+  |
 +----------------------------------------------------------+
+| Decisión                                                  |
 | Comentarios (obligatorio si rechazo)  [________________________]      |
-+----------------------------------------------------------+
 | [ Rechazar ]    [ Solicitar financiamiento ]  [ Confirmar ]|
 +----------------------------------------------------------+
 ```

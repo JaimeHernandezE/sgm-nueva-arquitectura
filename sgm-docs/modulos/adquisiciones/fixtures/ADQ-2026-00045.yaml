@@ -1,10 +1,10 @@
 fixture: ADQ-2026-00045
 tenant: municipio-demo-sur
 module: adquisiciones
-title: Licitación Pública — showcase transversal finalizado
+title: Licitación Pública — demo transversal finalizado
 business_state: >
   Expediente LP con etapas transversales 1, 2, 4 y 5 completadas; etapa 3
-  documentada como finalizada en showcase de prototipos.
+  documentada como finalizada en demo de prototipos.
 seeds:
   - entity: ProcurementCase
     id: ADQ-2026-00045

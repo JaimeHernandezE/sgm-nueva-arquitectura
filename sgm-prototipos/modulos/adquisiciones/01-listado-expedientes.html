@@ -12,10 +12,66 @@
 <body>
   <div class="app-layout">
     <main class="app-main">
-      <div class="page">
+      <div class="page page--listado">
         <div id="breadcrumb"></div>
         <h1>Expedientes de compra</h1>
-        <p class="subtitle">Ejemplos transversales por modalidad — las 5 etapas visibles en los 4 casos</p>
+        <p class="subtitle">Consulta transversal — filtros acumulables · wireframe 01</p>
+
+        <div class="demo-panel" id="demo-panel">
+          <label>
+            Ver como:
+            <select id="viewer-scope">
+              <option value="solicitante">Unidad solicitante</option>
+              <option value="daf">Usuario DAF</option>
+            </select>
+          </label>
+          <span class="list-hint" id="scope-hint"></span>
+        </div>
+
+        <div class="list-toolbar form-card">
+          <div class="form-card__body list-toolbar__body">
+            <div class="list-toolbar__row">
+              <label class="list-field list-field--grow">
+                Buscar <span class="muted">(opcional)</span>
+                <input
+                  type="search"
+                  id="filter-q"
+                  placeholder="Folio, glosa o modalidad"
+                  autocomplete="off"
+                />
+              </label>
+              <label class="list-field" id="dept-field">
+                Departamento solicitante <span class="muted">(opcional)</span>
+                <select id="filter-department">
+                  <option value="">Todos</option>
+                </select>
+              </label>
+              <label class="list-field">
+                Modalidad <span class="muted">(opcional)</span>
+                <select id="filter-modality">
+                  <option value="">Todas</option>
+                  <option value="agile_purchase">Compra Ágil</option>
+                  <option value="framework_agreement">Convenio Marco</option>
+                  <option value="public_tender">Licitación Pública</option>
+                  <option value="direct_procurement">Trato Directo</option>
+                </select>
+              </label>
+            </div>
+            <div class="list-toolbar__row list-toolbar__row--checks">
+              <label class="list-check">
+                <input type="checkbox" id="filter-active" />
+                Proceso activo
+              </label>
+              <label class="list-check">
+                <input type="checkbox" id="filter-awaiting" />
+                Por firmar / aprobar
+              </label>
+              <button type="button" class="btn btn--secondary" id="btn-clear">Limpiar filtros</button>
+            </div>
+          </div>
+        </div>
+
+        <p class="list-count" id="list-count" aria-live="polite"></p>
 
         <div class="form-card">
           <div class="form-card__body" style="padding:0;">
@@ -24,12 +80,15 @@
                 <tr>
                   <th>Folio</th>
                   <th>Glosa</th>
+                  <th>Departamento</th>
                   <th>Modalidad</th>
                   <th>Estado</th>
+                  <th>Bandeja</th>
                 </tr>
               </thead>
               <tbody id="expedientes-tbody"></tbody>
             </table>
+            <p class="list-empty" id="list-empty" hidden>No hay expedientes con estos criterios</p>
           </div>
         </div>
       </div>
@@ -38,7 +97,13 @@
   </div>
   <script type="module">
     import { initAppShell, renderAdqBreadcrumb, siteUrl } from '../../shared/app-shell.js';
-    import { expedientesDemo, getExpedienteDetailUrl } from '../../shared/expedientes-demo.js';
+    import {
+      expedientesDemo,
+      DEMO_SOLICITANTE_UNIT_ID,
+      getExpedienteDetailUrl,
+      listDepartmentsFromDemo,
+      statusLabel,
+    } from '../../shared/expedientes-demo.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -49,32 +114,133 @@
       ],
     });
 
-    const tbody = document.getElementById('expedientes-tbody');
-    tbody.innerHTML = expedientesDemo
-      .map(
-        (exp) => `
-        <tr data-href="${siteUrl(getExpedienteDetailUrl(exp.id))}" tabindex="0" role="link">
-          <td class="folio-cell">${exp.id}</td>
-          <td>${exp.glosa}</td>
-          <td>${exp.modality}</td>
-          <td><span class="badge">${exp.globalStatus}</span></td>
-        </tr>
-      `,
-      )
-      .join('');
+    const els = {
+      viewer: document.getElementById('viewer-scope'),
+      scopeHint: document.getElementById('scope-hint'),
+      q: document.getElementById('filter-q'),
+      department: document.getElementById('filter-department'),
+      deptField: document.getElementById('dept-field'),
+      modality: document.getElementById('filter-modality'),
+      active: document.getElementById('filter-active'),
+      awaiting: document.getElementById('filter-awaiting'),
+      clear: document.getElementById('btn-clear'),
+      tbody: document.getElementById('expedientes-tbody'),
+      count: document.getElementById('list-count'),
+      empty: document.getElementById('list-empty'),
+    };
 
-    tbody.querySelectorAll('tr').forEach((row) => {
-      const go = () => {
-        window.location.href = row.dataset.href;
-      };
-      row.addEventListener('click', go);
-      row.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          go();
-        }
+    for (const d of listDepartmentsFromDemo()) {
+      const opt = document.createElement('option');
+      opt.value = d.id;
+      opt.textContent = d.name;
+      els.department.appendChild(opt);
+    }
+
+    function scopedBase() {
+      const scope = els.viewer.value;
+      if (scope === 'solicitante') {
+        return expedientesDemo.filter((e) => e.unitId === DEMO_SOLICITANTE_UNIT_ID);
+      }
+      return expedientesDemo.slice();
+    }
+
+    function matchesQuery(exp, q) {
+      if (!q) return true;
+      const hay = [exp.id, exp.glosa, exp.modality].join(' ').toLowerCase();
+      return hay.includes(q);
+    }
+
+    function applyFilters(rows) {
+      const q = els.q.value.trim().toLowerCase();
+      const dept = els.department.value;
+      const modality = els.modality.value;
+      const onlyActive = els.active.checked;
+      const onlyAwaiting = els.awaiting.checked;
+      const isSolicitante = els.viewer.value === 'solicitante';
+
+      return rows.filter((exp) => {
+        if (!matchesQuery(exp, q)) return false;
+        if (!isSolicitante && dept && exp.departmentId !== dept) return false;
+        if (modality && exp.modalityKey !== modality) return false;
+        if (onlyActive && exp.status !== 'in_progress') return false;
+        if (onlyAwaiting && !exp.awaitingMyAction) return false;
+        return true;
       });
+    }
+
+    function updateScopeUi() {
+      const isSolicitante = els.viewer.value === 'solicitante';
+      els.deptField.hidden = isSolicitante;
+      if (isSolicitante) els.department.value = '';
+      els.scopeHint.textContent = isSolicitante
+        ? 'Solo expedientes de su unidad (adq.solicitante / adq.aprobador_unidad).'
+        : 'Todos los expedientes del tenant (roles DAF / lectura amplia).';
+    }
+
+    function render() {
+      updateScopeUi();
+      const base = scopedBase();
+      const rows = applyFilters(base);
+
+      els.count.textContent = `Mostrando ${rows.length} de ${base.length}`;
+      els.empty.hidden = rows.length > 0;
+
+      els.tbody.innerHTML = rows
+        .map((exp) => {
+          const stubBadge = exp.fullDetail
+            ? ''
+            : '<span class="badge badge--stub">Solo listado · sin contenido</span>';
+          const bandeja = exp.awaitingMyAction
+            ? '<span class="badge badge--awaiting">Por firmar</span>'
+            : '—';
+          const navAttrs = exp.fullDetail
+            ? `data-href="${siteUrl(getExpedienteDetailUrl(exp.id))}" tabindex="0" role="link"`
+            : 'class="row--stub" title="Sin detalle demo"';
+          return `
+        <tr ${navAttrs}>
+          <td class="folio-cell">${exp.id}</td>
+          <td>${exp.glosa} ${stubBadge}</td>
+          <td>${exp.department}</td>
+          <td>${exp.modality}</td>
+          <td><span class="badge">${statusLabel(exp.status)}</span></td>
+          <td>${bandeja}</td>
+        </tr>`;
+        })
+        .join('');
+
+      els.tbody.querySelectorAll('tr[data-href]').forEach((row) => {
+        const go = () => {
+          window.location.href = row.dataset.href;
+        };
+        row.addEventListener('click', go);
+        row.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            go();
+          }
+        });
+      });
+    }
+
+    els.clear.addEventListener('click', () => {
+      els.q.value = '';
+      els.department.value = '';
+      els.modality.value = '';
+      els.active.checked = false;
+      els.awaiting.checked = false;
+      render();
     });
+
+    ['change', 'input'].forEach((evt) => {
+      els.viewer.addEventListener(evt, render);
+      els.q.addEventListener(evt, render);
+      els.department.addEventListener(evt, render);
+      els.modality.addEventListener(evt, render);
+      els.active.addEventListener(evt, render);
+      els.awaiting.addEventListener(evt, render);
+    });
+
+    render();
   </script>
 </body>
 </html>

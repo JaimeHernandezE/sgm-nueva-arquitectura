@@ -17,24 +17,29 @@
         <div class="form-card">
           <div class="form-card__header"><span>Integraciones del municipio</span></div>
           <div class="form-card__body">
-            <table class="form-table" id="int-table">
-              <thead>
-                <tr><th>Proveedor</th><th>Habilitado</th><th>Parámetros no secretos</th></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-            <h3 style="font-size:14px;margin:20px 0 12px;">Editar Mercado Público</h3>
-            <div class="form-row">
-              <label><input type="checkbox" id="mp-enabled" checked /> Habilitado <span class="required">*</span></label>
-            </div>
-            <div class="form-row">
-              <label>Código organismo <span class="required">*</span></label>
-              <input type="text" id="mp-org" value="1234" />
-            </div>
-            <button class="btn btn--secondary" type="button" id="btn-rotate">Rotar credencial…</button>
-            <div class="banner banner--info" style="margin-top:12px;">
-              Detalle de campos por proveedor: P-57. Secretos nunca en claro.
-            </div>
+            <section class="form-section">
+              <h3 class="form-section__title">Listado</h3>
+              <table class="form-table" id="int-table">
+                <thead>
+                  <tr><th>Proveedor</th><th>Habilitado</th><th>Parámetros no secretos</th></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </section>
+            <section class="form-section">
+              <h3 class="form-section__title">Editar Mercado Público</h3>
+              <div class="form-row">
+                <label><input type="checkbox" id="mp-enabled" checked /> Habilitado <span class="required">*</span></label>
+              </div>
+              <div class="form-row">
+                <label>Código organismo <span class="required">*</span></label>
+                <input type="text" id="mp-org" value="1234" />
+              </div>
+              <button class="btn btn--secondary" type="button" id="btn-rotate">Rotar credencial…</button>
+              <div class="banner banner--info" style="margin-top:12px;">
+                Detalle de campos por proveedor: P-57. Secretos nunca en claro.
+              </div>
+            </section>
           </div>
           <div class="form-actions">
             <button class="btn btn--primary" type="button" id="btn-save">Guardar</button>

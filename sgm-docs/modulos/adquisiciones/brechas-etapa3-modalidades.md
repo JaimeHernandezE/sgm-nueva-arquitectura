@@ -19,7 +19,7 @@ Metodología: para cada modalidad se releyó su ficha `3-resolucion-compra*.md` 
 | Wireframes `.md` | 6/6 | **0/8** | **0/14** | **0/2** |
 | Prototipo HTML | 6/6, con simulación de múltiples escenarios por sub-paso, probado end-to-end | 8/8 existen pero son cascarones (un campo de solo lectura + botón que cambia una etiqueta) | 14/14 existen, mismo patrón de cascarón — ninguna de las entidades de 3.9 (comisión evaluadora) está representada en la UI | 2/2 existen, mismo patrón |
 | OpenAPI real | Sí (`1-compra-agil/3-resolucion-compra.yaml`) | Solo README stub de 4 líneas | Solo README stub | Solo README stub |
-| Fixture con etapa 3 poblada | Sí (`ADQ-2026-00123`, "en curso") | No ("sin iniciar") | Parcial ("documentada como finalizada en showcase" — sin verificación real de que el flujo funcione) | No ("etapa 3 pendiente") |
+| Fixture con etapa 3 poblada | Sí (`ADQ-2026-00123`, "en curso") | No ("sin iniciar") | Parcial ("documentada como finalizada en demo" — sin verificación real de que el flujo funcione) | No ("etapa 3 pendiente") |
 | Ítems QA cubiertos | Sí | No | Excluido explícitamente del alcance actual | No |
 | Pendientes `P-nn` con ID propio | Varios (P-39, P-40, P-41...) | Ninguno — 8+ marcadores ⚠ inline sin ID, varios ya dicen literalmente "mismo pendiente que CA" | Ninguno — 7+ marcadores ⚠ inline sin ID | Ninguno — 4 marcadores ⚠ inline sin ID |
 
@@ -68,7 +68,7 @@ Es la modalidad con más contenido específico (14 sub-pasos, actos administrati
 - Alcance exacto de las inhabilidades de integrantes de la comisión evaluadora (3.9) — hoy es "propuesta, validar con jurídica." **[requiere jurídica; candidato a incorporarse a la matriz SoD general, P-25]**
 - Mecanismo de firma del contratista en 3.13 (FEA propia / firma en papel digitalizada / plataforma) — sin definir.
 
-**Riesgo adicional detectado:** la fixture `ADQ-2026-00045` describe LP como *"etapa 3 documentada como finalizada en showcase de prototipos"* — es decir, el prototipo se marcó como funcional para efectos de demo sin que exista una validación real de que el flujo de 14 sub-pasos funciona de punta a punta (a diferencia de CA, que sí se probó con Playwright en esta sesión). Es un falso positivo de completitud a tener presente.
+**Riesgo adicional detectado:** la fixture `ADQ-2026-00045` describe LP como *"etapa 3 documentada como finalizada en demo de prototipos"* — es decir, el prototipo se marcó como funcional para efectos de demo sin que exista una validación real de que el flujo de 14 sub-pasos funciona de punta a punta (a diferencia de CA, que sí se probó con Playwright en esta sesión). Es un falso positivo de completitud a tener presente.
 
 **Artefactos faltantes:** 0/14 wireframes, OpenAPI solo stub, ítems QA de esta modalidad explícitamente excluidos del alcance actual (`contracts.md` lo dice literalmente).
 

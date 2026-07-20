@@ -87,6 +87,18 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 | `proposed_fiscal_year` | número | **Opcional** — año fiscal asociado a la línea propuesta |
 | `status` | enum | **Obligatorio**. Valores: `draft`, `pending_approval`, `pending_finance`, `quoting_in_progress`, `quote_void`, … |
 
+### `PurchaseRequestAttachment`
+**Visibilidad:** expuesta — campos en contrato: `id`, `purchase_request_id`, `attachment_type`, `description`, `document_ref`
+
+1:N con `PurchaseRequest`. Documentos de respaldo opcionales de la SOLPED (distintos de la Resolución Fundada). Origen: wireframe `11-creacion-solped.md`.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `purchase_request_id` | ref. `PurchaseRequest` | **Obligatorio** |
+| `attachment_type` | enum | **Obligatorio**. Valores: `quote` (cotización), `product_reference_photo` (foto referencial del producto), `technical_sheet` (ficha técnica), `other` (otro antecedente) |
+| `description` | texto | **Obligatorio** — qué respalda el archivo (ej. «Cotización ACME — resmas») |
+| `document_ref` | ref. `DocumentRef` | **Obligatorio** — almacenado vía C10 (`storeDocument`) |
+
 ### `PurchaseRequestLine`
 **Visibilidad:** expuesta — campos en contrato: `id`, `purchase_request_id`, `item_description`, `quantity`, `unit_of_measure`, `unit_price`, `price_source`
 

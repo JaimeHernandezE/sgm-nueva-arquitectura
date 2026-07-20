@@ -17,38 +17,44 @@
         <div class="form-card">
           <div class="form-card__header"><span>Integraciones de plataforma</span></div>
           <div class="form-card__body">
-            <h3 style="font-size:14px;margin:0 0 12px;">Clave Única (OIDC)</h3>
-            <div class="form-row">
-              <label>Issuer URL <span class="required">*</span></label>
-              <input type="url" id="cu-issuer" value="https://accounts.claveunica.gob.cl" />
-            </div>
-            <div class="form-row">
-              <label>Client ID <span class="required">*</span></label>
-              <input type="text" id="cu-client" value="sgm-plataforma" />
-            </div>
-            <button class="btn btn--secondary" type="button" id="btn-cu">Guardar CU</button>
+            <section class="form-section">
+              <h3 class="form-section__title">Clave Única (OIDC)</h3>
+              <div class="form-row">
+                <label>Issuer URL <span class="required">*</span></label>
+                <input type="url" id="cu-issuer" value="https://accounts.claveunica.gob.cl" />
+              </div>
+              <div class="form-row">
+                <label>Client ID <span class="required">*</span></label>
+                <input type="text" id="cu-client" value="sgm-plataforma" />
+              </div>
+              <button class="btn btn--secondary" type="button" id="btn-cu">Guardar CU</button>
+            </section>
 
-            <h3 style="font-size:14px;margin:24px 0 12px;">Mercado Público — webhook nacional</h3>
-            <div class="form-row">
-              <label>Endpoint callback (solo lectura)</label>
-              <input type="text" value="https://api.sgm.subdere.gob.cl/webhooks/mp" readonly />
-            </div>
-            <div class="form-row">
-              <label>Estado suscripción</label>
-              <input type="text" value="activo" readonly />
-            </div>
-            <button class="btn btn--secondary" type="button" id="btn-mp">Guardar MP plataforma</button>
+            <section class="form-section">
+              <h3 class="form-section__title">Mercado Público — webhook nacional</h3>
+              <div class="form-row">
+                <label>Endpoint callback (solo lectura)</label>
+                <input type="text" value="https://api.sgm.subdere.gob.cl/webhooks/mp" readonly />
+              </div>
+              <div class="form-row">
+                <label>Estado suscripción</label>
+                <input type="text" value="activo" readonly />
+              </div>
+              <button class="btn btn--secondary" type="button" id="btn-mp">Guardar MP plataforma</button>
+            </section>
 
-            <h3 style="font-size:14px;margin:24px 0 12px;">Catálogo DmsAdapter (solo lectura)</h3>
-            <table class="form-table" id="dms-table">
-              <thead>
-                <tr><th>adapter_id</th><th>Nombre</th><th>api_style</th><th>versión</th></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-            <div class="banner banner--info" style="margin-top:12px;">
-              Secretos de CU/MP no se muestran en claro — rotación vía gestor (P-57).
-            </div>
+            <section class="form-section">
+              <h3 class="form-section__title">Catálogo DmsAdapter (solo lectura)</h3>
+              <table class="form-table" id="dms-table">
+                <thead>
+                  <tr><th>adapter_id</th><th>Nombre</th><th>api_style</th><th>versión</th></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <div class="banner banner--info" style="margin-top:12px;">
+                Secretos de CU/MP no se muestran en claro — rotación vía gestor (P-57).
+              </div>
+            </section>
           </div>
         </div>
       </div>

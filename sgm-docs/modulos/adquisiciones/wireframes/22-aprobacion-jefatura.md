@@ -10,7 +10,7 @@
 +----------------------------------------------------------+
 | SOLPED #1234 — Aprobación de modalidad     [Pendiente V°B°]|
 +----------------------------------------------------------+
-| [Decisión de modalidad — solo lectura]                    |
+| Decisión de modalidad (solo lectura)                        |
 | Modalidad seleccionada: Compra Ágil                        |
 | Monto estimado: $ 1.250.000 (19,21 UTM) · Gateway: OK       |
 | Solicitada por: Carla Fuentes (DAF Finanzas) · 26-06-2026   |
@@ -22,6 +22,7 @@
 | | Jefatura DAF     | FirmaGob| Pendiente  |               |
 | +------------------+--------+-------------+               |
 +----------------------------------------------------------+
+| Decisión                                                  |
 | Comentarios (obligatorio si rechazo)                      |
 | [________________________________________________]        |
 +----------------------------------------------------------+

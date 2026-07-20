@@ -20,36 +20,41 @@
             <button class="btn btn--primary" type="button" id="btn-propose">Proponer cambio</button>
           </div>
           <div class="form-card__body">
-            <table class="form-table" id="params-table">
-              <thead>
-                <tr><th>Clave</th><th>Valor</th><th>Vigente desde</th><th>Estado</th></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
+            <section class="form-section">
+              <h3 class="form-section__title">Listado</h3>
+              <table class="form-table" id="params-table">
+                <thead>
+                  <tr><th>Clave</th><th>Valor</th><th>Vigente desde</th><th>Estado</th></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </section>
             <div id="proposal-panel" hidden style="margin-top:20px;">
-              <h3 style="font-size:14px;margin:0 0 12px;">Propuesta / aprobación (doble control)</h3>
-              <div class="form-row">
-                <label>Clave <span class="required">*</span></label>
-                <input type="text" id="p-key" value="umbral_compra_agil" readonly />
-              </div>
-              <div class="form-row">
-                <label>Nuevo valor <span class="required">*</span></label>
-                <input type="text" id="p-value" value="120 UTM" />
-              </div>
-              <div class="form-row">
-                <label>Vigente desde <span class="required">*</span></label>
-                <input type="date" id="p-from" value="2026-08-01" />
-              </div>
-              <div class="form-row">
-                <label>Referencia legal <span class="required">*</span></label>
-                <input type="text" id="p-legal" value="Propuesta piloto 2026-H2" />
-              </div>
-              <div class="banner banner--info">Propuesto por: Operador SUBDERE A — el aprobador debe ser otra persona.</div>
-              <div class="form-actions" style="margin-top:12px;">
-                <button class="btn btn--secondary" type="button" id="btn-send">Enviar a aprobación</button>
-                <button class="btn btn--primary" type="button" id="btn-approve">Aprobar</button>
-                <button class="btn btn--secondary" type="button" id="btn-reject">Rechazar</button>
-              </div>
+              <section class="form-section">
+                <h3 class="form-section__title">Propuesta / aprobación (doble control)</h3>
+                <div class="form-row">
+                  <label>Clave <span class="required">*</span></label>
+                  <input type="text" id="p-key" value="umbral_compra_agil" readonly />
+                </div>
+                <div class="form-row">
+                  <label>Nuevo valor <span class="required">*</span></label>
+                  <input type="text" id="p-value" value="120 UTM" />
+                </div>
+                <div class="form-row">
+                  <label>Vigente desde <span class="required">*</span></label>
+                  <input type="date" id="p-from" value="2026-08-01" />
+                </div>
+                <div class="form-row">
+                  <label>Referencia legal <span class="required">*</span></label>
+                  <input type="text" id="p-legal" value="Propuesta piloto 2026-H2" />
+                </div>
+                <div class="banner banner--info">Propuesto por: Operador SUBDERE A — el aprobador debe ser otra persona.</div>
+                <div class="form-actions" style="margin-top:12px;">
+                  <button class="btn btn--secondary" type="button" id="btn-send">Enviar a aprobación</button>
+                  <button class="btn btn--primary" type="button" id="btn-approve">Aprobar</button>
+                  <button class="btn btn--secondary" type="button" id="btn-reject">Rechazar</button>
+                </div>
+              </section>
             </div>
           </div>
         </div>

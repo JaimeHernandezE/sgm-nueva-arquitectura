@@ -27,28 +27,35 @@
         <span class="badge badge--active" id="header-badge">En espera</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">
-          <strong>OC emitida — solo lectura</strong><br />
-          OC N° 4021-33-SE26 · Proveedor: Comercial Sur SpA · $ 1.240.000<br />
-          Esperando aceptación del proveedor en MP…
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Estado de la OC</h3>
+          <div class="info-panel">
+            <strong>OC emitida — solo lectura</strong><br />
+            OC N° 4021-33-SE26 · Proveedor: Comercial Sur SpA · $ 1.240.000<br />
+            Esperando aceptación del proveedor en MP…
+          </div>
+        </section>
 
-        <div class="form-row">
-          <label>Simular lectura MP <em>(solo demo — no existe en la ficha)</em></label>
-          <select id="simulate-result">
-            <option value="accepted_ok" selected>OC Aceptada — compromiso OK</option>
-            <option value="accepted_budget_unavailable">OC Aceptada — BUDGET_UNAVAILABLE (monto real sin saldo)</option>
-            <option value="accepted_provider_down">OC Aceptada — Presupuestos no disponible (reintento)</option>
-            <option value="rejected">OC Rechazada por el proveedor</option>
-          </select>
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Simulación de lectura MP</h3>
+          <p class="form-section__hint">Solo demo — no existe en la ficha del sub-paso.</p>
+          <div class="form-row">
+            <label>Simular lectura MP <em>(solo demo — no existe en la ficha)</em></label>
+            <select id="simulate-result">
+              <option value="accepted_ok" selected>OC Aceptada — compromiso OK</option>
+              <option value="accepted_budget_unavailable">OC Aceptada — BUDGET_UNAVAILABLE (monto real sin saldo)</option>
+              <option value="accepted_provider_down">OC Aceptada — Presupuestos no disponible (reintento)</option>
+              <option value="rejected">OC Rechazada por el proveedor</option>
+            </select>
+          </div>
 
-        <div class="banner hidden" id="result-banner"></div>
+          <div class="banner hidden" id="result-banner"></div>
 
-        <div class="info-panel hidden" id="next-step-panel">
-          <span id="next-step-text"></span>
-          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
-        </div>
+          <div class="info-panel hidden" id="next-step-panel">
+            <span id="next-step-text"></span>
+            <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
+          </div>
+        </section>
       </div>
       <div class="form-actions">
         <span></span>

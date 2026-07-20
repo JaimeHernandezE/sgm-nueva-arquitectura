@@ -22,6 +22,12 @@ paths:
         - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/PageSize
         - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Sort
         - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Order
+        - name: q
+          in: query
+          description: >
+            Búsqueda libre en folio, descripción (glosa) y etiqueta de modalidad (`procurement_type`).
+          schema:
+            type: string
         - name: procurement_type
           in: query
           schema:
@@ -30,6 +36,13 @@ paths:
           in: query
           schema:
             $ref: ./adquisiciones.openapi.yaml#/components/schemas/ProcurementCaseStatus
+        - name: requesting_department_id
+          in: query
+          description: >
+            Filtra por departamento solicitante (incluye unidades hijas del departamento).
+            Ignorado o rechazado si el rol fuerza scope de unidad (`adq.solicitante`, `adq.aprobador_unidad`).
+          schema:
+            type: string
         - name: requesting_unit_id
           in: query
           schema:
@@ -38,6 +51,12 @@ paths:
           in: query
           schema:
             type: string
+        - name: awaiting_my_action
+          in: query
+          description: >
+            Si es true, limita a expedientes en bandeja del actor autenticado (por firmar / aprobar).
+          schema:
+            type: boolean
       responses:
         "200":
           description: Colección paginada de expedientes.

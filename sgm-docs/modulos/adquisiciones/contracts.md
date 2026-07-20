@@ -24,6 +24,7 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | `CaseStep` | Expuesta | `id`, `procurement_case_id`, `step_number`, `name`, `status`, `responsible_unit_id`, `responsible_role`, `responsible_user_id`, `started_at`, `completed_at`, `elapsed_display` | 2.1 (instanciación), todas las etapas |
 | `PurchaseRequest` | Expuesta | `id`, `procurement_case_id`, `requesting_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status` | 1.1, 1.2, 2.1, 2.2 |
 | `PurchaseRequestLine` | Expuesta | `id`, `purchase_request_id`, `item_description`, `quantity`, `unit_of_measure`, `unit_price`, `price_source` | 1.1 |
+| `PurchaseRequestAttachment` | Expuesta | `id`, `purchase_request_id`, `attachment_type`, `description`, `document_ref` | 1.1 |
 | `PurchaseRequestApproval` | Expuesta | `id`, `purchase_request_id`, `approver_id`, `decision`, `decision_date`, `comments` | 1.2 |
 | `BudgetAvailabilityCertificate` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status`, `signature_mode` | 1.5 |
 | `BudgetPreCommitment` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `budget_availability_certificate_id`, `budget_line_id`, `estimated_amount`, `fiscal_year`, `status` | 1.6 |
@@ -56,9 +57,16 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 
 #### `GET /procurement-cases` — `listProcurementCases`
 - **Sub-pasos:** — *(consulta transversal)*
-- **Entrada:** query `page`, `page_size`, `sort`, `order`; filtros `procurement_type`, `status`, `requesting_unit_id`, `folio`
+- **Entrada:** query `page`, `page_size`, `sort`, `order`; filtros `q`, `procurement_type`, `status`, `requesting_department_id`, `requesting_unit_id`, `folio`, `awaiting_my_action`
 - **Respuesta:** colección paginada de `ProcurementCaseSummary`
-- **Reglas:** solo lectura; sin efectos colaterales
+- **Reglas:**
+  | Regla | Severidad | Error |
+  |---|---|---|
+  | Solo lectura; sin efectos colaterales | — | — |
+  | Filtros combinables (AND). `q` busca en folio, descripción (glosa) y etiqueta de `procurement_type` | — | — |
+  | `requesting_department_id` restringe a unidades hijas del departamento | — | — |
+  | `awaiting_my_action=true` limita a expedientes en bandeja del actor autenticado | — | — |
+  | Si el rol es `adq.solicitante` o `adq.aprobador_unidad`, el scope de unidad del `RoleAssignment` se aplica **siempre**; `requesting_department_id` / `requesting_unit_id` ajenos se ignoran o rechazan | blocking | `FORBIDDEN` *(o se fuerza el scope sin error — decisión de implementación)* |
 
 #### `GET /procurement-cases/{case_id}` — `getProcurementCase`
 - **Sub-pasos:** — *(vista expediente)*
@@ -416,7 +424,7 @@ Patrón upload-then-reference: el cliente sube vía `storeDocument` → recibe `
 | `storeDocument` | 1.1, 1.5, 4.1 | Síncrona bloqueante | `DOCUMENT_STORAGE_UNAVAILABLE`, `DOCUMENT_TYPE_NOT_ALLOWED`, `DOCUMENT_SIZE_EXCEEDED` |
 | `getDownloadUrl` | — *(lecturas de adjuntos)* | Síncrona | `DOCUMENT_NOT_FOUND`, `DOCUMENT_STORAGE_UNAVAILABLE` |
 
-Campos de adjunto en entidades expuestas: `founded_resolution_attachment`, `scanned_certificate_attachment`, `supporting_document_ref` — todos `DocumentRef`.
+Campos de adjunto en entidades expuestas: `founded_resolution_attachment`, `scanned_certificate_attachment`, `supporting_document_ref`, `PurchaseRequestAttachment.document_ref` — todos `DocumentRef`.
 
 ### 3.6 Inventario *(propuesta, QA ítem 4)*
 

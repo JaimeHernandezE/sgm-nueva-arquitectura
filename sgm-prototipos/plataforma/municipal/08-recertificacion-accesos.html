@@ -17,32 +17,38 @@
         <div class="form-card">
           <div class="form-card__header"><span>Recertificación de accesos</span></div>
           <div class="form-card__body">
-            <div class="form-row" style="display:flex;gap:12px;flex-wrap:wrap;">
-              <div>
-                <label>Periodo <span class="required">*</span></label>
-                <select id="period">
-                  <option>último trimestre</option>
-                  <option>últimos 6 meses</option>
-                </select>
+            <section class="form-section">
+              <h3 class="form-section__title">Filtros</h3>
+              <div class="form-row" style="display:flex;gap:12px;flex-wrap:wrap;">
+                <div>
+                  <label>Periodo <span class="required">*</span></label>
+                  <select id="period">
+                    <option>último trimestre</option>
+                    <option>últimos 6 meses</option>
+                  </select>
+                </div>
+                <div>
+                  <label>Filtro</label>
+                  <select>
+                    <option>sin actividad &gt; 90 días</option>
+                    <option>todos</option>
+                  </select>
+                </div>
               </div>
-              <div>
-                <label>Filtro</label>
-                <select>
-                  <option>sin actividad &gt; 90 días</option>
-                  <option>todos</option>
-                </select>
+              <button class="btn btn--primary" type="button" id="btn-report" style="margin:12px 0;">Generar reporte</button>
+            </section>
+            <section class="form-section">
+              <h3 class="form-section__title">Listado</h3>
+              <table class="form-table" id="recert-table">
+                <thead>
+                  <tr><th>Usuario</th><th>Roles</th><th>Últ. acceso</th><th>Acción</th></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <div class="banner banner--info" style="margin-top:12px;">
+                Fuente: seguridad.md §9.4 — reporte de cuentas y última actividad.
               </div>
-            </div>
-            <button class="btn btn--primary" type="button" id="btn-report" style="margin:12px 0;">Generar reporte</button>
-            <table class="form-table" id="recert-table">
-              <thead>
-                <tr><th>Usuario</th><th>Roles</th><th>Últ. acceso</th><th>Acción</th></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-            <div class="banner banner--info" style="margin-top:12px;">
-              Fuente: seguridad.md §9.4 — reporte de cuentas y última actividad.
-            </div>
+            </section>
           </div>
           <div class="form-actions">
             <button class="btn btn--secondary" type="button" id="btn-export">Exportar</button>

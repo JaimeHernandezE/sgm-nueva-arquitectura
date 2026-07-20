@@ -11,4 +11,5 @@ alwaysApply: false
 - Al editar layout, campos o acciones: actualizar el `.html` correspondiente en `sgm-prototipos/`.
 - Mantener nombres de operación alineados con `contracts.md` del módulo.
 - Tabla **Campos ↔ entidad** con columna **Obligatorio** completa (`Sí` / `No` / `Sí si …`); layout ASCII con `*` u `(opcional)` según `plantilla-maestra-sgm.md` §7.
+- Layout ASCII con **títulos de sección** visibles (misma jerarquía que el prototipo `.form-section__title`). Norma: `sgm-docs/arquitectura/patron-formularios-secciones.md`.
 - Ruta canónica Compra Ágil: `sgm-docs/modulos/adquisiciones/wireframes/`.

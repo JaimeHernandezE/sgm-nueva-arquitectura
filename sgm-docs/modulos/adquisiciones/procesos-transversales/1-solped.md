@@ -13,13 +13,14 @@
 | Plataforma | SGM |
 | Optativo | Falso |
 
-**Detalle:** La Unidad Solicitante crea la SOLPED en el SGM. Puede indicar opcionalmente la **modalidad de compra** prevista (`purchase_modality`): Compra Ágil, Convenio Marco, Licitación Pública o Trato Directo. Es una indicación provisional — puede confirmarse o cambiarse al inicio de la etapa 2 (Modalidad de Compra). Si se selecciona Trato Directo, es obligatorio adjuntar la **Resolución Fundada** (`founded_resolution_attachment`).
+**Detalle:** La Unidad Solicitante crea la SOLPED en el SGM. Puede indicar opcionalmente la **modalidad de compra** prevista (`purchase_modality`): Compra Ágil, Convenio Marco, Licitación Pública o Trato Directo. Es una indicación provisional — puede confirmarse o cambiarse al inicio de la etapa 2 (Modalidad de Compra). Si se selecciona Trato Directo, es obligatorio adjuntar la **Resolución Fundada** (`founded_resolution_attachment`). Además puede adjuntar **documentos de respaldo** opcionales (`PurchaseRequestAttachment`): cotizaciones, fotos referenciales del producto, fichas técnicas u otros antecedentes, cada uno con tipo, descripción y archivo (`document_ref` vía `storeDocument` del core).
 
 **Autoconsulta de saldo presupuestario (informativa):** si el usuario conoce la línea presupuestaria de destino, el formulario ofrece un **enlace informativo** («Consultar saldo en línea presupuestaria») que abre un panel lateral o modal. Allí puede indicar `budget_line_id`, año fiscal y —opcionalmente— el monto estimado de la SOLPED (suma de líneas) para obtener una **vista previa de saldo** vía `previewBudgetAvailability` (Presupuestos). Es **solo lectura**: no registra verificación, no avanza el flujo y **no sustituye** el sub-paso 1.3. El solicitante puede guardar la línea indicada como pista en `proposed_budget_line_id` (opcional) para prellenar la consulta y mostrarla al aprobador en 1.2.
 
 **Entidad(es) y campos:**
 - `PurchaseRequest` — `requesting_unit` (ref., **obligatorio**), `description` (texto, **obligatorio**), `justification` (texto, **obligatorio**), `requested_date` (fecha, **obligatorio**), `purchase_modality` (enum, **opcional**: `agile_purchase` \| `framework_agreement` \| `public_tender` \| `direct_procurement`), `founded_resolution_attachment` (`DocumentRef`, **obligatorio si** `purchase_modality = direct_procurement` — subida previa vía `storeDocument` del core), `proposed_budget_line_id` (ref. `BudgetLine`, **opcional**), `proposed_fiscal_year` (número, **opcional**), `status` (enum, **obligatorio**: `draft`)
 - `PurchaseRequestLine` (1 SOLPED → N líneas, ≥1) — `item_description` (texto, **obligatorio**), `quantity` (número, **obligatorio**), `unit_of_measure` (ref., **obligatorio**), `unit_price` (número, **obligatorio**), `price_source` (ref. `PriceReference`, **obligatorio**)
+- `PurchaseRequestAttachment` (1 SOLPED → 0..N, **opcional**) — `attachment_type` (enum, **obligatorio**: `quote` \| `product_reference_photo` \| `technical_sheet` \| `other`), `description` (texto, **obligatorio**), `document_ref` (`DocumentRef`, **obligatorio** — vía `storeDocument` del core)
 - `PriceReference` — `item_code` / `item_description_hash` (texto, **obligatorio**), `source` (enum, **obligatorio**), `reference_price` (número, **obligatorio**), `reference_date` (fecha, **obligatorio**), `currency` (enum, **obligatorio**, default CLP)
 
 > `unit_price` es obligatorio a nivel de línea, y debe validarse contra una fuente externa confiable (`PriceReference`) al momento de creación — no es un valor de ingreso libre sin referencia.
@@ -222,6 +223,7 @@ En ambos caminos se ejecuta `checkBudgetAvailability` antes de cerrar el paso. E
 |---|---|---|
 | `PurchaseRequest` | Raíz de la etapa | 1 por SOLPED; incluye `purchase_modality` (opcional) y `founded_resolution_attachment` (condicional) |
 | `PurchaseRequestLine` | 1:N con `PurchaseRequest` | Ítems de la solicitud, con `unit_price` obligatorio |
+| `PurchaseRequestAttachment` | 1:N con `PurchaseRequest` | Documentos de respaldo opcionales (cotización, foto, ficha técnica, otro) |
 | `PriceReference` | N:1 con `PurchaseRequestLine` | Nueva — fuente de precio a definir |
 | `PurchaseRequestApproval` | 1:N con `PurchaseRequest` | Historial de decisiones (permite múltiples ciclos rechazo/reenvío) |
 | `BudgetAvailabilityCertificate` | 1:1 con `PurchaseRequest` | CDP firmado por aprobador DAF |

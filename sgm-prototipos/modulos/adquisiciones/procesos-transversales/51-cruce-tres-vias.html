@@ -23,33 +23,45 @@
         <span class="badge badge--active">Pendiente</span>
       </div>
       <div class="form-card__body">
-        <div class="form-panel form-panel--module">
-          <strong>Fuente 1: Orden de Compra (MP)</strong><br />
-          Monto OC: $ 1.240.000 · Sincronizado 01/07/2026
-        </div>
-
-        <div class="info-panel">
-          <strong>Fuente 2: Recepción conforme (SGM)</strong><br />
-          Estado: Conforme · Fecha: 15/07/2026
-        </div>
-
-        <div class="form-panel form-panel--module">
-          <strong>Fuente 3: Factura (SII)</strong>
-          <div class="form-row" style="margin-top:8px;">
-            <label>N° factura <span class="required">*</span></label>
-            <input type="text" id="invoice-number" value="12345" />
-            <button class="btn btn--secondary" type="button" id="search-sii">Buscar en SII</button>
+        <section class="form-section">
+          <h3 class="form-section__title">Orden de Compra (MP)</h3>
+          <div class="form-panel form-panel--module">
+            <strong>Fuente 1: Orden de Compra (MP)</strong><br />
+            Monto OC: $ 1.240.000 · Sincronizado 01/07/2026
           </div>
-          <div id="invoice-result" class="info-panel info-panel--ok hidden" style="margin-top:8px;">
-            Monto factura: $ 1.240.000
-          </div>
-        </div>
+        </section>
 
-        <div class="info-panel" id="match-result">
-          <strong>Resultado del cruce</strong><br />
-          OC vs Recepción vs Factura: <em>Pendiente de ejecutar match</em><br />
-          Diferencia detectada: —
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Recepción conforme (SGM)</h3>
+          <div class="info-panel">
+            <strong>Fuente 2: Recepción conforme (SGM)</strong><br />
+            Estado: Conforme · Fecha: 15/07/2026
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h3 class="form-section__title">Factura (SII)</h3>
+          <div class="form-panel form-panel--module">
+            <strong>Fuente 3: Factura (SII)</strong>
+            <div class="form-row" style="margin-top:8px;">
+              <label>N° factura <span class="required">*</span></label>
+              <input type="text" id="invoice-number" value="12345" />
+              <button class="btn btn--secondary" type="button" id="search-sii">Buscar en SII</button>
+            </div>
+            <div id="invoice-result" class="info-panel info-panel--ok hidden" style="margin-top:8px;">
+              Monto factura: $ 1.240.000
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h3 class="form-section__title">Resultado del cruce</h3>
+          <div class="info-panel" id="match-result">
+            <strong>Resultado del cruce</strong><br />
+            OC vs Recepción vs Factura: <em>Pendiente de ejecutar match</em><br />
+            Diferencia detectada: —
+          </div>
+        </section>
       </div>
       <div class="form-actions">
         <a class="btn btn--secondary" id="cancel-link" href="../00-expediente/index.html">Cancelar</a>
