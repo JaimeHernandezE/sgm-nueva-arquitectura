@@ -109,7 +109,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 
 #### `POST /purchase-requests` — `createPurchaseRequest`
 - **Sub-pasos:** 1.1
-- **Entrada:** `PurchaseRequest` + `PurchaseRequestLine[]`
+- **Entrada:** `PurchaseRequest` + `PurchaseRequestLine[]` (`currency` a nivel de documento; `unit_price` **neto** en esa moneda; `tax_code` por línea)
 - **Respuesta:** `PurchaseRequest` con `status = draft`
 - **Reglas:**
   | Regla | Severidad | QA | Error |
@@ -120,10 +120,15 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Desviación precio vs referencia dentro de tolerancia | blocking ⚠ | — | `PRICE_DEVIATION_EXCEEDED` |
   | Si `purchase_modality = direct_procurement`, `founded_resolution_attachment` presente | blocking | — | `FOUNDED_RESOLUTION_REQUIRED` |
 - **Dependencias invocadas:** `getPriceReference`, `previewBudgetAvailability` *(informativa, bajo demanda desde enlace UI)*. Verificación de stock/catálogo CM: sub-paso **1.0** (optativo).
+- **Notas:**
+  - Precio siempre neto (convención de plataforma); no se captura «neto/bruto» como elección del usuario.
+  - Totales derivados: neto, impuestos, bruto. Autoconsulta y precompromiso orientativo usan **bruto** en CLP (municipio = consumidor final).
+  - Si `currency` ≠ CLP, la tasa en 1.1 es referencial; el hito que congela la tasa para compromiso está pendiente (ficha 1-solped).
+  - ⚠ Pendiente normativo: umbrales de modalidad (UTM) ¿neto o bruto?
 
 #### `GET /budget-lines/{id}/preview-availability` — `previewBudgetAvailability`
 - **Sub-pasos:** 1.1, 1.2 *(autoconsulta informativa; no avanza el flujo)*
-- **Entrada:** `budget_line_id`, `fiscal_year`, `amount` (opcional — monto estimado de la SOLPED)
+- **Entrada:** `budget_line_id`, `fiscal_year`, `amount` (opcional — monto estimado de la SOLPED **bruto en CLP**)
 - **Respuesta:** `available_balance`, `committed_by_others`, `projected_balance` (misma forma que `checkBudgetAvailability`)
 - **Reglas:** solo lectura; no persiste verificación ni afecta `PurchaseRequest.status`; requiere RBAC de consulta sobre la línea
 - **Dependencias:** Presupuestos (cacheada)

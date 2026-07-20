@@ -168,6 +168,26 @@
   border-radius: 2px;
 }
 
+.form-table__summary td {
+  background: var(--surface);
+  font-weight: bold;
+}
+
+.form-table__summary--secondary td {
+  font-weight: normal;
+  color: var(--text-muted, #666);
+}
+
+.form-table__summary-label {
+  text-align: right;
+}
+
+.form-table__summary-value,
+.solped-line__subtotal {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
 .info-panel {
   background: var(--surface);
   border: 1px solid var(--border-light);

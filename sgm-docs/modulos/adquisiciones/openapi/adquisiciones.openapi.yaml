@@ -197,6 +197,28 @@ components:
         - framework_agreement
         - public_tender
         - direct_procurement
+    DocumentCurrency:
+      type: string
+      enum:
+        - CLP
+        - UF
+        - UTM
+        - USD
+      default: CLP
+      description: >
+        Moneda del documento SOLPED. Todas las líneas se expresan en ella;
+        no se mezclan monedas en una misma solicitud. Default CLP.
+    LineTaxCode:
+      type: string
+      enum:
+        - iva_19
+        - exempt
+        - other
+      default: iva_19
+      description: >
+        Código de impuesto por línea. El precio unitario es siempre neto;
+        el sistema calcula el impuesto. Permite mezclar afectas y exentas.
+        Catálogo ampliable (retenciones, tasas especiales) — pendiente.
     PurchaseRequestAttachmentType:
       type: string
       enum:
@@ -383,6 +405,7 @@ components:
         - justification
         - requested_date
         - purchase_modality
+        - currency
         - status
       properties:
         id:
@@ -405,6 +428,8 @@ components:
           format: uuid
           nullable: true
           description: DocumentRef — subida previa vía core POST /documents (plataforma/contracts.md §2.10)
+        currency:
+          $ref: "#/components/schemas/DocumentCurrency"
         proposed_budget_line_id:
           type: string
           nullable: true
@@ -422,6 +447,7 @@ components:
         - quantity
         - unit_of_measure
         - unit_price
+        - tax_code
       properties:
         id:
           type: string
@@ -439,6 +465,9 @@ components:
         unit_price:
           type: number
           format: double
+          description: Precio unitario neto en la moneda del documento (`PurchaseRequest.currency`)
+        tax_code:
+          $ref: "#/components/schemas/LineTaxCode"
         price_source:
           type: string
           nullable: true
@@ -519,6 +548,7 @@ components:
               - quantity
               - unit_of_measure
               - unit_price
+              - tax_code
             properties:
               item_description:
                 type: string
@@ -532,6 +562,11 @@ components:
               unit_price:
                 type: number
                 format: double
+                description: Precio unitario neto en la moneda del documento (`currency`)
+              tax_code:
+                $ref: "#/components/schemas/LineTaxCode"
+        currency:
+          $ref: "#/components/schemas/DocumentCurrency"
         attachments:
           type: array
           description: Documentos de respaldo opcionales — cotizaciones, fotos referenciales, fichas técnicas u otros

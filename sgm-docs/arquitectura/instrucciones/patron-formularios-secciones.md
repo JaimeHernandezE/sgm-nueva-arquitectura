@@ -52,8 +52,9 @@ Implementación en [`sgm-prototipos/shared/forms.css`](../../../sgm-prototipos/s
 
 | Sección | Campos |
 |---|---|
-| Datos de la solicitud | Unidad, descripción, justificación, fecha, modalidad, Resolución Fundada |
-| Líneas de bienes/servicios | Tabla + agregar línea |
+| Datos de la solicitud | Unidad, descripción, justificación, fecha |
+| Líneas de bienes/servicios | Moneda, tabla de líneas, totales |
+| Modalidad prevista (opcional) | Modalidad de compra, aviso CM (si 1.0), Resolución Fundada |
 | Documentos de respaldo (opcional) | Tabla de adjuntos + hint de tipos |
 | Pista presupuestaria (opcional) | Línea, año fiscal, enlace consulta saldo |
 
