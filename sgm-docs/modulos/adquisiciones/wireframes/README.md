@@ -8,7 +8,7 @@ Patrón de secciones y subtítulos en formularios: [`../../../arquitectura/patro
 
 | Archivo | Sub-paso | Operación principal |
 |---|---|---|
-| [01-listado-expedientes.md](./01-listado-expedientes.md) | — *(consulta transversal)* | `listProcurementCases` |
+| [01-listado-expedientes.md](./01-listado-expedientes.md) | 0.1 | `listProcurementCases` |
 | [10-verificacion-previa.md](./10-verificacion-previa.md) | 1.0 *(optativo)* | `checkStockAvailability`, `checkCatalogAvailability` |
 | [11-creacion-solped.md](./11-creacion-solped.md) | 1.1 | `createPurchaseRequest` |
 | [12-visto-bueno-jefatura.md](./12-visto-bueno-jefatura.md) | 1.2 | `approvePurchaseRequest` |

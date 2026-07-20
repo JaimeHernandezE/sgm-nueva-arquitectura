@@ -56,7 +56,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 **Autorización (placeholder hasta P-02):** scope `adquisiciones:read` (personas) / `adquisiciones.read` (M2M).
 
 #### `GET /procurement-cases` — `listProcurementCases`
-- **Sub-pasos:** — *(consulta transversal)*
+- **Sub-pasos:** 0.1 — [Consulta de expedientes](./procesos-transversales/0-consulta-expedientes.md)
 - **Entrada:** query `page`, `page_size`, `sort`, `order`; filtros `q`, `procurement_type`, `status`, `requesting_department_id`, `requesting_unit_id`, `folio`, `awaiting_my_action`
 - **Respuesta:** colección paginada de `ProcurementCaseSummary`
 - **Reglas:**
@@ -69,7 +69,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Si el rol es `adq.solicitante` o `adq.aprobador_unidad`, el scope de unidad del `RoleAssignment` se aplica **siempre**; `requesting_department_id` / `requesting_unit_id` ajenos se ignoran o rechazan | blocking | `FORBIDDEN` *(o se fuerza el scope sin error — decisión de implementación)* |
 
 #### `GET /procurement-cases/{case_id}` — `getProcurementCase`
-- **Sub-pasos:** — *(vista expediente)*
+- **Sub-pasos:** 0.1 *(navegación desde listado)* · vista de expediente
 - **Entrada:** `case_id` (= folio `ADQ-AAAA-NNNNN`)
 - **Respuesta:** `ProcurementCaseDetail`
 - **Reglas:**
@@ -496,6 +496,8 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 | Sub-paso | Operaciones ofrecidas | Dependencias | Eventos |
 |---|---|---|---|
 | — | `listProcurementCases`, `getProcurementCase`, `listProcurementCaseSteps`, `listPurchaseRequests`, `getPurchaseRequest`, `listPurchaseOrders`, `getPurchaseOrder` | — | — |
+| 0.1 | `listProcurementCases`, `getProcurementCase` | — | — |
+| 0.2 | — *(navegación a 1.0/1.1)* | evaluación capacidades Inventario/CM | — |
 | 1.0 | — *(consulta deps)* | `checkStockAvailability`, `checkCatalogAvailability` *(cond.)* | — |
 | 1.1 | `createPurchaseRequest`, `submitPurchaseRequest` | `getPriceReference`, `previewBudgetAvailability` | — |
 | 1.2 | `approvePurchaseRequest`, `rejectPurchaseRequest` | `requestSignature`, `confirmSignature`, `previewBudgetAvailability` | `PurchaseRequestApproved` |

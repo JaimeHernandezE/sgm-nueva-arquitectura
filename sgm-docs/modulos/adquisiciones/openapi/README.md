@@ -28,7 +28,7 @@ openapi/
 
 | Fragmento OpenAPI | Ficha de proceso (`.md`) |
 |---|---|
-| `expediente.yaml` | Lecturas §2.0 de `contracts.md`; UI: [`patron-vista-expediente.md`](../../../arquitectura/patron-vista-expediente.md) |
+| `expediente.yaml` | Lecturas §2.0 de `contracts.md`; ficha [`0-consulta-expedientes.md`](../procesos-transversales/0-consulta-expedientes.md); UI: [`patron-vista-expediente.md`](../../../arquitectura/patron-vista-expediente.md) |
 | `procesos-transversales/1-solped.yaml` | `procesos-transversales/1-solped.md` |
 | `procesos-transversales/2-modalidad-compra.yaml` | `procesos-transversales/2-modalidad-compra.md` |
 | `procesos-transversales/4-recepcion-conforme.yaml` | `procesos-transversales/4-recepcion-conforme.md` |

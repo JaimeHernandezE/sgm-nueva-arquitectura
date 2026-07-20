@@ -12,8 +12,10 @@ paths:
       summary: Listar expedientes de compra
       description: >
         Consulta paginada de expedientes. Solo lectura; sin efectos colaterales. Requiere scope `adquisiciones:read`
-        (personas) o `adquisiciones.read` (M2M).
-      x-subpasos: []
+        (personas) o `adquisiciones.read` (M2M). Sub-paso 0.1
+        (`procesos-transversales/0-consulta-expedientes.md`).
+      x-subpasos:
+        - "0.1"
       security:
         - bearerPersonas: []
         - bearerM2M: []
@@ -74,8 +76,10 @@ paths:
       tags:
         - expediente
       summary: Obtener detalle de expediente
-      description: Vista de expediente con paso actual resumido.
-      x-subpasos: []
+      description: >
+        Vista de expediente con paso actual resumido. Sub-paso 0.1 (navegación desde listado).
+      x-subpasos:
+        - "0.1"
       security:
         - bearerPersonas: []
         - bearerM2M: []

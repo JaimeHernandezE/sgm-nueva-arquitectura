@@ -1,10 +1,12 @@
 # Wireframe: Listado de expedientes de compra
 
-**Pantalla:** transversal (entrada al módulo Adquisiciones)  
+**Sub-paso:** 0.1 — Listado / consulta de expedientes  
+**Ficha:** [`../procesos-transversales/0-consulta-expedientes.md`](../procesos-transversales/0-consulta-expedientes.md) §0.1  
 **Prototipo:** [`sgm-prototipos/modulos/adquisiciones/01-listado-expedientes.html`](../../../../sgm-prototipos/modulos/adquisiciones/01-listado-expedientes.html)  
 **Roles:** lectura según alcance — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
 **Operación principal:** `listProcurementCases`  
-**Navegación fila:** `getProcurementCase` → vista expediente
+**Navegación fila:** `getProcurementCase` → vista expediente  
+**API:** [`../contracts.md`](../contracts.md) §2.0 · [`../openapi/expediente.yaml`](../openapi/expediente.yaml)
 
 ## Layout
 

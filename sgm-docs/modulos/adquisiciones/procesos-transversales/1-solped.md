@@ -2,6 +2,8 @@
 
 *Proceso transversal — documentado en el piloto [Compra Ágil](../1.%20compra-agil/overview.md). Aplica conceptualmente a las 4 modalidades; extensión a otras modalidades pendiente de validación del piloto.*
 
+*Entrada al módulo (listado / nuevo expediente):* [`0-consulta-expedientes.md`](./0-consulta-expedientes.md).
+
 *Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md) (P-24).*
 
 ## 1.0 — Verificación previa (Inventario / catálogo CM)
