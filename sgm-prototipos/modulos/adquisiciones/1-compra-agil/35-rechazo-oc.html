@@ -20,24 +20,30 @@
     <div class="form-card">
       <div class="form-card__header">
         <span>SOLPED #1234 — Rechazo de la OC</span>
-        <span class="badge badge--active">Rechazada</span>
+        <span class="badge badge--active" id="header-badge">Esperando sync MP</span>
       </div>
       <div class="form-card__body">
-        <section class="form-section">
-          <h3 class="form-section__title">Contexto del rechazo</h3>
-          <div class="info-panel">
-            <strong>OC rechazada — registro manual (modo degradado)</strong><br />
-            OC N° 4021-33-SE26 · Proveedor: Comercial Sur SpA
+        <section class="form-section" id="pending-section">
+          <h3 class="form-section__title">Estado de sincronización</h3>
+          <div class="banner banner--info">
+            Esperando lectura de OC Rechazada. Sin transcripción manual del rechazo.
           </div>
+          <a class="btn btn--primary" href="https://www.mercadopublico.cl" target="_blank" rel="noopener">Gestionar en MP</a>
+          <button class="btn btn--secondary" type="button" id="simulate-sync" style="margin-left:8px;">Simular lectura MP (demo)</button>
+        </section>
 
-          <div class="form-row">
-            <label>Motivo (opcional — si MP lo trae)</label>
-            <input type="text" id="reason" placeholder="Motivo del rechazo…" />
+        <section class="form-section hidden" id="synced-section">
+          <h3 class="form-section__title">Contexto del rechazo — solo lectura</h3>
+          <div class="info-panel">
+            <strong>OC rechazada — sincronizado desde MP</strong><br />
+            OC N° 4021-33-SE26 · Proveedor: Comercial Sur SpA<br />
+            Motivo (si MP lo trae): Sin stock en región
           </div>
         </section>
 
-        <section class="form-section">
+        <section class="form-section hidden" id="decision-section">
           <h3 class="form-section__title">Tarea de decisión <span class="required">*</span></h3>
+          <p class="form-section__hint">Única acción editable en SGM (fuera de MP).</p>
           <div class="form-row">
             <label>
               <input type="radio" name="decision" value="reselect" style="width:auto;display:inline-block;margin-right:6px;" checked />
@@ -52,7 +58,7 @@
       </div>
       <div class="form-actions">
         <span></span>
-        <button class="btn btn--primary" type="button" id="continue">Continuar con la decisión</button>
+        <button class="btn btn--primary" type="button" id="continue" disabled>Continuar con la decisión</button>
       </div>
     </div>
       </div>
@@ -79,6 +85,14 @@
       kind: 'external',
       label: 'Mercado Público',
       mode: 'solo lectura',
+    });
+
+    document.getElementById('simulate-sync').addEventListener('click', () => {
+      document.getElementById('header-badge').textContent = 'Rechazada';
+      document.getElementById('pending-section').classList.add('hidden');
+      document.getElementById('synced-section').classList.remove('hidden');
+      document.getElementById('decision-section').classList.remove('hidden');
+      document.getElementById('continue').disabled = false;
     });
 
     document.getElementById('continue').addEventListener('click', () => {

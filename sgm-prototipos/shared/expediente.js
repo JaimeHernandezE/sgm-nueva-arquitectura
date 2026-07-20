@@ -53,6 +53,7 @@ function renderAction(action, step) {
   const classes = ['badge'];
   if (action.active) classes.push('badge--active');
   if (action.label === 'Omitido (optativo)') classes.push('badge--omitted');
+  if (action.label === 'Pendiente en MP' || action.label === 'Esperando sync MP') classes.push('badge--active');
   return `<span class="${classes.join(' ')}">${action.label}</span>`;
 }
 

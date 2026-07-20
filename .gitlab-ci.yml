@@ -1,6 +1,8 @@
 stages:
   - sync
+  - deploy
 
+# --- Mirror GitHub → GitLab (schedule / manual) ---
 sync_from_github:
   stage: sync
   variables:
@@ -25,4 +27,23 @@ sync_from_github:
     - git push --mirror
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - when: manual
+
+# --- GitLab Pages: prototipos HTML (equivalente a .github/workflows/pages-prototipos.yml) ---
+pages:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - mkdir -p public
+    - cp -a sgm-prototipos/. public/
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      changes:
+        - sgm-prototipos/**/*
+        - .gitlab-ci.yml
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
     - when: manual

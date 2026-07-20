@@ -115,7 +115,7 @@ La columna usa **código (sistema)**; el nombre de usuario está en §3.
 | `adq.aprobador_unidad` | (+ lector) `approvePurchaseRequest`, `rejectPurchaseRequest`, `previewBudgetAvailability` |
 | `adq.formulador_presupuesto` | (+ lector) `verifyBudgetAvailability` |
 | `adq.firmante_cdp` | (+ lector) `issueBudgetAvailabilityCertificate`, `registerScannedBudgetAvailabilityCertificate`, `createBudgetPreCommitment` |
-| `adq.gestor_compra` | (+ lector) `confirmProcurementModality`, `linkMpProcess`, `recordQuotationResult`, `registerPurchaseOrder`, `syncPurchaseOrderAccepted`, `releasePreCommitment` |
+| `adq.gestor_compra` | (+ lector) `confirmProcurementModality`, `linkMpProcess`, `syncPurchaseOrderAccepted`, `releasePreCommitment` |
 | `adq.aprobador_modalidad` | (+ lector) `approveModalityDecision`, `rejectModalityDecision` |
 | `adq.recepcionista` | (+ lector) `registerReceipt` |
 | `adq.confirmante_recepcion` | (+ lector) `confirmReceipt`, `recordAccrual` *(según P-46)* |

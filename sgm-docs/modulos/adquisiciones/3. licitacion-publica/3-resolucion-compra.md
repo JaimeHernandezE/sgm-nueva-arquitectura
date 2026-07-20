@@ -4,7 +4,7 @@
 
 *La vinculación con Mercado Público de esta modalidad es diferida: ocurre en el sub-paso 3.5 (tras bases aprobadas), no al cierre de la etapa 2 — ver `procesos-transversales/2-modalidad-compra.md` §2.3, cuya operación, validaciones y edge cases este sub-paso reutiliza íntegramente.*
 
-*Estándar MP ↔ SGM según plantilla §5. Lectura confirmada: OC Aceptada. Todas las demás lecturas de esta etapa son **deseadas**, con modo degradado = registro manual con `entry_mode = manual`; MP prevalece si la lectura llega después.*
+*Estándar MP ↔ SGM según plantilla §5. Lectura confirmada: OC Aceptada. Todas las demás lecturas de esta etapa son **deseadas**, con modo degradado = **paso pendiente en expediente + espera de lectura** (LP: 0 deep links de proceso; sin transcripción de datos MP en SGM). Excepción de bootstrap: ingreso del `mp_process_id` en 3.5.*
 
 *Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24).*
 
@@ -106,7 +106,7 @@
 
 **Detalle:** Los proveedores preguntan por el foro de MP; el comprador responde a todas simultáneamente mediante documento oficial de **Aclaración a las Bases**, sin identificar preguntantes, dentro del plazo de las bases. La respuesta se gestiona en MP; SGM registra el hito y el documento de aclaración en el expediente.
 
-**Lecturas MP:** preguntas recibidas / aclaración publicada — **deseadas**; degradado: registro manual del documento. **Edge cases:** aclaración que modifica sustantivamente las bases → puede requerir acto administrativo complementario y extensión de plazo. ⚠ Pendiente con jurídica: criterio de cuándo una aclaración exige acto formal.
+**Lecturas MP:** preguntas recibidas / aclaración publicada — **deseadas**; degradado: paso **Pendiente en MP** / **Esperando sync MP** hasta la lectura (sin transcribir el hito ni el documento desde MP; si el municipio adjunta en SGM un respaldo propio fuera de MP, es documento interno, no sustituto de la lectura). **Edge cases:** aclaración que modifica sustantivamente las bases → puede requerir acto administrativo complementario y extensión de plazo. ⚠ Pendiente con jurídica: criterio de cuándo una aclaración exige acto formal.
 
 ---
 
@@ -139,7 +139,7 @@
 
 **Detalle:** Cierre de recepción de ofertas y apertura electrónica en MP. SGM refleja el hito y el número de ofertas; el detalle de las ofertas se gestiona en MP.
 
-**Lecturas MP:** cierre y apertura, n° de ofertas — **deseadas**; degradado: registro manual del hito para habilitar 3.9.
+**Lecturas MP:** cierre y apertura, n° de ofertas — **deseadas**; degradado: badge **Esperando sync MP** hasta la lectura (sin registro manual del hito); 3.9 se habilita cuando llega el evento.
 
 ---
 
@@ -174,7 +174,7 @@
 
 **Detalle:** Sobre el acta, la autoridad dicta el acto terminal: **adjudicación** al ranking (o distinta del ranking, con fundamentación reforzada), **deserción** (sin oferentes o todos inadmisibles/inconvenientes) o **revocación** por interés público. Reutiliza `LegalReview` (revisión jurídica previa) y `AdministrativeAct` (firma). El acto se publica **en MP** por el usuario. La lectura de la **Resolución de Adjudicación publicada** trae monto real y RUT del adjudicatario y gatilla el **ajuste de la preobligación al monto adjudicado** (`adjustPreCommitment` → Presupuestos) — el compromiso cierto espera a la OC aceptada (3.14).
 
-**Lecturas MP:** Resolución de Adjudicación publicada — **deseada**; degradado: registro manual de monto y RUT al publicar. **Edge cases:** deserción → decisión posterior: relicitar (nuevo proceso MP, mismo expediente) o Trato Directo por causal de licitación desierta (reversión a etapa 2 con la causal precargada — ver `procesos-transversales/2-modalidad-compra.md` §2.1); adjudicación distinta del ranking → fundamentación obligatoria y visible en auditoría.
+**Lecturas MP:** Resolución de Adjudicación publicada — **deseada**; degradado: el acto se dicta y firma en SGM (fuera de MP); la publicación ocurre en MP y el ajuste presupuestario espera la lectura — **sin** transcribir monto/RUT desde MP en formulario. **Edge cases:** deserción → decisión posterior: relicitar (nuevo proceso MP, mismo expediente) o Trato Directo por causal de licitación desierta (reversión a etapa 2 con la causal precargada — ver `procesos-transversales/2-modalidad-compra.md` §2.1); adjudicación distinta del ranking → fundamentación obligatoria y visible en auditoría.
 
 ---
 

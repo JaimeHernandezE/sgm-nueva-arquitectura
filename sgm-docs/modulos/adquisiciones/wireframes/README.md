@@ -23,8 +23,8 @@ Patrón de anclas en plantillas firmables: [`../../../arquitectura/instrucciones
 | [22-aprobacion-jefatura.md](./22-aprobacion-jefatura.md) | 2.2 *(condicional, ver **[PENDIENTE P-38]**)* | `approveModalityDecision`, `rejectModalityDecision` |
 | [23-vinculacion-mp.md](./23-vinculacion-mp.md) | 2.3 | `linkMpProcess` |
 | [31-periodo-cotizacion.md](./31-periodo-cotizacion.md) | 3.1 *(CA — sin operación, solo lectura MP)* | — |
-| [32-cierre-seleccion-oferta.md](./32-cierre-seleccion-oferta.md) | 3.2 *(CA)* | `recordQuotationResult` |
-| [33-emision-oc.md](./33-emision-oc.md) | 3.3 *(CA)* | `registerPurchaseOrder` |
+| [32-cierre-seleccion-oferta.md](./32-cierre-seleccion-oferta.md) | 3.2 *(CA)* | — *(sync MP)* |
+| [33-emision-oc.md](./33-emision-oc.md) | 3.3 *(CA)* | — *(sync MP)* |
 | [34-aceptacion-oc.md](./34-aceptacion-oc.md) | 3.4 *(CA, hito crítico)* | `syncPurchaseOrderAccepted` |
 | [35-rechazo-oc.md](./35-rechazo-oc.md) | 3.5 *(CA, excluyente con 3.4)* | — (reflejo de lectura MP) |
 | [36-proceso-desierto-fallido.md](./36-proceso-desierto-fallido.md) | 3.6 *(CA, optativo)* | `releasePreCommitment` |

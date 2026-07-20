@@ -93,8 +93,8 @@ Enlazada desde el shell del expediente vía manifiestos de modalidad (`form-shel
 | stepId | Wireframe | Prototipo | Operaciones principales |
 |---|---|---|---|
 | 3.1 | `31-periodo-cotizacion.md` | `1-compra-agil/31-periodo-cotizacion.html` | — (sin operación, solo lectura MP) |
-| 3.2 | `32-cierre-seleccion-oferta.md` | `1-compra-agil/32-cierre-seleccion-oferta.html` | `recordQuotationResult` |
-| 3.3 | `33-emision-oc.md` | `1-compra-agil/33-emision-oc.html` | `registerPurchaseOrder` |
+| 3.2 | `32-cierre-seleccion-oferta.md` | `1-compra-agil/32-cierre-seleccion-oferta.html` | — (sync MP; deep link) |
+| 3.3 | `33-emision-oc.md` | `1-compra-agil/33-emision-oc.html` | — (sync MP; deep link) |
 | 3.4 | `34-aceptacion-oc.md` | `1-compra-agil/34-aceptacion-oc.html` | `syncPurchaseOrderAccepted` (hito crítico) |
 | 3.5 | `35-rechazo-oc.md` | `1-compra-agil/35-rechazo-oc.html` | — (excluyente con 3.4; camino alternativo) |
 | 3.6 | `36-proceso-desierto-fallido.md` | `1-compra-agil/36-proceso-desierto-fallido.html` | `releasePreCommitment` (camino alternativo) |

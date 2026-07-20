@@ -58,8 +58,6 @@ paths:
     $ref: ./procesos-transversales/2-modalidad-compra.yaml#/paths/~1modality-decisions~1{id}~1reject
   /procurement-cases/{id}/mp-link:
     $ref: ./procesos-transversales/2-modalidad-compra.yaml#/paths/~1procurement-cases~1{id}~1mp-link
-  /procurement-cases/{id}/quotation-result:
-    $ref: ./1-compra-agil/3-resolucion-compra.yaml#/paths/~1procurement-cases~1{id}~1quotation-result
   /purchase-orders/{id}/sync-accepted:
     $ref: ./1-compra-agil/3-resolucion-compra.yaml#/paths/~1purchase-orders~1{id}~1sync-accepted
   /procurement-cases/{id}/release-pre-commitment:
@@ -88,8 +86,6 @@ paths:
   /purchase-orders:
     get:
       $ref: ./expediente.yaml#/paths/~1purchase-orders/get
-    post:
-      $ref: ./1-compra-agil/3-resolucion-compra.yaml#/paths/~1purchase-orders/post
 components:
   securitySchemes:
     bearerPersonas:
@@ -234,11 +230,6 @@ components:
       enum:
         - electronic
         - scanned
-    EntryMode:
-      type: string
-      enum:
-        - mp_sync
-        - manual
     ReceiptType:
       type: string
       enum:
@@ -853,15 +844,22 @@ components:
         mp_quote_id:
           type: string
           nullable: true
-    QuotationResultInput:
+    QuotationResult:
       type: object
+      description: Espejo de selección de oferta — solo creado por sync MP (sin POST de usuario).
       required:
+        - id
+        - procurement_case_id
         - selected_provider_rut
         - selected_provider_name
         - offered_amount
         - lowest_price_selected
-        - entry_mode
+        - recorded_at
       properties:
+        id:
+          type: string
+        procurement_case_id:
+          type: string
         selected_provider_rut:
           type: string
         selected_provider_name:
@@ -871,39 +869,9 @@ components:
           format: double
         lowest_price_selected:
           type: boolean
-        entry_mode:
-          $ref: "#/components/schemas/EntryMode"
-    QuotationResult:
-      allOf:
-        - $ref: "#/components/schemas/QuotationResultInput"
-        - type: object
-          required:
-            - id
-            - procurement_case_id
-          properties:
-            id:
-              type: string
-            procurement_case_id:
-              type: string
-    RegisterPurchaseOrderRequest:
-      type: object
-      required:
-        - mp_oc_number
-        - provider_rut
-        - amount
-        - entry_mode
-      properties:
-        procurement_case_id:
+        recorded_at:
           type: string
-        mp_oc_number:
-          type: string
-        provider_rut:
-          type: string
-        amount:
-          type: number
-          format: double
-        entry_mode:
-          $ref: "#/components/schemas/EntryMode"
+          format: date-time
     PurchaseOrder:
       type: object
       required:
@@ -940,8 +908,6 @@ components:
         fulfillment_status:
           type: string
           nullable: true
-        entry_mode:
-          $ref: "#/components/schemas/EntryMode"
     BudgetCommitment:
       type: object
       required:

@@ -44,7 +44,7 @@
 
 ## Estados de pantalla
 
-- **Modo degradado:** vencido el plazo de cotización sin registro de selección (3.2), SGM presume posible desierto y crea tarea de verificación; el usuario confirma manualmente contra MP.
+- **Modo degradado:** vencido el plazo sin lectura de selección (3.2), el expediente muestra **Pendiente en MP** / posible desierto + deep link; la tarea de decisión se habilita cuando llega la lectura — sin confirmar por transcripción.
 - **Cancelado:** libera el 100% de la preobligación; notifica a la unidad solicitante.
 - **Reevaluar:** bloqueado en este prototipo — el procedimiento de reversión formal a etapa 2 no está definido (**[PENDIENTE P-34]**); se muestra la opción pero la acción real queda pendiente.
 

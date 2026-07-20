@@ -2,30 +2,31 @@
 
 **Sub-paso:** 3.3 — Emisión de la Orden de Compra *(Compra Ágil)*  
 **Rol:** Gestor de compra (`adq.gestor_compra`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)  
-**Operación:** `registerPurchaseOrder` · Dependencia: `readMpProcess` (deseada)
+**Operación:** — *(sin POST de usuario; sync `readMpProcess` → `PurchaseOrderIssued` / `ProviderIneligibleBlocked`)* · Dependencia: `readMpProcess` (deseada)
 
 ## Layout
 
 ```
 +----------------------------------------------------------------+
-| SOLPED #1234 — Emisión de la Orden de Compra       [Pendiente]  |
+| SOLPED #1234 — Emisión de la Orden de Compra  [Pendiente en MP] |
 +----------------------------------------------------------------+
-| Contexto de la oferta (solo lectura)                          |
+| Contexto de la oferta (solo lectura, tras sync 3.2)           |
 | Proveedor: Comercial Sur SpA · Monto ofertado: $ 1.240.000       |
 +----------------------------------------------------------------+
-| Acceso a Mercado Público                                       |
+| Acción en Mercado Público                                      |
 | [ Gestionar en MP ]  (deep link — emite la OC en el portal)      |
 +----------------------------------------------------------------+
-| Registro de la OC                                              |
-| N° de OC en Mercado Público *                                    |
-| [ 4021-33-SE26                                ]                  |
-|                                                                   |
-| [ Simular revalidación de habilidad (demo): Hábil ▾ ]             |
-|                                                                   |
-| [ Validar y registrar OC ]                                       |
+| Estado de sincronización                                       |
+| Esperando lectura: OC enviada o bloqueo por inhabilidad.        |
+| Sin campos de n° OC / monto — solo sync.                        |
 +----------------------------------------------------------------+
-| Resultado de validación                                        |
-| (banner de éxito, o de bloqueo por inhabilidad con alternativas) |
+| Tras sync — hábil                                              |
+| N° OC: 4021-33-SE26 · Estado: Emitida · Badge: Sincronizado     |
++----------------------------------------------------------------+
+| Tras sync — inhábil (gestión)                                  |
+| Banner: proveedor inhábil. Alternativas:                        |
+| [ Seleccionar siguiente oferta (vuelve a 3.2 en MP) ]           |
+| [ Cancelar proceso (3.6) ]                                       |
 +----------------------------------------------------------------+
 ```
 
@@ -33,31 +34,27 @@
 
 | Campo UI | Entidad.campo | Obligatorio |
 |---|---|---|
-| N° de OC en MP | `PurchaseOrder.mp_oc_id` | Sí |
-| Proveedor (heredado) | `PurchaseOrder.supplier_rut` | No (solo lectura) |
-| Monto (heredado) | `PurchaseOrder.total_amount` | No (solo lectura) |
-| Estado tras emitir | `PurchaseOrder.status` | Sí (generado: `issued`) |
-| Modo de registro | `PurchaseOrder.entry_mode` | Sí |
+| N° OC / proveedor / monto / estado | `PurchaseOrder.*` | Solo lectura tras sync |
 
 ## Acciones
 
 | Botón / control | Operación contrato | Dependencia |
 |---|---|---|
 | Gestionar en MP | — (deep link, navegación pura) | Mercado Público |
-| Validar y registrar OC | `registerPurchaseOrder` | `readMpProcess` (deseada) |
-| Simular revalidación (demo) | — *(solo prototipo)* | Ilustra bloqueo por inhabilidad del proveedor |
+| Seleccionar siguiente oferta / Cancelar | — (navegación / decisión SGM tras evento) | Tras `ProviderIneligibleBlocked` |
+| Simular lectura (demo) | — *(solo prototipo)* | Ilustra hábil vs inhábil |
 
 ## Estados de pantalla
 
-- **Hábil (camino feliz):** `PurchaseOrder` se crea en `status = issued`; evento `PurchaseOrderIssued`; habilita 3.4.
-- **Inhábil (gestión):** evento `ProviderIneligibleBlocked`; se crea tarea con dos alternativas: **seleccionar siguiente oferta** (vuelve a 3.2) o **cancelar** (va a 3.6, variante de proceso fallido).
-- **Modo degradado:** sin lecturas MP, el estado "OC enviada" se infiere del registro manual de 3.2 + deep link; el bloqueo por inhabilidad solo se conoce cuando el usuario lo ve en MP y lo registra manualmente.
+- **Pendiente:** deep link + badge `Pendiente en MP`.
+- **Hábil (camino feliz):** `PurchaseOrder` en `issued` por sync; evento `PurchaseOrderIssued`; habilita 3.4.
+- **Inhábil (gestión):** evento `ProviderIneligibleBlocked`; tarea con alternativas en SGM (decisión fuera de MP).
 
 ## Validaciones visibles
 
-- N° de OC obligatorio para registrar.
+- Ninguna de captura de datos MP en SGM.
 
 ## Notas
 
-- **Nota de reconciliación:** el estado se crea aquí como `issued` (no `sent`) y el evento es `PurchaseOrderIssued` (no `PurchaseOrderSent`), consistentes con el enum canónico de `entidades-core.md`.
-- OC emitida por monto distinto al ofertado (corrección en MP) → el monto que vale es el de la OC; se toma de la lectura de aceptación en 3.4, no se corrige aquí.
+- OC emitida por monto distinto al ofertado → el monto que vale es el de la OC; se toma de la lectura de aceptación en 3.4.
+- Modo degradado: pendiente + deep link hasta lectura (plantilla §5.3).

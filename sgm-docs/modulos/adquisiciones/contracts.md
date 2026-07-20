@@ -31,8 +31,8 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | `AgileQuoteProcess` | Expuesta | `id`, `purchase_request_id`, `deep_link_clicked_at`, `mp_quote_id` | 2.1 *(CA)* — duplica `ProcurementCase.mp_process_id`, ver `entidades-core.md` <!-- REVISAR: consolidar AgileQuoteProcess --> |
 | `ModalityDecision` | Expuesta | `id`, `procurement_case_id`, `selected_modality`, `ratified`, `requires_jefatura_approval`, `decided_by`, `decided_at` | 2.1 |
 | `ModalityDecisionApproval` | Expuesta | `id`, `modality_decision_id`, `approver_id`, `decision`, `decision_date` | 2.2 — existencia condicionada a **[PENDIENTE P-38]** |
-| `QuotationResult` | Expuesta | `id`, `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `entry_mode` | 3.2 *(CA)* |
-| `PurchaseOrder` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `mp_oc_id`, `supplier_rut`, `total_amount`, `selection_justification`, `status`, `acceptance_date`, `fulfillment_status`, `entry_mode` | 3.3, 3.4, 3.5 *(CA)* / 3.5, 3.14 *(LP)*, 4.1 |
+| `QuotationResult` | Expuesta | `id`, `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `recorded_at` | 3.2 *(CA)* |
+| `PurchaseOrder` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `mp_oc_id`, `supplier_rut`, `total_amount`, `selection_justification`, `status`, `acceptance_date`, `fulfillment_status` | 3.3, 3.4, 3.5 *(CA)* / 3.5, 3.14 *(LP)*, 4.1 |
 | `BudgetCommitment` | Expuesta | `id`, `purchase_order_id`, `budget_pre_commitment_id`, `committed_amount`, `commitment_date`, `source` | 3.4 *(CA)* / 3.14 *(LP)* |
 | `GoodsReceipt` | Expuesta | `id`, `purchase_order_id`, `received_by`, `received_date`, `receipt_type`, `receiving_unit`, `status`, `observations` | 4.1, 4.2 |
 | `ReceiptRejectionCase` | Expuesta | `id`, `goods_receipt_id`, `resolution_type`, `resolution_deadline`, `resolved_at`, `outcome` | 4.5 |
@@ -252,17 +252,15 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 - **Dependencias:** `readMpProcess` (deseada)
 - **Evento emitido:** `MpStateChanged`
 
-#### `POST /procurement-cases/{id}/quotation-result` — `recordQuotationResult`
-- **Sub-pasos:** 3.2 *(modo degradado — registro manual)*
-- **Entrada:** `QuotationResult` (`selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `entry_mode`)
-- **Respuesta:** `QuotationResult`
-- **Dependencias:** `readMpProcess` (deseada)
+#### *(sin operación de usuario — solo sync MP)* 3.2 Cierre y selección de oferta
+- **Dependencias:** `readMpProcess` (deseada) — crea `QuotationResult` y avanza el `CaseStep`
 - **Evento emitido:** `QuotationClosed`
+- **UI:** deep link + badge `Pendiente en MP` / detalle solo lectura tras sync (plantilla §5.3 — sin transcripción)
 
-#### `POST /purchase-orders` — `registerPurchaseOrder` *(continúa el nombre usado antes de la reconciliación; cubre lectura MP o registro manual según `entry_mode`)*
-- **Sub-pasos:** 3.3
-- **Entrada:** `mp_oc_number`, `provider_rut`, `amount`, `entry_mode`
-- **Evento emitido:** `PurchaseOrderIssued` / `ProviderIneligibleBlocked`
+#### *(sin operación de usuario — solo sync MP)* 3.3 Emisión de la OC
+- **Dependencias:** `readMpProcess` (deseada) — espejo `PurchaseOrder` en `issued` o evento de bloqueo
+- **Eventos emitidos:** `PurchaseOrderIssued` / `ProviderIneligibleBlocked`
+- **UI:** deep link «Gestionar en MP»; sin registro manual de n° OC / montos
 
 #### `POST /purchase-orders/{id}/sync-accepted` — `syncPurchaseOrderAccepted`
 - **Sub-pasos:** 3.4 *(CA)* / 3.14 *(LP)*
@@ -395,12 +393,12 @@ Consolidado en torno a `readMpProcess`, operación única de lectura que atiende
 |---|---|---|---|---|
 | `readMpProcess` — vinculación | 2.3, 3.5 *(LP, diferida)* | — | Síncrona bloqueante (solo en la vinculación) | `MP_PROCESS_NOT_FOUND` / `MP_PROCESS_ORGANISM_MISMATCH` / `MP_PROCESS_TYPE_MISMATCH` / `MP_PROCESS_ALREADY_LINKED`; `MP_PROVIDER_UNAVAILABLE` → **[PENDIENTE P-32]** |
 | `readMpProcess` — período de cotización | 3.1 | Deseada | Asíncrona | Sin efecto de gestión (informativo); retroceso exponencial |
-| `readMpProcess` — cierre y selección | 3.2 | Deseada | Asíncrona | Modo degradado: registro manual (`entry_mode = manual`) |
-| `readMpProcess` — OC enviada / bloqueo | 3.3 | Deseada | Asíncrona | Modo degradado: se infiere del registro manual + deep link |
+| `readMpProcess` — cierre y selección | 3.2 | Deseada | Asíncrona | Modo degradado: pendiente en expediente + deep link; avance solo con lectura |
+| `readMpProcess` — OC enviada / bloqueo | 3.3 | Deseada | Asíncrona | Modo degradado: pendiente + deep link; espejo solo con lectura |
 | `readMpProcess` — OC Aceptada | 3.4 *(CA)*, 3.14 *(LP)* | **Confirmada** | Asíncrona | Reintento con backoff; `PurchaseOrder` en `pending_mp_sync` |
-| `readMpProcess` — OC Rechazada | 3.5 | Deseada | Asíncrona | Modo degradado: registro manual del rechazo |
-| `readMpProcess` — desierto | 3.6 | Deseada | Asíncrona | Presunción de desierto vencido el plazo, confirmación manual |
-| `readMpProcess` — foro/apertura/adjudicación *(LP)* | 3.6, 3.8, 3.10 | Deseada | Asíncrona | Modo degradado: registro manual del hito |
+| `readMpProcess` — OC Rechazada | 3.5 | Deseada | Asíncrona | Modo degradado: esperando sync; tarea de decisión solo tras lectura |
+| `readMpProcess` — desierto | 3.6 | Deseada | Asíncrona | Pendiente / posible desierto hasta lectura; sin confirmación por transcripción |
+| `readMpProcess` — foro/apertura/adjudicación *(LP)* | 3.6, 3.8, 3.10 | Deseada | Asíncrona | Modo degradado: pendiente en expediente hasta lectura (LP: 0 deep links) |
 | `checkCatalogAvailability` | 1.0 *(si sync ChileCompra)*, 2.1 | — | Cacheada (frescura diaria) | Advertencia `CATALOG_STALE`; en 1.0 la banda CM se omite si no hay integración |
 
 Ver [`integracion-mercado-publico.md`](../../arquitectura/especificacion/integracion-mercado-publico.md): sin escritura API hacia MP.
@@ -514,8 +512,8 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 | 2.2 | `approveModalityDecision`, `rejectModalityDecision` *(inferidos)* | `requestSignature`, `confirmSignature` (condicional) | `ProcurementModalityApproved` — **[PENDIENTE P-38]** |
 | 2.3 | `linkMpProcess` | `readMpProcess` | `MpProcessLinked` |
 | 3.1 *(CA)* | — *(lectura MP)* | `readMpProcess` | `MpStateChanged` |
-| 3.2 *(CA)* | `recordQuotationResult` *(inferido)* | `readMpProcess` | `QuotationClosed` |
-| 3.3 *(CA)* | `registerPurchaseOrder` | `readMpProcess` | `PurchaseOrderIssued`, `ProviderIneligibleBlocked` |
+| 3.2 *(CA)* | — *(sync MP)* | `readMpProcess` | `QuotationClosed` |
+| 3.3 *(CA)* | — *(sync MP)* | `readMpProcess` | `PurchaseOrderIssued`, `ProviderIneligibleBlocked` |
 | 3.4 *(CA)* | `syncPurchaseOrderAccepted` | MP, `commitBudget` (Presupuestos) | `PurchaseOrderAccepted`, `BudgetCommitmentCreated` |
 | 3.5 *(CA)* | — *(lectura MP)* | `readMpProcess` | `PurchaseOrderRejected` |
 | 3.6 *(CA)* | `releasePreCommitment` | `readMpProcess`, `releasePreCommitment` (Presupuestos) | `ProcurementProcessFailed` |

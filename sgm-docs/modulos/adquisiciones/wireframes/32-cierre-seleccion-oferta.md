@@ -2,36 +2,28 @@
 
 **Sub-paso:** 3.2 — Cierre y selección de oferta *(Compra Ágil)*  
 **Rol:** Gestor de compra (`adq.gestor_compra`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)  
-**Operación:** `recordQuotationResult` *(nombre inferido — no declarado literalmente en la ficha)* · Dependencia: `readMpProcess` (deseada)
+**Operación:** — *(sin POST de usuario; sync `readMpProcess` → `QuotationClosed`)* · Dependencia: `readMpProcess` (deseada)
 
 ## Layout
 
 ```
 +----------------------------------------------------------------+
-| SOLPED #1234 — Cierre y selección de oferta        [Pendiente]  |
+| SOLPED #1234 — Cierre y selección de oferta   [Pendiente en MP] |
 +----------------------------------------------------------------+
 | Contexto del período (solo lectura)                           |
-| Cerrado: 30-06-2026 · 4 cotizaciones recibidas (demo)            |
+| Cerrado: 30-06-2026 · 4 cotizaciones recibidas (demo sync)      |
 +----------------------------------------------------------------+
-| Selección de proveedor                                        |
-| RUT proveedor seleccionado *                                    |
-| [ ______________________ ]                                      |
-| Nombre proveedor seleccionado *                                  |
-| [ ______________________ ]                                      |
-| Monto ofertado (CLP) *                                           |
-| [ ______________________ ]                                      |
-|                                                                   |
-| [ ] ¿Es la oferta de menor precio?                               |
-| Justificación (obligatoria si NO es la de menor precio) *        |
-| [________________________________________________] [oculto]     |
+| Acción en Mercado Público                                      |
+| [ Gestionar en MP ]  (deep link — selecciona la oferta en MP)    |
 +----------------------------------------------------------------+
-| Modo de registro                                              |
-| Manual (modo degradado) — MP prevalece si la lectura llega       |
-| después y difiere.                                              |
+| Estado de sincronización                                       |
+| Esperando lectura MP de cierre + oferta seleccionada.           |
+| Sin campos editables — los datos llegan solo por sync.          |
 +----------------------------------------------------------------+
-| [ Cancelar ]                        [ Confirmar selección ]      |
-+----------------------------------------------------------------+
-| Tras confirmar → Continuar a 3.3 (Emisión de la OC)              |
+| Tras sync (detalle solo lectura, si hay datos)                 |
+| Proveedor: Comercial Sur SpA · RUT 76.123.456-7                 |
+| Monto ofertado: $ 1.240.000 · Menor precio: Sí                  |
+| Badge: Sincronizado → Continuar a 3.3 (automático)              |
 +----------------------------------------------------------------+
 ```
 
@@ -39,32 +31,26 @@
 
 | Campo UI | Entidad.campo | Obligatorio |
 |---|---|---|
-| RUT proveedor seleccionado | `QuotationResult.selected_provider_rut` | Sí |
-| Nombre proveedor seleccionado | `QuotationResult.selected_provider_name` | Sí |
-| Monto ofertado | `QuotationResult.offered_amount` | Sí |
-| ¿Es la oferta de menor precio? | `QuotationResult.lowest_price_selected` | Sí |
-| Justificación | `PurchaseOrder.selection_justification` | Sí si no es menor precio |
-| Modo de registro | `QuotationResult.entry_mode` | Sí (generado) |
+| RUT / nombre / monto / menor precio | `QuotationResult.*` | Solo lectura tras sync (creados por lectura MP) |
 
 ## Acciones
 
 | Botón | Operación contrato | Dependencia |
 |---|---|---|
-| Confirmar selección | `recordQuotationResult` *(inferido)* | `readMpProcess` (deseada, no disponible en este prototipo → siempre modo manual) |
+| Gestionar en MP | — (deep link, navegación pura) | Mercado Público |
 
 ## Estados de pantalla
 
-- **Normal:** formulario de registro manual (modo degradado), porque la lectura MP de cierre+selección es deseada, no confirmada.
-- **Justificación obligatoria:** si el usuario marca que NO se eligió la oferta de menor precio (regla de la plataforma MP, reflejada aquí solo informativamente).
-- **Confirmado:** pantalla pasa a solo lectura; habilita 3.3.
+- **Pendiente:** badge `Pendiente en MP` + deep link; sin formulario.
+- **Sincronizado:** badge + detalle solo lectura (si el volumen lo amerita); el `CaseStep` avanzó con `QuotationClosed`.
+- **Justificación menor precio:** vive en MP; si la lectura la trae, se muestra en detalle RO.
 
 ## Validaciones visibles
 
-- Los tres campos de proveedor/monto son obligatorios.
-- Justificación obligatoria si `lowest_price_selected = false`.
-- **[PENDIENTE P-33]** Timer de escalamiento si el usuario no gestiona la selección en MP dentro de un plazo razonable.
+- Ninguna de captura en SGM.
 
 ## Notas
 
-- Legalmente no existe aprobación interna obligatoria en Compra Ágil para este paso — es informativo, no de gestión (salvo que se confirme **[PENDIENTE P-39]**, VB interno pre-OC configurable).
-- Si la lectura MP llegara después y difiere del registro manual, MP prevalece (fuente de verdad legal); la discrepancia queda en auditoría — no modelado interactivamente en este prototipo.
+- Legalmente no existe aprobación interna obligatoria en Compra Ágil — es informativo (salvo **[PENDIENTE P-39]**).
+- Modo degradado (lectura deseada): el expediente permanece pendiente hasta la lectura; no hay transcripción (plantilla §5.3).
+- **[PENDIENTE P-33]** Timer de escalamiento si el usuario no gestiona la selección en MP a tiempo.

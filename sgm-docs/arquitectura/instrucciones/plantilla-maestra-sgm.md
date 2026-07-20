@@ -227,7 +227,7 @@ Las fichas declaran la clasificación como **quinta materia de la tabla de ficha
 ### 5.3 Lecturas deseadas vs. confirmadas, y modo degradado
 
 - Cada ficha que dependa de una lectura MP indica si esa lectura está **confirmada** (existe en la API actual de MP) o es **deseada** (depende de la negociación con ChileCompra).
-- Todo sub-paso que dependa de una lectura *deseada* debe documentar su **modo degradado**: cómo avanza el flujo si la lectura no existe (típicamente, registro manual del usuario con menor granularidad de trazabilidad). La especificación no queda rehén de una API no negociada.
+- Todo sub-paso que dependa de una lectura *deseada* debe documentar su **modo degradado**: cómo se comporta la UI y el expediente mientras la lectura no existe. El modo degradado canónico es: **paso pendiente explícito en el seguimiento del expediente** + **deep link** (si la modalidad lo declara) + **espera de la lectura API**. El `CaseStep` avanza **solo** cuando llega `readMpProcess` / `MpStateChanged`. **Prohibido** reescribir en SGM datos de negocio que viven en MP (proveedor, montos, n° OC, selección, hitos de foro/apertura/adjudicación, rechazo, etc.): en SGM son solo lectura (badge o vista de detalle). Excepción de bootstrap: el ingreso del `mp_process_id` en vinculación (llave para iniciar el espejo). Campos editables en SGM solo para datos **fuera de MP** (SOLPED, decisiones internas, Contraloría, CDP escaneado, etc.). La especificación no queda rehén de una API no negociada.
 
 ### 5.4 Integraciones externas y documentos (propiedad del core)
 

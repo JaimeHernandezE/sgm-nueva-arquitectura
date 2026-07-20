@@ -214,7 +214,6 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `supplier_eligibility_check` | booleano | **Opcional** (derivado) — resultado de validación de habilidad |
 | `cancellation_reason` | texto | **Obligatorio si** cancelación antes de emitir |
 | `fulfillment_status` | enum | **Opcional** (derivado). Valores: `pending`, `partially_received`, `fully_received` |
-| `entry_mode` | enum | **Obligatorio**. Valores: `mp_read` \| `manual` |
 
 ### `BudgetCommitment` (Compromiso Cierto / Obligación)
 **Visibilidad:** expuesta — campos en contrato: `id`, `purchase_order_id`, `budget_pre_commitment_id`, `committed_amount`, `commitment_date`, `source`
@@ -395,9 +394,9 @@ Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validac
 | `source` | enum | **Obligatorio**. Valores: `push`, `polling` |
 
 ### `QuotationResult` *(sugerida, no confirmada en fuente)*
-**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `entry_mode`
+**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `recorded_at`
 
-1:N con `ProcurementCase`. Resultado de la selección de oferta al cierre del período de cotización; `entry_mode` distingue si el dato proviene de lectura MP o de registro manual (modo degradado, ver `plantilla-maestra-sgm.md` §5.3). Origen: ficha `3-resolucion-compra.md` §3.2.
+1:N con `ProcurementCase`. Resultado de la selección de oferta al cierre del período de cotización; **solo se crea por sync** desde lectura MP (plantilla §5.3 — sin transcripción manual). Origen: ficha `3-resolucion-compra.md` §3.2.
 
 | Campo | Tipo | Notas |
 |---|---|---|
@@ -406,7 +405,6 @@ Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validac
 | `selected_provider_name` | texto | **Obligatorio** |
 | `offered_amount` | número | **Obligatorio** |
 | `lowest_price_selected` | booleano | **Obligatorio** |
-| `entry_mode` | enum | **Obligatorio**. Valores: `mp_read`, `manual` |
 | `recorded_at` | fecha/hora | **Obligatorio** (generado por sistema) |
 
 ### `ReceiptRejectionCase` *(sugerida, no confirmada en fuente)*

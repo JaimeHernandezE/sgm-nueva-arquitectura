@@ -20,57 +20,46 @@
     <div class="form-card">
       <div class="form-card__header">
         <span>SOLPED #1234 — Cierre y selección de oferta</span>
-        <span class="badge badge--active" id="header-badge">Pendiente</span>
+        <span class="badge badge--active" id="header-badge">Pendiente en MP</span>
       </div>
       <div class="form-card__body">
         <section class="form-section">
           <h3 class="form-section__title">Contexto del período</h3>
           <div class="info-panel">
             <strong>Período de cotización — solo lectura</strong><br />
-            Cerrado: 30-06-2026 · 4 cotizaciones recibidas (demo)
+            Cerrado: 30-06-2026 · 4 cotizaciones recibidas (demo sync)
           </div>
         </section>
 
         <section class="form-section">
-          <h3 class="form-section__title">Selección de oferta</h3>
-          <div class="form-row">
-            <label>RUT proveedor seleccionado <span class="required">*</span></label>
-            <input type="text" id="provider-rut" value="76.123.456-7" />
-          </div>
-          <div class="form-row">
-            <label>Nombre proveedor seleccionado <span class="required">*</span></label>
-            <input type="text" id="provider-name" value="Comercial Sur SpA" />
-          </div>
-          <div class="form-row">
-            <label>Monto ofertado (CLP) <span class="required">*</span></label>
-            <input type="text" id="offered-amount" value="1240000" />
-          </div>
+          <h3 class="form-section__title">Acción en Mercado Público</h3>
+          <p class="form-section__hint">La selección ocurre en MP. SGM no permite editar proveedor ni monto.</p>
+          <a class="btn btn--primary" id="mp-link" href="https://www.mercadopublico.cl" target="_blank" rel="noopener">Gestionar en MP</a>
+        </section>
 
-          <div class="form-row">
-            <label>
-              <input type="checkbox" id="lowest-price" style="width:auto;display:inline-block;margin-right:6px;" checked />
-              ¿Es la oferta de menor precio?
-            </label>
-          </div>
-
-          <div class="form-row hidden" id="justification-row">
-            <label>Justificación (obligatorio si NO es la de menor precio) <span class="required">*</span></label>
-            <textarea id="justification" placeholder="Motivo por el que no se eligió la oferta de menor precio…"></textarea>
-          </div>
-
+        <section class="form-section" id="pending-section">
+          <h3 class="form-section__title">Estado de sincronización</h3>
           <div class="banner banner--info">
-            Modo de registro: <strong>Manual (modo degradado)</strong> — MP prevalece si la lectura llega después y difiere.
+            Esperando lectura MP de cierre + oferta seleccionada. El paso avanza solo cuando llega el sync.
           </div>
+          <button class="btn btn--secondary" type="button" id="simulate-sync">Simular lectura MP (demo)</button>
+        </section>
 
-          <div class="info-panel hidden" id="next-step-panel">
-            Selección confirmada.
+        <section class="form-section hidden" id="synced-section">
+          <h3 class="form-section__title">Oferta seleccionada — solo lectura</h3>
+          <div class="info-panel" id="selection-detail">
+            <strong>Sincronizado desde MP</strong><br />
+            Proveedor: Comercial Sur SpA · RUT 76.123.456-7<br />
+            Monto ofertado: $ 1.240.000 · Menor precio: Sí
+          </div>
+          <div class="info-panel" id="next-step-panel">
+            Selección sincronizada.
             <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.3</a>
           </div>
         </section>
       </div>
       <div class="form-actions">
-        <button class="btn btn--secondary" type="button" id="cancel">Cancelar</button>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar selección</button>
+        <button class="btn btn--secondary" type="button" id="cancel">Volver al expediente</button>
       </div>
     </div>
       </div>
@@ -80,7 +69,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, relativeFormHref } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -99,42 +88,15 @@
       mode: 'solo lectura',
     });
 
-    const rutInput = document.getElementById('provider-rut');
-    const nameInput = document.getElementById('provider-name');
-    const amountInput = document.getElementById('offered-amount');
-    const lowestPriceCheck = document.getElementById('lowest-price');
-    const justificationRow = document.getElementById('justification-row');
-    const justification = document.getElementById('justification');
-    const cancelBtn = document.getElementById('cancel');
-    const confirmBtn = document.getElementById('confirm');
-    const nextStepPanel = document.getElementById('next-step-panel');
-    const nextStepLink = document.getElementById('next-step-link');
-
-    nextStepLink.href = relativeFormHref('33-emision-oc.html');
-
-    function toggleJustification() {
-      justificationRow.classList.toggle('hidden', lowestPriceCheck.checked);
-    }
-    lowestPriceCheck.addEventListener('change', toggleJustification);
-    toggleJustification();
-
-    cancelBtn.addEventListener('click', () => {
+    document.getElementById('next-step-link').href = relativeFormHref('33-emision-oc.html');
+    document.getElementById('cancel').addEventListener('click', () => {
       window.location.href = getExpedienteUrl(expedienteId);
     });
 
-    confirmBtn.addEventListener('click', () => {
-      if (!rutInput.value.trim() || !nameInput.value.trim() || !amountInput.value.trim()) {
-        alert('Complete RUT, nombre y monto (demo).');
-        return;
-      }
-      if (!lowestPriceCheck.checked && !justification.value.trim()) {
-        alert('Justificación obligatoria si no es la oferta de menor precio (demo).');
-        return;
-      }
-      demoAction('recordQuotationResult');
-      document.getElementById('header-badge').textContent = 'Confirmada';
-      [rutInput, nameInput, amountInput, lowestPriceCheck, justification, confirmBtn].forEach((el) => { el.disabled = true; });
-      nextStepPanel.classList.remove('hidden');
+    document.getElementById('simulate-sync').addEventListener('click', () => {
+      document.getElementById('header-badge').textContent = 'Sincronizado';
+      document.getElementById('pending-section').classList.add('hidden');
+      document.getElementById('synced-section').classList.remove('hidden');
     });
   </script>
 </body>
