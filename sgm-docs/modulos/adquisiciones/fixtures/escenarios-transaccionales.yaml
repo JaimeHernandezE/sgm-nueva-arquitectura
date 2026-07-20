@@ -33,12 +33,13 @@ scenarios:
     title: Verificación presupuestaria sin saldo
     tenant: municipio-demo-norte
     operationId: verifyBudgetAvailability
+    fixture_ref: ADQ-2026-00142
     request:
       method: POST
-      path: /purchase-requests/PR-FIXTURE-NO-SALDO/budget-verification
+      path: /purchase-requests/PR-2026-00142/budget-verification
       body:
-        budget_line_id: bl-2210-999
-        amount: 999999999
+        budget_line_id: bl-2210-003
+        amount: 2450000
         fiscal_year: 2026
         decision: confirmed
     response:

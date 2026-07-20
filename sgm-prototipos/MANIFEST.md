@@ -29,7 +29,7 @@ Sidebar «Plataforma» → plataforma/index.html (hub consolas)
 ```
 
 - Sidebar derecho: módulos SGM (`shared/app-shell.js`, `shared/modules-registry.js`) — incluye **Plataforma** (core) y Adquisiciones.
-- Perfiles de expediente: [`shared/expedientes-demo.js`](./shared/expedientes-demo.js) — los **4** expedientes del listado tienen detalle completo (etapas 1–5). La etapa 3 es específica por modalidad.
+- Perfiles de expediente: [`shared/expedientes-demo.js`](./shared/expedientes-demo.js) — **5** expedientes con detalle completo (4 modalidades + caso sin saldo `ADQ-2026-00142`). La etapa 3 es específica por modalidad.
 - Datos demo por expediente: [`shared/demo-data/`](./shared/demo-data/) (`getStages(expedienteId)`).
 - Datos demo core: [`shared/demo-data/plataforma.js`](./shared/demo-data/plataforma.js).
 - Presets de formularios: [`shared/form-presets.js`](./shared/form-presets.js) + [`shared/form-bootstrap.js`](./shared/form-bootstrap.js).
@@ -54,6 +54,7 @@ Antes de modificar un sub-paso `N.M`:
 
 | stepId | Wireframe | Prototipo | Operaciones principales |
 |---|---|---|---|
+| 1.0 | `sgm-docs/.../wireframes/10-verificacion-previa.md` | `procesos-transversales/10-verificacion-previa.html` | `checkStockAvailability`, `checkCatalogAvailability` *(optativo; omitible)* |
 | 1.1 | `sgm-docs/.../wireframes/11-creacion-solped.md` | `procesos-transversales/11-creacion-solped.html` | `createPurchaseRequest`, `submitPurchaseRequest`, `previewBudgetAvailability` |
 | 1.2 | `12-visto-bueno-jefatura.md` | `12-visto-bueno-jefatura.html` | `approvePurchaseRequest`, `rejectPurchaseRequest` |
 | 1.3 | `13-verificacion-disponibilidad.md` | `13-verificacion-disponibilidad.html` | `verifyBudgetAvailability` |

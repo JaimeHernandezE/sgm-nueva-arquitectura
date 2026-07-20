@@ -119,7 +119,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | `unit_price` con referencia válida | blocking | — | `PRICE_REFERENCE_UNAVAILABLE` |
   | Desviación precio vs referencia dentro de tolerancia | blocking ⚠ | — | `PRICE_DEVIATION_EXCEEDED` |
   | Si `purchase_modality = direct_procurement`, `founded_resolution_attachment` presente | blocking | — | `FOUNDED_RESOLUTION_REQUIRED` |
-- **Dependencias invocadas:** `getPriceReference`, `checkStockAvailability` *(propuesta)*, `previewBudgetAvailability` *(informativa, bajo demanda desde enlace UI)*
+- **Dependencias invocadas:** `getPriceReference`, `previewBudgetAvailability` *(informativa, bajo demanda desde enlace UI)*. Verificación de stock/catálogo CM: sub-paso **1.0** (optativo).
 
 #### `GET /budget-lines/{id}/preview-availability` — `previewBudgetAvailability`
 - **Sub-pasos:** 1.1, 1.2 *(autoconsulta informativa; no avanza el flujo)*
@@ -396,7 +396,7 @@ Consolidado en torno a `readMpProcess`, operación única de lectura que atiende
 | `readMpProcess` — OC Rechazada | 3.5 | Deseada | Asíncrona | Modo degradado: registro manual del rechazo |
 | `readMpProcess` — desierto | 3.6 | Deseada | Asíncrona | Presunción de desierto vencido el plazo, confirmación manual |
 | `readMpProcess` — foro/apertura/adjudicación *(LP)* | 3.6, 3.8, 3.10 | Deseada | Asíncrona | Modo degradado: registro manual del hito |
-| `checkCatalogAvailability` | 2.1 | — | Cacheada (frescura diaria) | Advertencia `CATALOG_STALE` |
+| `checkCatalogAvailability` | 1.0 *(si sync ChileCompra)*, 2.1 | — | Cacheada (frescura diaria) | Advertencia `CATALOG_STALE`; en 1.0 la banda CM se omite si no hay integración |
 
 Ver [`integracion-mercado-publico.md`](../../arquitectura/integracion-mercado-publico.md): sin escritura API hacia MP.
 
@@ -426,11 +426,13 @@ Patrón upload-then-reference: el cliente sube vía `storeDocument` → recibe `
 
 Campos de adjunto en entidades expuestas: `founded_resolution_attachment`, `scanned_certificate_attachment`, `supporting_document_ref`, `PurchaseRequestAttachment.document_ref` — todos `DocumentRef`.
 
-### 3.6 Inventario *(propuesta, QA ítem 4)*
+### 3.6 Inventario *(propuesta, QA ítem 4 / P-44)*
 
 | Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
 |---|---|---|---|
-| `checkStockAvailability` | 1.1 | Síncrona bloqueante ⚠ | Procede sin verificación; log de auditoría |
+| `checkStockAvailability` | 1.0 *(optativo)* | Síncrona asesora | Si Inventario no está disponible y tampoco hay catálogo CM, el sub-paso 1.0 se **omite** (creación directa a 1.1). Si solo falla Inventario pero hay CM, 1.0 continúa con banda CM. |
+
+**Regla de omisión 1.0:** sin inventario utilizable (interno ni externo) **y** sin catálogo CM integrado → no se invoca esta pantalla; “Nuevo expediente” → `createPurchaseRequest` / UI 1.1.
 
 ---
 
@@ -494,7 +496,8 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 | Sub-paso | Operaciones ofrecidas | Dependencias | Eventos |
 |---|---|---|---|
 | — | `listProcurementCases`, `getProcurementCase`, `listProcurementCaseSteps`, `listPurchaseRequests`, `getPurchaseRequest`, `listPurchaseOrders`, `getPurchaseOrder` | — | — |
-| 1.1 | `createPurchaseRequest`, `submitPurchaseRequest` | `getPriceReference`, `checkStockAvailability`, `previewBudgetAvailability` | — |
+| 1.0 | — *(consulta deps)* | `checkStockAvailability`, `checkCatalogAvailability` *(cond.)* | — |
+| 1.1 | `createPurchaseRequest`, `submitPurchaseRequest` | `getPriceReference`, `previewBudgetAvailability` | — |
 | 1.2 | `approvePurchaseRequest`, `rejectPurchaseRequest` | `requestSignature`, `confirmSignature`, `previewBudgetAvailability` | `PurchaseRequestApproved` |
 | 1.3 | `verifyBudgetAvailability` | `checkBudgetAvailability` | — |
 | 1.4 | `requestBudgetFinancing` | — | `BudgetFinancingRequested` |

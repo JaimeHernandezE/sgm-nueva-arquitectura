@@ -14,16 +14,26 @@
     <main class="app-main">
       <div class="page page--listado">
         <div id="breadcrumb"></div>
-        <h1>Expedientes de compra</h1>
-        <p class="subtitle">Consulta transversal — filtros acumulables · wireframe 01</p>
+        <div class="page-header-row">
+          <div>
+            <h1>Expedientes de compra</h1>
+            <p class="subtitle">Consulta transversal — filtros acumulables · wireframe 01</p>
+          </div>
+          <button type="button" class="btn btn--primary" id="btn-nuevo">Nuevo expediente</button>
+        </div>
 
         <div class="demo-panel" id="demo-panel">
           <label>
             Ver como:
             <select id="viewer-scope">
+              <option value="daf" selected>Usuario DAF</option>
               <option value="solicitante">Unidad solicitante</option>
-              <option value="daf">Usuario DAF</option>
             </select>
+          </label>
+          <label class="list-check">
+            <input type="checkbox" id="skip-precheck" />
+            Omitir paso 1.0
+            <span class="muted">(sin Inventario ni catálogo CM)</span>
           </label>
           <span class="list-hint" id="scope-hint"></span>
         </div>
@@ -117,6 +127,8 @@
     const els = {
       viewer: document.getElementById('viewer-scope'),
       scopeHint: document.getElementById('scope-hint'),
+      skipPrecheck: document.getElementById('skip-precheck'),
+      nuevo: document.getElementById('btn-nuevo'),
       q: document.getElementById('filter-q'),
       department: document.getElementById('filter-department'),
       deptField: document.getElementById('dept-field'),
@@ -229,6 +241,18 @@
       els.active.checked = false;
       els.awaiting.checked = false;
       render();
+    });
+
+    els.nuevo.addEventListener('click', () => {
+      if (els.skipPrecheck.checked) {
+        window.location.href = siteUrl(
+          'modulos/adquisiciones/procesos-transversales/11-creacion-solped.html',
+        );
+      } else {
+        window.location.href = siteUrl(
+          'modulos/adquisiciones/procesos-transversales/10-verificacion-previa.html',
+        );
+      }
     });
 
     ['change', 'input'].forEach((evt) => {

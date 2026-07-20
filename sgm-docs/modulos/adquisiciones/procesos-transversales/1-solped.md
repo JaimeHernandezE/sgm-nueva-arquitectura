@@ -4,6 +4,48 @@
 
 *Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md) (P-24).*
 
+## 1.0 — Verificación previa (Inventario / catálogo CM)
+
+| Materia | Valor |
+|---|---|
+| Unidad municipal | Unidad Solicitante |
+| Rol | Solicitante ([`adq.solicitante`](../../../arquitectura/catalogo-roles.md)) |
+| Plataforma | SGM |
+| Optativo | **Verdadero** — se omite si el tenant no tiene inventario utilizable (interno ni externo) **y** no tiene catálogo Convenio Marco integrado vía ChileCompra |
+
+**Detalle:** Antes de crear la SOLPED, el solicitante puede buscar el bien/servicio para saber si ya existe en **bodegas municipales** (Inventario interno o sistemas externos adaptados al mismo contrato) o en el **catálogo de Convenio Marco** (espejo ChileCompra). Si hay stock en bodega, el camino feliz **no** es un expediente de compra sino una **solicitud a bodega** (proceso enunciado; alcance Bodega/Inventario pendiente **[P-44]**). Si no hay stock pero el ítem aparece en catálogo CM, el sistema informa el hallazgo y pide confirmación para generar el expediente de compra; en 1.1 se muestra una advertencia no bloqueante sobre la modalidad sugerida. Si el paso está omitido (sin capacidades), “Nuevo expediente” conduce directo a 1.1.
+
+**Condiciones de habilitación:**
+
+| Capacidad | Efecto en 1.0 |
+|---|---|
+| Inventario (interno o externo) vía `checkStockAvailability` | Paso visible; banda de resultados de stock |
+| Catálogo CM espejado (`checkCatalogAvailability`, sync ChileCompra) | Paso visible; banda CM (puede coexistir con Inventario) |
+| Ninguna de las anteriores | **Paso omitido** — creación → 1.1 |
+
+**Entidad(es) y campos:** no crea entidades de dominio de Adquisiciones. Solo consulta dependencias; el contexto de búsqueda/CM puede pasar a 1.1 como pista de UI (no persistida como entidad propia en v1).
+
+**Borde de módulo:**
+
+| # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
+|---|---|---|---|---|---|
+| 1 | Dependencia *(propuesta, QA ítem 4 / P-44)* | `checkStockAvailability` | Inventario (interno o externo vía adaptador) | Síncrona *(asesora)* | Entrada: texto / `item_code`, `quantity` (opcional) — Respuesta: `available_quantity`, `warehouse_label`, `suggested_action` (`use_stock` \| `continue_purchase`) |
+| 2 | Dependencia *(condicional a integración catálogo ChileCompra)* | `checkCatalogAvailability` | Catálogo CM espejado (Core / MP) | Cacheada (frescura diaria) | Entrada: descripción / `item_code`, `region` — Respuesta: `available`, `catalog_price`, `provider_count`, `agreement_id` / etiqueta convenio |
+
+**Edge cases:**
+- Sin Inventario ni catálogo CM → sub-paso omitido; no hay pantalla 1.0.
+- Hit en stock → CTA principal hacia solicitud a bodega (proceso TBD); continuar compra es vía secundaria asesora y auditable.
+- Hit solo en CM → confirmación para crear expediente; en 1.1 advertencia no bloqueante en `purchase_modality` (sugerencia `framework_agreement`). La validación bloqueante V2 permanece en 2.1.
+- Proveedor Inventario caído con catálogo CM activo → se muestra solo banda CM (o mensaje de degradación en banda stock).
+- Catálogo CM no integrado → 1.0 solo si hay Inventario; sin Inventario, omitido.
+- Solicitud a bodega aún no especificada → UI enunciada; no bloquea el diseño de Adquisiciones (**P-44**).
+
+> ⚠ **Pendiente:** proceso de solicitud a bodega; decisión de bases Inventario/Activo Fijo (**P-44**); disponibilidad real del sync diferencial de catálogo CM con ChileCompra.
+
+**Wireframe / prototipo:** [`../wireframes/10-verificacion-previa.md`](../wireframes/10-verificacion-previa.md)
+
+---
+
 ## 1.1 — Creación de solicitud
 
 | Materia | Valor |
@@ -30,8 +72,9 @@
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
 | 1 | Sistema externo | `getPriceReference` | Core (SII) | Cacheada | `PriceReference` (`item_code`, `reference_price`, `reference_date`, `source`) |
-| 2 | Dependencia *(propuesta, QA ítem 4)* | `checkStockAvailability` | Inventario | Síncrona bloqueante *(asesora hasta definir alcance)* | Entrada: `item_code`, `quantity` — Respuesta: `available_quantity`, `suggested_action` (`use_stock` \| `continue_purchase`) |
-| 3 | Dependencia | `previewBudgetAvailability` | Presupuestos | Cacheada / informativa | Entrada: `budget_line_id`, `fiscal_year`, `amount` (opcional) — Respuesta: `available_balance`, `committed_by_others`, `projected_balance` — sin efecto en el expediente |
+| 2 | Dependencia | `previewBudgetAvailability` | Presupuestos | Cacheada / informativa | Entrada: `budget_line_id`, `fiscal_year`, `amount` (opcional) — Respuesta: `available_balance`, `committed_by_others`, `projected_balance` — sin efecto en el expediente |
+
+> La verificación de stock / catálogo CM se anticipa en el sub-paso **1.0** (optativo). En 1.1 solo se refleja el contexto si el usuario llegó desde 1.0 con hallazgo CM (advertencia no bloqueante en modalidad).
 
 **Edge cases:**
 - SOLPED incompleta o sin justificación → sistema no permite avanzar a V°B° (`status` no transiciona a `pending_approval` sin campos obligatorios completos).
@@ -39,7 +82,7 @@
 - Modalidad indicada en borrador pero corregida en etapa 2 → `purchase_modality` actualizable hasta confirmación en etapa 2; cambio registrado en auditoría.
 - Fuente de precios no disponible (API caída) → operación `createPurchaseRequest` retorna `PRICE_REFERENCE_UNAVAILABLE` (`severity: blocking`) hasta definir regla alternativa; ver pendiente.
 - Precio ingresado muy distinto al de referencia → sin % de desviación definido (patrón transversal, ver también 3.2 y 5.1).
-- Proveedor Inventario no disponible *(si se adopta ítem 4)* → `createPurchaseRequest` procede sin verificación de stock; se registra advertencia en log de auditoría.
+- Llegada desde 1.0 con ítem en catálogo CM → advertencia no bloqueante junto a `purchase_modality` (sugerencia Convenio Marco); el usuario puede cambiar la modalidad.
 - Autoconsulta de saldo con línea inexistente o sin permiso RBAC → `previewBudgetAvailability` retorna error en el panel; el borrador de SOLPED no se bloquea.
 - Presupuestos no disponible en autoconsulta → mensaje `BUDGET_PROVIDER_UNAVAILABLE` en el panel; el usuario puede continuar redactando la SOLPED.
 
@@ -233,8 +276,9 @@ En ambos caminos se ejecuta `checkBudgetAvailability` antes de cerrar el paso. E
 
 | Sub-paso | Tipo | Contrato o Evento | Contraparte |
 |---|---|---|---|
+| 1.0 | Dependencia *(propuesta / P-44)* | `checkStockAvailability` | Inventario *(omitible)* |
+| 1.0 | Dependencia *(condicional sync ChileCompra)* | `checkCatalogAvailability` | Catálogo CM espejado |
 | 1.1 | Sistema externo | `getPriceReference` | Core (SII) |
-| 1.1 | Dependencia *(propuesta)* | `checkStockAvailability` | Inventario |
 | 1.1 | Dependencia | `previewBudgetAvailability` | Presupuestos *(informativa)* |
 | 1.2 | Dependencia | `requestSignature`, `confirmSignature` | Core (FirmaGob) |
 | 1.2 | Dependencia | `previewBudgetAvailability` | Presupuestos *(informativa)* |

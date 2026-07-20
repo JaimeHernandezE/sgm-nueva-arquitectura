@@ -57,6 +57,20 @@ export const expedientesDemo = [
     globalStatus: 'Demo · Resolución de Compra completa',
     fullDetail: true,
   },
+  {
+    id: 'ADQ-2026-00142',
+    glosa: 'Equipamiento audiovisual sala de consejo',
+    modality: 'Compra Ágil',
+    modalityKey: 'agile_purchase',
+    department: 'Administración Municipal',
+    departmentId: 'ou-admin',
+    unit: 'Unidad Solicitante',
+    unitId: 'ou-solicitante',
+    status: 'in_progress',
+    awaitingMyAction: true,
+    globalStatus: 'Sin saldo · pendiente financiamiento (1.4)',
+    fullDetail: true,
+  },
   // --- Stubs solo listado (sin timeline / sin detalle) ---
   {
     id: 'ADQ-2026-00201',

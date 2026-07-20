@@ -6,7 +6,7 @@ Solo la etapa 3 (Resolución de Compra) tiene documentación específica por mod
 
 ## Etapas transversales
 
-1. [SOLPED](./1-solped.md) — creación, V°B° de jefatura, verificación presupuestaria, CDP, preobligación (y solicitud de financiamiento optativa)
+1. [SOLPED](./1-solped.md) — verificación previa optativa (1.0), creación, V°B° de jefatura, verificación presupuestaria, CDP, preobligación (y solicitud de financiamiento optativa)
 2. [Modalidad de Compra](./2-modalidad-compra.md) — ratificación/selección de modalidad legal (gateway de validación), aprobación de jefatura (condicional), vinculación con Mercado Público (inmediata en CA/CM, diferida en LP/TD)
 4. [Recepción Conforme](./4-recepcion-conforme.md) — recepción física del bien/servicio, verificación de conformidad, alta en inventario/activo fijo (condicional), devengado
 5. [Pago](./5-pago.md) — cruce de 3 vías, devengo, decreto y ejecución de pago

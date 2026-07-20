@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1.0 — Verificación previa</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+
+        <div class="form-card">
+          <div class="form-card__header">
+            <span>Nuevo expediente — verificación previa</span>
+            <span class="badge">1.0 · optativo</span>
+          </div>
+          <div class="form-card__body">
+            <section class="form-section">
+              <h3 class="form-section__title">¿Qué necesita adquirir?</h3>
+              <p class="form-section__hint">
+                Consulte Inventario (bodegas) y, si hay integración, el catálogo Convenio Marco (ChileCompra)
+                antes de crear un expediente de compra.
+              </p>
+              <div class="list-toolbar__row">
+                <label class="list-field list-field--grow">
+                  Buscar <span class="required">*</span>
+                  <input
+                    type="search"
+                    id="search-q"
+                    placeholder="Ej. papel, notebook, guantes…"
+                    autocomplete="off"
+                  />
+                </label>
+                <button class="btn btn--primary" type="button" id="btn-search">Buscar</button>
+              </div>
+            </section>
+
+            <section class="form-section" id="section-inventory">
+              <h3 class="form-section__title">Inventario / bodegas municipales</h3>
+              <div id="inventory-results" class="search-results">
+                <p class="muted">Ingrese un término y pulse Buscar.</p>
+              </div>
+            </section>
+
+            <section class="form-section" id="section-cm">
+              <h3 class="form-section__title">Catálogo Convenio Marco (ChileCompra)</h3>
+              <div id="cm-results" class="search-results">
+                <p class="muted">Ingrese un término y pulse Buscar.</p>
+              </div>
+            </section>
+
+            <div class="banner banner--info" id="confirm-hint" hidden>
+              Sin stock en bodega. Puede continuar con la creación de un expediente de compra (SOLPED).
+            </div>
+          </div>
+          <div class="form-actions">
+            <a class="btn btn--secondary" id="btn-cancel" href="../01-listado-expedientes.html">Cancelar</a>
+            <button class="btn btn--primary" type="button" id="btn-continue" disabled>
+              Continuar a creación de SOLPED
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+
+  <script type="module">
+    import { initAppShell, siteUrl, renderAdqBreadcrumb } from '../../../shared/app-shell.js';
+    import { demoAction } from '../../../shared/form-shell.js';
+    import {
+      searchInventory,
+      searchCmCatalog,
+      formatClp,
+    } from '../../../shared/demo-data/catalog-search-demo.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+
+    document.getElementById('breadcrumb').innerHTML = renderAdqBreadcrumb({
+      items: [
+        { label: 'Adquisiciones', href: 'modulos/adquisiciones/index.html' },
+        { label: 'Expedientes', href: 'modulos/adquisiciones/01-listado-expedientes.html' },
+        { label: '1.0 — Verificación previa' },
+      ],
+    });
+
+    const els = {
+      q: document.getElementById('search-q'),
+      search: document.getElementById('btn-search'),
+      inv: document.getElementById('inventory-results'),
+      cm: document.getElementById('cm-results'),
+      continue: document.getElementById('btn-continue'),
+      cancel: document.getElementById('btn-cancel'),
+      hint: document.getElementById('confirm-hint'),
+    };
+
+    els.cancel.href = siteUrl('modulos/adquisiciones/01-listado-expedientes.html');
+
+    let lastCmHit = null;
+    let lastQuery = '';
+
+    function renderInventory(items) {
+      if (!items.length) {
+        els.inv.innerHTML = '<p class="muted">Sin stock para esta búsqueda.</p>';
+        return false;
+      }
+      els.inv.innerHTML = items
+        .map(
+          (item) => `
+        <div class="search-result-card">
+          <strong>${item.name}</strong>
+          <div class="muted">${item.warehouse} · disponible ${item.availableQuantity} ${item.unit}</div>
+          <div class="search-result-card__actions">
+            <button type="button" class="btn btn--secondary btn-bodega" data-id="${item.id}">
+              Solicitud a bodega
+            </button>
+            <button type="button" class="btn btn--link btn-force-buy" data-name="${item.name}">
+              Continuar con expediente de compra de todos modos
+            </button>
+          </div>
+          <p class="form-section__hint">
+            Proceso de solicitud a bodega enunciado — por definir con el equipo (P-44).
+          </p>
+        </div>`,
+        )
+        .join('');
+      els.inv.querySelectorAll('.btn-bodega').forEach((btn) => {
+        btn.addEventListener('click', () => demoAction('requestWarehouseIssue'));
+      });
+      els.inv.querySelectorAll('.btn-force-buy').forEach((btn) => {
+        btn.addEventListener('click', () => goToSolped({ cm: false, q: btn.dataset.name }));
+      });
+      return true;
+    }
+
+    function renderCm(items) {
+      if (!items.length) {
+        els.cm.innerHTML = '<p class="muted">Sin coincidencias en catálogo Convenio Marco.</p>';
+        lastCmHit = null;
+        return false;
+      }
+      lastCmHit = items[0];
+      els.cm.innerHTML = items
+        .map(
+          (item) => `
+        <div class="search-result-card search-result-card--cm">
+          <strong>${item.name}</strong>
+          <div class="badge">En catálogo Convenio Marco</div>
+          <div class="muted">
+            ${item.agreementLabel} · ${item.agreementId}<br />
+            Código: ${item.itemCode} · Precio catálogo: ${formatClp(item.catalogPrice)} ·
+            ${item.providerCount} proveedores
+          </div>
+        </div>`,
+        )
+        .join('');
+      return true;
+    }
+
+    function runSearch() {
+      const q = els.q.value.trim();
+      lastQuery = q;
+      if (!q) {
+        els.inv.innerHTML = '<p class="muted">Ingrese un término de búsqueda.</p>';
+        els.cm.innerHTML = '<p class="muted">Ingrese un término de búsqueda.</p>';
+        els.continue.disabled = true;
+        els.hint.hidden = true;
+        lastCmHit = null;
+        return;
+      }
+      demoAction('checkStockAvailability');
+      demoAction('checkCatalogAvailability');
+      const hasStock = renderInventory(searchInventory(q));
+      const hasCm = renderCm(searchCmCatalog(q));
+      els.continue.disabled = false;
+      els.hint.hidden = hasStock;
+      if (!hasStock && hasCm) {
+        els.hint.textContent =
+          'Ítem encontrado en catálogo Convenio Marco. Confirme si desea generar el expediente de compra.';
+        els.hint.hidden = false;
+      } else if (!hasStock && !hasCm) {
+        els.hint.textContent =
+          'Sin stock ni coincidencia en catálogo. Puede continuar con la creación de un expediente de compra.';
+        els.hint.hidden = false;
+      }
+    }
+
+    function goToSolped({ cm, q, item } = {}) {
+      const params = new URLSearchParams();
+      params.set('from', 'previa');
+      if (q || lastQuery) params.set('q', q || lastQuery);
+      const hit = item || lastCmHit;
+      if (cm && hit) {
+        params.set('cm', '1');
+        params.set('cmCode', hit.itemCode);
+        params.set('cmPrice', String(hit.catalogPrice));
+        params.set('cmAgreement', hit.agreementId);
+        params.set('cmName', hit.name);
+      }
+      window.location.href = siteUrl(
+        `modulos/adquisiciones/procesos-transversales/11-creacion-solped.html?${params}`,
+      );
+    }
+
+    els.search.addEventListener('click', runSearch);
+    els.q.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        runSearch();
+      }
+    });
+    els.continue.addEventListener('click', () => {
+      goToSolped({ cm: Boolean(lastCmHit) });
+    });
+
+    const prefill = new URLSearchParams(window.location.search).get('q');
+    if (prefill) {
+      els.q.value = prefill;
+      runSearch();
+    }
+  </script>
+</body>
+</html>

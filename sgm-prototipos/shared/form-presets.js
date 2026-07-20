@@ -177,6 +177,57 @@ export const formPresets = {
       invoiceAmount: '$ 2.400.000',
     },
   },
+  'ADQ-2026-00142': {
+    solpedNumber: '1420',
+    solped: {
+      unit: 'Unidad Solicitante',
+      description: 'Equipamiento audiovisual sala de consejo',
+      justification: 'Renovación de proyección y audio para sesiones del concejo municipal.',
+      date: '2026-07-18',
+      purchaseModality: 'agile_purchase',
+      showResolution: false,
+      lineDescription: 'Proyector laser 4K + sistema audio',
+      lineQty: '1',
+      linePrice: '2450000',
+      estimatedAmount: '2450000',
+    },
+    budgetVerification: {
+      insufficient: true,
+      available: '320.000',
+      committed: '180.000',
+      requestAmount: '2.450.000',
+      projected: '-2.310.000',
+    },
+    modalidad: {
+      unit: 'Unidad Solicitante',
+      modalityLabel: 'Compra Ágil (provisional)',
+      monto: '2450000',
+      modality: 'agile_purchase',
+      catalogCm: false,
+      jefaturaApproval: true,
+    },
+    vinculacionMp: {
+      modalityLabel: 'Compra Ágil',
+      mpCode: '',
+      mpCodeLabel: 'ID Cotización',
+      deepLinkLabel: 'Gestionar cotización en MP',
+      statusLine: 'Bloqueado: etapa 1 sin cerrar (pendiente financiamiento)',
+    },
+    recepcion: {
+      ocHeader: '— Recepción conforme',
+      ocInfo: 'Bloqueado: sin OC (etapa 1 pendiente de financiamiento)',
+      receiver: '—',
+      lineItem: 'Proyector laser 4K + sistema audio',
+      ocQty: '1',
+    },
+    pago: {
+      ocHeader: '— Cruce de 3 vías',
+      ocAmount: '—',
+      ocSyncDate: '—',
+      recepcionInfo: 'Bloqueado: etapa 1 pendiente',
+      invoiceAmount: '—',
+    },
+  },
 };
 
 export function getFormPreset(expedienteId) {

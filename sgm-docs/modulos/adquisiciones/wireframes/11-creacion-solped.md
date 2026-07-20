@@ -55,7 +55,7 @@
 | Descripción | `PurchaseRequest.description` | Sí |
 | Justificación | `PurchaseRequest.justification` | Sí |
 | Fecha solicitada | `PurchaseRequest.requested_date` | Sí |
-| Modalidad de compra | `PurchaseRequest.purchase_modality` | No (indicación provisional; confirmable en etapa 2) |
+| Modalidad de compra | `PurchaseRequest.purchase_modality` | No (indicación provisional; confirmable en etapa 2). Si proviene de 1.0 con hit CM: sugerencia + advertencia no bloqueante |
 | Resolución Fundada | `PurchaseRequest.founded_resolution_attachment` | Sí si modalidad = Trato Directo |
 | Línea presupuestaria (opcional) | `PurchaseRequest.proposed_budget_line_id` | No |
 | Año fiscal propuesto | `PurchaseRequest.proposed_fiscal_year` | No |
@@ -99,6 +99,16 @@
 +----------------------------------------------------------+
 ```
 
+**Variante — sin saldo** (demo `ADQ-2026-00142`; no bloquea borrador ni envío):
+
+```
++----------------------------------------------------------+
+| Resultado                                                 |
+| Disponible: $ 320.000 | Comprometido otros: $ 180.000    |
+| Saldo proyectado: $ -2.310.000            [INSUFICIENTE] |
++----------------------------------------------------------+
+```
+
 | Acción panel | Operación | Notas |
 |---|---|---|
 | Consultar | `previewBudgetAvailability` | No bloquea el borrador ni la aprobación |
@@ -107,6 +117,7 @@
 
 - **Normal (borrador):** todos los campos editables.
 - **Bloqueo validación:** errores API estructurados bajo cada campo (`PRICE_REFERENCE_UNAVAILABLE`, `INVALID_QUANTITY`).
+- **Panel autoconsulta — sin saldo:** resultado insuficiente (panel error); el envío a aprobación **sigue habilitado** (la consulta es informativa). El bloqueo formal y el camino a 1.4 ocurren en 1.3.
 - **Solo lectura:** no aplica en este sub-paso.
 
 ## Validaciones visibles
@@ -119,7 +130,7 @@
 
 ## Notas
 
-- Si `checkStockAvailability` se adopta (QA 4): banner informativo "Stock disponible en bodega — ¿retirar en lugar de comprar?"
-- El enlace de autoconsulta presupuestaria es **opcional** y **no sustituye** 1.3.
+- Verificación de stock / catálogo CM: sub-paso **1.0** ([`10-verificacion-previa.md`](./10-verificacion-previa.md)). Si se llega con hallazgo CM (`?cm=1`), mostrar advertencia **no bloqueante** junto a Modalidad de compra y prefill sugerido `framework_agreement`.
+- El enlace de autoconsulta presupuestaria es **opcional** y **no sustituye** 1.3. Caso sin saldo en expediente: [`ADQ-2026-00142`](../fixtures/ADQ-2026-00142.yaml) (solo 1.4 activo tras verificación formal).
 - Documentos de respaldo: opcionales; si se agrega una fila, tipo, descripción y archivo son obligatorios. Valores de `attachment_type`: `quote` (cotización), `product_reference_photo` (foto referencial del producto), `technical_sheet` (ficha técnica), `other` (otro antecedente).
 - ⚠ Pendiente: fuente concreta de `PriceReference` y % tolerancia de desviación.
