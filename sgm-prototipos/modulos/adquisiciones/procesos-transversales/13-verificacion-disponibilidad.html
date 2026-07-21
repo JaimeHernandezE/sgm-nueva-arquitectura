@@ -79,7 +79,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
     import { getFormPreset } from '../../../shared/form-presets.js';
 
@@ -123,8 +123,8 @@
 
     bootstrapFormPage('solped-step');
 
-    document.getElementById('reject').addEventListener('click', () => demoAction('verifyBudgetAvailability (rejected)'));
-    document.getElementById('confirm').addEventListener('click', () => demoAction('verifyBudgetAvailability (confirmed)'));
+    document.getElementById('reject').addEventListener('click', () => demoValidation('verifyBudgetAvailability'));
+    document.getElementById('confirm').addEventListener('click', () => demoValidation('verifyBudgetAvailability'));
   </script>
 </body>
 </html>

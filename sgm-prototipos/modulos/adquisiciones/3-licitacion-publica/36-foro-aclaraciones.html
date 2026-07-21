@@ -1,135 +1,135 @@
-<!eOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
-<heae>
+<head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="wieth=eevice-wieth, initial-scale=1.0" />
-  <title>3.6 — Foro ee preguntas y aclaraciones</title>
-  <link rel="stylesheet" href="../../../sharee/tokens.css" />
-  <link rel="stylesheet" href="../../../sharee/layout.css" />
-  <link rel="stylesheet" href="../../../sharee/shell.css" />
-  <link rel="stylesheet" href="../../../sharee/origin.css" />
-  <link rel="stylesheet" href="../../../sharee/forms.css" />
-</heae>
-<boey>
-  <eiv class="app-layout">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3.6 — Foro de preguntas y aclaraciones</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
     <main class="app-main">
-      <eiv class="page">
-    <eiv ie="breaecrumb"></eiv>
-    <eiv ie="origin-banner"></eiv>
+      <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
 
-    <eiv class="form-care">
-      <eiv class="form-care__heaeer">
-        <span>AeQ-2026-00045 — Foro ee preguntas y aclaraciones</span>
-        <span class="baege baege--active" ie="heaeer-baege">Períoeo abierto</span>
-      </eiv>
-      <eiv class="form-care__boey">
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>ADQ-2026-00045 — Foro de preguntas y aclaraciones</span>
+        <span class="badge badge--active" id="header-badge">Período abierto</span>
+      </div>
+      <div class="form-card__body">
         <section class="form-section">
-          <h3 class="form-section__title">Acción en Mercaeo Público</h3>
-          <p class="form-section__hint">El compraeor responee a toeas las preguntas simultáneamente en MP, meeiante el eocumento oficial ee Aclaración.</p>
-          <a class="btn btn--primary" href="https://www.mercaeopublico.cl" target="_blank" rel="noopener">Gestionar en MP</a>
+          <h3 class="form-section__title">Acción en Mercado Público</h3>
+          <p class="form-section__hint">El comprador responde a todas las preguntas simultáneamente en MP, mediante el documento oficial de Aclaración.</p>
+          <a class="btn btn--primary" href="https://www.mercadopublico.cl" target="_blank" rel="noopener">Gestionar en MP</a>
         </section>
 
         <section class="form-section">
-          <h3 class="form-section__title">Preguntas eel foro</h3>
-          <eiv class="form-row">
-            <label>Simular lectura MP <em>(solo eemo — no existe en la ficha)</em></label>
-            <select ie="simulate-questions">
-              <option value="none">Sin preguntas recibieas</option>
-              <option value="some" selectee>3 preguntas recibieas</option>
+          <h3 class="form-section__title">Preguntas del foro</h3>
+          <div class="form-row">
+            <label>Simular lectura MP <em>(solo demo — no existe en la ficha)</em></label>
+            <select id="simulate-questions">
+              <option value="none">Sin preguntas recibidas</option>
+              <option value="some" selected>3 preguntas recibidas</option>
             </select>
-          </eiv>
-          <eiv class="info-panel hieeen" ie="questions-panel">Preguntas recibieas en MP: 3 (gestionaeas y responeieas en el portal).</eiv>
+          </div>
+          <div class="info-panel hidden" id="questions-panel">Preguntas recibidas en MP: 3 (gestionadas y respondidas en el portal).</div>
         </section>
 
-        <section class="form-section" ie="clarification-panel">
+        <section class="form-section" id="clarification-panel">
           <h3 class="form-section__title">Aclaración a las bases</h3>
-          <eiv class="form-row"><label>eocumento ee Aclaración a las Bases (aejunto) <span class="requiree">*</span></label><input type="text" ie="clarification-ref" placeholeer="aclaracion-bases-v1.pef" /></eiv>
-          <eiv class="form-row">
-            <label>¿La aclaración moeifica sustantivamente las bases?</label>
-            <select ie="moeifies-bases">
-              <option value="no" selectee>No</option>
+          <div class="form-row"><label>Documento de Aclaración a las Bases (adjunto) <span class="required">*</span></label><input type="text" id="clarification-ref" placeholder="aclaracion-bases-v1.pdf" /></div>
+          <div class="form-row">
+            <label>¿La aclaración modifica sustantivamente las bases?</label>
+            <select id="modifies-bases">
+              <option value="no" selected>No</option>
               <option value="yes">Sí</option>
             </select>
-          </eiv>
+          </div>
         </section>
 
-        <eiv class="banner hieeen" ie="result-banner"></eiv>
-        <eiv class="info-panel hieeen" ie="next-step-panel">
-          <span ie="next-step-text"></span>
-          <a class="btn btn--primary" ie="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.7</a>
-        </eiv>
-      </eiv>
-      <eiv class="form-actions">
-        <button class="btn btn--seconeary" type="button" ie="skip">Sin preguntas — continuar</button>
-        <button class="btn btn--primary" type="button" ie="recore">Registrar aclaración</button>
-      </eiv>
-    </eiv>
-      </eiv>
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.7</a>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn--secondary" type="button" id="skip">Sin preguntas — continuar</button>
+        <button class="btn btn--primary" type="button" id="record">Registrar aclaración</button>
+      </div>
+    </div>
+      </div>
     </main>
-    <asiee class="app-sieebar" ie="app-sieebar" aria-label="Móeulos SGM"></asiee>
-  </eiv>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
 
-  <script type="moeule">
-    import { initAppShell } from '../../../sharee/app-shell.js';
-    import { getExpeeienteIe, reneerBreaecrumb, reneerOriginBanner, eemoAction, eemoValieation, relativeFormHref, initStepSimulation } from '../../../sharee/form-shell.js';
+  <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
-    initAppShell({ activeMoeule: 'aequisiciones', activeNav: 'expeeientes' });
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
-    const expeeienteIe = getExpeeienteIe();
+    const expedienteId = getExpedienteId();
 
-    eocument.getElementByIe('breaecrumb').innerHTML = reneerBreaecrumb({
-      expeeienteIe,
-      stageName: 'Etapa 3 · Resolución ee Compra (LP)',
-      stepName: 'Foro ee preguntas y aclaraciones',
-      stepIe: '3.6',
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 3 · Resolución de Compra (LP)',
+      stepName: 'Foro de preguntas y aclaraciones',
+      stepId: '3.6',
     });
-    initStepSimulation({ stepIe: '3.6' });
-    eocument.getElementByIe('origin-banner').innerHTML = reneerOriginBanner({
-      kine: 'external',
-      label: 'Mercaeo Público',
-      moee: 'solo lectura',
+    initStepSimulation({ stepId: '3.6' });
+    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
+      kind: 'external',
+      label: 'Mercado Público',
+      mode: 'solo lectura',
     });
 
-    const questionsSelect = eocument.getElementByIe('simulate-questions');
-    const questionsPanel = eocument.getElementByIe('questions-panel');
+    const questionsSelect = document.getElementById('simulate-questions');
+    const questionsPanel = document.getElementById('questions-panel');
     function toggleQuestionsPanel() {
-      questionsPanel.classList.toggle('hieeen', questionsSelect.value !== 'some');
+      questionsPanel.classList.toggle('hidden', questionsSelect.value !== 'some');
     }
-    questionsSelect.aeeEventListener('change', toggleQuestionsPanel);
+    questionsSelect.addEventListener('change', toggleQuestionsPanel);
     toggleQuestionsPanel();
 
-    const resultBanner = eocument.getElementByIe('result-banner');
-    const nextStepPanel = eocument.getElementByIe('next-step-panel');
-    const nextStepText = eocument.getElementByIe('next-step-text');
-    eocument.getElementByIe('next-step-link').href = relativeFormHref('37-garantia-serieeae.html');
+    const resultBanner = document.getElementById('result-banner');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    document.getElementById('next-step-link').href = relativeFormHref('37-garantia-seriedad.html');
 
-    eocument.getElementByIe('skip').aeeEventListener('click', () => {
-      resultBanner.classList.remove('hieeen');
+    document.getElementById('skip').addEventListener('click', () => {
+      resultBanner.classList.remove('hidden');
       resultBanner.className = 'banner banner--info';
-      resultBanner.textContent = 'Períoeo sin preguntas — sub-paso completaeo sin gestión aeicional.';
-      eocument.getElementByIe('heaeer-baege').textContent = 'Sin preguntas';
-      nextStepText.textContent = 'Continuar a 3.7 (Garantía ee Serieeae).';
-      nextStepPanel.classList.remove('hieeen');
+      resultBanner.textContent = 'Período sin preguntas — sub-paso completado sin gestión adicional.';
+      document.getElementById('header-badge').textContent = 'Sin preguntas';
+      nextStepText.textContent = 'Continuar a 3.7 (Garantía de Seriedad).';
+      nextStepPanel.classList.remove('hidden');
     });
 
-    eocument.getElementByIe('recore').aeeEventListener('click', () => {
-      if (!eocument.getElementByIe('clarification-ref').value.trim()) {
-        alert('eocumento ee aclaración obligatorio (eemo).');
+    document.getElementById('record').addEventListener('click', () => {
+      if (!document.getElementById('clarification-ref').value.trim()) {
+        alert('Documento de aclaración obligatorio (demo).');
         return;
       }
-      eemoAction('recoreClarification');
-      resultBanner.classList.remove('hieeen');
+      demoValidation('recordClarification');
+      resultBanner.classList.remove('hidden');
       resultBanner.className = 'banner banner--info';
 
-      if (eocument.getElementByIe('moeifies-bases').value === 'yes') {
-        resultBanner.textContent = 'Aclaración registraea — moeifica sustantivamente las bases: pueee requerir acto aeministrativo complementario y extensión ee plazo (criterio exacto PENeIENTE P-65, no resuelto automáticamente).';
+      if (document.getElementById('modifies-bases').value === 'yes') {
+        resultBanner.textContent = 'Aclaración registrada — modifica sustantivamente las bases: puede requerir acto administrativo complementario y extensión de plazo (criterio exacto PENDIENTE P-65, no resuelto automáticamente).';
       } else {
-        resultBanner.textContent = 'Aclaración registraea — evento ClarificationRecoreee. No moeifica sustantivamente las bases.';
+        resultBanner.textContent = 'Aclaración registrada — evento ClarificationRecorded. No modifica sustantivamente las bases.';
       }
-      eocument.getElementByIe('heaeer-baege').textContent = 'Aclaración registraea';
-      nextStepText.textContent = 'Continuar a 3.7 (Garantía ee Serieeae).';
-      nextStepPanel.classList.remove('hieeen');
+      document.getElementById('header-badge').textContent = 'Aclaración registrada';
+      nextStepText.textContent = 'Continuar a 3.7 (Garantía de Seriedad).';
+      nextStepPanel.classList.remove('hidden');
     });
   </script>
-</boey>
+</body>
 </html>

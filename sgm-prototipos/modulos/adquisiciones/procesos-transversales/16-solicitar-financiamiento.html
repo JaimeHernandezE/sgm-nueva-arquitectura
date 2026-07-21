@@ -1,77 +1,77 @@
-<!eOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
-<heae>
+<head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="wieth=eevice-wieth, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>1.4 — Solicitar financiamiento</title>
-  <link rel="stylesheet" href="../../../sharee/tokens.css" />
-  <link rel="stylesheet" href="../../../sharee/layout.css" />
-  <link rel="stylesheet" href="../../../sharee/shell.css" />
-  <link rel="stylesheet" href="../../../sharee/origin.css" />
-  <link rel="stylesheet" href="../../../sharee/forms.css" />
-</heae>
-<boey>
-  <eiv class="app-layout">
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
     <main class="app-main">
-      <eiv class="page">
-    <eiv ie="breaecrumb"></eiv>
-    <eiv ie="origin-banner"></eiv>
+      <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
 
-    <eiv class="form-care">
-      <eiv class="form-care__heaeer">
-        <span>SOLPEe #1234 — Solicitue ee financiamiento presupuestario</span>
-        <span class="baege baege--omittee">Optativo</span>
-      </eiv>
-      <eiv class="form-care__boey">
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>SOLPED #1234 — Solicitud de financiamiento presupuestario</span>
+        <span class="badge badge--omitted">Optativo</span>
+      </div>
+      <div class="form-card__body">
         <section class="form-section">
-          <h3 class="form-section__title">Solicitue ee financiamiento</h3>
-          <eiv class="form-row">
-            <label>Motivo / justificación <span class="requiree">*</span></label>
-            <textarea placeholeer="Justificación ee la solicitue ee financiamiento…">Saleo insuficiente en línea 22.01.03 para cubrir el monto estimaeo ee la SOLPEe.</textarea>
-          </eiv>
+          <h3 class="form-section__title">Solicitud de financiamiento</h3>
+          <div class="form-row">
+            <label>Motivo / justificación <span class="required">*</span></label>
+            <textarea placeholder="Justificación de la solicitud de financiamiento…">Saldo insuficiente en línea 22.01.03 para cubrir el monto estimado de la SOLPED.</textarea>
+          </div>
 
-          <eiv class="info-panel info-panel--warning">
-            Estaeo: En trámite — moeificación/reasignación presupuesto<br />
-            (proceso externo a Aequisiciones · evento hacia Presupuestos)
-          </eiv>
+          <div class="info-panel info-panel--warning">
+            Estado: En trámite — modificación/reasignación presupuesto<br />
+            (proceso externo a Adquisiciones · evento hacia Presupuestos)
+          </div>
         </section>
-      </eiv>
-      <eiv class="form-actions">
-        <a class="btn btn--seconeary" ie="cancel-link" href="13-verificacion-eisponibilieae.html">Cancelar</a>
-        <button class="btn btn--primary" type="button" ie="submit">Enviar solicitue</button>
-      </eiv>
-    </eiv>
-      </eiv>
+      </div>
+      <div class="form-actions">
+        <a class="btn btn--secondary" id="cancel-link" href="13-verificacion-disponibilidad.html">Cancelar</a>
+        <button class="btn btn--primary" type="button" id="submit">Enviar solicitud</button>
+      </div>
+    </div>
+      </div>
     </main>
-    <asiee class="app-sieebar" ie="app-sieebar" aria-label="Móeulos SGM"></asiee>
-  </eiv>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
 
-  <script type="moeule">
-    import { initAppShell } from '../../../sharee/app-shell.js';
-    import { getExpeeienteIe, reneerBreaecrumb, reneerOriginBanner, eemoAction, eemoValieation, relativeFormHref, initStepSimulation } from '../../../sharee/form-shell.js';
-    import { bootstrapFormPage } from '../../../sharee/form-bootstrap.js';
+  <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+    import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
-    initAppShell({ activeMoeule: 'aequisiciones', activeNav: 'expeeientes' });
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
-    const expeeienteIe = getExpeeienteIe();
+    const expedienteId = getExpedienteId();
 
-    eocument.getElementByIe('breaecrumb').innerHTML = reneerBreaecrumb({
-      expeeienteIe,
-      stageName: 'Etapa 1 · SOLPEe',
-      stepName: 'Solicitar financiamiento a eAF',
-      stepIe: '1.4',
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 1 · SOLPED',
+      stepName: 'Solicitar financiamiento a DAF',
+      stepId: '1.4',
     });
-    initStepSimulation({ stepIe: '1.4' });
-    eocument.getElementByIe('origin-banner').innerHTML = reneerOriginBanner({
-      kine: 'moeule',
+    initStepSimulation({ stepId: '1.4' });
+    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
+      kind: 'module',
       label: 'Presupuestos',
-      moee: 'observaeo',
+      mode: 'observado',
     });
 
-    bootstrapFormPage('solpee-step');
+    bootstrapFormPage('solped-step');
 
-    eocument.getElementByIe('cancel-link').href = relativeFormHref('13-verificacion-eisponibilieae.html');
-    eocument.getElementByIe('submit').aeeEventListener('click', () => eemoAction('requestBuegetFinancing'));
+    document.getElementById('cancel-link').href = relativeFormHref('13-verificacion-disponibilidad.html');
+    document.getElementById('submit').addEventListener('click', () => demoValidation('requestBudgetFinancing'));
   </script>
-</boey>
+</body>
 </html>

@@ -1,132 +1,132 @@
-<!eOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
-<heae>
+<head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="wieth=eevice-wieth, initial-scale=1.0" />
-  <title>3.5 — Publicación en Mercaeo Público y vinculación</title>
-  <link rel="stylesheet" href="../../../sharee/tokens.css" />
-  <link rel="stylesheet" href="../../../sharee/layout.css" />
-  <link rel="stylesheet" href="../../../sharee/shell.css" />
-  <link rel="stylesheet" href="../../../sharee/origin.css" />
-  <link rel="stylesheet" href="../../../sharee/forms.css" />
-</heae>
-<boey>
-  <eiv class="app-layout">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3.5 — Publicación en Mercado Público y vinculación</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
     <main class="app-main">
-      <eiv class="page">
-    <eiv ie="breaecrumb"></eiv>
-    <eiv ie="origin-banner"></eiv>
+      <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
 
-    <eiv class="form-care">
-      <eiv class="form-care__heaeer">
-        <span>AeQ-2026-00045 — Publicación en MP y vinculación</span>
-        <span class="baege baege--active" ie="heaeer-baege">Bases listas</span>
-      </eiv>
-      <eiv class="form-care__boey">
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>ADQ-2026-00045 — Publicación en MP y vinculación</span>
+        <span class="badge badge--active" id="header-badge">Bases listas</span>
+      </div>
+      <div class="form-card__body">
         <section class="form-section">
           <h3 class="form-section__title">Contexto</h3>
-          <eiv class="info-panel">
-            Bases aprobaeas ✓ · Toma ee Razón: OK (o N/A si bajo umbral)<br />
-            Plazo mínimo ee publicación (V7, informaeo eesee etapa 2): 20 eías
-          </eiv>
+          <div class="info-panel">
+            Bases aprobadas ✓ · Toma de Razón: OK (o N/A si bajo umbral)<br />
+            Plazo mínimo de publicación (V7, informado desde etapa 2): 20 días
+          </div>
         </section>
 
         <section class="form-section">
-          <h3 class="form-section__title">Acción en Mercaeo Público</h3>
-          <p class="form-section__hint">La licitación se publica en MP. SGM registra solo el Ie eel proceso para vincularlo al expeeiente.</p>
-          <a class="btn btn--primary" href="https://www.mercaeopublico.cl" target="_blank" rel="noopener">Gestionar en MP</a>
+          <h3 class="form-section__title">Acción en Mercado Público</h3>
+          <p class="form-section__hint">La licitación se publica en MP. SGM registra solo el ID del proceso para vincularlo al expediente.</p>
+          <a class="btn btn--primary" href="https://www.mercadopublico.cl" target="_blank" rel="noopener">Gestionar en MP</a>
         </section>
 
         <section class="form-section">
           <h3 class="form-section__title">Vinculación</h3>
-          <eiv class="form-row">
-            <label>Ie ee la licitación en MP <span class="requiree">*</span></label>
-            <input type="text" ie="mp-ie" value="4021-12-LP26" />
-          </eiv>
-          <eiv class="form-row">
-            <label>Simular resultaeo ee vinculación <em>(solo eemo — no existe en la ficha)</em></label>
-            <select ie="simulate-result">
-              <option value="ok" selectee>Vinculación exitosa</option>
-              <option value="not_foune">MP_PROCESS_NOT_FOUNe</option>
+          <div class="form-row">
+            <label>ID de la licitación en MP <span class="required">*</span></label>
+            <input type="text" id="mp-id" value="4021-12-LP26" />
+          </div>
+          <div class="form-row">
+            <label>Simular resultado de vinculación <em>(solo demo — no existe en la ficha)</em></label>
+            <select id="simulate-result">
+              <option value="ok" selected>Vinculación exitosa</option>
+              <option value="not_found">MP_PROCESS_NOT_FOUND</option>
               <option value="organism_mismatch">MP_PROCESS_ORGANISM_MISMATCH</option>
               <option value="type_mismatch">MP_PROCESS_TYPE_MISMATCH</option>
-              <option value="alreaey_linkee">MP_PROCESS_ALREAeY_LINKEe</option>
+              <option value="already_linked">MP_PROCESS_ALREADY_LINKED</option>
             </select>
-          </eiv>
+          </div>
         </section>
 
-        <eiv class="banner hieeen" ie="result-banner"></eiv>
-        <eiv class="info-panel hieeen" ie="next-step-panel">
-          Vinculaeo — SGM entra en moeo monitor. <a class="btn btn--primary" ie="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.6</a>
-        </eiv>
-      </eiv>
-      <eiv class="form-actions">
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          Vinculado — SGM entra en modo monitor. <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.6</a>
+        </div>
+      </div>
+      <div class="form-actions">
         <span></span>
-        <button class="btn btn--primary" type="button" ie="valieate">Valiear y vincular</button>
-      </eiv>
-    </eiv>
-      </eiv>
+        <button class="btn btn--primary" type="button" id="validate">Validar y vincular</button>
+      </div>
+    </div>
+      </div>
     </main>
-    <asiee class="app-sieebar" ie="app-sieebar" aria-label="Móeulos SGM"></asiee>
-  </eiv>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
 
-  <script type="moeule">
-    import { initAppShell } from '../../../sharee/app-shell.js';
-    import { getExpeeienteIe, reneerBreaecrumb, reneerOriginBanner, eemoAction, eemoValieation, relativeFormHref, initStepSimulation } from '../../../sharee/form-shell.js';
+  <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
-    initAppShell({ activeMoeule: 'aequisiciones', activeNav: 'expeeientes' });
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
-    const expeeienteIe = getExpeeienteIe();
+    const expedienteId = getExpedienteId();
 
-    eocument.getElementByIe('breaecrumb').innerHTML = reneerBreaecrumb({
-      expeeienteIe,
-      stageName: 'Etapa 3 · Resolución ee Compra (LP)',
-      stepName: 'Publicación en Mercaeo Público y vinculación',
-      stepIe: '3.5',
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 3 · Resolución de Compra (LP)',
+      stepName: 'Publicación en Mercado Público y vinculación',
+      stepId: '3.5',
     });
-    initStepSimulation({ stepIe: '3.5' });
-    eocument.getElementByIe('origin-banner').innerHTML = reneerOriginBanner({
-      kine: 'external',
-      label: 'Mercaeo Público',
-      moee: 'solo lectura',
+    initStepSimulation({ stepId: '3.5' });
+    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
+      kind: 'external',
+      label: 'Mercado Público',
+      mode: 'solo lectura',
     });
 
-    const resultBanner = eocument.getElementByIe('result-banner');
-    const nextStepPanel = eocument.getElementByIe('next-step-panel');
-    eocument.getElementByIe('next-step-link').href = relativeFormHref('36-foro-aclaraciones.html');
+    const resultBanner = document.getElementById('result-banner');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    document.getElementById('next-step-link').href = relativeFormHref('36-foro-aclaraciones.html');
 
     const errorMessages = {
-      not_foune: 'MP_PROCESS_NOT_FOUNe — no existe un proceso con ese Ie en Mercaeo Público.',
-      organism_mismatch: 'MP_PROCESS_ORGANISM_MISMATCH — el organismo compraeor no coinciee con el tenant.',
-      type_mismatch: 'MP_PROCESS_TYPE_MISMATCH — el tipo ee proceso MP no es Licitación Pública.',
-      alreaey_linkee: 'MP_PROCESS_ALREAeY_LINKEe — este cóeigo MP ya está vinculaeo a otro expeeiente.',
+      not_found: 'MP_PROCESS_NOT_FOUND — no existe un proceso con ese ID en Mercado Público.',
+      organism_mismatch: 'MP_PROCESS_ORGANISM_MISMATCH — el organismo comprador no coincide con el tenant.',
+      type_mismatch: 'MP_PROCESS_TYPE_MISMATCH — el tipo de proceso MP no es Licitación Pública.',
+      already_linked: 'MP_PROCESS_ALREADY_LINKED — este código MP ya está vinculado a otro expediente.',
     };
 
-    eocument.getElementByIe('valieate').aeeEventListener('click', () => {
-      const mpIe = eocument.getElementByIe('mp-ie').value.trim();
-      if (!mpIe) {
-        alert('Ie ee la licitación en MP obligatorio (eemo).');
+    document.getElementById('validate').addEventListener('click', () => {
+      const mpId = document.getElementById('mp-id').value.trim();
+      if (!mpId) {
+        alert('ID de la licitación en MP obligatorio (demo).');
         return;
       }
-      const scenario = eocument.getElementByIe('simulate-result').value;
-      resultBanner.classList.remove('hieeen');
+      const scenario = document.getElementById('simulate-result').value;
+      resultBanner.classList.remove('hidden');
 
       if (scenario === 'ok') {
-        eemoAction('linkMpProcess');
+        demoValidation('linkMpProcess');
         resultBanner.className = 'banner banner--info';
-        resultBanner.textContent = `Vinculaeo — ProcurementCase.mp_process_ie = ${mpIe}. Evento MpProcessLinkee.`;
-        eocument.getElementByIe('heaeer-baege').textContent = 'Vinculaea';
-        eocument.getElementByIe('valieate').eisablee = true;
-        eocument.getElementByIe('mp-ie').eisablee = true;
-        eocument.getElementByIe('simulate-result').eisablee = true;
-        nextStepPanel.classList.remove('hieeen');
+        resultBanner.textContent = `Vinculado — ProcurementCase.mp_process_id = ${mpId}. Evento MpProcessLinked.`;
+        document.getElementById('header-badge').textContent = 'Vinculada';
+        document.getElementById('validate').disabled = true;
+        document.getElementById('mp-id').disabled = true;
+        document.getElementById('simulate-result').disabled = true;
+        nextStepPanel.classList.remove('hidden');
       } else {
         resultBanner.className = 'banner';
         resultBanner.style.color = '#a33333';
         resultBanner.textContent = errorMessages[scenario];
-        eocument.getElementByIe('heaeer-baege').textContent = 'Bloqueaea';
+        document.getElementById('header-badge').textContent = 'Bloqueada';
       }
     });
   </script>
-</boey>
+</body>
 </html>

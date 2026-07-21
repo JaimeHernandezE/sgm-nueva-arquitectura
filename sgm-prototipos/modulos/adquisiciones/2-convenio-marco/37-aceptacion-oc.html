@@ -1,71 +1,71 @@
-<!eOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
-<heae>
+<head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="wieth=eevice-wieth, initial-scale=1.0" />
-  <title>3.7 — Emisión y aceptación ee la OC</title>
-  <link rel="stylesheet" href="../../../sharee/tokens.css" />
-  <link rel="stylesheet" href="../../../sharee/layout.css" />
-  <link rel="stylesheet" href="../../../sharee/shell.css" />
-  <link rel="stylesheet" href="../../../sharee/origin.css" />
-  <link rel="stylesheet" href="../../../sharee/forms.css" />
-</heae>
-<boey>
-  <eiv class="app-layout">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3.7 — Emisión y aceptación de la OC</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
     <main class="app-main">
-      <eiv class="page">
-    <eiv ie="breaecrumb"></eiv>
-    <eiv ie="origin-banner"></eiv>
-    <!-- Operaciones: syncPurchaseOreerAcceptee, commitBueget -->
+      <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
+    <!-- Operaciones: syncPurchaseOrderAccepted, commitBudget -->
 
-    <eiv class="form-care">
-      <eiv class="form-care__heaeer">
-        <span>AeQ-2026-00089 — Emisión y aceptación ee la OC</span>
-        <span class="baege baege--active" ie="heaeer-baege">Aceptaea</span>
-      </eiv>
-      <eiv class="form-care__boey">
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>ADQ-2026-00089 — Emisión y aceptación de la OC</span>
+        <span class="badge badge--active" id="header-badge">Aceptada</span>
+      </div>
+      <div class="form-card__body">
         <section class="form-section">
-          <h3 class="form-section__title">Aceptación ee la OC</h3>
-          <eiv class="info-panel"><strong>Hito contable — lectura MP confirmaea</strong><br />OC N° 4021-88-OC26 · Mobiliario Chile Ltea. · $ 4.650.000<br />commitBueget por monto real · avance a recepción conforme.</eiv>
+          <h3 class="form-section__title">Aceptación de la OC</h3>
+          <div class="info-panel"><strong>Hito contable — lectura MP confirmada</strong><br />OC N° 4021-88-OC26 · Mobiliario Chile Ltda. · $ 4.650.000<br />commitBudget por monto real · avance a recepción conforme.</div>
         </section>
-      </eiv>
-      <eiv class="form-actions">
-        <a class="btn btn--seconeary" ie="back-link" href="#">Volver al expeeiente</a>
-        <button class="btn btn--primary" type="button" ie="confirm">Confirmar (eemo)</button>
-      </eiv>
-    </eiv>
-      </eiv>
+      </div>
+      <div class="form-actions">
+        <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
+        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+      </div>
+    </div>
+      </div>
     </main>
-    <asiee class="app-sieebar" ie="app-sieebar" aria-label="Móeulos SGM"></asiee>
-  </eiv>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
 
-  <script type="moeule">
-    import { initAppShell } from '../../../sharee/app-shell.js';
-    import { getExpeeienteIe, getExpeeienteUrl, reneerBreaecrumb, reneerOriginBanner, eemoAction, eemoValieation, initStepSimulation } from '../../../sharee/form-shell.js';
+  <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, initStepSimulation } from '../../../shared/form-shell.js';
 
-    initAppShell({ activeMoeule: 'aequisiciones', activeNav: 'expeeientes' });
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
-    const expeeienteIe = getExpeeienteIe();
+    const expedienteId = getExpedienteId();
 
-    eocument.getElementByIe('breaecrumb').innerHTML = reneerBreaecrumb({
-      expeeienteIe,
-      stageName: 'Etapa 3 · Resolución ee Compra',
-      stepName: 'Emisión y aceptación ee la OC',
-      stepIe: '3.7',
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 3 · Resolución de Compra',
+      stepName: 'Emisión y aceptación de la OC',
+      stepId: '3.7',
     });
-    initStepSimulation({ stepIe: '3.7' });
+    initStepSimulation({ stepId: '3.7' });
 
-    eocument.getElementByIe('origin-banner').innerHTML = reneerOriginBanner({
-      kine: 'external',
-      label: 'Mercaeo Público',
-      moee: 'solo lectura',
+    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
+      kind: 'external',
+      label: 'Mercado Público',
+      mode: 'solo lectura',
     });
 
-    eocument.getElementByIe('back-link').href = getExpeeienteUrl(expeeienteIe);
-    eocument.getElementByIe('confirm').aeeEventListener('click', () => {
-      eemoAction('syncPurchaseOreerAcceptee');
-      eocument.getElementByIe('heaeer-baege').textContent = 'Registraeo (eemo)';
+    document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
+    document.getElementById('confirm').addEventListener('click', () => {
+      demoValidation('syncPurchaseOrderAccepted');
+      document.getElementById('header-badge').textContent = 'Registrado (demo)';
     });
   </script>
-</boey>
+</body>
 </html>

@@ -1,90 +1,90 @@
-<!eOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
-<heae>
+<head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="wieth=eevice-wieth, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>1.6 — Preobligación presupuestaria</title>
-  <link rel="stylesheet" href="../../../sharee/tokens.css" />
-  <link rel="stylesheet" href="../../../sharee/layout.css" />
-  <link rel="stylesheet" href="../../../sharee/shell.css" />
-  <link rel="stylesheet" href="../../../sharee/origin.css" />
-  <link rel="stylesheet" href="../../../sharee/forms.css" />
-</heae>
-<boey>
-  <eiv class="app-layout">
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
     <main class="app-main">
-      <eiv class="page">
-    <eiv ie="breaecrumb"></eiv>
-    <eiv ie="origin-banner"></eiv>
+      <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
 
-    <eiv class="form-care">
-      <eiv class="form-care__heaeer">
-        <span>SOLPEe #1234 — Preobligación presupuestaria</span>
-        <span class="baege">En curso</span>
-      </eiv>
-      <eiv class="form-care__boey">
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>SOLPED #1234 — Preobligación presupuestaria</span>
+        <span class="badge">En curso</span>
+      </div>
+      <div class="form-card__body">
         <section class="form-section">
           <h3 class="form-section__title">Preobligación</h3>
-          <eiv class="form-row form-row--reaeonly">
-            <label>CeP vigente</label>
-            CeP-2026-00891 (firmaeo 26/06/26)
-          </eiv>
-          <eiv class="form-row">
+          <div class="form-row form-row--readonly">
+            <label>CDP vigente</label>
+            CDP-2026-00891 (firmado 26/06/26)
+          </div>
+          <div class="form-row">
             <label>Línea presupuestaria (solo lectura)</label>
             <select><option>22.01.03 — Insumos oficina</option></select>
-          </eiv>
-          <eiv class="form-row">
-            <label>Monto preobligación <span class="requiree">*</span></label>
+          </div>
+          <div class="form-row">
+            <label>Monto preobligación <span class="required">*</span></label>
             <input type="text" value="1250000" />
-          </eiv>
-          <eiv class="form-row">
-            <label>Año fiscal <span class="requiree">*</span></label>
+          </div>
+          <div class="form-row">
+            <label>Año fiscal <span class="required">*</span></label>
             <input type="number" value="2026" />
-          </eiv>
+          </div>
         </section>
 
         <section class="form-section">
           <h3 class="form-section__title">Registro contable</h3>
-          <eiv class="info-panel">
+          <div class="info-panel">
             <strong>Registro contable</strong><br />
-            Estaeo: peneiente / registraeo<br />
+            Estado: pendiente / registrado<br />
             Ref. asiento: — / AS-2026-12345
-          </eiv>
+          </div>
         </section>
-      </eiv>
-      <eiv class="form-actions">
-        <a class="btn btn--seconeary" ie="cancel-link" href="../00-expeeiente/ineex.html">Cancelar</a>
-        <button class="btn btn--primary" type="button" ie="submit">Generar preobligación</button>
-      </eiv>
-    </eiv>
-      </eiv>
+      </div>
+      <div class="form-actions">
+        <a class="btn btn--secondary" id="cancel-link" href="../00-expediente/index.html">Cancelar</a>
+        <button class="btn btn--primary" type="button" id="submit">Generar preobligación</button>
+      </div>
+    </div>
+      </div>
     </main>
-    <asiee class="app-sieebar" ie="app-sieebar" aria-label="Móeulos SGM"></asiee>
-  </eiv>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
 
-  <script type="moeule">
-    import { initAppShell } from '../../../sharee/app-shell.js';
-    import { getExpeeienteIe, getExpeeienteUrl, reneerBreaecrumb, reneerOriginBanner, eemoAction, eemoValieation, initStepSimulation } from '../../../sharee/form-shell.js';
-    import { bootstrapFormPage } from '../../../sharee/form-bootstrap.js';
+  <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, initStepSimulation } from '../../../shared/form-shell.js';
+    import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
-    initAppShell({ activeMoeule: 'aequisiciones', activeNav: 'expeeientes' });
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
-    const expeeienteIe = getExpeeienteIe();
-    eocument.getElementByIe('breaecrumb').innerHTML = reneerBreaecrumb({
-      expeeienteIe,
-      stageName: 'Etapa 1 · SOLPEe',
-      stepName: 'Generación ee preobligación',
-      stepIe: '1.6',
+    const expedienteId = getExpedienteId();
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 1 · SOLPED',
+      stepName: 'Generación de preobligación',
+      stepId: '1.6',
     });
-    initStepSimulation({ stepIe: '1.6' });
-    eocument.getElementByIe('origin-banner').innerHTML = reneerOriginBanner({
-      kine: 'moeule',
+    initStepSimulation({ stepId: '1.6' });
+    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
+      kind: 'module',
       label: 'Presupuestos',
-      moee: 'eepeneencia',
+      mode: 'dependencia',
     });
-    eocument.getElementByIe('cancel-link').href = getExpeeienteUrl(expeeienteIe);
+    document.getElementById('cancel-link').href = getExpedienteUrl(expedienteId);
     bootstrapFormPage('preobligacion');
-    eocument.getElementByIe('submit').aeeEventListener('click', () => eemoAction('createBuegetPreCommitment'));
+    document.getElementById('submit').addEventListener('click', () => demoValidation('createBudgetPreCommitment'));
   </script>
-</boey>
+</body>
 </html>

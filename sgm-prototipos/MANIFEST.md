@@ -51,13 +51,14 @@ Antes de modificar un sub-paso `N.M`:
 7. Verificar **secciones tituladas** del formulario (`.form-section` / subtítulos) según [`patron-formularios-secciones.md`](../sgm-docs/arquitectura/instrucciones/patron-formularios-secciones.md) — wireframe ASCII y HTML con los mismos títulos.
 8. Si cambia tinte/origen: revisar reglas 2a/2b en [`patron-vista-expediente.md`](../sgm-docs/arquitectura/instrucciones/patron-vista-expediente.md).
 9. Actualizar **prototipo HTML**, **expediente** (`shared/demo-data/<modalidad>.js`) y **preset** (`form-presets.js`) en el mismo cambio.
+10. CTAs de escritura: `demoValidation(operationId)` desde [`form-shell.js`](./shared/form-shell.js) cuando el `operationId` exista en el catálogo [`shared/validation-demos.js`](./shared/validation-demos.js); `demoAction` solo para ops fuera de catálogo, deep-links o stubs de lectura.
 
 ## Etapa 1 — SOLPED (transversal, 4 modalidades)
 
 | stepId | Wireframe | Prototipo | Operaciones principales |
 |---|---|---|---|
 | 1.0 | `sgm-docs/.../wireframes/10-verificacion-previa.md` | `procesos-transversales/10-verificacion-previa.html` | `checkStockAvailability`, `checkCatalogAvailability` *(optativo; omitible)* |
-| 1.1 | `sgm-docs/.../wireframes/11-creacion-solped.md` | `procesos-transversales/11-creacion-solped.html` | `createPurchaseRequest`, `submitPurchaseRequest`, `previewBudgetAvailability` — modal demo `showValidationIssues` en Enviar a aprobación |
+| 1.1 | `sgm-docs/.../wireframes/11-creacion-solped.md` | `procesos-transversales/11-creacion-solped.html` | `createPurchaseRequest`, `submitPurchaseRequest`, `previewBudgetAvailability` — `demoValidation` / catálogo [`validation-demos.js`](./shared/validation-demos.js) |
 | 1.2 | `12-visto-bueno-jefatura.md` | `12-visto-bueno-jefatura.html` | `approvePurchaseRequest`, `rejectPurchaseRequest` |
 | 1.3 | `13-verificacion-disponibilidad.md` | `13-verificacion-disponibilidad.html` | `verifyBudgetAvailability` |
 | 1.4 | `16-solicitar-financiamiento.md` | `16-solicitar-financiamiento.html` | `requestBudgetFinancing` |
@@ -80,7 +81,7 @@ Navegación entre 2.1→2.2/2.3 y 2.2→2.3 es condicional: 2.1 captura `require
 
 ## Etapa 3 — Resolución de Compra (por modalidad)
 
-Enlazada desde el shell del expediente vía manifiestos de modalidad (`form-shell.js` resuelve `stepId` 3.x según `?expediente=`). Todos los sub-pasos documentados se listan en los 4 ejemplos (caminos alternativos/condicionales incluyen botón «Ver…» para explorar).
+Enlazada desde el shell del expediente vía manifiestos de modalidad (`form-shell.js` resuelve `stepId` 3.x según `?expediente=`). Todos los sub-pasos documentados se listan en los 4 ejemplos (caminos alternativos/condicionales incluyen botón «Ver…» para explorar). Demos de validación API (422): catálogo en [`shared/validation-demos.js`](./shared/validation-demos.js); CTAs de escritura usan `demoValidation(operationId)`.
 
 | Modalidad | Ficha etapa 3 | Manifiesto | Carpeta HTML |
 |---|---|---|---|

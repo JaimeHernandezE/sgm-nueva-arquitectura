@@ -142,7 +142,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, demoAction, relativeFormHref, withSimulationParams, initBalancePanel, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, demoAction, demoValidation, relativeFormHref, withSimulationParams, initBalancePanel, initStepSimulation } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
@@ -235,7 +235,7 @@
     function finishSigned() {
       isSigned = true;
       lockComments();
-      demoAction('approvePurchaseRequest');
+      demoValidation('approvePurchaseRequest');
       demoAction('requestSignature → confirmSignature');
       document.getElementById('header-badge').textContent = 'Aprobada';
       document.getElementById('header-badge').classList.remove('badge--active');
@@ -259,7 +259,7 @@
 
     rejectCloseBtn.addEventListener('click', () => {
       if (!requireComments()) return;
-      demoAction('rejectPurchaseRequest (disposition=cancel)');
+      demoValidation('rejectPurchaseRequest');
       document.getElementById('header-badge').textContent = 'Rechazada — cerrada';
       finishReject({
         message:
@@ -271,7 +271,7 @@
 
     rejectDraftBtn.addEventListener('click', () => {
       if (!requireComments()) return;
-      demoAction('rejectPurchaseRequest (disposition=return_to_draft)');
+      demoValidation('rejectPurchaseRequest');
       document.getElementById('header-badge').textContent = 'Devuelta a borrador';
       finishReject({
         message:

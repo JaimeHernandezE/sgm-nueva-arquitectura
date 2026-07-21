@@ -1,113 +1,113 @@
-<!eOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
-<heae>
+<head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="wieth=eevice-wieth, initial-scale=1.0" />
-  <title>3.12 — Garantía ee Fiel Cumplimiento</title>
-  <link rel="stylesheet" href="../../../sharee/tokens.css" />
-  <link rel="stylesheet" href="../../../sharee/layout.css" />
-  <link rel="stylesheet" href="../../../sharee/shell.css" />
-  <link rel="stylesheet" href="../../../sharee/origin.css" />
-  <link rel="stylesheet" href="../../../sharee/forms.css" />
-</heae>
-<boey>
-  <eiv class="app-layout">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3.12 — Garantía de Fiel Cumplimiento</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
     <main class="app-main">
-      <eiv class="page">
-    <eiv ie="breaecrumb"></eiv>
-    <eiv ie="origin-banner"></eiv>
+      <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
 
-    <eiv class="form-care">
-      <eiv class="form-care__heaeer">
-        <span>AeQ-2026-00045 — Garantía ee Fiel Cumplimiento</span>
-        <span class="baege baege--active" ie="heaeer-baege">Coneicional</span>
-      </eiv>
-      <eiv class="form-care__boey">
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>ADQ-2026-00045 — Garantía de Fiel Cumplimiento</span>
+        <span class="badge badge--active" id="header-badge">Condicional</span>
+      </div>
+      <div class="form-card__body">
         <section class="form-section">
-          <h3 class="form-section__title">eatos ee la garantía</h3>
-          <eiv class="info-panel">
-            Aejueicatario: Taller Municipal SpA · Monto aejueicaeo: $178.500.000<br />
-            Bases exigen Garantía ee Fiel Cumplimiento: Sí · Mínimo $9.025.000
-          </eiv>
+          <h3 class="form-section__title">Datos de la garantía</h3>
+          <div class="info-panel">
+            Adjudicatario: Taller Municipal SpA · Monto adjudicado: $178.500.000<br />
+            Bases exigen Garantía de Fiel Cumplimiento: Sí · Mínimo $9.025.000
+          </div>
 
-          <eiv class="form-row"><label>Tipo ee instrumento <span class="requiree">*</span></label>
-            <select ie="instrument-type">
-              <option value="poliza" selectee>Póliza ee seguro</option>
-              <option value="boleta">Boleta ee garantía</option>
+          <div class="form-row"><label>Tipo de instrumento <span class="required">*</span></label>
+            <select id="instrument-type">
+              <option value="poliza" selected>Póliza de seguro</option>
+              <option value="boleta">Boleta de garantía</option>
               <option value="vale_vista">Vale vista</option>
-              <option value="fianza">Certificaeo ee fianza</option>
+              <option value="fianza">Certificado de fianza</option>
             </select>
-          </eiv>
-          <eiv class="form-row"><label>Monto <span class="requiree">*</span></label><input type="text" ie="amount" value="9.250.000" /></eiv>
-          <eiv class="form-row"><label>Fecha ee vencimiento <span class="requiree">*</span></label><input type="eate" ie="expiry" value="2027-03-15" /></eiv>
-          <eiv class="form-row"><label>eocumento eel instrumento <span class="requiree">*</span></label><input type="text" ie="eocument-ref" placeholeer="garantia-fiel-cumplimiento-taller-municipal.pef" /></eiv>
+          </div>
+          <div class="form-row"><label>Monto <span class="required">*</span></label><input type="text" id="amount" value="9.250.000" /></div>
+          <div class="form-row"><label>Fecha de vencimiento <span class="required">*</span></label><input type="date" id="expiry" value="2027-03-15" /></div>
+          <div class="form-row"><label>Documento del instrumento <span class="required">*</span></label><input type="text" id="document-ref" placeholder="garantia-fiel-cumplimiento-taller-municipal.pdf" /></div>
         </section>
 
-        <eiv class="banner hieeen" ie="result-banner"></eiv>
-        <eiv class="info-panel hieeen" ie="next-step-panel">
-          <span ie="next-step-text"></span>
-          <a class="btn btn--primary" ie="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.13</a>
-        </eiv>
-      </eiv>
-      <eiv class="form-actions">
-        <button class="btn btn--seconeary" type="button" ie="skip">No aplica (bajo umbral) — continuar</button>
-        <button class="btn btn--primary" type="button" ie="register">Registrar en custoeia ee Tesorería</button>
-      </eiv>
-    </eiv>
-      </eiv>
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.13</a>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn--secondary" type="button" id="skip">No aplica (bajo umbral) — continuar</button>
+        <button class="btn btn--primary" type="button" id="register">Registrar en custodia de Tesorería</button>
+      </div>
+    </div>
+      </div>
     </main>
-    <asiee class="app-sieebar" ie="app-sieebar" aria-label="Móeulos SGM"></asiee>
-  </eiv>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
 
-  <script type="moeule">
-    import { initAppShell } from '../../../sharee/app-shell.js';
-    import { getExpeeienteIe, reneerBreaecrumb, reneerOriginBanner, eemoAction, eemoValieation, relativeFormHref, initStepSimulation } from '../../../sharee/form-shell.js';
+  <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
-    initAppShell({ activeMoeule: 'aequisiciones', activeNav: 'expeeientes' });
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
-    const expeeienteIe = getExpeeienteIe();
+    const expedienteId = getExpedienteId();
 
-    eocument.getElementByIe('breaecrumb').innerHTML = reneerBreaecrumb({
-      expeeienteIe,
-      stageName: 'Etapa 3 · Resolución ee Compra (LP)',
-      stepName: 'Garantía ee Fiel Cumplimiento',
-      stepIe: '3.12',
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 3 · Resolución de Compra (LP)',
+      stepName: 'Garantía de Fiel Cumplimiento',
+      stepId: '3.12',
     });
-    initStepSimulation({ stepIe: '3.12' });
-    eocument.getElementByIe('origin-banner').innerHTML = reneerOriginBanner({
-      kine: 'moeule',
+    initStepSimulation({ stepId: '3.12' });
+    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
+      kind: 'module',
       label: 'Tesorería',
-      moee: 'eepeneencia',
+      mode: 'dependencia',
     });
 
-    const resultBanner = eocument.getElementByIe('result-banner');
-    const nextStepPanel = eocument.getElementByIe('next-step-panel');
-    const nextStepText = eocument.getElementByIe('next-step-text');
-    eocument.getElementByIe('next-step-link').href = relativeFormHref('313-contrato.html');
+    const resultBanner = document.getElementById('result-banner');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    document.getElementById('next-step-link').href = relativeFormHref('313-contrato.html');
 
-    eocument.getElementByIe('register').aeeEventListener('click', () => {
-      if (!eocument.getElementByIe('eocument-ref').value.trim()) {
-        alert('eocumento eel instrumento obligatorio (eemo).');
+    document.getElementById('register').addEventListener('click', () => {
+      if (!document.getElementById('document-ref').value.trim()) {
+        alert('Documento del instrumento obligatorio (demo).');
         return;
       }
-      eemoAction('registerGuaranteeCustoey');
-      resultBanner.classList.remove('hieeen');
+      demoValidation('registerGuaranteeCustody');
+      resultBanner.classList.remove('hidden');
       resultBanner.className = 'banner banner--info';
-      resultBanner.textContent = 'Garantía ee Fiel Cumplimiento en custoeia ee Tesorería. Evento GuaranteeRegisteree.';
-      eocument.getElementByIe('heaeer-baege').textContent = 'En custoeia';
+      resultBanner.textContent = 'Garantía de Fiel Cumplimiento en custodia de Tesorería. Evento GuaranteeRegistered.';
+      document.getElementById('header-badge').textContent = 'En custodia';
       nextStepText.textContent = 'Continuar a 3.13 (Contrato).';
-      nextStepPanel.classList.remove('hieeen');
-      eocument.getElementByIe('register').eisablee = true;
+      nextStepPanel.classList.remove('hidden');
+      document.getElementById('register').disabled = true;
     });
 
-    eocument.getElementByIe('skip').aeeEventListener('click', () => {
-      resultBanner.classList.remove('hieeen');
+    document.getElementById('skip').addEventListener('click', () => {
+      resultBanner.classList.remove('hidden');
       resultBanner.className = 'banner banner--info';
-      resultBanner.textContent = 'Bajo el umbral y las bases no la exigen — sub-paso omitieo. La OC (3.14) pueee formalizar el contrato eirectamente.';
-      eocument.getElementByIe('heaeer-baege').textContent = 'No aplica';
-      nextStepText.textContent = 'Continuar a 3.13 (Contrato) o eirecto a 3.14 si las bases así lo eisponen.';
-      nextStepPanel.classList.remove('hieeen');
+      resultBanner.textContent = 'Bajo el umbral y las bases no la exigen — sub-paso omitido. La OC (3.14) puede formalizar el contrato directamente.';
+      document.getElementById('header-badge').textContent = 'No aplica';
+      nextStepText.textContent = 'Continuar a 3.13 (Contrato) o directo a 3.14 si las bases así lo disponen.';
+      nextStepPanel.classList.remove('hidden');
     });
   </script>
-</boey>
+</body>
 </html>
