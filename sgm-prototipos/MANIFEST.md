@@ -57,7 +57,7 @@ Antes de modificar un sub-paso `N.M`:
 | stepId | Wireframe | Prototipo | Operaciones principales |
 |---|---|---|---|
 | 1.0 | `sgm-docs/.../wireframes/10-verificacion-previa.md` | `procesos-transversales/10-verificacion-previa.html` | `checkStockAvailability`, `checkCatalogAvailability` *(optativo; omitible)* |
-| 1.1 | `sgm-docs/.../wireframes/11-creacion-solped.md` | `procesos-transversales/11-creacion-solped.html` | `createPurchaseRequest`, `submitPurchaseRequest`, `previewBudgetAvailability` |
+| 1.1 | `sgm-docs/.../wireframes/11-creacion-solped.md` | `procesos-transversales/11-creacion-solped.html` | `createPurchaseRequest`, `submitPurchaseRequest`, `previewBudgetAvailability` — modal demo `showValidationIssues` en Enviar a aprobación |
 | 1.2 | `12-visto-bueno-jefatura.md` | `12-visto-bueno-jefatura.html` | `approvePurchaseRequest`, `rejectPurchaseRequest` |
 | 1.3 | `13-verificacion-disponibilidad.md` | `13-verificacion-disponibilidad.html` | `verifyBudgetAvailability` |
 | 1.4 | `16-solicitar-financiamiento.md` | `16-solicitar-financiamiento.html` | `requestBudgetFinancing` |

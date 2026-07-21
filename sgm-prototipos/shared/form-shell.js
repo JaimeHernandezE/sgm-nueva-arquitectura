@@ -86,9 +86,63 @@ export function renderOriginBanner(origin) {
   `;
 }
 
-/** Stub de operación de contrato. Sin modal: la audiencia ya sabe que es prototipo. */
+/** Stub de operación de contrato (sin efecto de negocio). Preferir showValidationIssues para demos de 422. */
 export function demoAction(_operationName) {
   /* no-op */
+}
+
+/**
+ * Modal demo de ValidationErrorResponse (estandares-api §3.2).
+ * @param {{ title?: string, operationId?: string, issues: Array<{ error_code: string, field?: string|null, rule: string, severity: 'blocking'|'advisory' }> }} opts
+ */
+export function showValidationIssues({ title = 'Validaciones', operationId, issues }) {
+  const existing = document.getElementById('validation-issues-modal');
+  existing?.remove();
+
+  const listItems = (issues || [])
+    .map((issue) => {
+      const sev = issue.severity === 'advisory' ? 'advisory' : 'blocking';
+      const sevLabel = sev === 'blocking' ? 'Bloqueante' : 'Advertencia';
+      return `<li class="validation-issue validation-issue--${sev}">
+        <span class="validation-issue__sev">${sevLabel}</span>
+        <span class="validation-issue__rule">${issue.rule}</span>
+        ${issue.field ? `<span class="validation-issue__field"><code>${issue.field}</code></span>` : ''}
+      </li>`;
+    })
+    .join('');
+
+  const opLine = operationId
+    ? `<p class="validation-issues__op">Operación: <code>${operationId}</code> · respuesta demo <code>422 ValidationErrorResponse</code></p>`
+    : '';
+
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay is-open';
+  overlay.id = 'validation-issues-modal';
+  overlay.innerHTML = `
+    <div class="modal" role="dialog" aria-labelledby="validation-issues-title" aria-modal="true">
+      <div class="modal__header">
+        <span id="validation-issues-title">${title}</span>
+        <button class="btn btn--link" type="button" data-close-validation>✕</button>
+      </div>
+      <div class="modal__body">
+        ${opLine}
+        <ul class="validation-issues__list">${listItems || '<li>Sin issues</li>'}</ul>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--primary" type="button" data-close-validation>Cerrar</button>
+      </div>
+    </div>
+  `;
+
+  const close = () => overlay.remove();
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) close();
+  });
+  overlay.querySelectorAll('[data-close-validation]').forEach((btn) => {
+    btn.addEventListener('click', close);
+  });
+
+  document.body.appendChild(overlay);
 }
 
 export function initBalancePanel({ triggerId, modalId, closeId, consultId }) {
@@ -244,6 +298,7 @@ export function initStepSimulation({ stepId }) {
   panel.className = 'demo-panel';
   panel.id = 'sim-panel';
   panel.innerHTML = `
+    <span class="badge badge--demo">Solo para demo</span>
     <label>Ver como rol:
       <select id="sim-role"><option value="">— (vista actual)</option></select>
     </label>

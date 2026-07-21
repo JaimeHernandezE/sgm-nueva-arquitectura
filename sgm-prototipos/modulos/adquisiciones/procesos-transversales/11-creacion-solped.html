@@ -237,7 +237,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, demoAction, initBalancePanel, initModalityToggle, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, demoAction, showValidationIssues, initBalancePanel, initModalityToggle, initStepSimulation } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
     import { getFormPreset } from '../../../shared/form-presets.js';
 
@@ -465,7 +465,40 @@
     });
 
     document.getElementById('save-draft').addEventListener('click', () => demoAction('createPurchaseRequest'));
-    document.getElementById('submit').addEventListener('click', () => demoAction('submitPurchaseRequest'));
+    document.getElementById('submit').addEventListener('click', () => {
+      demoAction('submitPurchaseRequest');
+      /* Demo estática alineada a ficha 1.1 / OpenAPI submitMultipleRequired — ilustra ValidationErrorResponse */
+      showValidationIssues({
+        title: 'Validaciones — Enviar a aprobación',
+        operationId: 'submitPurchaseRequest',
+        issues: [
+          {
+            error_code: 'MISSING_REQUIRED_FIELD',
+            field: 'requesting_unit',
+            rule: 'El campo Unidad solicitante es obligatorio.',
+            severity: 'blocking',
+          },
+          {
+            error_code: 'MISSING_REQUIRED_FIELD',
+            field: 'description',
+            rule: 'El campo Descripción es obligatorio.',
+            severity: 'blocking',
+          },
+          {
+            error_code: 'MISSING_REQUIRED_FIELD',
+            field: 'justification',
+            rule: 'El campo Justificación es obligatorio.',
+            severity: 'blocking',
+          },
+          {
+            error_code: 'MISSING_REQUIRED_FIELD',
+            field: 'requested_date',
+            rule: 'El campo Fecha de necesidad es obligatorio.',
+            severity: 'blocking',
+          },
+        ],
+      });
+    });
 
     // Contexto desde 1.0 (verificación previa / catálogo CM)
     const params = new URLSearchParams(window.location.search);

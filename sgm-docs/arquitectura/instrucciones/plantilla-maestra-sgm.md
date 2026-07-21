@@ -95,17 +95,44 @@ Reglas:
 - La clasificación síncrona/asíncrona/cacheada es obligatoria para dependencias; si no está decidida, se marca ⚠ pendiente.
 - Heurística de detección sobre el BPMN: **todo cruce de carril hacia una unidad que corresponde a otro módulo es un candidato a borde.**
 
-### 3.6 Edge cases
+### 3.6 Validaciones (obligatoria en formularios; "Sin validaciones de formulario" si no aplica)
+
+Catálogo accionable de reglas que el **backend** evalúa al invocar una operación de escritura (o al intentar avanzar con un botón del formulario). El frontend solo refleja el resultado; no es la fuente de verdad. Norma de payload: [`estandares-api.md`](../especificacion/estandares-api.md) §3 (`ValidationIssue` / `ValidationErrorResponse`).
+
+**Cuándo es obligatoria:** todo sub-paso con formulario o acciones de escritura en SGM (botones que invocan operaciones del contrato). Si el sub-paso es solo lectura, consulta o automático sin captura → declarar `Sin validaciones de formulario`.
+
+Formato (tabla; una fila por regla; agrupar por acción de UI):
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `requesting_unit` | El campo Unidad solicitante es obligatorio. | blocking |
+
+| Columna | Contenido |
+|---|---|
+| **Acción UI** | Etiqueta del botón o acción en pantalla (ej. Guardar borrador / Enviar a aprobación). Un mismo sub-paso puede tener varias acciones con conjuntos distintos de reglas. |
+| **Operación** | `operationId` del contrato / OpenAPI que respalda la acción |
+| **Código** | `error_code` en `SCREAMING_SNAKE_CASE` |
+| **Campo** | Path del campo en el payload (`requesting_unit`, `lines[0].quantity`, …) o `—` si es regla de documento/estado |
+| **Mensaje (`rule`)** | Texto legible que verá el usuario (mismo valor que viaja en la API) |
+| **Severidad** | `blocking` (impide avanzar) \| `advisory` (informa sin bloquear) — enum `Severity` |
+
+Reglas:
+- Toda fila debe existir (o agregarse) en la tabla de reglas de la operación en `contracts.md` y tener ejemplo o esquema en OpenAPI (`422` con `issues[]` cuando hay varias).
+- Prohibido inventar reglas solo en el prototipo: el modal de demo lista el mismo conjunto documentado aquí.
+- Ante varias reglas `blocking`, la API responde `422` con `ValidationErrorResponse` (`issues[]`); el prototipo muestra **todas** en un modal o listado.
+- No sustituye §3.7 Edge cases: la tabla es el catálogo de códigos; los edge cases narran caminos no felices y fallas de proveedor.
+
+### 3.7 Edge cases
 Todos los caminos no felices conocidos: rechazos, estados desiertos, fallas de integración, cancelaciones, datos inválidos. Si la fuente no define qué ocurre en un edge case identificado, se documenta el caso igualmente y su resolución se marca como pendiente. **Para sub-pasos con borde de módulo, es obligatorio documentar el edge case de proveedor no disponible o rechazo del contrato** (qué hace el flujo si Presupuestos no responde, si la firma falla, si MP está caído).
 
-### 3.7 Pendientes de definir (si aplica)
+### 3.8 Pendientes de definir (si aplica)
 Formato obligatorio de marcado:
 
 > ⚠ **Pendiente de definir:** descripción del vacío — y si es candidato a regla transversal reutilizable, indicarlo.
 
 **Regla de oro:** un vacío de la fuente se marca como pendiente explícito, nunca se rellena con un supuesto silencioso. Los supuestos razonables pueden proponerse, pero etiquetados como propuesta, no como definición.
 
-### 3.8 Cierre de etapa
+### 3.9 Cierre de etapa
 Cada archivo de etapa termina con:
 - **Resumen de entidades de la etapa** (tabla: Entidad / Tipo de relación / Notas).
 - **Resumen de bordes de la etapa** (tabla: Sub-paso / Tipo / Contrato o Evento / Contraparte) — omitible solo si la etapa no tiene ningún cruce.
@@ -280,7 +307,7 @@ Imagen exportada (PNG/SVG) + fuente editable si existe (Excalidraw, draw.io). Pa
 4. **Tabla Campos ↔ entidad** con columna **Obligatorio** (`Sí` / `No` / `Sí si <condición>`). Toda fila debe tener valor en esa columna; es el ancla de trazabilidad entre modelo, wireframe y prototipo.
 5. **Acciones disponibles** (botones/enlaces), a dónde navega o qué transición de estado dispara cada una, y **qué operación de contrato invoca** (nombre de la operación en `contracts.md`).
 6. **Estados de la pantalla:** al menos el estado normal + estados de bloqueo/solo lectura si el proceso los define (ej. SOLPED "En proceso de cotización").
-7. **Validaciones visibles:** qué campos son obligatorios, opcionales o condicionales, y qué condiciones bloquean el avance. Recordatorio de diseño: la validación bloqueante vive en el servidor y llega como error estructurado de la API; el wireframe la refleja, no la reemplaza.
+7. **Validaciones visibles:** qué campos son obligatorios, opcionales o condicionales, y qué condiciones bloquean el avance. El catálogo completo de códigos por acción de UI vive en la ficha del sub-paso (§3.6 Validaciones) y en `contracts.md`; el wireframe solo resume lo visible en layout. Recordatorio de diseño: la validación bloqueante vive en el servidor y llega como `ValidationErrorResponse` / `ErrorResponse` de la API; el prototipo refleja el conjunto de `issues` (p. ej. modal al pulsar el botón), no inventa reglas.
 
 ### Obligatoriedad en wireframe y prototipo HTML
 
@@ -332,6 +359,7 @@ Un **sub-paso** está completo cuando:
 - [ ] Tabla de ficha con las 4 materias llenas (sin celdas "por ver").
 - [ ] Todas las entidades referenciadas existen en `entidades-core.md`.
 - [ ] Sección de borde de módulo presente (aunque sea "Sin cruce"); si hay cruce, contrato/evento nombrado y existente en `contracts.md`, con clasificación declarada o marcada ⚠.
+- [ ] Sección de validaciones presente (§3.6): tabla por acción UI ↔ operación ↔ código, o `Sin validaciones de formulario`; cada código anclado en `contracts.md` / OpenAPI.
 - [ ] Si el borde implica operación nueva o cambio de payload: entrada correspondiente en OpenAPI del módulo (§4.1).
 - [ ] Todos los edge cases conocidos están documentados, incluidos los de falla de proveedor si hay borde.
 - [ ] Si depende de estados MP: materia "Interacción MP" declarada (§5.1), lecturas marcadas como confirmadas o deseadas, y modo degradado documentado para toda lectura deseada (§5.3).

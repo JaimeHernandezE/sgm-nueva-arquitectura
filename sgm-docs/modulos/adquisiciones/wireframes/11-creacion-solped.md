@@ -149,6 +149,7 @@
 - Tabla de líneas: agregar/eliminar filas (≥1); subtotal neto y totales (neto / impuestos / bruto) se recalculan en cliente.
 - Precio siempre neto; selector de impuesto por línea (default IVA 19%). No hay pregunta «¿neto o bruto?».
 - Si moneda ≠ CLP: mostrar «Total bruto en CLP» con tasa referencial; la autoconsulta de saldo usa el **bruto** en CLP (municipio = consumidor final; IVA es costo).
+- Catálogo completo por acción UI (códigos, campos, severidad): ficha [`1-solped.md`](../procesos-transversales/1-solped.md) §1.1 Validaciones. Prototipo: modal `ValidationErrorResponse` al pulsar **Enviar a aprobación**.
 
 ## Notas
 

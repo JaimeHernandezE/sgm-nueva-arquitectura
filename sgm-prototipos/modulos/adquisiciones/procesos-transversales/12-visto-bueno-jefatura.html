@@ -19,7 +19,7 @@
     <div class="form-card">
       <div class="form-card__header">
         <span>SOLPED #1234 — Revisión jefatura</span>
-        <span class="badge badge--active">Pendiente V°B°</span>
+        <span class="badge badge--active" id="header-badge">Pendiente V°B°</span>
       </div>
       <div class="form-card__body">
         <section class="form-section">
@@ -57,13 +57,19 @@
         <section class="form-section">
           <h3 class="form-section__title">Decisión</h3>
           <div class="form-row">
-            <label>Comentarios (obligatorio si rechazo)</label>
-            <textarea placeholder="Comentarios de la decisión…"></textarea>
+            <label>Comentarios <span class="muted">(obligatorio si rechazo)</span></label>
+            <textarea id="comments" placeholder="Comentarios de la decisión…"></textarea>
+          </div>
+
+          <div class="info-panel hidden" id="next-step-panel">
+            <span id="next-step-text"></span>
+            <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
           </div>
         </section>
       </div>
       <div class="form-actions">
-        <button class="btn btn--secondary" type="button" id="reject">Rechazar</button>
+        <button class="btn btn--secondary" type="button" id="reject-close">Rechazar</button>
+        <button class="btn btn--secondary" type="button" id="reject-draft">Rechazar y enviar a borrador</button>
         <button class="btn btn--primary" type="button" id="approve">Aprobar y firmar</button>
       </div>
     </div>
@@ -95,7 +101,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, demoAction, initBalancePanel, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, demoAction, relativeFormHref, initBalancePanel, initStepSimulation } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
@@ -121,8 +127,57 @@
       document.getElementById('balance-modal').classList.remove('is-open');
     });
 
-    document.getElementById('reject').addEventListener('click', () => demoAction('rejectPurchaseRequest'));
-    document.getElementById('approve').addEventListener('click', () => demoAction('approvePurchaseRequest'));
+    const commentsEl = document.getElementById('comments');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    const nextStepLink = document.getElementById('next-step-link');
+    const rejectCloseBtn = document.getElementById('reject-close');
+    const rejectDraftBtn = document.getElementById('reject-draft');
+    const approveBtn = document.getElementById('approve');
+
+    function finish(actionsDisabled = [rejectCloseBtn, rejectDraftBtn, approveBtn, commentsEl]) {
+      actionsDisabled.forEach((el) => { el.disabled = true; });
+      nextStepPanel.classList.remove('hidden');
+    }
+
+    function requireComments() {
+      if (!commentsEl.value.trim()) {
+        alert('Comentario obligatorio para rechazar (demo).');
+        return false;
+      }
+      return true;
+    }
+
+    rejectCloseBtn.addEventListener('click', () => {
+      if (!requireComments()) return;
+      demoAction('rejectPurchaseRequest (disposition=cancel)');
+      document.getElementById('header-badge').textContent = 'Rechazada — cerrada';
+      nextStepText.textContent =
+        'SOLPED rechazada sin corrección — ProcurementCase.status = cancelled. El expediente queda cerrado.';
+      nextStepLink.href = getExpedienteUrl(expedienteId);
+      nextStepLink.textContent = 'Ver expediente';
+      finish();
+    });
+
+    rejectDraftBtn.addEventListener('click', () => {
+      if (!requireComments()) return;
+      demoAction('rejectPurchaseRequest (disposition=return_to_draft)');
+      document.getElementById('header-badge').textContent = 'Devuelta a borrador';
+      nextStepText.textContent =
+        'SOLPED rechazada — status = draft. La unidad solicitante puede editar el paso 1.1 y reenviar a aprobación.';
+      nextStepLink.href = relativeFormHref('11-creacion-solped.html');
+      nextStepLink.textContent = 'Editar SOLPED (1.1)';
+      finish();
+    });
+
+    approveBtn.addEventListener('click', () => {
+      demoAction('approvePurchaseRequest');
+      document.getElementById('header-badge').textContent = 'Aprobada';
+      nextStepText.textContent = 'SOLPED aprobada — status = pending_finance. Continúa en verificación presupuestaria (1.3).';
+      nextStepLink.href = relativeFormHref('13-verificacion-disponibilidad.html');
+      nextStepLink.textContent = 'Continuar a 1.3';
+      finish();
+    });
   </script>
 </body>
 </html>

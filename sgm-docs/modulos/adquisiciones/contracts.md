@@ -121,14 +121,21 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 - **Sub-pasos:** 1.1
 - **Entrada:** `PurchaseRequest` + `PurchaseRequestLine[]` (`currency` a nivel de documento; `unit_price` **neto** en esa moneda; `tax_code` por línea)
 - **Respuesta:** `PurchaseRequest` con `status = draft`
+- **Errores de validación:** ante varias reglas fallidas → `422` `ValidationErrorResponse` (`error_code: VALIDATION_FAILED`, `issues[]`). Norma: [`estandares-api.md`](../../arquitectura/especificacion/estandares-api.md) §3.2.
 - **Reglas:**
-  | Regla | Severidad | QA | Error |
-  |---|---|---|---|
-  | Campos obligatorios completos | blocking | 53 | `MISSING_REQUIRED_FIELDS` |
-  | `quantity > 0` en cada línea | blocking | 53 P0 | `INVALID_QUANTITY` |
-  | `unit_price` con referencia válida | blocking | — | `PRICE_REFERENCE_UNAVAILABLE` |
-  | Desviación precio vs referencia dentro de tolerancia | blocking ⚠ | — | `PRICE_DEVIATION_EXCEEDED` |
-  | Si `purchase_modality = direct_procurement`, `founded_resolution_attachment` presente | blocking | — | `FOUNDED_RESOLUTION_REQUIRED` |
+  | Regla | Severidad | Campo | QA | Error |
+  |---|---|---|---|---|
+  | `requesting_unit` presente | blocking | `requesting_unit` | 53 | `MISSING_REQUIRED_FIELD` |
+  | `description` presente | blocking | `description` | 53 | `MISSING_REQUIRED_FIELD` |
+  | `justification` presente | blocking | `justification` | 53 | `MISSING_REQUIRED_FIELD` |
+  | `requested_date` presente | blocking | `requested_date` | 53 | `MISSING_REQUIRED_FIELD` |
+  | Al menos una línea | blocking | `lines` | 53 | `MISSING_REQUIRED_FIELD` |
+  | Campos obligatorios de cada línea | blocking | `lines[].*` | 53 | `MISSING_REQUIRED_FIELD` |
+  | `quantity > 0` en cada línea | blocking | `lines[].quantity` | 53 P0 | `INVALID_QUANTITY` |
+  | `unit_price` con referencia válida | blocking | `lines[].price_source` | — | `PRICE_REFERENCE_UNAVAILABLE` |
+  | Desviación precio vs referencia dentro de tolerancia | blocking ⚠ | `lines[].unit_price` | — | `PRICE_DEVIATION_EXCEEDED` |
+  | Si `purchase_modality = direct_procurement`, `founded_resolution_attachment` presente | blocking | `founded_resolution_attachment` | — | `FOUNDED_RESOLUTION_REQUIRED` |
+  | Si se agrega adjunto, tipo / descripción / archivo presentes | blocking | `attachments[].*` | — | `MISSING_REQUIRED_FIELD` |
 - **Dependencias invocadas:** `getPriceReference`, `previewBudgetAvailability` *(informativa, bajo demanda desde enlace UI)*. Verificación de stock/catálogo CM: sub-paso **1.0** (optativo).
 - **Notas:**
   - Precio siempre neto (convención de plataforma); no se captura «neto/bruto» como elección del usuario.
@@ -146,7 +153,20 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 
 #### `POST /purchase-requests/{id}/submit` — `submitPurchaseRequest`
 - **Sub-pasos:** 1.1
-- **Reglas:** SOLPED completa → `status = pending_approval`; si `purchase_modality = direct_procurement`, exige `founded_resolution_attachment` (`FOUNDED_RESOLUTION_REQUIRED`)
+- **Respuesta:** `PurchaseRequest` con `status = pending_approval`
+- **Errores de validación:** ante varias reglas fallidas → `422` `ValidationErrorResponse` (`issues[]`). Catálogo completo en ficha 1.1 § Validaciones.
+- **Reglas:**
+  | Regla | Severidad | Campo | QA | Error |
+  |---|---|---|---|---|
+  | `requesting_unit` presente | blocking | `requesting_unit` | 53 | `MISSING_REQUIRED_FIELD` |
+  | `description` presente | blocking | `description` | 53 | `MISSING_REQUIRED_FIELD` |
+  | `justification` presente | blocking | `justification` | 53 | `MISSING_REQUIRED_FIELD` |
+  | `requested_date` presente | blocking | `requested_date` | 53 | `MISSING_REQUIRED_FIELD` |
+  | Al menos una línea con campos obligatorios | blocking | `lines` / `lines[].*` | 53 | `MISSING_REQUIRED_FIELD` |
+  | `quantity > 0` en cada línea | blocking | `lines[].quantity` | 53 P0 | `INVALID_QUANTITY` |
+  | `unit_price` con referencia válida | blocking | `lines[].price_source` | — | `PRICE_REFERENCE_UNAVAILABLE` |
+  | Si `purchase_modality = direct_procurement`, `founded_resolution_attachment` presente | blocking | `founded_resolution_attachment` | — | `FOUNDED_RESOLUTION_REQUIRED` |
+  | `status = draft` | blocking | `status` | — | `INVALID_STATUS` |
 
 #### `POST /purchase-requests/{id}/approve` — `approvePurchaseRequest`
 - **Sub-pasos:** 1.2
@@ -161,7 +181,13 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 
 #### `POST /purchase-requests/{id}/reject` — `rejectPurchaseRequest`
 - **Sub-pasos:** 1.2
-- **Reglas:** `comments` obligatorio si rechazo → `status = draft`
+- **Entrada:** `comments` (obligatorio), `disposition` (`return_to_draft` \| `cancel`)
+- **Reglas:**
+  | Regla | Severidad | Error |
+  |---|---|---|
+  | `comments` presente | blocking | `MISSING_REQUIRED_FIELD` |
+  | `disposition = return_to_draft` → `PurchaseRequest.status = draft` | — | — |
+  | `disposition = cancel` → `ProcurementCase.status = cancelled` (sin corrección) | — | — |
 
 #### `POST /purchase-requests/{id}/budget-verification` — `verifyBudgetAvailability`
 - **Sub-pasos:** 1.3

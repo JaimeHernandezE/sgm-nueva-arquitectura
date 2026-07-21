@@ -26,7 +26,7 @@
 | Comentarios (obligatorio si rechazo)                      |
 | [________________________________________________]        |
 +----------------------------------------------------------+
-| [ Rechazar ]                    [ Aprobar y firmar ]      |
+| [ Rechazar ] [ Rechazar y enviar a borrador ] [ Aprobar y firmar ] |
 +----------------------------------------------------------+
 ```
 
@@ -44,14 +44,16 @@
 | Botón | Operación contrato | Dependencia |
 |---|---|---|
 | Aprobar y firmar | `approvePurchaseRequest` | `requestSignature` → `confirmSignature` (Core (FirmaGob)) |
-| Rechazar | `rejectPurchaseRequest` | — |
+| Rechazar | `rejectPurchaseRequest` (`disposition = cancel`) | — (`ProcurementCase.status = cancelled`; sin corrección) |
+| Rechazar y enviar a borrador | `rejectPurchaseRequest` (`disposition = return_to_draft`) | — (`PurchaseRequest.status = draft`; vuelve a 1.1 editable) |
 | Consultar saldo (panel) | `previewBudgetAvailability` | Informativa — mismo panel que 1.1 |
 
 ## Estados de pantalla
 
 - **Pendiente firma:** botón aprobación deshabilitado hasta `confirmSignature` exitoso.
 - **FirmaGob caído:** banner `SIGNATURE_PROVIDER_UNAVAILABLE`; botones bloqueados.
-- **Rechazado:** vuelve a borrador en unidad solicitante.
+- **Rechazado (cerrar):** expediente cancelado; no hay edición posterior de la SOLPED.
+- **Rechazado (borrador):** vuelve a borrador en unidad solicitante; el solicitante puede editar el paso 1.1 y reenviar a aprobación.
 
 ## Validaciones visibles
 
