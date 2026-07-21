@@ -30,6 +30,9 @@
             Línea presup. indicada: Cuenta 22.01.03 (opcional)
           </div>
           <p>
+            <a class="btn btn--link" id="view-solped-11" href="11-creacion-solped.html">Ver formulario 1.1</a>
+          </p>
+          <p>
             <button class="btn btn--link" type="button" id="balance-trigger">Consultar saldo en línea presupuestaria</button>
           </p>
         </section>
@@ -48,7 +51,7 @@
               <tr>
                 <td>Jefatura Unidad</td>
                 <td>FirmaGob</td>
-                <td><span class="badge badge--active">Pendiente</span></td>
+                <td><span class="badge badge--active" id="signature-status">Pendiente</span></td>
               </tr>
             </tbody>
           </table>
@@ -63,14 +66,20 @@
 
           <div class="info-panel hidden" id="next-step-panel">
             <span id="next-step-text"></span>
-            <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
           </div>
         </section>
       </div>
-      <div class="form-actions">
+      <div class="form-actions" id="actions-pending">
         <button class="btn btn--secondary" type="button" id="reject-close">Rechazar</button>
         <button class="btn btn--secondary" type="button" id="reject-draft">Rechazar y enviar a borrador</button>
         <button class="btn btn--primary" type="button" id="approve">Aprobar y firmar</button>
+      </div>
+      <div class="form-actions hidden" id="actions-signed">
+        <button class="btn btn--secondary" type="button" id="view-signed-doc">Ver documento firmado</button>
+        <a class="btn btn--primary" id="back-expediente" href="#">Volver al expediente</a>
+      </div>
+      <div class="form-actions hidden" id="actions-rejected">
+        <a class="btn btn--primary" id="reject-next-link" href="#">Continuar</a>
       </div>
     </div>
       </div>
@@ -99,9 +108,41 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="sign-modal">
+    <div class="modal modal--wide" role="dialog" aria-labelledby="sign-modal-title">
+      <div class="modal__header">
+        <span id="sign-modal-title">Previsualización — V°B° jefatura</span>
+        <button class="btn btn--link" type="button" id="sign-modal-close">✕</button>
+      </div>
+      <div class="modal__body">
+        <div class="doc-preview" id="doc-preview">
+          <h4 class="doc-preview__title">Acta de visto bueno — SOLPED #1234</h4>
+          <p class="doc-preview__meta">Expediente demo · Unidad Solicitante · Monto $1.250.000</p>
+          <p>
+            La jefatura de la unidad solicitante declara haber revisado la solicitud de pedido
+            y otorga el visto bueno para su remisión a DAF Finanzas (verificación presupuestaria).
+          </p>
+          <p>
+            Glosa: Insumos de oficina · Línea presupuestaria indicada: Cuenta 22.01.03
+          </p>
+          <div class="doc-preview__signature" id="doc-signature-block">
+            Firma electrónica avanzada (FirmaGob) — pendiente
+          </div>
+        </div>
+      </div>
+      <div class="modal__footer" id="sign-modal-footer-pending">
+        <button class="btn btn--secondary" type="button" id="sign-modal-cancel">Cancelar</button>
+        <button class="btn btn--primary" type="button" id="sign-confirm">Firmar</button>
+      </div>
+      <div class="modal__footer hidden" id="sign-modal-footer-signed">
+        <button class="btn btn--primary" type="button" id="sign-modal-done">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, demoAction, relativeFormHref, initBalancePanel, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, demoAction, relativeFormHref, withSimulationParams, initBalancePanel, initStepSimulation } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
@@ -113,9 +154,16 @@
       stepName: 'Visto bueno de jefatura',
       stepId: '1.2',
     });
-    initStepSimulation({ stepId: '1.2' });
+    initStepSimulation({
+      stepId: '1.2',
+      defaultRol: 'adq.aprobador_unidad',
+      defaultPaso: '1.2',
+    });
 
     bootstrapFormPage('solped-step');
+
+    document.getElementById('view-solped-11').href = relativeFormHref('11-creacion-solped.html');
+    document.getElementById('back-expediente').href = getExpedienteUrl(expedienteId);
 
     initBalancePanel({
       triggerId: 'balance-trigger',
@@ -130,14 +178,75 @@
     const commentsEl = document.getElementById('comments');
     const nextStepPanel = document.getElementById('next-step-panel');
     const nextStepText = document.getElementById('next-step-text');
-    const nextStepLink = document.getElementById('next-step-link');
     const rejectCloseBtn = document.getElementById('reject-close');
     const rejectDraftBtn = document.getElementById('reject-draft');
     const approveBtn = document.getElementById('approve');
+    const actionsPending = document.getElementById('actions-pending');
+    const actionsSigned = document.getElementById('actions-signed');
+    const actionsRejected = document.getElementById('actions-rejected');
+    const rejectNextLink = document.getElementById('reject-next-link');
+    const signModal = document.getElementById('sign-modal');
+    const signatureStatus = document.getElementById('signature-status');
+    const docSignatureBlock = document.getElementById('doc-signature-block');
+    const signFooterPending = document.getElementById('sign-modal-footer-pending');
+    const signFooterSigned = document.getElementById('sign-modal-footer-signed');
+    const signModalTitle = document.getElementById('sign-modal-title');
 
-    function finish(actionsDisabled = [rejectCloseBtn, rejectDraftBtn, approveBtn, commentsEl]) {
-      actionsDisabled.forEach((el) => { el.disabled = true; });
+    let isSigned = false;
+
+    function openSignModal() {
+      signModal.classList.add('is-open');
+      if (isSigned) {
+        signModalTitle.textContent = 'Documento firmado — V°B° jefatura';
+        signFooterPending.classList.add('hidden');
+        signFooterSigned.classList.remove('hidden');
+        docSignatureBlock.classList.add('doc-preview__signature--done');
+        docSignatureBlock.textContent =
+          'Firmado electrónicamente vía FirmaGob · Jefatura Unidad · confirmSignature OK';
+      } else {
+        signModalTitle.textContent = 'Previsualización — V°B° jefatura';
+        signFooterPending.classList.remove('hidden');
+        signFooterSigned.classList.add('hidden');
+        docSignatureBlock.classList.remove('doc-preview__signature--done');
+        docSignatureBlock.textContent = 'Firma electrónica avanzada (FirmaGob) — pendiente';
+      }
+    }
+
+    function closeSignModal() {
+      signModal.classList.remove('is-open');
+    }
+
+    function lockComments() {
+      commentsEl.readOnly = true;
+      commentsEl.placeholder = commentsEl.value.trim() ? '' : 'Sin comentarios';
+    }
+
+    function finishReject({ message, href, linkLabel }) {
+      lockComments();
+      [rejectCloseBtn, rejectDraftBtn, approveBtn].forEach((el) => { el.disabled = true; });
+      actionsPending.classList.add('hidden');
+      actionsRejected.classList.remove('hidden');
       nextStepPanel.classList.remove('hidden');
+      nextStepText.textContent = message;
+      rejectNextLink.href = href;
+      rejectNextLink.textContent = linkLabel;
+    }
+
+    function finishSigned() {
+      isSigned = true;
+      lockComments();
+      demoAction('approvePurchaseRequest');
+      demoAction('requestSignature → confirmSignature');
+      document.getElementById('header-badge').textContent = 'Aprobada';
+      document.getElementById('header-badge').classList.remove('badge--active');
+      signatureStatus.textContent = 'Firmado';
+      signatureStatus.classList.remove('badge--active');
+      actionsPending.classList.add('hidden');
+      actionsSigned.classList.remove('hidden');
+      nextStepPanel.classList.remove('hidden');
+      nextStepText.textContent =
+        'SOLPED aprobada y firmada — status = pending_finance. Puede revisar el documento o volver al expediente.';
+      closeSignModal();
     }
 
     function requireComments() {
@@ -152,32 +261,38 @@
       if (!requireComments()) return;
       demoAction('rejectPurchaseRequest (disposition=cancel)');
       document.getElementById('header-badge').textContent = 'Rechazada — cerrada';
-      nextStepText.textContent =
-        'SOLPED rechazada sin corrección — ProcurementCase.status = cancelled. El expediente queda cerrado.';
-      nextStepLink.href = getExpedienteUrl(expedienteId);
-      nextStepLink.textContent = 'Ver expediente';
-      finish();
+      finishReject({
+        message:
+          'SOLPED rechazada sin corrección — ProcurementCase.status = cancelled. El expediente queda cerrado.',
+        href: getExpedienteUrl(expedienteId),
+        linkLabel: 'Ver expediente',
+      });
     });
 
     rejectDraftBtn.addEventListener('click', () => {
       if (!requireComments()) return;
       demoAction('rejectPurchaseRequest (disposition=return_to_draft)');
       document.getElementById('header-badge').textContent = 'Devuelta a borrador';
-      nextStepText.textContent =
-        'SOLPED rechazada — status = draft. La unidad solicitante puede editar el paso 1.1 y reenviar a aprobación.';
-      nextStepLink.href = relativeFormHref('11-creacion-solped.html');
-      nextStepLink.textContent = 'Editar SOLPED (1.1)';
-      finish();
+      finishReject({
+        message:
+          'SOLPED rechazada — status = draft. La unidad solicitante puede editar el paso 1.1 y reenviar a aprobación.',
+        href: withSimulationParams(
+          `11-creacion-solped?expediente=${encodeURIComponent(expedienteId)}`,
+          { rol: 'adq.solicitante', paso: '1.1' },
+        ),
+        linkLabel: 'Editar SOLPED (1.1)',
+      });
     });
 
     approveBtn.addEventListener('click', () => {
-      demoAction('approvePurchaseRequest');
-      document.getElementById('header-badge').textContent = 'Aprobada';
-      nextStepText.textContent = 'SOLPED aprobada — status = pending_finance. Continúa en verificación presupuestaria (1.3).';
-      nextStepLink.href = relativeFormHref('13-verificacion-disponibilidad.html');
-      nextStepLink.textContent = 'Continuar a 1.3';
-      finish();
+      openSignModal();
     });
+
+    document.getElementById('sign-confirm').addEventListener('click', finishSigned);
+    document.getElementById('sign-modal-cancel').addEventListener('click', closeSignModal);
+    document.getElementById('sign-modal-close').addEventListener('click', closeSignModal);
+    document.getElementById('sign-modal-done').addEventListener('click', closeSignModal);
+    document.getElementById('view-signed-doc').addEventListener('click', openSignModal);
   </script>
 </body>
 </html>

@@ -24,6 +24,8 @@ const modalityManifestByExpediente = {
   'ADQ-2026-00012': stepsManifestTratoDirecto,
 };
 
+export { withSimulationParams } from './roles.js';
+
 export function getExpedienteId() {
   return getExpedienteIdFromUrl();
 }
@@ -284,13 +286,24 @@ function applyGating(stepId, expedienteId) {
 
 /**
  * Panel de simulación en pantallas de sub-paso. Sin `rol`/`paso` en la URL,
- * los selects muestran su default y no se aplica ningún gating (vista actual).
+ * usa `defaultRol` / `defaultPaso` si se pasan; si no, vista actual sin gating.
  * El select de sub-paso navega a la pantalla del paso elegido (anteriores
  * asumidos aprobados); el de rol re-aplica la habilitación en vivo.
  */
-export function initStepSimulation({ stepId }) {
+export function initStepSimulation({ stepId, defaultRol = null, defaultPaso = null }) {
   const expedienteId = getExpedienteIdFromUrl();
-  const simulation = getSimulationFromUrl();
+  const fromUrl = getSimulationFromUrl();
+  const hasUrlSimulation = Boolean(fromUrl.rol || fromUrl.paso);
+  const simulation = hasUrlSimulation
+    ? fromUrl
+    : {
+        rol: defaultRol || null,
+        paso: defaultPaso || null,
+      };
+  if (!hasUrlSimulation && (defaultRol || defaultPaso)) {
+    setSimulationInUrl(simulation);
+  }
+
   const anchor = document.getElementById('origin-banner') || document.getElementById('breadcrumb');
   if (!anchor || document.getElementById('sim-panel')) return;
 

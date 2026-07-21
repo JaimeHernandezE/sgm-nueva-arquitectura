@@ -13,6 +13,7 @@
 | Contexto SOLPED                                           |
 | Unidad: ... | Monto total: $XXX | Líneas: 3               |
 | Línea presup. indicada: Cuenta 22.01.03 (opcional)        |
+| [ Ver formulario 1.1 ]                                    |
 | [ Consultar saldo en línea presupuestaria ]  (enlace)     |
 +----------------------------------------------------------+
 | Seguimiento de firmas                                     |
@@ -23,11 +24,29 @@
 | +------------------+--------+-------------+               |
 +----------------------------------------------------------+
 | Decisión                                                  |
-| Comentarios (obligatorio si rechazo)                      |
+| Comentarios (obligatorio si rechazo; solo lectura tras    |
+| decisión)                                                 |
 | [________________________________________________]        |
 +----------------------------------------------------------+
 | [ Rechazar ] [ Rechazar y enviar a borrador ] [ Aprobar y firmar ] |
 +----------------------------------------------------------+
+
+Modal al pulsar «Aprobar y firmar»:
+
++----------------------------------------------------------+
+| Previsualización — V°B° jefatura                     [✕] |
++----------------------------------------------------------+
+| [Documento: Acta de visto bueno SOLPED #… ]              |
+| FirmaGob — pendiente                                     |
++----------------------------------------------------------+
+| [ Cancelar ]                              [ Firmar ]     |
++----------------------------------------------------------+
+
+Tras firmar (vuelve a la pantalla):
+
+| Comentarios (solo lectura)                                |
+| Seguimiento de firmas: Jefatura Unidad → Firmado          |
+| [ Ver documento firmado ]     [ Volver al expediente ]    |
 ```
 
 ## Campos ↔ entidad
@@ -43,17 +62,22 @@
 
 | Botón | Operación contrato | Dependencia |
 |---|---|---|
-| Aprobar y firmar | `approvePurchaseRequest` | `requestSignature` → `confirmSignature` (Core (FirmaGob)) |
+| Aprobar y firmar | abre modal de previsualización → `approvePurchaseRequest` | `requestSignature` → `confirmSignature` (Core (FirmaGob)) al pulsar **Firmar** |
+| Firmar (modal) | `approvePurchaseRequest` + `confirmSignature` | Cierra modal; deja pantalla en estado firmado |
+| Ver documento firmado | — (UI) | Reabre modal en modo solo lectura del documento firmado |
+| Volver al expediente | — (navegación) | Vista de expediente |
 | Rechazar | `rejectPurchaseRequest` (`disposition = cancel`) | — (`ProcurementCase.status = cancelled`; sin corrección) |
 | Rechazar y enviar a borrador | `rejectPurchaseRequest` (`disposition = return_to_draft`) | — (`PurchaseRequest.status = draft`; vuelve a 1.1 editable) |
+| Ver formulario 1.1 | — (navegación) | Solo lectura del formulario de creación SOLPED |
 | Consultar saldo (panel) | `previewBudgetAvailability` | Informativa — mismo panel que 1.1 |
 
 ## Estados de pantalla
 
-- **Pendiente firma:** botón aprobación deshabilitado hasta `confirmSignature` exitoso.
+- **Pendiente firma:** modal de previsualización abierto; aún no se perfecciona la aprobación hasta **Firmar**.
+- **Firmado:** comentarios solo lectura; acciones de decisión ocultas; CTAs «Ver documento firmado» y «Volver al expediente».
 - **FirmaGob caído:** banner `SIGNATURE_PROVIDER_UNAVAILABLE`; botones bloqueados.
-- **Rechazado (cerrar):** expediente cancelado; no hay edición posterior de la SOLPED.
-- **Rechazado (borrador):** vuelve a borrador en unidad solicitante; el solicitante puede editar el paso 1.1 y reenviar a aprobación.
+- **Rechazado (cerrar):** expediente cancelado; no hay edición posterior de la SOLPED; comentarios solo lectura.
+- **Rechazado (borrador):** vuelve a borrador en unidad solicitante; el solicitante puede editar el paso 1.1 y reenviar a aprobación; comentarios solo lectura.
 
 ## Validaciones visibles
 
