@@ -34,6 +34,8 @@
 | 1 | Sistema externo (lectura) | `readMpProcess` (vía servicio de sincronización) | Core (Mercado Público) | Asíncrona | Estado del proceso |
 | 2 | Evento | `MpStateChanged` (interno, agnóstico de push/polling) | — (consumidores: expediente, notificaciones) | Asíncrona | `MpProcessSnapshot` |
 
+**Validaciones:** Sin validaciones de formulario — monitoreo MP (lectura deseada); sin operación de escritura en SGM.
+
 **Edge cases:**
 - Ninguna MiPyme cotiza en primera ronda → ampliación a segunda ronda es acción del usuario en MP; con lectura deseada, SGM lo refleja; en degradado el expediente muestra el paso pendiente y el deep link (sin transcripción en SGM).
 - MP no disponible durante el período → sin efecto de gestión (paso informativo); la sincronización se retoma con retroceso exponencial.
@@ -64,6 +66,8 @@
 |---|---|---|---|---|---|
 | 1 | Sistema externo (lectura, deseada) | `readMpProcess` | Core (Mercado Público) | Asíncrona | Cierre + selección |
 | 2 | Evento | `QuotationClosed` | — (consumidores: expediente, notificaciones) | Asíncrona | `QuotationResult` |
+
+**Validaciones:** Sin validaciones de formulario — selección ocurre en MP; `QuotationResult` solo por sync (sin transcripción ni escritura de usuario en SGM).
 
 **Edge cases:**
 - Usuario no gestiona la selección en MP dentro de un plazo razonable → timer de escalamiento sobre el `CaseStep` (propiedad de flujos, `musts-arquitectura.md` §10.4) — **[PENDIENTE P-33]** timers de escalamiento configurables.
@@ -100,6 +104,8 @@
 | 1 | Sistema externo (lectura, deseada) | `readMpProcess` | Core (Mercado Público) | Asíncrona | Estado de OC / bloqueo |
 | 2 | Evento | `PurchaseOrderIssued` / `ProviderIneligibleBlocked` | — (consumidores: expediente, notificaciones) | Asíncrona | `PurchaseOrder` |
 
+**Validaciones:** Sin validaciones de formulario — emisión de OC en MP; espejo `PurchaseOrder` solo por sync; la gestión por inhabilidad es tarea tras lectura, no formulario de captura.
+
 **Edge cases:**
 - Proveedor inhábil al emitir → gestión: tarea al usuario; si selecciona siguiente oferta, se reejecuta 3.3 con nuevo proveedor; si cancela, ver 3.6 (variante).
 - OC emitida por monto distinto al ofertado (corrección en MP) → el monto que vale es el de la OC; SGM lo tomará de la lectura de aceptación (3.4).
@@ -132,6 +138,12 @@
 | 1 | Sistema externo (lectura, **confirmada**) | `readMpProcess` — OC Aceptada | Core (Mercado Público) | Asíncrona | N° OC, proveedor, monto real, fecha de aceptación |
 | 2 | Dependencia | `commitBudget` (compromiso por monto real; incluye ajuste contra preobligación) | Proveedor de disponibilidad presupuestaria (Presupuestos SGM o sistema municipal) | **Síncrona bloqueante** | Entrada: `pre_commitment_id`, `real_amount`, `purchase_order_ref` — Respuesta: `BudgetCommitment` o error estructurado |
 | 3 | Evento | `PurchaseOrderAccepted` | — (consumidores: expediente, recepción, Contabilidad, notificaciones, terceros vía webhook con scope) | Asíncrona | `PurchaseOrder`, `BudgetCommitment.id` |
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `BUDGET_UNAVAILABLE` | — | La línea presupuestaria no tiene saldo disponible para el monto real de la OC. | blocking |
 
 **Edge cases:**
 - **Monto real > preobligación y la línea no tiene saldo para la diferencia** → `commitBudget` responde `BUDGET_UNAVAILABLE` (`severity: blocking`). Situación anómala grave (la OC ya está aceptada, el vínculo legal existe, pero el compromiso contable no puede registrarse): tarea urgente a DAF Finanzas para regularización presupuestaria (modificación/suplemento) — **[PENDIENTE P-40]** el procedimiento de regularización no puede resolverlo el sistema solo, pero debe impedir que pase silenciosamente.
@@ -166,6 +178,8 @@
 | 1 | Sistema externo (lectura, deseada) | `readMpProcess` — OC Rechazada | Core (Mercado Público) | Asíncrona | Estado, motivo si disponible |
 | 2 | Evento | `PurchaseOrderRejected` | — (consumidores: expediente, notificaciones) | Asíncrona | `PurchaseOrder` |
 
+**Validaciones:** Sin validaciones de formulario — decisión de navegación tras sync MP; sin operación de escritura en contrato (la obligatoriedad de `decision` es de UI local).
+
 **Edge cases:**
 - No existe segunda oferta válida → única vía: cancelar y republicar, o reevaluar (3.6).
 - Rechazos sucesivos de todas las ofertas → equivalente funcional a proceso fallido; decisión de 3.6.
@@ -199,6 +213,13 @@
 | 1 | Sistema externo (lectura, deseada) | `readMpProcess` — desierto | Core (Mercado Público) | Asíncrona | Estado terminal del proceso |
 | 2 | Dependencia | `releasePreCommitment` (si cancelación) | Proveedor de disponibilidad presupuestaria | Síncrona bloqueante | `pre_commitment_id` |
 | 3 | Evento | `ProcurementProcessFailed` | — (consumidores: expediente, notificaciones, reportería) | Asíncrona | `ProcurementCase`, causa (`deserted` \| `all_rejected`), decisión tomada |
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Confirmar decisión | `releasePreCommitment` | `MISSING_REQUIRED_FIELD` | `decision` | El campo Decisión es obligatorio. | blocking |
+| Confirmar decisión (cancelar) | `releasePreCommitment` | `BUDGET_PROVIDER_UNAVAILABLE` | — | El proveedor de presupuesto no está disponible. | blocking |
 
 **Edge cases:**
 - Republicación reiterada sin resultado (2+ intentos) → advertencia asesora sugiriendo reevaluar condiciones o modalidad; candidato a métrica de reportería (procesos desiertos por unidad/rubro).

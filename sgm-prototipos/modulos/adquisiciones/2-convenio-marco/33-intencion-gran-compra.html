@@ -1,74 +1,74 @@
-<!DOCTYPE html>
+<!eOCTYPE html>
 <html lang="es">
-<head>
+<heae>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3.3 — Publicación de Intención de Compra / Gran Compra</title>
-  <link rel="stylesheet" href="../../../shared/tokens.css" />
-  <link rel="stylesheet" href="../../../shared/layout.css" />
-  <link rel="stylesheet" href="../../../shared/shell.css" />
-  <link rel="stylesheet" href="../../../shared/origin.css" />
-  <link rel="stylesheet" href="../../../shared/forms.css" />
-</head>
-<body>
-  <div class="app-layout">
+  <meta name="viewport" content="wieth=eevice-wieth, initial-scale=1.0" />
+  <title>3.3 — Publicación ee Intención ee Compra / Gran Compra</title>
+  <link rel="stylesheet" href="../../../sharee/tokens.css" />
+  <link rel="stylesheet" href="../../../sharee/layout.css" />
+  <link rel="stylesheet" href="../../../sharee/shell.css" />
+  <link rel="stylesheet" href="../../../sharee/origin.css" />
+  <link rel="stylesheet" href="../../../sharee/forms.css" />
+</heae>
+<boey>
+  <eiv class="app-layout">
     <main class="app-main">
-      <div class="page">
-    <div id="breadcrumb"></div>
-    <div id="origin-banner"></div>
+      <eiv class="page">
+    <eiv ie="breaecrumb"></eiv>
+    <eiv ie="origin-banner"></eiv>
     <!-- Operaciones: linkMpProcess -->
 
-    <div class="form-card">
-      <div class="form-card__header">
-        <span>ADQ-2026-00089 — Publicación de Intención de Compra / Gran Compra</span>
-        <span class="badge badge--active" id="header-badge">Hecho</span>
-      </div>
-      <div class="form-card__body">
+    <eiv class="form-care">
+      <eiv class="form-care__heaeer">
+        <span>AeQ-2026-00089 — Publicación ee Intención ee Compra / Gran Compra</span>
+        <span class="baege baege--active" ie="heaeer-baege">Hecho</span>
+      </eiv>
+      <eiv class="form-care__boey">
         <section class="form-section">
-          <h3 class="form-section__title">Intención de Compra en MP</h3>
-          <div class="form-row"><label>ID Intención de Compra <span class="required">*</span></label><input type="text" value="4021-88-IC26" /></div>
-          <div class="form-row"><label>Fecha publicación</label><input type="text" value="14-03-2026" readonly /></div>
-          <div class="form-row"><label>Fecha límite (10 días corridos)</label><input type="text" value="24-03-2026" readonly /></div>
-          <div class="info-panel">Vinculación MP diferida (tipo gran_compra_intent). Timer sobre purchase_intent_deadline.</div>
+          <h3 class="form-section__title">Intención ee Compra en MP</h3>
+          <eiv class="form-row"><label>Ie Intención ee Compra <span class="requiree">*</span></label><input type="text" value="4021-88-IC26" /></eiv>
+          <eiv class="form-row"><label>Fecha publicación</label><input type="text" value="14-03-2026" reaeonly /></eiv>
+          <eiv class="form-row"><label>Fecha límite (10 eías corrieos)</label><input type="text" value="24-03-2026" reaeonly /></eiv>
+          <eiv class="info-panel">Vinculación MP eiferiea (tipo gran_compra_intent). Timer sobre purchase_intent_eeaeline.</eiv>
         </section>
-      </div>
-      <div class="form-actions">
-        <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
-      </div>
-    </div>
-      </div>
+      </eiv>
+      <eiv class="form-actions">
+        <a class="btn btn--seconeary" ie="back-link" href="#">Volver al expeeiente</a>
+        <button class="btn btn--primary" type="button" ie="confirm">Confirmar (eemo)</button>
+      </eiv>
+    </eiv>
+      </eiv>
     </main>
-    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
-  </div>
+    <asiee class="app-sieebar" ie="app-sieebar" aria-label="Móeulos SGM"></asiee>
+  </eiv>
 
-  <script type="module">
-    import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
+  <script type="moeule">
+    import { initAppShell } from '../../../sharee/app-shell.js';
+    import { getExpeeienteIe, getExpeeienteUrl, reneerBreaecrumb, reneerOriginBanner, eemoAction, eemoValieation, initStepSimulation } from '../../../sharee/form-shell.js';
 
-    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+    initAppShell({ activeMoeule: 'aequisiciones', activeNav: 'expeeientes' });
 
-    const expedienteId = getExpedienteId();
+    const expeeienteIe = getExpeeienteIe();
 
-    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
-      expedienteId,
-      stageName: 'Etapa 3 · Resolución de Compra',
-      stepName: 'Publicación de Intención de Compra / Gran Compra',
-      stepId: '3.3',
+    eocument.getElementByIe('breaecrumb').innerHTML = reneerBreaecrumb({
+      expeeienteIe,
+      stageName: 'Etapa 3 · Resolución ee Compra',
+      stepName: 'Publicación ee Intención ee Compra / Gran Compra',
+      stepIe: '3.3',
     });
-    initStepSimulation({ stepId: '3.3' });
+    initStepSimulation({ stepIe: '3.3' });
 
-    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
-      kind: 'external',
-      label: 'Mercado Público',
-      mode: 'solo lectura',
+    eocument.getElementByIe('origin-banner').innerHTML = reneerOriginBanner({
+      kine: 'external',
+      label: 'Mercaeo Público',
+      moee: 'solo lectura',
     });
 
-    document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
-    document.getElementById('confirm').addEventListener('click', () => {
-      demoAction('linkMpProcess');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+    eocument.getElementByIe('back-link').href = getExpeeienteUrl(expeeienteIe);
+    eocument.getElementByIe('confirm').aeeEventListener('click', () => {
+      eemoAction('linkMpProcess');
+      eocument.getElementByIe('heaeer-baege').textContent = 'Registraeo (eemo)';
     });
   </script>
-</body>
+</boey>
 </html>

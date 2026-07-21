@@ -15,6 +15,7 @@ import stepsManifestCompraAgil from './steps-manifest-compra-agil.js';
 import stepsManifestConvenioMarco from './steps-manifest-convenio-marco.js';
 import stepsManifestLicitacionPublica from './steps-manifest-licitacion-publica.js';
 import stepsManifestTratoDirecto from './steps-manifest-trato-directo.js';
+import { getValidationDemo } from './validation-demos.js';
 
 const modalityManifestByExpediente = {
   'ADQ-2026-00123': stepsManifestCompraAgil,
@@ -88,9 +89,26 @@ export function renderOriginBanner(origin) {
   `;
 }
 
-/** Stub de operación de contrato (sin efecto de negocio). Preferir showValidationIssues para demos de 422. */
+/** Stub de operación de contrato (sin efecto de negocio). Preferir demoValidation para demos de 422. */
 export function demoAction(_operationName) {
   /* no-op */
+}
+
+/**
+ * Modal demo de ValidationErrorResponse resuelto desde validation-demos.js.
+ * @param {string} operationId
+ * @param {{ title?: string, issues?: import('./validation-demos.js').ValidationIssue[] }} [overrides]
+ */
+export function demoValidation(operationId, overrides = {}) {
+  demoAction(operationId);
+  const demo = getValidationDemo(operationId);
+  const issues = overrides.issues || demo?.issues;
+  if (!issues?.length) return;
+  showValidationIssues({
+    title: overrides.title || demo?.title || `Validaciones — ${operationId}`,
+    operationId,
+    issues,
+  });
 }
 
 /**

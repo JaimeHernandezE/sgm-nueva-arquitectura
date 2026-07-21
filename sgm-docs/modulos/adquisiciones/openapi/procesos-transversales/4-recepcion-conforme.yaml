@@ -47,15 +47,35 @@ paths:
                 rule: La orden de compra no existe
                 severity: blocking
         "422":
-          description: Regla de negocio violada.
+          description: Regla(s) de negocio violada(s). Una sola regla → ErrorResponse; varias → ValidationErrorResponse.
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
-              example:
-                error_code: RECEIPT_EXCEEDS_ORDER
-                rule: La cantidad recibida excede la pendiente de la línea
-                severity: blocking
+                oneOf:
+                  - $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                  - $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ValidationErrorResponse
+              examples:
+                receiptExceeds:
+                  value:
+                    error_code: RECEIPT_EXCEEDS_ORDER
+                    field: lines[0].quantity_received
+                    rule: La cantidad recibida supera la cantidad pendiente de la línea de OC.
+                    severity: blocking
+                receiptMultiple:
+                  summary: Campos obligatorios faltantes (ValidationErrorResponse)
+                  value:
+                    error_code: VALIDATION_FAILED
+                    rule: La solicitud no cumple una o más reglas de validación
+                    severity: blocking
+                    issues:
+                      - error_code: MISSING_REQUIRED_FIELD
+                        field: received_date
+                        rule: El campo Fecha de recepción es obligatorio.
+                        severity: blocking
+                      - error_code: MISSING_REQUIRED_FIELD
+                        field: lines
+                        rule: Debe registrarse al menos una línea de recepción.
+                        severity: blocking
   /goods-receipts/{id}/confirm:
     post:
       operationId: confirmReceipt

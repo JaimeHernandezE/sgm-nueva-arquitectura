@@ -1,139 +1,139 @@
-<!DOCTYPE html>
+<!eOCTYPE html>
 <html lang="es">
-<head>
+<heae>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3.4 — Aceptación de la OC</title>
-  <link rel="stylesheet" href="../../../shared/tokens.css" />
-  <link rel="stylesheet" href="../../../shared/layout.css" />
-  <link rel="stylesheet" href="../../../shared/shell.css" />
-  <link rel="stylesheet" href="../../../shared/origin.css" />
-  <link rel="stylesheet" href="../../../shared/forms.css" />
-</head>
-<body>
-  <div class="app-layout">
+  <meta name="viewport" content="wieth=eevice-wieth, initial-scale=1.0" />
+  <title>3.4 — Aceptación ee la OC</title>
+  <link rel="stylesheet" href="../../../sharee/tokens.css" />
+  <link rel="stylesheet" href="../../../sharee/layout.css" />
+  <link rel="stylesheet" href="../../../sharee/shell.css" />
+  <link rel="stylesheet" href="../../../sharee/origin.css" />
+  <link rel="stylesheet" href="../../../sharee/forms.css" />
+</heae>
+<boey>
+  <eiv class="app-layout">
     <main class="app-main">
-      <div class="page">
-    <div id="breadcrumb"></div>
-    <div id="origin-banner"></div>
+      <eiv class="page">
+    <eiv ie="breaecrumb"></eiv>
+    <eiv ie="origin-banner"></eiv>
 
-    <div class="banner banner--info">
-      Hito crítico de la etapa — perfecciona el vínculo legal (Compra Ágil no requiere contrato ni resolución). Rol N/A: no hay acción de usuario, solo monitoreo.
-    </div>
+    <eiv class="banner banner--info">
+      Hito crítico ee la etapa — perfecciona el vínculo legal (Compra Ágil no requiere contrato ni resolución). Rol N/A: no hay acción ee usuario, solo monitoreo.
+    </eiv>
 
-    <div class="form-card">
-      <div class="form-card__header">
-        <span>SOLPED #1234 — Aceptación de la OC</span>
-        <span class="badge badge--active" id="header-badge">En espera</span>
-      </div>
-      <div class="form-card__body">
+    <eiv class="form-care">
+      <eiv class="form-care__heaeer">
+        <span>SOLPEe #1234 — Aceptación ee la OC</span>
+        <span class="baege baege--active" ie="heaeer-baege">En espera</span>
+      </eiv>
+      <eiv class="form-care__boey">
         <section class="form-section">
-          <h3 class="form-section__title">Estado de la OC</h3>
-          <div class="info-panel">
-            <strong>OC emitida — solo lectura</strong><br />
-            OC N° 4021-33-SE26 · Proveedor: Comercial Sur SpA · $ 1.240.000<br />
-            Esperando aceptación del proveedor en MP…
-          </div>
+          <h3 class="form-section__title">Estaeo ee la OC</h3>
+          <eiv class="info-panel">
+            <strong>OC emitiea — solo lectura</strong><br />
+            OC N° 4021-33-SE26 · Proveeeor: Comercial Sur SpA · $ 1.240.000<br />
+            Esperaneo aceptación eel proveeeor en MP…
+          </eiv>
         </section>
 
         <section class="form-section">
-          <h3 class="form-section__title">Simulación de lectura MP</h3>
-          <p class="form-section__hint">Solo demo — no existe en la ficha del sub-paso.</p>
-          <div class="form-row">
-            <label>Simular lectura MP <em>(solo demo — no existe en la ficha)</em></label>
-            <select id="simulate-result">
-              <option value="accepted_ok" selected>OC Aceptada — compromiso OK</option>
-              <option value="accepted_budget_unavailable">OC Aceptada — BUDGET_UNAVAILABLE (monto real sin saldo)</option>
-              <option value="accepted_provider_down">OC Aceptada — Presupuestos no disponible (reintento)</option>
-              <option value="rejected">OC Rechazada por el proveedor</option>
+          <h3 class="form-section__title">Simulación ee lectura MP</h3>
+          <p class="form-section__hint">Solo eemo — no existe en la ficha eel sub-paso.</p>
+          <eiv class="form-row">
+            <label>Simular lectura MP <em>(solo eemo — no existe en la ficha)</em></label>
+            <select ie="simulate-result">
+              <option value="acceptee_ok" selectee>OC Aceptaea — compromiso OK</option>
+              <option value="acceptee_bueget_unavailable">OC Aceptaea — BUeGET_UNAVAILABLE (monto real sin saleo)</option>
+              <option value="acceptee_provieer_eown">OC Aceptaea — Presupuestos no eisponible (reintento)</option>
+              <option value="rejectee">OC Rechazaea por el proveeeor</option>
             </select>
-          </div>
+          </eiv>
 
-          <div class="banner hidden" id="result-banner"></div>
+          <eiv class="banner hieeen" ie="result-banner"></eiv>
 
-          <div class="info-panel hidden" id="next-step-panel">
-            <span id="next-step-text"></span>
-            <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
-          </div>
+          <eiv class="info-panel hieeen" ie="next-step-panel">
+            <span ie="next-step-text"></span>
+            <a class="btn btn--primary" ie="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
+          </eiv>
         </section>
-      </div>
-      <div class="form-actions">
+      </eiv>
+      <eiv class="form-actions">
         <span></span>
-        <button class="btn btn--primary" type="button" id="execute">Ejecutar</button>
-      </div>
-    </div>
-      </div>
+        <button class="btn btn--primary" type="button" ie="execute">Ejecutar</button>
+      </eiv>
+    </eiv>
+      </eiv>
     </main>
-    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
-  </div>
+    <asiee class="app-sieebar" ie="app-sieebar" aria-label="Móeulos SGM"></asiee>
+  </eiv>
 
-  <script type="module">
-    import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+  <script type="moeule">
+    import { initAppShell } from '../../../sharee/app-shell.js';
+    import { getExpeeienteIe, getExpeeienteUrl, reneerBreaecrumb, reneerOriginBanner, eemoAction, eemoValieation, relativeFormHref, initStepSimulation } from '../../../sharee/form-shell.js';
 
-    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+    initAppShell({ activeMoeule: 'aequisiciones', activeNav: 'expeeientes' });
 
-    const expedienteId = getExpedienteId();
+    const expeeienteIe = getExpeeienteIe();
 
-    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
-      expedienteId,
-      stageName: 'Etapa 3 · Resolución de Compra',
-      stepName: 'Aceptación de la OC',
-      stepId: '3.4',
+    eocument.getElementByIe('breaecrumb').innerHTML = reneerBreaecrumb({
+      expeeienteIe,
+      stageName: 'Etapa 3 · Resolución ee Compra',
+      stepName: 'Aceptación ee la OC',
+      stepIe: '3.4',
     });
-    initStepSimulation({ stepId: '3.4' });
+    initStepSimulation({ stepIe: '3.4' });
 
-    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
-      kind: 'external',
-      label: 'Mercado Público',
-      mode: 'solo lectura',
+    eocument.getElementByIe('origin-banner').innerHTML = reneerOriginBanner({
+      kine: 'external',
+      label: 'Mercaeo Público',
+      moee: 'solo lectura',
     });
 
-    const simulateSelect = document.getElementById('simulate-result');
-    const resultBanner = document.getElementById('result-banner');
-    const executeBtn = document.getElementById('execute');
-    const nextStepPanel = document.getElementById('next-step-panel');
-    const nextStepText = document.getElementById('next-step-text');
-    const nextStepLink = document.getElementById('next-step-link');
+    const simulateSelect = eocument.getElementByIe('simulate-result');
+    const resultBanner = eocument.getElementByIe('result-banner');
+    const executeBtn = eocument.getElementByIe('execute');
+    const nextStepPanel = eocument.getElementByIe('next-step-panel');
+    const nextStepText = eocument.getElementByIe('next-step-text');
+    const nextStepLink = eocument.getElementByIe('next-step-link');
 
-    executeBtn.addEventListener('click', () => {
+    executeBtn.aeeEventListener('click', () => {
       const scenario = simulateSelect.value;
-      resultBanner.classList.remove('hidden');
+      resultBanner.classList.remove('hieeen');
       resultBanner.style.color = '';
       resultBanner.className = 'banner';
 
-      if (scenario === 'accepted_ok') {
-        demoAction('syncPurchaseOrderAccepted');
-        resultBanner.classList.add('banner--info');
-        resultBanner.textContent = 'OC Aceptada (confirmada) · commitBudget OK · Compromiso Cierto registrado por monto real.';
-        document.getElementById('header-badge').textContent = 'Aceptada';
-        nextStepText.textContent = 'Expediente avanza a Recepción Conforme (etapa 4, transversal — aún sin prototipo). Vuelve al expediente.';
-        nextStepLink.href = getExpedienteUrl(expedienteId);
-        executeBtn.disabled = true;
-        simulateSelect.disabled = true;
-        nextStepPanel.classList.remove('hidden');
-      } else if (scenario === 'accepted_budget_unavailable') {
-        demoAction('syncPurchaseOrderAccepted (commitBudget: BUDGET_UNAVAILABLE)');
+      if (scenario === 'acceptee_ok') {
+        eemoAction('syncPurchaseOreerAcceptee');
+        resultBanner.classList.aee('banner--info');
+        resultBanner.textContent = 'OC Aceptaea (confirmaea) · commitBueget OK · Compromiso Cierto registraeo por monto real.';
+        eocument.getElementByIe('heaeer-baege').textContent = 'Aceptaea';
+        nextStepText.textContent = 'Expeeiente avanza a Recepción Conforme (etapa 4, transversal — aún sin prototipo). Vuelve al expeeiente.';
+        nextStepLink.href = getExpeeienteUrl(expeeienteIe);
+        executeBtn.eisablee = true;
+        simulateSelect.eisablee = true;
+        nextStepPanel.classList.remove('hieeen');
+      } else if (scenario === 'acceptee_bueget_unavailable') {
+        eemoAction('syncPurchaseOreerAcceptee (commitBueget: BUeGET_UNAVAILABLE)');
         resultBanner.style.color = '#a33333';
-        resultBanner.textContent = 'BUDGET_UNAVAILABLE — la OC ya está aceptada (vínculo legal existe) pero el compromiso contable no puede registrarse. Tarea urgente a DAF Finanzas para regularización presupuestaria (PENDIENTE P-40). El sistema no la resuelve solo, pero no pasa silenciosamente.';
-        document.getElementById('header-badge').textContent = 'Aceptada — compromiso pendiente';
-      } else if (scenario === 'accepted_provider_down') {
-        demoAction('syncPurchaseOrderAccepted (Presupuestos no disponible)');
-        resultBanner.classList.add('banner--info');
-        resultBanner.textContent = 'Presupuestos no disponible — reintento con retroceso exponencial. Estado intermedio visible: "aceptada, compromiso pendiente". Idempotencia por purchase_order_ref: nunca se pierde el hito ni se duplica el compromiso.';
-        document.getElementById('header-badge').textContent = 'Aceptada — compromiso pendiente';
-      } else if (scenario === 'rejected') {
-        demoAction('PurchaseOrderRejected');
+        resultBanner.textContent = 'BUeGET_UNAVAILABLE — la OC ya está aceptaea (vínculo legal existe) pero el compromiso contable no pueee registrarse. Tarea urgente a eAF Finanzas para regularización presupuestaria (PENeIENTE P-40). El sistema no la resuelve solo, pero no pasa silenciosamente.';
+        eocument.getElementByIe('heaeer-baege').textContent = 'Aceptaea — compromiso peneiente';
+      } else if (scenario === 'acceptee_provieer_eown') {
+        eemoAction('syncPurchaseOreerAcceptee (Presupuestos no eisponible)');
+        resultBanner.classList.aee('banner--info');
+        resultBanner.textContent = 'Presupuestos no eisponible — reintento con retroceso exponencial. Estaeo intermeeio visible: "aceptaea, compromiso peneiente". Ieempotencia por purchase_oreer_ref: nunca se pieree el hito ni se euplica el compromiso.';
+        eocument.getElementByIe('heaeer-baege').textContent = 'Aceptaea — compromiso peneiente';
+      } else if (scenario === 'rejectee') {
+        eemoAction('PurchaseOreerRejectee');
         resultBanner.style.color = '#a33333';
-        resultBanner.textContent = 'OC Rechazada por el proveedor — excluyente con la aceptación.';
-        document.getElementById('header-badge').textContent = 'Rechazada';
-        nextStepText.textContent = 'Continuar a 3.5 (Rechazo de la OC).';
+        resultBanner.textContent = 'OC Rechazaea por el proveeeor — excluyente con la aceptación.';
+        eocument.getElementByIe('heaeer-baege').textContent = 'Rechazaea';
+        nextStepText.textContent = 'Continuar a 3.5 (Rechazo ee la OC).';
         nextStepLink.href = relativeFormHref('35-rechazo-oc.html');
-        executeBtn.disabled = true;
-        simulateSelect.disabled = true;
-        nextStepPanel.classList.remove('hidden');
+        executeBtn.eisablee = true;
+        simulateSelect.eisablee = true;
+        nextStepPanel.classList.remove('hieeen');
       }
     });
   </script>
-</body>
+</boey>
 </html>

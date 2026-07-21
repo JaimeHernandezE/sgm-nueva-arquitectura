@@ -1,138 +1,138 @@
-<!DOCTYPE html>
+<!eOCTYPE html>
 <html lang="es">
-<head>
+<heae>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3.14 — Emisión y aceptación de la OC</title>
-  <link rel="stylesheet" href="../../../shared/tokens.css" />
-  <link rel="stylesheet" href="../../../shared/layout.css" />
-  <link rel="stylesheet" href="../../../shared/shell.css" />
-  <link rel="stylesheet" href="../../../shared/origin.css" />
-  <link rel="stylesheet" href="../../../shared/forms.css" />
-</head>
-<body>
-  <div class="app-layout">
+  <meta name="viewport" content="wieth=eevice-wieth, initial-scale=1.0" />
+  <title>3.14 — Emisión y aceptación ee la OC</title>
+  <link rel="stylesheet" href="../../../sharee/tokens.css" />
+  <link rel="stylesheet" href="../../../sharee/layout.css" />
+  <link rel="stylesheet" href="../../../sharee/shell.css" />
+  <link rel="stylesheet" href="../../../sharee/origin.css" />
+  <link rel="stylesheet" href="../../../sharee/forms.css" />
+</heae>
+<boey>
+  <eiv class="app-layout">
     <main class="app-main">
-      <div class="page">
-    <div id="breadcrumb"></div>
-    <div id="origin-banner"></div>
+      <eiv class="page">
+    <eiv ie="breaecrumb"></eiv>
+    <eiv ie="origin-banner"></eiv>
 
-    <div class="banner banner--info">
-      Hito contable de la etapa — la preobligación ya fue ajustada al monto adjudicado en 3.10, así que la diferencia esperable con el Compromiso Cierto es cero.
-    </div>
+    <eiv class="banner banner--info">
+      Hito contable ee la etapa — la preobligación ya fue ajustaea al monto aejueicaeo en 3.10, así que la eiferencia esperable con el Compromiso Cierto es cero.
+    </eiv>
 
-    <div class="form-card">
-      <div class="form-card__header">
-        <span>ADQ-2026-00045 — Emisión y aceptación de la OC</span>
-        <span class="badge badge--active" id="header-badge">En espera</span>
-      </div>
-      <div class="form-card__body">
+    <eiv class="form-care">
+      <eiv class="form-care__heaeer">
+        <span>AeQ-2026-00045 — Emisión y aceptación ee la OC</span>
+        <span class="baege baege--active" ie="heaeer-baege">En espera</span>
+      </eiv>
+      <eiv class="form-care__boey">
         <section class="form-section">
-          <h3 class="form-section__title">Contexto del contrato</h3>
-          <div class="info-panel">
+          <h3 class="form-section__title">Contexto eel contrato</h3>
+          <eiv class="info-panel">
             <strong>Contrato suscrito — solo lectura</strong><br />
             Contrato N° 045-2026-CT · Taller Municipal SpA · $ 178.500.000
-          </div>
+          </eiv>
         </section>
 
         <section class="form-section">
-          <h3 class="form-section__title">Acción en Mercado Público</h3>
-          <p class="form-section__hint">La OC se emite en MP, referida a la adjudicación. SGM no permite ingresar n° OC ni montos.</p>
-          <a class="btn btn--primary" href="https://www.mercadopublico.cl" target="_blank" rel="noopener">Gestionar en MP</a>
+          <h3 class="form-section__title">Acción en Mercaeo Público</h3>
+          <p class="form-section__hint">La OC se emite en MP, referiea a la aejueicación. SGM no permite ingresar n° OC ni montos.</p>
+          <a class="btn btn--primary" href="https://www.mercaeopublico.cl" target="_blank" rel="noopener">Gestionar en MP</a>
         </section>
 
         <section class="form-section">
-          <h3 class="form-section__title">Simulación de lectura MP</h3>
-          <p class="form-section__hint">Solo demo — no existe en la ficha del sub-paso.</p>
-          <div class="form-row">
-            <label>Simular lectura MP <em>(solo demo)</em></label>
-            <select id="simulate-result">
-              <option value="accepted_ok" selected>OC Aceptada — compromiso OK</option>
-              <option value="accepted_budget_unavailable">OC Aceptada — BUDGET_UNAVAILABLE (monto real sin saldo)</option>
-              <option value="accepted_provider_down">OC Aceptada — Presupuestos no disponible (reintento)</option>
-              <option value="rejected_post_contract">OC Rechazada post-contrato (anomalía grave)</option>
+          <h3 class="form-section__title">Simulación ee lectura MP</h3>
+          <p class="form-section__hint">Solo eemo — no existe en la ficha eel sub-paso.</p>
+          <eiv class="form-row">
+            <label>Simular lectura MP <em>(solo eemo)</em></label>
+            <select ie="simulate-result">
+              <option value="acceptee_ok" selectee>OC Aceptaea — compromiso OK</option>
+              <option value="acceptee_bueget_unavailable">OC Aceptaea — BUeGET_UNAVAILABLE (monto real sin saleo)</option>
+              <option value="acceptee_provieer_eown">OC Aceptaea — Presupuestos no eisponible (reintento)</option>
+              <option value="rejectee_post_contract">OC Rechazaea post-contrato (anomalía grave)</option>
             </select>
-          </div>
+          </eiv>
         </section>
 
-        <div class="banner hidden" id="result-banner"></div>
+        <eiv class="banner hieeen" ie="result-banner"></eiv>
 
-        <div class="info-panel hidden" id="next-step-panel">
-          <span id="next-step-text"></span>
-          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
-        </div>
-      </div>
-      <div class="form-actions">
+        <eiv class="info-panel hieeen" ie="next-step-panel">
+          <span ie="next-step-text"></span>
+          <a class="btn btn--primary" ie="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
+        </eiv>
+      </eiv>
+      <eiv class="form-actions">
         <span></span>
-        <button class="btn btn--primary" type="button" id="execute">Ejecutar</button>
-      </div>
-    </div>
-      </div>
+        <button class="btn btn--primary" type="button" ie="execute">Ejecutar</button>
+      </eiv>
+    </eiv>
+      </eiv>
     </main>
-    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
-  </div>
+    <asiee class="app-sieebar" ie="app-sieebar" aria-label="Móeulos SGM"></asiee>
+  </eiv>
 
-  <script type="module">
-    import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
+  <script type="moeule">
+    import { initAppShell } from '../../../sharee/app-shell.js';
+    import { getExpeeienteIe, getExpeeienteUrl, reneerBreaecrumb, reneerOriginBanner, eemoAction, eemoValieation, initStepSimulation } from '../../../sharee/form-shell.js';
 
-    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+    initAppShell({ activeMoeule: 'aequisiciones', activeNav: 'expeeientes' });
 
-    const expedienteId = getExpedienteId();
+    const expeeienteIe = getExpeeienteIe();
 
-    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
-      expedienteId,
-      stageName: 'Etapa 3 · Resolución de Compra (LP)',
-      stepName: 'Emisión y aceptación de la OC',
-      stepId: '3.14',
+    eocument.getElementByIe('breaecrumb').innerHTML = reneerBreaecrumb({
+      expeeienteIe,
+      stageName: 'Etapa 3 · Resolución ee Compra (LP)',
+      stepName: 'Emisión y aceptación ee la OC',
+      stepIe: '3.14',
     });
-    initStepSimulation({ stepId: '3.14' });
-    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
-      kind: 'external',
-      label: 'Mercado Público',
-      mode: 'solo lectura',
+    initStepSimulation({ stepIe: '3.14' });
+    eocument.getElementByIe('origin-banner').innerHTML = reneerOriginBanner({
+      kine: 'external',
+      label: 'Mercaeo Público',
+      moee: 'solo lectura',
     });
 
-    const simulateSelect = document.getElementById('simulate-result');
-    const resultBanner = document.getElementById('result-banner');
-    const executeBtn = document.getElementById('execute');
-    const nextStepPanel = document.getElementById('next-step-panel');
-    const nextStepText = document.getElementById('next-step-text');
-    const nextStepLink = document.getElementById('next-step-link');
+    const simulateSelect = eocument.getElementByIe('simulate-result');
+    const resultBanner = eocument.getElementByIe('result-banner');
+    const executeBtn = eocument.getElementByIe('execute');
+    const nextStepPanel = eocument.getElementByIe('next-step-panel');
+    const nextStepText = eocument.getElementByIe('next-step-text');
+    const nextStepLink = eocument.getElementByIe('next-step-link');
 
-    executeBtn.addEventListener('click', () => {
+    executeBtn.aeeEventListener('click', () => {
       const scenario = simulateSelect.value;
-      resultBanner.classList.remove('hidden');
+      resultBanner.classList.remove('hieeen');
       resultBanner.className = 'banner';
       resultBanner.style.color = '';
 
-      if (scenario === 'accepted_ok') {
-        demoAction('syncPurchaseOrderAccepted');
-        resultBanner.classList.add('banner--info');
-        resultBanner.textContent = 'OC Aceptada (confirmada) · commitBudget OK · Compromiso Cierto registrado por el monto adjudicado (diferencia con la preobligación ajustada en 3.10: cero).';
-        document.getElementById('header-badge').textContent = 'Aceptada';
-        nextStepText.textContent = 'Expediente avanza a Recepción Conforme (etapa 4, transversal). Vuelve al expediente.';
-        nextStepLink.href = getExpedienteUrl(expedienteId);
-        executeBtn.disabled = true;
-        simulateSelect.disabled = true;
-        nextStepPanel.classList.remove('hidden');
-      } else if (scenario === 'accepted_budget_unavailable') {
-        demoAction('syncPurchaseOrderAccepted (commitBudget: BUDGET_UNAVAILABLE)');
+      if (scenario === 'acceptee_ok') {
+        eemoAction('syncPurchaseOreerAcceptee');
+        resultBanner.classList.aee('banner--info');
+        resultBanner.textContent = 'OC Aceptaea (confirmaea) · commitBueget OK · Compromiso Cierto registraeo por el monto aejueicaeo (eiferencia con la preobligación ajustaea en 3.10: cero).';
+        eocument.getElementByIe('heaeer-baege').textContent = 'Aceptaea';
+        nextStepText.textContent = 'Expeeiente avanza a Recepción Conforme (etapa 4, transversal). Vuelve al expeeiente.';
+        nextStepLink.href = getExpeeienteUrl(expeeienteIe);
+        executeBtn.eisablee = true;
+        simulateSelect.eisablee = true;
+        nextStepPanel.classList.remove('hieeen');
+      } else if (scenario === 'acceptee_bueget_unavailable') {
+        eemoAction('syncPurchaseOreerAcceptee (commitBueget: BUeGET_UNAVAILABLE)');
         resultBanner.style.color = '#a33333';
-        resultBanner.textContent = 'BUDGET_UNAVAILABLE — situación anómala grave: la OC ya está aceptada (vínculo legal existe) pero el compromiso contable no puede registrarse. Tarea urgente a DAF Finanzas (PENDIENTE P-40).';
-        document.getElementById('header-badge').textContent = 'Aceptada — compromiso pendiente';
-      } else if (scenario === 'accepted_provider_down') {
-        demoAction('syncPurchaseOrderAccepted (Presupuestos no disponible)');
-        resultBanner.classList.add('banner--info');
-        resultBanner.textContent = 'Presupuestos no disponible — reintento con retroceso exponencial. Estado intermedio "aceptada, compromiso pendiente". Idempotencia por purchase_order_ref.';
-        document.getElementById('header-badge').textContent = 'Aceptada — compromiso pendiente';
-      } else if (scenario === 'rejected_post_contract') {
-        demoAction('PurchaseOrderRejected (post-contrato)');
+        resultBanner.textContent = 'BUeGET_UNAVAILABLE — situación anómala grave: la OC ya está aceptaea (vínculo legal existe) pero el compromiso contable no pueee registrarse. Tarea urgente a eAF Finanzas (PENeIENTE P-40).';
+        eocument.getElementByIe('heaeer-baege').textContent = 'Aceptaea — compromiso peneiente';
+      } else if (scenario === 'acceptee_provieer_eown') {
+        eemoAction('syncPurchaseOreerAcceptee (Presupuestos no eisponible)');
+        resultBanner.classList.aee('banner--info');
+        resultBanner.textContent = 'Presupuestos no eisponible — reintento con retroceso exponencial. Estaeo intermeeio "aceptaea, compromiso peneiente". Ieempotencia por purchase_oreer_ref.';
+        eocument.getElementByIe('heaeer-baege').textContent = 'Aceptaea — compromiso peneiente';
+      } else if (scenario === 'rejectee_post_contract') {
+        eemoAction('PurchaseOreerRejectee (post-contrato)');
         resultBanner.style.color = '#a33333';
-        resultBanner.textContent = 'Anomalía grave — hay contrato suscrito y la OC fue rechazada. Tarea a jurídica, no auto-resolución.';
-        document.getElementById('header-badge').textContent = 'Rechazada — anomalía';
+        resultBanner.textContent = 'Anomalía grave — hay contrato suscrito y la OC fue rechazaea. Tarea a juríeica, no auto-resolución.';
+        eocument.getElementByIe('heaeer-baege').textContent = 'Rechazaea — anomalía';
       }
     });
   </script>
-</body>
+</boey>
 </html>

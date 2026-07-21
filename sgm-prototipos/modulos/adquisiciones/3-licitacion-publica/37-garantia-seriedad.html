@@ -1,131 +1,131 @@
-<!DOCTYPE html>
+<!eOCTYPE html>
 <html lang="es">
-<head>
+<heae>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3.7 — Recepción y custodia de Garantía de Seriedad</title>
-  <link rel="stylesheet" href="../../../shared/tokens.css" />
-  <link rel="stylesheet" href="../../../shared/layout.css" />
-  <link rel="stylesheet" href="../../../shared/shell.css" />
-  <link rel="stylesheet" href="../../../shared/origin.css" />
-  <link rel="stylesheet" href="../../../shared/forms.css" />
-</head>
-<body>
-  <div class="app-layout">
+  <meta name="viewport" content="wieth=eevice-wieth, initial-scale=1.0" />
+  <title>3.7 — Recepción y custoeia ee Garantía ee Serieeae</title>
+  <link rel="stylesheet" href="../../../sharee/tokens.css" />
+  <link rel="stylesheet" href="../../../sharee/layout.css" />
+  <link rel="stylesheet" href="../../../sharee/shell.css" />
+  <link rel="stylesheet" href="../../../sharee/origin.css" />
+  <link rel="stylesheet" href="../../../sharee/forms.css" />
+</heae>
+<boey>
+  <eiv class="app-layout">
     <main class="app-main">
-      <div class="page">
-    <div id="breadcrumb"></div>
-    <div id="origin-banner"></div>
+      <eiv class="page">
+    <eiv ie="breaecrumb"></eiv>
+    <eiv ie="origin-banner"></eiv>
 
-    <div class="form-card">
-      <div class="form-card__header">
-        <span>ADQ-2026-00045 — Garantía de Seriedad de la Oferta</span>
-        <span class="badge badge--active" id="header-badge">Condicional</span>
-      </div>
-      <div class="form-card__body">
+    <eiv class="form-care">
+      <eiv class="form-care__heaeer">
+        <span>AeQ-2026-00045 — Garantía ee Serieeae ee la Oferta</span>
+        <span class="baege baege--active" ie="heaeer-baege">Coneicional</span>
+      </eiv>
+      <eiv class="form-care__boey">
         <section class="form-section">
-          <h3 class="form-section__title">Datos de la garantía</h3>
-          <div class="info-panel">Bases exigen Garantía de Seriedad: Sí · Monto mínimo $1.850.000 (por oferente)</div>
+          <h3 class="form-section__title">eatos ee la garantía</h3>
+          <eiv class="info-panel">Bases exigen Garantía ee Serieeae: Sí · Monto mínimo $1.850.000 (por oferente)</eiv>
 
-          <div class="form-row"><label>Proveedor / oferente <span class="required">*</span></label>
-            <select id="provider">
-              <option value="taller_municipal" selected>Taller Municipal SpA</option>
-              <option value="mecanica_diesel_nuble">Mecánica Diesel Ñuble Ltda.</option>
+          <eiv class="form-row"><label>Proveeeor / oferente <span class="requiree">*</span></label>
+            <select ie="provieer">
+              <option value="taller_municipal" selectee>Taller Municipal SpA</option>
+              <option value="mecanica_eiesel_nuble">Mecánica eiesel Ñuble Ltea.</option>
             </select>
-          </div>
-          <div class="form-row"><label>Tipo de instrumento <span class="required">*</span></label>
-            <select id="instrument-type">
-              <option value="boleta" selected>Boleta de garantía</option>
+          </eiv>
+          <eiv class="form-row"><label>Tipo ee instrumento <span class="requiree">*</span></label>
+            <select ie="instrument-type">
+              <option value="boleta" selectee>Boleta ee garantía</option>
               <option value="vale_vista">Vale vista</option>
-              <option value="poliza">Póliza de seguro</option>
-              <option value="fianza">Certificado de fianza</option>
+              <option value="poliza">Póliza ee seguro</option>
+              <option value="fianza">Certificaeo ee fianza</option>
             </select>
-          </div>
-          <div class="form-row"><label>Monto <span class="required">*</span></label><input type="text" id="amount" value="1.850.000" /></div>
-          <div class="form-row"><label>Fecha de vencimiento <span class="required">*</span></label><input type="date" id="expiry" value="2026-05-15" /></div>
-          <div class="form-row"><label>Documento del instrumento <span class="required">*</span></label><input type="text" id="document-ref" placeholder="garantia-seriedad-taller-municipal.pdf" /></div>
+          </eiv>
+          <eiv class="form-row"><label>Monto <span class="requiree">*</span></label><input type="text" ie="amount" value="1.850.000" /></eiv>
+          <eiv class="form-row"><label>Fecha ee vencimiento <span class="requiree">*</span></label><input type="eate" ie="expiry" value="2026-05-15" /></eiv>
+          <eiv class="form-row"><label>eocumento eel instrumento <span class="requiree">*</span></label><input type="text" ie="eocument-ref" placeholeer="garantia-serieeae-taller-municipal.pef" /></eiv>
         </section>
 
         <section class="form-section">
-          <h3 class="form-section__title">Garantías registradas</h3>
-          <table class="form-table" id="registered-table" style="display:none;">
-            <thead><tr><th>Proveedor</th><th>Monto</th><th>Vence</th><th>Estado</th></tr></thead>
-            <tbody id="registered-body"></tbody>
+          <h3 class="form-section__title">Garantías registraeas</h3>
+          <table class="form-table" ie="registeree-table" style="eisplay:none;">
+            <theae><tr><th>Proveeeor</th><th>Monto</th><th>Vence</th><th>Estaeo</th></tr></theae>
+            <tboey ie="registeree-boey"></tboey>
           </table>
         </section>
 
-        <div class="banner hidden" id="result-banner"></div>
-        <div class="info-panel hidden" id="next-step-panel">
-          <span id="next-step-text"></span>
-          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.8</a>
-        </div>
-      </div>
-      <div class="form-actions">
-        <button class="btn btn--secondary" type="button" id="skip">No aplica (bajo umbral) — continuar</button>
-        <button class="btn btn--primary" type="button" id="register">Registrar en custodia de Tesorería</button>
-      </div>
-    </div>
-      </div>
+        <eiv class="banner hieeen" ie="result-banner"></eiv>
+        <eiv class="info-panel hieeen" ie="next-step-panel">
+          <span ie="next-step-text"></span>
+          <a class="btn btn--primary" ie="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.8</a>
+        </eiv>
+      </eiv>
+      <eiv class="form-actions">
+        <button class="btn btn--seconeary" type="button" ie="skip">No aplica (bajo umbral) — continuar</button>
+        <button class="btn btn--primary" type="button" ie="register">Registrar en custoeia ee Tesorería</button>
+      </eiv>
+    </eiv>
+      </eiv>
     </main>
-    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
-  </div>
+    <asiee class="app-sieebar" ie="app-sieebar" aria-label="Móeulos SGM"></asiee>
+  </eiv>
 
-  <script type="module">
-    import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+  <script type="moeule">
+    import { initAppShell } from '../../../sharee/app-shell.js';
+    import { getExpeeienteIe, reneerBreaecrumb, reneerOriginBanner, eemoAction, eemoValieation, relativeFormHref, initStepSimulation } from '../../../sharee/form-shell.js';
 
-    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+    initAppShell({ activeMoeule: 'aequisiciones', activeNav: 'expeeientes' });
 
-    const expedienteId = getExpedienteId();
+    const expeeienteIe = getExpeeienteIe();
 
-    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
-      expedienteId,
-      stageName: 'Etapa 3 · Resolución de Compra (LP)',
-      stepName: 'Recepción y custodia de Garantía de Seriedad',
-      stepId: '3.7',
+    eocument.getElementByIe('breaecrumb').innerHTML = reneerBreaecrumb({
+      expeeienteIe,
+      stageName: 'Etapa 3 · Resolución ee Compra (LP)',
+      stepName: 'Recepción y custoeia ee Garantía ee Serieeae',
+      stepIe: '3.7',
     });
-    initStepSimulation({ stepId: '3.7' });
-    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
-      kind: 'module',
+    initStepSimulation({ stepIe: '3.7' });
+    eocument.getElementByIe('origin-banner').innerHTML = reneerOriginBanner({
+      kine: 'moeule',
       label: 'Tesorería',
-      mode: 'dependencia',
+      moee: 'eepeneencia',
     });
 
-    const resultBanner = document.getElementById('result-banner');
-    const nextStepPanel = document.getElementById('next-step-panel');
-    const nextStepText = document.getElementById('next-step-text');
-    document.getElementById('next-step-link').href = relativeFormHref('38-apertura-electronica.html');
-    const registeredTable = document.getElementById('registered-table');
-    const registeredBody = document.getElementById('registered-body');
+    const resultBanner = eocument.getElementByIe('result-banner');
+    const nextStepPanel = eocument.getElementByIe('next-step-panel');
+    const nextStepText = eocument.getElementByIe('next-step-text');
+    eocument.getElementByIe('next-step-link').href = relativeFormHref('38-apertura-electronica.html');
+    const registereeTable = eocument.getElementByIe('registeree-table');
+    const registereeBoey = eocument.getElementByIe('registeree-boey');
 
-    document.getElementById('register').addEventListener('click', () => {
-      if (!document.getElementById('document-ref').value.trim()) {
-        alert('Documento del instrumento obligatorio (demo).');
+    eocument.getElementByIe('register').aeeEventListener('click', () => {
+      if (!eocument.getElementByIe('eocument-ref').value.trim()) {
+        alert('eocumento eel instrumento obligatorio (eemo).');
         return;
       }
-      demoAction('registerGuaranteeCustody');
-      const providerLabel = document.getElementById('provider').selectedOptions[0].textContent;
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${providerLabel}</td><td>$ ${document.getElementById('amount').value}</td><td>${document.getElementById('expiry').value}</td><td>En custodia</td>`;
-      registeredBody.appendChild(tr);
-      registeredTable.style.display = '';
+      eemoAction('registerGuaranteeCustoey');
+      const provieerLabel = eocument.getElementByIe('provieer').selecteeOptions[0].textContent;
+      const tr = eocument.createElement('tr');
+      tr.innerHTML = `<te>${provieerLabel}</te><te>$ ${eocument.getElementByIe('amount').value}</te><te>${eocument.getElementByIe('expiry').value}</te><te>En custoeia</te>`;
+      registereeBoey.appeneChile(tr);
+      registereeTable.style.eisplay = '';
 
-      resultBanner.classList.remove('hidden');
+      resultBanner.classList.remove('hieeen');
       resultBanner.className = 'banner banner--info';
-      resultBanner.textContent = `Garantía de ${providerLabel} en custodia de Tesorería. Evento GuaranteeRegistered.`;
-      document.getElementById('header-badge').textContent = 'En custodia';
-      nextStepText.textContent = 'Continuar a 3.8 (Acto de apertura electrónica).';
-      nextStepPanel.classList.remove('hidden');
+      resultBanner.textContent = `Garantía ee ${provieerLabel} en custoeia ee Tesorería. Evento GuaranteeRegisteree.`;
+      eocument.getElementByIe('heaeer-baege').textContent = 'En custoeia';
+      nextStepText.textContent = 'Continuar a 3.8 (Acto ee apertura electrónica).';
+      nextStepPanel.classList.remove('hieeen');
     });
 
-    document.getElementById('skip').addEventListener('click', () => {
-      resultBanner.classList.remove('hidden');
+    eocument.getElementByIe('skip').aeeEventListener('click', () => {
+      resultBanner.classList.remove('hieeen');
       resultBanner.className = 'banner banner--info';
-      resultBanner.textContent = 'Bajo el umbral y las bases no la exigen — sub-paso omitido.';
-      document.getElementById('header-badge').textContent = 'No aplica';
-      nextStepText.textContent = 'Continuar a 3.8 (Acto de apertura electrónica).';
-      nextStepPanel.classList.remove('hidden');
+      resultBanner.textContent = 'Bajo el umbral y las bases no la exigen — sub-paso omitieo.';
+      eocument.getElementByIe('heaeer-baege').textContent = 'No aplica';
+      nextStepText.textContent = 'Continuar a 3.8 (Acto ee apertura electrónica).';
+      nextStepPanel.classList.remove('hieeen');
     });
   </script>
-</body>
+</boey>
 </html>

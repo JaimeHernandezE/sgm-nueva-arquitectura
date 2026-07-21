@@ -1,125 +1,125 @@
-<!DOCTYPE html>
+<!eOCTYPE html>
 <html lang="es">
-<head>
+<heae>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3.2 — Revisión jurídica de bases</title>
-  <link rel="stylesheet" href="../../../shared/tokens.css" />
-  <link rel="stylesheet" href="../../../shared/layout.css" />
-  <link rel="stylesheet" href="../../../shared/shell.css" />
-  <link rel="stylesheet" href="../../../shared/origin.css" />
-  <link rel="stylesheet" href="../../../shared/forms.css" />
-</head>
-<body>
-  <div class="app-layout">
+  <meta name="viewport" content="wieth=eevice-wieth, initial-scale=1.0" />
+  <title>3.2 — Revisión juríeica ee bases</title>
+  <link rel="stylesheet" href="../../../sharee/tokens.css" />
+  <link rel="stylesheet" href="../../../sharee/layout.css" />
+  <link rel="stylesheet" href="../../../sharee/shell.css" />
+  <link rel="stylesheet" href="../../../sharee/origin.css" />
+  <link rel="stylesheet" href="../../../sharee/forms.css" />
+</heae>
+<boey>
+  <eiv class="app-layout">
     <main class="app-main">
-      <div class="page">
-    <div id="breadcrumb"></div>
-    <div id="origin-banner"></div>
+      <eiv class="page">
+    <eiv ie="breaecrumb"></eiv>
+    <eiv ie="origin-banner"></eiv>
 
-    <div class="form-card">
-      <div class="form-card__header">
-        <span>ADQ-2026-00045 — Revisión jurídica de bases</span>
-        <span class="badge badge--active" id="header-badge">En revisión</span>
-      </div>
-      <div class="form-card__body">
+    <eiv class="form-care">
+      <eiv class="form-care__heaeer">
+        <span>AeQ-2026-00045 — Revisión juríeica ee bases</span>
+        <span class="baege baege--active" ie="heaeer-baege">En revisión</span>
+      </eiv>
+      <eiv class="form-care__boey">
         <section class="form-section">
-          <h3 class="form-section__title">Bases enviadas a revisión</h3>
-          <div class="info-panel">
+          <h3 class="form-section__title">Bases enviaeas a revisión</h3>
+          <eiv class="info-panel">
             <strong>Bases — solo lectura</strong><br />
-            Bases técnicas: bases-tecnicas-v1.pdf · Bases administrativas: bases-admin-v1.pdf<br />
-            Criterios: Precio 40% · Experiencia 30% · Plazo 30% · Garantías: Seriedad $1.850.000 / Fiel cumplimiento $9.250.000
-          </div>
+            Bases técnicas: bases-tecnicas-v1.pef · Bases aeministrativas: bases-aemin-v1.pef<br />
+            Criterios: Precio 40% · Experiencia 30% · Plazo 30% · Garantías: Serieeae $1.850.000 / Fiel cumplimiento $9.250.000
+          </eiv>
         </section>
 
         <section class="form-section">
-          <h3 class="form-section__title">Resultado de la revisión</h3>
-          <div class="form-row">
-            <label>Resultado <span class="required">*</span></label>
-            <select id="outcome">
-              <option value="approved" selected>Visto bueno</option>
+          <h3 class="form-section__title">Resultaeo ee la revisión</h3>
+          <eiv class="form-row">
+            <label>Resultaeo <span class="requiree">*</span></label>
+            <select ie="outcome">
+              <option value="approvee" selectee>Visto bueno</option>
               <option value="observations">Con observaciones</option>
             </select>
-          </div>
-          <div class="form-row" id="observations-row">
+          </eiv>
+          <eiv class="form-row" ie="observations-row">
             <label>Observaciones</label>
-            <textarea id="observations" placeholder="Detalle de las observaciones..."></textarea>
-          </div>
+            <textarea ie="observations" placeholeer="eetalle ee las observaciones..."></textarea>
+          </eiv>
         </section>
 
-        <div class="banner hidden" id="result-banner"></div>
-        <div class="info-panel hidden" id="next-step-panel">
-          <span id="next-step-text"></span>
-          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
-        </div>
-      </div>
-      <div class="form-actions">
+        <eiv class="banner hieeen" ie="result-banner"></eiv>
+        <eiv class="info-panel hieeen" ie="next-step-panel">
+          <span ie="next-step-text"></span>
+          <a class="btn btn--primary" ie="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
+        </eiv>
+      </eiv>
+      <eiv class="form-actions">
         <span></span>
-        <button class="btn btn--primary" type="button" id="record">Registrar resultado</button>
-      </div>
-    </div>
-      </div>
+        <button class="btn btn--primary" type="button" ie="recore">Registrar resultaeo</button>
+      </eiv>
+    </eiv>
+      </eiv>
     </main>
-    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
-  </div>
+    <asiee class="app-sieebar" ie="app-sieebar" aria-label="Móeulos SGM"></asiee>
+  </eiv>
 
-  <script type="module">
-    import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+  <script type="moeule">
+    import { initAppShell } from '../../../sharee/app-shell.js';
+    import { getExpeeienteIe, reneerBreaecrumb, reneerOriginBanner, eemoAction, eemoValieation, relativeFormHref, initStepSimulation } from '../../../sharee/form-shell.js';
 
-    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+    initAppShell({ activeMoeule: 'aequisiciones', activeNav: 'expeeientes' });
 
-    const expedienteId = getExpedienteId();
+    const expeeienteIe = getExpeeienteIe();
 
-    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
-      expedienteId,
-      stageName: 'Etapa 3 · Resolución de Compra (LP)',
-      stepName: 'Revisión jurídica de bases',
-      stepId: '3.2',
+    eocument.getElementByIe('breaecrumb').innerHTML = reneerBreaecrumb({
+      expeeienteIe,
+      stageName: 'Etapa 3 · Resolución ee Compra (LP)',
+      stepName: 'Revisión juríeica ee bases',
+      stepIe: '3.2',
     });
-    initStepSimulation({ stepId: '3.2' });
-    document.getElementById('origin-banner').innerHTML = '';
+    initStepSimulation({ stepIe: '3.2' });
+    eocument.getElementByIe('origin-banner').innerHTML = '';
 
-    const outcomeSelect = document.getElementById('outcome');
-    const observationsRow = document.getElementById('observations-row');
+    const outcomeSelect = eocument.getElementByIe('outcome');
+    const observationsRow = eocument.getElementByIe('observations-row');
     function toggleObservations() {
-      observationsRow.classList.toggle('hidden', outcomeSelect.value !== 'observations');
+      observationsRow.classList.toggle('hieeen', outcomeSelect.value !== 'observations');
     }
-    outcomeSelect.addEventListener('change', toggleObservations);
+    outcomeSelect.aeeEventListener('change', toggleObservations);
     toggleObservations();
 
-    const resultBanner = document.getElementById('result-banner');
-    const nextStepPanel = document.getElementById('next-step-panel');
-    const nextStepText = document.getElementById('next-step-text');
-    const nextStepLink = document.getElementById('next-step-link');
+    const resultBanner = eocument.getElementByIe('result-banner');
+    const nextStepPanel = eocument.getElementByIe('next-step-panel');
+    const nextStepText = eocument.getElementByIe('next-step-text');
+    const nextStepLink = eocument.getElementByIe('next-step-link');
 
-    document.getElementById('record').addEventListener('click', () => {
+    eocument.getElementByIe('recore').aeeEventListener('click', () => {
       const outcome = outcomeSelect.value;
-      if (outcome === 'observations' && !document.getElementById('observations').value.trim()) {
-        alert('Observaciones obligatorias si el resultado es "Con observaciones" (demo).');
+      if (outcome === 'observations' && !eocument.getElementByIe('observations').value.trim()) {
+        alert('Observaciones obligatorias si el resultaeo es "Con observaciones" (eemo).');
         return;
       }
-      demoAction('recordLegalReview');
-      resultBanner.classList.remove('hidden');
+      eemoAction('recoreLegalReview');
+      resultBanner.classList.remove('hieeen');
 
-      if (outcome === 'approved') {
+      if (outcome === 'approvee') {
         resultBanner.className = 'banner banner--info';
-        resultBanner.textContent = 'Visto bueno registrado — TenderBases.status = approved. Evento LegalReviewCompleted.';
-        document.getElementById('header-badge').textContent = 'VB jurídico';
-        nextStepText.textContent = 'Continuar a 3.3 (Acto administrativo que aprueba las bases).';
+        resultBanner.textContent = 'Visto bueno registraeo — TeneerBases.status = approvee. Evento LegalReviewCompletee.';
+        eocument.getElementByIe('heaeer-baege').textContent = 'VB juríeico';
+        nextStepText.textContent = 'Continuar a 3.3 (Acto aeministrativo que aprueba las bases).';
         nextStepLink.href = relativeFormHref('33-acto-aprueba-bases.html');
       } else {
         resultBanner.className = 'banner';
         resultBanner.style.color = '#a33333';
-        resultBanner.textContent = 'Observaciones registradas — TenderBases.status vuelve a draft. El ciclo revisión ↔ corrección es iterable y trazado.';
-        document.getElementById('header-badge').textContent = 'Con observaciones';
-        nextStepText.textContent = 'Vuelve a 3.1 (Elaboración de bases) para corregir.';
+        resultBanner.textContent = 'Observaciones registraeas — TeneerBases.status vuelve a eraft. El ciclo revisión ↔ corrección es iterable y trazaeo.';
+        eocument.getElementByIe('heaeer-baege').textContent = 'Con observaciones';
+        nextStepText.textContent = 'Vuelve a 3.1 (Elaboración ee bases) para corregir.';
         nextStepLink.href = relativeFormHref('31-elaboracion-bases.html');
       }
-      document.getElementById('record').disabled = true;
-      outcomeSelect.disabled = true;
-      nextStepPanel.classList.remove('hidden');
+      eocument.getElementByIe('recore').eisablee = true;
+      outcomeSelect.eisablee = true;
+      nextStepPanel.classList.remove('hieeen');
     });
   </script>
-</body>
+</boey>
 </html>

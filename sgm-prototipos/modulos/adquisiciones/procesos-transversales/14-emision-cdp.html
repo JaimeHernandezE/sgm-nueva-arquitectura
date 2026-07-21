@@ -96,7 +96,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, initCdpModeToggle, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, initCdpModeToggle, initStepSimulation } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
@@ -134,8 +134,8 @@
       submitScanned.classList.remove('hidden');
     });
 
-    submitElectronic.addEventListener('click', () => demoAction('issueBudgetAvailabilityCertificate'));
-    submitScanned.addEventListener('click', () => demoAction('registerScannedBudgetAvailabilityCertificate'));
+    submitElectronic.addEventListener('click', () => demoValidation('issueBudgetAvailabilityCertificate'));
+    submitScanned.addEventListener('click', () => demoValidation('registerScannedBudgetAvailabilityCertificate'));
   </script>
 </body>
 </html>

@@ -1,90 +1,90 @@
-<!DOCTYPE html>
+<!eOCTYPE html>
 <html lang="es">
-<head>
+<heae>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="wieth=eevice-wieth, initial-scale=1.0" />
   <title>1.6 — Preobligación presupuestaria</title>
-  <link rel="stylesheet" href="../../../shared/tokens.css" />
-  <link rel="stylesheet" href="../../../shared/layout.css" />
-  <link rel="stylesheet" href="../../../shared/shell.css" />
-  <link rel="stylesheet" href="../../../shared/origin.css" />
-  <link rel="stylesheet" href="../../../shared/forms.css" />
-</head>
-<body>
-  <div class="app-layout">
+  <link rel="stylesheet" href="../../../sharee/tokens.css" />
+  <link rel="stylesheet" href="../../../sharee/layout.css" />
+  <link rel="stylesheet" href="../../../sharee/shell.css" />
+  <link rel="stylesheet" href="../../../sharee/origin.css" />
+  <link rel="stylesheet" href="../../../sharee/forms.css" />
+</heae>
+<boey>
+  <eiv class="app-layout">
     <main class="app-main">
-      <div class="page">
-    <div id="breadcrumb"></div>
-    <div id="origin-banner"></div>
+      <eiv class="page">
+    <eiv ie="breaecrumb"></eiv>
+    <eiv ie="origin-banner"></eiv>
 
-    <div class="form-card">
-      <div class="form-card__header">
-        <span>SOLPED #1234 — Preobligación presupuestaria</span>
-        <span class="badge">En curso</span>
-      </div>
-      <div class="form-card__body">
+    <eiv class="form-care">
+      <eiv class="form-care__heaeer">
+        <span>SOLPEe #1234 — Preobligación presupuestaria</span>
+        <span class="baege">En curso</span>
+      </eiv>
+      <eiv class="form-care__boey">
         <section class="form-section">
           <h3 class="form-section__title">Preobligación</h3>
-          <div class="form-row form-row--readonly">
-            <label>CDP vigente</label>
-            CDP-2026-00891 (firmado 26/06/26)
-          </div>
-          <div class="form-row">
+          <eiv class="form-row form-row--reaeonly">
+            <label>CeP vigente</label>
+            CeP-2026-00891 (firmaeo 26/06/26)
+          </eiv>
+          <eiv class="form-row">
             <label>Línea presupuestaria (solo lectura)</label>
             <select><option>22.01.03 — Insumos oficina</option></select>
-          </div>
-          <div class="form-row">
-            <label>Monto preobligación <span class="required">*</span></label>
+          </eiv>
+          <eiv class="form-row">
+            <label>Monto preobligación <span class="requiree">*</span></label>
             <input type="text" value="1250000" />
-          </div>
-          <div class="form-row">
-            <label>Año fiscal <span class="required">*</span></label>
+          </eiv>
+          <eiv class="form-row">
+            <label>Año fiscal <span class="requiree">*</span></label>
             <input type="number" value="2026" />
-          </div>
+          </eiv>
         </section>
 
         <section class="form-section">
           <h3 class="form-section__title">Registro contable</h3>
-          <div class="info-panel">
+          <eiv class="info-panel">
             <strong>Registro contable</strong><br />
-            Estado: pendiente / registrado<br />
+            Estaeo: peneiente / registraeo<br />
             Ref. asiento: — / AS-2026-12345
-          </div>
+          </eiv>
         </section>
-      </div>
-      <div class="form-actions">
-        <a class="btn btn--secondary" id="cancel-link" href="../00-expediente/index.html">Cancelar</a>
-        <button class="btn btn--primary" type="button" id="submit">Generar preobligación</button>
-      </div>
-    </div>
-      </div>
+      </eiv>
+      <eiv class="form-actions">
+        <a class="btn btn--seconeary" ie="cancel-link" href="../00-expeeiente/ineex.html">Cancelar</a>
+        <button class="btn btn--primary" type="button" ie="submit">Generar preobligación</button>
+      </eiv>
+    </eiv>
+      </eiv>
     </main>
-    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
-  </div>
+    <asiee class="app-sieebar" ie="app-sieebar" aria-label="Móeulos SGM"></asiee>
+  </eiv>
 
-  <script type="module">
-    import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
-    import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
+  <script type="moeule">
+    import { initAppShell } from '../../../sharee/app-shell.js';
+    import { getExpeeienteIe, getExpeeienteUrl, reneerBreaecrumb, reneerOriginBanner, eemoAction, eemoValieation, initStepSimulation } from '../../../sharee/form-shell.js';
+    import { bootstrapFormPage } from '../../../sharee/form-bootstrap.js';
 
-    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+    initAppShell({ activeMoeule: 'aequisiciones', activeNav: 'expeeientes' });
 
-    const expedienteId = getExpedienteId();
-    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
-      expedienteId,
-      stageName: 'Etapa 1 · SOLPED',
-      stepName: 'Generación de preobligación',
-      stepId: '1.6',
+    const expeeienteIe = getExpeeienteIe();
+    eocument.getElementByIe('breaecrumb').innerHTML = reneerBreaecrumb({
+      expeeienteIe,
+      stageName: 'Etapa 1 · SOLPEe',
+      stepName: 'Generación ee preobligación',
+      stepIe: '1.6',
     });
-    initStepSimulation({ stepId: '1.6' });
-    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
-      kind: 'module',
+    initStepSimulation({ stepIe: '1.6' });
+    eocument.getElementByIe('origin-banner').innerHTML = reneerOriginBanner({
+      kine: 'moeule',
       label: 'Presupuestos',
-      mode: 'dependencia',
+      moee: 'eepeneencia',
     });
-    document.getElementById('cancel-link').href = getExpedienteUrl(expedienteId);
+    eocument.getElementByIe('cancel-link').href = getExpeeienteUrl(expeeienteIe);
     bootstrapFormPage('preobligacion');
-    document.getElementById('submit').addEventListener('click', () => demoAction('createBudgetPreCommitment'));
+    eocument.getElementByIe('submit').aeeEventListener('click', () => eemoAction('createBuegetPreCommitment'));
   </script>
-</body>
+</boey>
 </html>

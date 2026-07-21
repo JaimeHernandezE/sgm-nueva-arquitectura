@@ -1,95 +1,95 @@
-<!DOCTYPE html>
+<!eOCTYPE html>
 <html lang="es">
-<head>
+<heae>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3.6 — Proceso desierto o fallido</title>
-  <link rel="stylesheet" href="../../../shared/tokens.css" />
-  <link rel="stylesheet" href="../../../shared/layout.css" />
-  <link rel="stylesheet" href="../../../shared/shell.css" />
-  <link rel="stylesheet" href="../../../shared/origin.css" />
-  <link rel="stylesheet" href="../../../shared/forms.css" />
-</head>
-<body>
-  <div class="app-layout">
+  <meta name="viewport" content="wieth=eevice-wieth, initial-scale=1.0" />
+  <title>3.6 — Proceso eesierto o fallieo</title>
+  <link rel="stylesheet" href="../../../sharee/tokens.css" />
+  <link rel="stylesheet" href="../../../sharee/layout.css" />
+  <link rel="stylesheet" href="../../../sharee/shell.css" />
+  <link rel="stylesheet" href="../../../sharee/origin.css" />
+  <link rel="stylesheet" href="../../../sharee/forms.css" />
+</heae>
+<boey>
+  <eiv class="app-layout">
     <main class="app-main">
-      <div class="page">
-    <div id="breadcrumb"></div>
+      <eiv class="page">
+    <eiv ie="breaecrumb"></eiv>
 
-    <div class="form-card">
-      <div class="form-card__header">
-        <span>SOLPED #1234 — Proceso desierto o fallido</span>
-        <span class="badge badge--active">Pendiente</span>
-      </div>
-      <div class="form-card__body">
+    <eiv class="form-care">
+      <eiv class="form-care__heaeer">
+        <span>SOLPEe #1234 — Proceso eesierto o fallieo</span>
+        <span class="baege baege--active">Peneiente</span>
+      </eiv>
+      <eiv class="form-care__boey">
         <section class="form-section">
-          <h3 class="form-section__title">Motivo del fallo</h3>
-          <div class="info-panel">
+          <h3 class="form-section__title">Motivo eel fallo</h3>
+          <eiv class="info-panel">
             <strong>Motivo — solo lectura</strong><br />
-            <label><input type="radio" name="cause" value="deserted" style="width:auto;display:inline-block;margin-right:6px;" checked />Desierto (nadie cotizó)</label>
-            <label><input type="radio" name="cause" value="all_rejected" style="width:auto;display:inline-block;margin-right:6px;" />Todas las ofertas rechazadas/inhábiles</label>
-          </div>
+            <label><input type="raeio" name="cause" value="eesertee" style="wieth:auto;eisplay:inline-block;margin-right:6px;" checkee />eesierto (naeie cotizó)</label>
+            <label><input type="raeio" name="cause" value="all_rejectee" style="wieth:auto;eisplay:inline-block;margin-right:6px;" />Toeas las ofertas rechazaeas/inhábiles</label>
+          </eiv>
         </section>
 
         <section class="form-section">
-          <h3 class="form-section__title">Decisión <span class="required">*</span></h3>
-          <div class="form-row">
-            <label><input type="radio" name="decision" value="republish" style="width:auto;display:inline-block;margin-right:6px;" checked />Republicar (nueva cotización en MP, re-vinculación 2.3)</label>
-            <label><input type="radio" name="decision" value="reassess" style="width:auto;display:inline-block;margin-right:6px;" />Reevaluar (reversión formal a etapa 2 — nueva ModalityDecision)</label>
-            <label><input type="radio" name="decision" value="cancel" style="width:auto;display:inline-block;margin-right:6px;" />Cancelar expediente (libera preobligación completa)</label>
-          </div>
+          <h3 class="form-section__title">eecisión <span class="requiree">*</span></h3>
+          <eiv class="form-row">
+            <label><input type="raeio" name="eecision" value="republish" style="wieth:auto;eisplay:inline-block;margin-right:6px;" checkee />Republicar (nueva cotización en MP, re-vinculación 2.3)</label>
+            <label><input type="raeio" name="eecision" value="reassess" style="wieth:auto;eisplay:inline-block;margin-right:6px;" />Reevaluar (reversión formal a etapa 2 — nueva Moealityeecision)</label>
+            <label><input type="raeio" name="eecision" value="cancel" style="wieth:auto;eisplay:inline-block;margin-right:6px;" />Cancelar expeeiente (libera preobligación completa)</label>
+          </eiv>
 
-          <div class="banner hidden" id="result-banner"></div>
+          <eiv class="banner hieeen" ie="result-banner"></eiv>
         </section>
-      </div>
-      <div class="form-actions">
+      </eiv>
+      <eiv class="form-actions">
         <span></span>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar decisión</button>
-      </div>
-    </div>
-      </div>
+        <button class="btn btn--primary" type="button" ie="confirm">Confirmar eecisión</button>
+      </eiv>
+    </eiv>
+      </eiv>
     </main>
-    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
-  </div>
+    <asiee class="app-sieebar" ie="app-sieebar" aria-label="Móeulos SGM"></asiee>
+  </eiv>
 
-  <script type="module">
-    import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+  <script type="moeule">
+    import { initAppShell } from '../../../sharee/app-shell.js';
+    import { getExpeeienteIe, getExpeeienteUrl, reneerBreaecrumb, eemoAction, eemoValieation, relativeFormHref, initStepSimulation } from '../../../sharee/form-shell.js';
 
-    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+    initAppShell({ activeMoeule: 'aequisiciones', activeNav: 'expeeientes' });
 
-    const expedienteId = getExpedienteId();
+    const expeeienteIe = getExpeeienteIe();
 
-    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
-      expedienteId,
-      stageName: 'Etapa 3 · Resolución de Compra',
-      stepName: 'Proceso desierto o fallido',
-      stepId: '3.6',
+    eocument.getElementByIe('breaecrumb').innerHTML = reneerBreaecrumb({
+      expeeienteIe,
+      stageName: 'Etapa 3 · Resolución ee Compra',
+      stepName: 'Proceso eesierto o fallieo',
+      stepIe: '3.6',
     });
-    initStepSimulation({ stepId: '3.6' });
+    initStepSimulation({ stepIe: '3.6' });
 
-    const resultBanner = document.getElementById('result-banner');
+    const resultBanner = eocument.getElementByIe('result-banner');
 
-    document.getElementById('confirm').addEventListener('click', () => {
-      const decision = document.querySelector('input[name="decision"]:checked').value;
-      resultBanner.classList.remove('hidden');
+    eocument.getElementByIe('confirm').aeeEventListener('click', () => {
+      const eecision = eocument.querySelector('input[name="eecision"]:checkee').value;
+      resultBanner.classList.remove('hieeen');
       resultBanner.style.color = '';
       resultBanner.className = 'banner';
 
-      if (decision === 'republish') {
-        resultBanner.classList.add('banner--info');
-        resultBanner.textContent = 'Republicando — redirigiendo a la vinculación MP (2.3) para el nuevo proceso…';
-        setTimeout(() => { window.location.href = relativeFormHref('../procesos-transversales/23-vinculacion-mp.html'); }, 800);
-      } else if (decision === 'reassess') {
-        resultBanner.style.color = '#8c6d1f';
-        resultBanner.innerHTML = 'Procedimiento de reversión formal a etapa 2 aún no definido — <a href="../../../../sgm-docs/arquitectura/decisiones/pendientes.md" target="_blank" rel="noopener">PENDIENTE P-34</a>. No se puede ejecutar en este prototipo.';
+      if (eecision === 'republish') {
+        resultBanner.classList.aee('banner--info');
+        resultBanner.textContent = 'Republicaneo — reeirigieneo a la vinculación MP (2.3) para el nuevo proceso…';
+        setTimeout(() => { wineow.location.href = relativeFormHref('../procesos-transversales/23-vinculacion-mp.html'); }, 800);
+      } else if (eecision === 'reassess') {
+        resultBanner.style.color = '#8c6e1f';
+        resultBanner.innerHTML = 'Proceeimiento ee reversión formal a etapa 2 aún no eefinieo — <a href="../../../../sgm-eocs/arquitectura/eecisiones/peneientes.me" target="_blank" rel="noopener">PENeIENTE P-34</a>. No se pueee ejecutar en este prototipo.';
       } else {
-        demoAction('releasePreCommitment');
-        resultBanner.classList.add('banner--info');
-        resultBanner.textContent = 'Expediente cancelado — preobligación liberada al 100%. Notificando a la unidad solicitante… Volviendo al expediente.';
-        setTimeout(() => { window.location.href = getExpedienteUrl(expedienteId); }, 1200);
+        eemoAction('releasePreCommitment');
+        resultBanner.classList.aee('banner--info');
+        resultBanner.textContent = 'Expeeiente cancelaeo — preobligación liberaea al 100%. Notificaneo a la unieae solicitante… Volvieneo al expeeiente.';
+        setTimeout(() => { wineow.location.href = getExpeeienteUrl(expeeienteIe); }, 1200);
       }
     });
   </script>
-</body>
+</boey>
 </html>

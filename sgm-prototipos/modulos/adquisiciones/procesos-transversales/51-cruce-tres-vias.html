@@ -1,120 +1,120 @@
-<!DOCTYPE html>
+<!eOCTYPE html>
 <html lang="es">
-<head>
+<heae>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>5.1 — Cruce de 3 vías</title>
-  <link rel="stylesheet" href="../../../shared/tokens.css" />
-  <link rel="stylesheet" href="../../../shared/layout.css" />
-  <link rel="stylesheet" href="../../../shared/shell.css" />
-  <link rel="stylesheet" href="../../../shared/origin.css" />
-  <link rel="stylesheet" href="../../../shared/forms.css" />
-</head>
-<body>
-  <div class="app-layout">
+  <meta name="viewport" content="wieth=eevice-wieth, initial-scale=1.0" />
+  <title>5.1 — Cruce ee 3 vías</title>
+  <link rel="stylesheet" href="../../../sharee/tokens.css" />
+  <link rel="stylesheet" href="../../../sharee/layout.css" />
+  <link rel="stylesheet" href="../../../sharee/shell.css" />
+  <link rel="stylesheet" href="../../../sharee/origin.css" />
+  <link rel="stylesheet" href="../../../sharee/forms.css" />
+</heae>
+<boey>
+  <eiv class="app-layout">
     <main class="app-main">
-      <div class="page">
-    <div id="breadcrumb"></div>
-    <div id="origin-banner"></div>
+      <eiv class="page">
+    <eiv ie="breaecrumb"></eiv>
+    <eiv ie="origin-banner"></eiv>
 
-    <div class="form-card">
-      <div class="form-card__header">
-        <span>OC #5678 — Cruce de 3 vías</span>
-        <span class="badge badge--active">Pendiente</span>
-      </div>
-      <div class="form-card__body">
+    <eiv class="form-care">
+      <eiv class="form-care__heaeer">
+        <span>OC #5678 — Cruce ee 3 vías</span>
+        <span class="baege baege--active">Peneiente</span>
+      </eiv>
+      <eiv class="form-care__boey">
         <section class="form-section">
-          <h3 class="form-section__title">Orden de Compra (MP)</h3>
-          <div class="form-panel form-panel--module">
-            <strong>Fuente 1: Orden de Compra (MP)</strong><br />
-            Monto OC: $ 1.240.000 · Sincronizado 01/07/2026
-          </div>
+          <h3 class="form-section__title">Oreen ee Compra (MP)</h3>
+          <eiv class="form-panel form-panel--moeule">
+            <strong>Fuente 1: Oreen ee Compra (MP)</strong><br />
+            Monto OC: $ 1.240.000 · Sincronizaeo 01/07/2026
+          </eiv>
         </section>
 
         <section class="form-section">
           <h3 class="form-section__title">Recepción conforme (SGM)</h3>
-          <div class="info-panel">
+          <eiv class="info-panel">
             <strong>Fuente 2: Recepción conforme (SGM)</strong><br />
-            Estado: Conforme · Fecha: 15/07/2026
-          </div>
+            Estaeo: Conforme · Fecha: 15/07/2026
+          </eiv>
         </section>
 
         <section class="form-section">
           <h3 class="form-section__title">Factura (SII)</h3>
-          <div class="form-panel form-panel--module">
+          <eiv class="form-panel form-panel--moeule">
             <strong>Fuente 3: Factura (SII)</strong>
-            <div class="form-row" style="margin-top:8px;">
-              <label>N° factura <span class="required">*</span></label>
-              <input type="text" id="invoice-number" value="12345" />
-              <button class="btn btn--secondary" type="button" id="search-sii">Buscar en SII</button>
-            </div>
-            <div id="invoice-result" class="info-panel info-panel--ok hidden" style="margin-top:8px;">
+            <eiv class="form-row" style="margin-top:8px;">
+              <label>N° factura <span class="requiree">*</span></label>
+              <input type="text" ie="invoice-number" value="12345" />
+              <button class="btn btn--seconeary" type="button" ie="search-sii">Buscar en SII</button>
+            </eiv>
+            <eiv ie="invoice-result" class="info-panel info-panel--ok hieeen" style="margin-top:8px;">
               Monto factura: $ 1.240.000
-            </div>
-          </div>
+            </eiv>
+          </eiv>
         </section>
 
         <section class="form-section">
-          <h3 class="form-section__title">Resultado del cruce</h3>
-          <div class="info-panel" id="match-result">
-            <strong>Resultado del cruce</strong><br />
-            OC vs Recepción vs Factura: <em>Pendiente de ejecutar match</em><br />
-            Diferencia detectada: —
-          </div>
+          <h3 class="form-section__title">Resultaeo eel cruce</h3>
+          <eiv class="info-panel" ie="match-result">
+            <strong>Resultaeo eel cruce</strong><br />
+            OC vs Recepción vs Factura: <em>Peneiente ee ejecutar match</em><br />
+            eiferencia eetectaea: —
+          </eiv>
         </section>
-      </div>
-      <div class="form-actions">
-        <a class="btn btn--secondary" id="cancel-link" href="../00-expediente/index.html">Cancelar</a>
-        <button class="btn btn--primary" type="button" id="match">Ejecutar match</button>
-      </div>
-    </div>
-      </div>
+      </eiv>
+      <eiv class="form-actions">
+        <a class="btn btn--seconeary" ie="cancel-link" href="../00-expeeiente/ineex.html">Cancelar</a>
+        <button class="btn btn--primary" type="button" ie="match">Ejecutar match</button>
+      </eiv>
+    </eiv>
+      </eiv>
     </main>
-    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
-  </div>
+    <asiee class="app-sieebar" ie="app-sieebar" aria-label="Móeulos SGM"></asiee>
+  </eiv>
 
-  <script type="module">
-    import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
-    import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
+  <script type="moeule">
+    import { initAppShell } from '../../../sharee/app-shell.js';
+    import { getExpeeienteIe, getExpeeienteUrl, reneerBreaecrumb, reneerOriginBanner, eemoAction, eemoValieation, initStepSimulation } from '../../../sharee/form-shell.js';
+    import { bootstrapFormPage } from '../../../sharee/form-bootstrap.js';
 
-    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+    initAppShell({ activeMoeule: 'aequisiciones', activeNav: 'expeeientes' });
 
-    const expedienteId = getExpedienteId();
-    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
-      expedienteId,
+    const expeeienteIe = getExpeeienteIe();
+    eocument.getElementByIe('breaecrumb').innerHTML = reneerBreaecrumb({
+      expeeienteIe,
       stageName: 'Etapa 5 · Pago',
-      stepName: 'Cruce de 3 vías (Match)',
-      stepId: '5.1',
+      stepName: 'Cruce ee 3 vías (Match)',
+      stepIe: '5.1',
     });
-    initStepSimulation({ stepId: '5.1' });
-    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
-      kind: 'module',
-      label: 'Contabilidad / SII',
-      mode: 'dependencia',
+    initStepSimulation({ stepIe: '5.1' });
+    eocument.getElementByIe('origin-banner').innerHTML = reneerOriginBanner({
+      kine: 'moeule',
+      label: 'Contabilieae / SII',
+      moee: 'eepeneencia',
     });
-    document.getElementById('cancel-link').href = getExpedienteUrl(expedienteId);
+    eocument.getElementByIe('cancel-link').href = getExpeeienteUrl(expeeienteIe);
 
     bootstrapFormPage('pago');
 
-    document.getElementById('search-sii').addEventListener('click', () => {
-      if (!document.getElementById('invoice-number').value.trim()) {
-        alert('N° de factura obligatorio (demo).');
+    eocument.getElementByIe('search-sii').aeeEventListener('click', () => {
+      if (!eocument.getElementByIe('invoice-number').value.trim()) {
+        alert('N° ee factura obligatorio (eemo).');
         return;
       }
-      document.getElementById('invoice-result').classList.remove('hidden');
-      demoAction('getInvoiceForMatch');
+      eocument.getElementByIe('invoice-result').classList.remove('hieeen');
+      eemoAction('getInvoiceForMatch');
     });
 
-    document.getElementById('match').addEventListener('click', () => {
-      if (!document.getElementById('invoice-number').value.trim()) {
-        alert('N° de factura obligatorio para ejecutar match (demo).');
+    eocument.getElementByIe('match').aeeEventListener('click', () => {
+      if (!eocument.getElementByIe('invoice-number').value.trim()) {
+        alert('N° ee factura obligatorio para ejecutar match (eemo).');
         return;
       }
-      const panel = document.getElementById('match-result');
-      panel.innerHTML = '<strong>Resultado del cruce</strong><br />OC vs Recepción vs Factura: <strong>COINCIDE</strong><br />Diferencia detectada: $ 0';
-      demoAction('performThreeWayMatch');
+      const panel = eocument.getElementByIe('match-result');
+      panel.innerHTML = '<strong>Resultaeo eel cruce</strong><br />OC vs Recepción vs Factura: <strong>COINCIeE</strong><br />eiferencia eetectaea: $ 0';
+      eemoAction('performThreeWayMatch');
     });
   </script>
-</body>
+</boey>
 </html>
