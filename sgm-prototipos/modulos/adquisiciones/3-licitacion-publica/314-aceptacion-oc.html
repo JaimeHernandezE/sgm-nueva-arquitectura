@@ -28,22 +28,24 @@
       </div>
       <div class="form-card__body">
         <section class="form-section">
-          <h3 class="form-section__title">Contrato suscrito</h3>
+          <h3 class="form-section__title">Contexto del contrato</h3>
           <div class="info-panel">
-            <strong>Solo lectura</strong><br />
+            <strong>Contrato suscrito — solo lectura</strong><br />
             Contrato N° 045-2026-CT · Taller Municipal SpA · $ 178.500.000
           </div>
         </section>
 
         <section class="form-section">
-          <h3 class="form-section__title">Emisión y aceptación de la OC</h3>
-          <p>
-            <button class="btn btn--secondary" type="button" id="deep-link-btn">Emitir OC en Mercado Público</button>
-            <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Deep link — OC referida a la adjudicación</span>
-          </p>
+          <h3 class="form-section__title">Acción en Mercado Público</h3>
+          <p class="form-section__hint">La OC se emite en MP, referida a la adjudicación. SGM no permite ingresar n° OC ni montos.</p>
+          <a class="btn btn--primary" href="https://www.mercadopublico.cl" target="_blank" rel="noopener">Gestionar en MP</a>
+        </section>
 
+        <section class="form-section">
+          <h3 class="form-section__title">Simulación de lectura MP</h3>
+          <p class="form-section__hint">Solo demo — no existe en la ficha del sub-paso.</p>
           <div class="form-row">
-            <label>Simular lectura MP <em>(solo demo — no existe en la ficha)</em></label>
+            <label>Simular lectura MP <em>(solo demo)</em></label>
             <select id="simulate-result">
               <option value="accepted_ok" selected>OC Aceptada — compromiso OK</option>
               <option value="accepted_budget_unavailable">OC Aceptada — BUDGET_UNAVAILABLE (monto real sin saldo)</option>
@@ -88,10 +90,6 @@
       kind: 'external',
       label: 'Mercado Público',
       mode: 'solo lectura',
-    });
-
-    document.getElementById('deep-link-btn').addEventListener('click', () => {
-      demoAction('Deep link a Mercado Público (emisión de OC referida a la adjudicación)');
     });
 
     const simulateSelect = document.getElementById('simulate-result');
