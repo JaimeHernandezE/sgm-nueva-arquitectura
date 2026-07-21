@@ -2,81 +2,11 @@ openapi: 3.1.0
 info:
   title: SGM Adquisiciones — fragmento
   version: 0.1.0
-  description: Fragmento de rutas. Ensamblado en `adquisiciones.openapi.yaml` (entrada del módulo).
+  description: |
+    Fragmento de rutas. Ensamblado en `adquisiciones.openapi.yaml` (entrada del módulo).
+    3.2 y 3.3 no exponen POST de usuario: `QuotationResult` y `PurchaseOrder` (issued) se
+    materializan solo por sync `readMpProcess` (plantilla §5.3).
 paths:
-  /procurement-cases/{id}/quotation-result:
-    post:
-      operationId: recordQuotationResult
-      tags:
-        - resolucion-compra-ca
-      summary: Registrar resultado de cotización
-      description: |
-        Registro manual en modo degradado (3.2). Emite evento `QuotationClosed`.
-      x-subpasos:
-        - "3.2"
-      security:
-        - bearerPersonas: []
-        - bearerM2M: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: ../adquisiciones.openapi.yaml#/components/schemas/QuotationResultInput
-      responses:
-        "201":
-          description: Resultado de cotización registrado.
-          content:
-            application/json:
-              schema:
-                $ref: ../adquisiciones.openapi.yaml#/components/schemas/QuotationResult
-        "401":
-          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
-        "403":
-          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
-        "404":
-          $ref: ../adquisiciones.openapi.yaml#/components/responses/ProcurementCaseNotFound
-        "422":
-          $ref: ../adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
-  /purchase-orders:
-    post:
-      operationId: registerPurchaseOrder
-      tags:
-        - resolucion-compra-ca
-      summary: Registrar orden de compra
-      description: >
-        Registra OC desde lectura MP o modo manual (3.3). Emite eventos `PurchaseOrderIssued` o
-        `ProviderIneligibleBlocked`.
-      x-subpasos:
-        - "3.3"
-      security:
-        - bearerPersonas: []
-        - bearerM2M: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: ../adquisiciones.openapi.yaml#/components/schemas/RegisterPurchaseOrderRequest
-      responses:
-        "201":
-          description: Orden de compra registrada.
-          content:
-            application/json:
-              schema:
-                $ref: ../adquisiciones.openapi.yaml#/components/schemas/PurchaseOrder
-        "401":
-          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
-        "403":
-          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
-        "422":
-          $ref: ../adquisiciones.openapi.yaml#/components/responses/UnprocessableEntity
   /purchase-orders/{id}/sync-accepted:
     post:
       operationId: syncPurchaseOrderAccepted
@@ -109,7 +39,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               example:
                 error_code: PURCHASE_ORDER_NOT_FOUND
                 field: id
@@ -120,7 +50,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               examples:
                 budgetUnavailable:
                   $ref: ../adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
@@ -161,7 +91,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               example:
                 error_code: BUDGET_PROVIDER_UNAVAILABLE
                 rule: El proveedor de presupuesto no está disponible

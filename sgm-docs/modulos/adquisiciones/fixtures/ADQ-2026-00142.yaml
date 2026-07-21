@@ -1,0 +1,56 @@
+fixture: ADQ-2026-00142
+tenant: municipio-demo-norte
+module: adquisiciones
+title: Compra Ágil — sin saldo; pendiente solicitar financiamiento (1.4)
+business_state: >
+  Expediente en etapa 1 tras verificación presupuestaria rechazada
+  (BUDGET_UNAVAILABLE). Sub-pasos 1.1–1.3 ejecutados; solo 1.4 habilitado.
+  1.5–1.6 y etapas 2–5 bloqueados hasta resolver financiamiento y revalidar 1.3.
+seeds:
+  - entity: ProcurementCase
+    id: ADQ-2026-00142
+    key_fields:
+      procurement_type: agile_purchase
+      status: in_progress
+  - entity: PurchaseRequest
+    id: PR-2026-00142
+    key_fields:
+      status: pending_budget_financing
+      purchase_modality: agile_purchase
+      proposed_budget_line_id: bl-2210-003
+      proposed_fiscal_year: 2026
+operations:
+  - operationId: getProcurementCase
+    request:
+      method: GET
+      path: /procurement-cases/ADQ-2026-00142
+    response:
+      status: 200
+  - operationId: listProcurementCaseSteps
+    request:
+      method: GET
+      path: /procurement-cases/ADQ-2026-00142/steps
+    response:
+      status: 200
+  - operationId: verifyBudgetAvailability
+    request:
+      method: POST
+      path: /purchase-requests/PR-2026-00142/budget-verification
+      body:
+        budget_line_id: bl-2210-003
+        amount: 2450000
+        fiscal_year: 2026
+        decision: confirmed
+    response:
+      status: 422
+      error_code: BUDGET_UNAVAILABLE
+      example_ref: adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
+  - operationId: requestBudgetFinancing
+    request:
+      method: POST
+      path: /purchase-requests/PR-2026-00142/budget-financing-request
+      body:
+        justification: Saldo insuficiente en línea 22.01.03 para cubrir el monto estimado de la SOLPED.
+    response:
+      status: 201
+reset: nightly

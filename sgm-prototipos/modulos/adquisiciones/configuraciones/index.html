@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuraciones — Adquisiciones</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header"><span>Configuraciones del módulo</span></div>
+          <div class="form-card__body">
+            <section class="form-section">
+              <h3 class="form-section__title">Áreas disponibles</h3>
+              <div class="config-link-card">
+                <h3>Firmas</h3>
+                <p>
+                  Plantillas de documentos firmables y anclas de texto por rol funcional /
+                  departamento. La persona firmante se resuelve al momento del acto vía
+                  RoleAssignment.
+                </p>
+                <a class="btn btn--primary" id="link-firmas" href="91-firmas.html">Configurar firmas</a>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, siteUrl, renderAdqBreadcrumb } from '../../../shared/app-shell.js';
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'config' });
+    document.getElementById('breadcrumb').innerHTML = renderAdqBreadcrumb({
+      items: [
+        { label: 'Adquisiciones', href: 'modulos/adquisiciones/index.html' },
+        { label: 'Configuraciones' },
+      ],
+    });
+    document.getElementById('link-firmas').href = siteUrl(
+      'modulos/adquisiciones/configuraciones/91-firmas.html',
+    );
+  </script>
+</body>
+</html>

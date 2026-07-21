@@ -20,48 +20,63 @@
     <div class="form-card">
       <div class="form-card__header">
         <span>SOLPED #1234 — Emisión de la Orden de Compra</span>
-        <span class="badge badge--active" id="header-badge">Pendiente</span>
+        <span class="badge badge--active" id="header-badge">Pendiente en MP</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">
-          <strong>Selección de oferta — solo lectura</strong><br />
-          Proveedor: Comercial Sur SpA · Monto ofertado: $ 1.240.000
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Contexto de la selección</h3>
+          <div class="info-panel">
+            <strong>Selección de oferta — solo lectura</strong><br />
+            Proveedor: Comercial Sur SpA · Monto ofertado: $ 1.240.000
+          </div>
+        </section>
 
-        <p>
-          <button class="btn btn--secondary" type="button" id="deep-link-btn">Gestionar en MP</button>
-          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Deep link — emite la OC en el portal</span>
-        </p>
+        <section class="form-section">
+          <h3 class="form-section__title">Acción en Mercado Público</h3>
+          <p class="form-section__hint">La OC se emite en MP. SGM no permite ingresar n° OC ni montos.</p>
+          <a class="btn btn--primary" id="deep-link-btn" href="https://www.mercadopublico.cl" target="_blank" rel="noopener">Gestionar en MP</a>
+        </section>
 
-        <div class="form-row">
-          <label>N° de OC en Mercado Público <span class="required">*</span></label>
-          <input type="text" id="oc-number" value="4021-33-SE26" />
-        </div>
+        <section class="form-section" id="pending-section">
+          <h3 class="form-section__title">Estado de sincronización</h3>
+          <div class="banner banner--info">
+            Esperando lectura: OC enviada o bloqueo por inhabilidad.
+          </div>
+          <div class="form-row">
+            <label>Simular lectura MP <em>(solo demo)</em></label>
+            <select id="simulate-eligibility">
+              <option value="ok" selected>Hábil — OC emitida</option>
+              <option value="ineligible">Inhábil — bloqueo de emisión</option>
+            </select>
+          </div>
+          <button class="btn btn--secondary" type="button" id="simulate-sync">Simular lectura MP (demo)</button>
+        </section>
 
-        <div class="form-row">
-          <label>Simular revalidación de habilidad <em>(solo demo — no existe en la ficha)</em></label>
-          <select id="simulate-eligibility">
-            <option value="ok" selected>Hábil — emisión procede</option>
-            <option value="ineligible">Inhábil — bloqueo de emisión</option>
-          </select>
-        </div>
+        <section class="form-section hidden" id="synced-ok">
+          <h3 class="form-section__title">OC emitida — solo lectura</h3>
+          <div class="info-panel">
+            N° OC: 4021-33-SE26 · Estado: Emitida · Esperando aceptación
+          </div>
+          <div class="info-panel" id="next-step-panel">
+            Evento <code>PurchaseOrderIssued</code> (sync).
+            <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.4</a>
+          </div>
+        </section>
 
-        <div class="banner hidden" id="result-banner"></div>
-
-        <div class="info-panel hidden" id="task-panel">
-          <strong>Tarea: proveedor inhábil al emitir</strong><br />
-          <a class="btn btn--secondary" id="reselect-link" href="#">Seleccionar siguiente oferta (vuelve a 3.2)</a>
-          <a class="btn btn--secondary" id="cancel-link" href="#" style="margin-left:8px;">Cancelar (va a 3.6)</a>
-        </div>
-
-        <div class="info-panel hidden" id="next-step-panel">
-          OC registrada — evento <code>PurchaseOrderIssued</code> emitido.
-          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.4</a>
-        </div>
+        <section class="form-section hidden" id="synced-blocked">
+          <h3 class="form-section__title">Bloqueo por inhabilidad</h3>
+          <div class="banner" style="color:#a33333;">
+            Proveedor inhábil al emitir — evento <code>ProviderIneligibleBlocked</code>.
+          </div>
+          <div class="info-panel">
+            <strong>Tarea de decisión (SGM)</strong><br />
+            <a class="btn btn--secondary" id="reselect-link" href="#">Seleccionar siguiente oferta (vuelve a 3.2)</a>
+            <a class="btn btn--secondary" id="cancel-link" href="#" style="margin-left:8px;">Cancelar (va a 3.6)</a>
+          </div>
+        </section>
       </div>
       <div class="form-actions">
-        <span></span>
-        <button class="btn btn--primary" type="button" id="validate">Validar y registrar OC</button>
+        <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
       </div>
     </div>
       </div>
@@ -71,7 +86,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, relativeFormHref } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -90,42 +105,19 @@
       mode: 'solo lectura',
     });
 
-    document.getElementById('deep-link-btn').addEventListener('click', () => {
-      demoAction('Deep link a Mercado Público (emisión de OC en el portal)');
-    });
-
     document.getElementById('reselect-link').href = relativeFormHref('32-cierre-seleccion-oferta.html');
     document.getElementById('cancel-link').href = relativeFormHref('36-proceso-desierto-fallido.html');
     document.getElementById('next-step-link').href = relativeFormHref('34-aceptacion-oc.html');
+    document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
 
-    const ocNumberInput = document.getElementById('oc-number');
-    const eligibilitySelect = document.getElementById('simulate-eligibility');
-    const resultBanner = document.getElementById('result-banner');
-    const taskPanel = document.getElementById('task-panel');
-    const nextStepPanel = document.getElementById('next-step-panel');
-    const validateBtn = document.getElementById('validate');
-
-    validateBtn.addEventListener('click', () => {
-      if (!ocNumberInput.value.trim()) {
-        alert('N° de OC obligatorio (demo).');
-        return;
-      }
-      resultBanner.classList.remove('hidden');
-
-      if (eligibilitySelect.value === 'ok') {
-        demoAction('registerPurchaseOrder');
-        resultBanner.classList.add('banner--info');
-        resultBanner.textContent = `OC ${ocNumberInput.value} enviada, esperando aceptación — proveedor revalidado como hábil.`;
-        document.getElementById('header-badge').textContent = 'Emitida';
-        [ocNumberInput, eligibilitySelect, validateBtn].forEach((el) => { el.disabled = true; });
-        nextStepPanel.classList.remove('hidden');
+    document.getElementById('simulate-sync').addEventListener('click', () => {
+      document.getElementById('pending-section').classList.add('hidden');
+      if (document.getElementById('simulate-eligibility').value === 'ok') {
+        document.getElementById('header-badge').textContent = 'Sincronizado';
+        document.getElementById('synced-ok').classList.remove('hidden');
       } else {
-        demoAction('ProviderIneligibleBlocked');
-        resultBanner.style.color = '#a33333';
-        resultBanner.textContent = 'Proveedor inhábil al emitir — bloqueo de emisión (evento ProviderIneligibleBlocked).';
         document.getElementById('header-badge').textContent = 'Bloqueada';
-        taskPanel.classList.remove('hidden');
-        validateBtn.disabled = true;
+        document.getElementById('synced-blocked').classList.remove('hidden');
       }
     });
   </script>

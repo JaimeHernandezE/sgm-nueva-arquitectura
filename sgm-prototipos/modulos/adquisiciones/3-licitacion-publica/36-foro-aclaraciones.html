@@ -23,17 +23,20 @@
         <span class="badge badge--active" id="header-badge">Período abierto</span>
       </div>
       <div class="form-card__body">
-        <div class="form-row">
-          <label>Simular lectura MP <em>(solo demo — no existe en la ficha)</em></label>
-          <select id="simulate-questions">
-            <option value="none">Sin preguntas recibidas</option>
-            <option value="some" selected>3 preguntas recibidas</option>
-          </select>
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Preguntas del foro</h3>
+          <div class="form-row">
+            <label>Simular lectura MP <em>(solo demo — no existe en la ficha)</em></label>
+            <select id="simulate-questions">
+              <option value="none">Sin preguntas recibidas</option>
+              <option value="some" selected>3 preguntas recibidas</option>
+            </select>
+          </div>
+          <div class="info-panel hidden" id="questions-panel">Preguntas recibidas en MP: 3 (gestionadas y respondidas en el portal).</div>
+        </section>
 
-        <div class="info-panel hidden" id="questions-panel">Preguntas recibidas en MP: 3 (gestionadas y respondidas en el portal).</div>
-
-        <div id="clarification-panel">
+        <section class="form-section" id="clarification-panel">
+          <h3 class="form-section__title">Aclaración a las bases</h3>
           <div class="form-row"><label>Documento de Aclaración a las Bases (adjunto) <span class="required">*</span></label><input type="text" id="clarification-ref" placeholder="aclaracion-bases-v1.pdf" /></div>
           <div class="form-row">
             <label>¿La aclaración modifica sustantivamente las bases?</label>
@@ -42,7 +45,7 @@
               <option value="yes">Sí</option>
             </select>
           </div>
-        </div>
+        </section>
 
         <div class="banner hidden" id="result-banner"></div>
         <div class="info-panel hidden" id="next-step-panel">

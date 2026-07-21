@@ -2,8 +2,8 @@
 
 > Piloto: macroproceso **Compra Ágil** (SOLPED → Pago). Etapas 1 (SOLPED), 2 (Modalidad de Compra) y 4 (Recepción Conforme) son transversales a las 4 modalidades; etapa 3 (Resolución de Compra) es específica por modalidad.
 > Estado: borrador funcional derivado de fichas de flujo y ficha QA.
-> Estándares transversales: [`arquitectura/estandares-api.md`](../../arquitectura/estandares-api.md)
-> Metodología: [`arquitectura/contrato-api-first.md`](../../arquitectura/contrato-api-first.md)
+> Estándares transversales: [`arquitectura/especificacion/estandares-api.md`](../../arquitectura/especificacion/estandares-api.md)
+> Metodología: [`arquitectura/especificacion/contrato-api-first.md`](../../arquitectura/especificacion/contrato-api-first.md)
 > Entidades canónicas: [`modelo-datos/entidades-core.md`](../../modelo-datos/entidades-core.md)
 > OpenAPI: [`openapi/adquisiciones.openapi.yaml`](./openapi/adquisiciones.openapi.yaml) — estructura: [`openapi/README.md`](./openapi/README.md)
 > Fixtures sandbox: [`fixtures/catalogo.md`](./fixtures/catalogo.md)
@@ -24,14 +24,15 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | `CaseStep` | Expuesta | `id`, `procurement_case_id`, `step_number`, `name`, `status`, `responsible_unit_id`, `responsible_role`, `responsible_user_id`, `started_at`, `completed_at`, `elapsed_display` | 2.1 (instanciación), todas las etapas |
 | `PurchaseRequest` | Expuesta | `id`, `procurement_case_id`, `requesting_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status` | 1.1, 1.2, 2.1, 2.2 |
 | `PurchaseRequestLine` | Expuesta | `id`, `purchase_request_id`, `item_description`, `quantity`, `unit_of_measure`, `unit_price`, `price_source` | 1.1 |
+| `PurchaseRequestAttachment` | Expuesta | `id`, `purchase_request_id`, `attachment_type`, `description`, `document_ref` | 1.1 |
 | `PurchaseRequestApproval` | Expuesta | `id`, `purchase_request_id`, `approver_id`, `decision`, `decision_date`, `comments` | 1.2 |
 | `BudgetAvailabilityCertificate` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status`, `signature_mode` | 1.5 |
 | `BudgetPreCommitment` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `budget_availability_certificate_id`, `budget_line_id`, `estimated_amount`, `fiscal_year`, `status` | 1.6 |
 | `AgileQuoteProcess` | Expuesta | `id`, `purchase_request_id`, `deep_link_clicked_at`, `mp_quote_id` | 2.1 *(CA)* — duplica `ProcurementCase.mp_process_id`, ver `entidades-core.md` <!-- REVISAR: consolidar AgileQuoteProcess --> |
 | `ModalityDecision` | Expuesta | `id`, `procurement_case_id`, `selected_modality`, `ratified`, `requires_jefatura_approval`, `decided_by`, `decided_at` | 2.1 |
 | `ModalityDecisionApproval` | Expuesta | `id`, `modality_decision_id`, `approver_id`, `decision`, `decision_date` | 2.2 — existencia condicionada a **[PENDIENTE P-38]** |
-| `QuotationResult` | Expuesta | `id`, `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `entry_mode` | 3.2 *(CA)* |
-| `PurchaseOrder` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `mp_oc_id`, `supplier_rut`, `total_amount`, `selection_justification`, `status`, `acceptance_date`, `fulfillment_status`, `entry_mode` | 3.3, 3.4, 3.5 *(CA)* / 3.5, 3.14 *(LP)*, 4.1 |
+| `QuotationResult` | Expuesta | `id`, `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `recorded_at` | 3.2 *(CA)* |
+| `PurchaseOrder` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `mp_oc_id`, `supplier_rut`, `total_amount`, `selection_justification`, `status`, `acceptance_date`, `fulfillment_status` | 3.3, 3.4, 3.5 *(CA)* / 3.5, 3.14 *(LP)*, 4.1 |
 | `BudgetCommitment` | Expuesta | `id`, `purchase_order_id`, `budget_pre_commitment_id`, `committed_amount`, `commitment_date`, `source` | 3.4 *(CA)* / 3.14 *(LP)* |
 | `GoodsReceipt` | Expuesta | `id`, `purchase_order_id`, `received_by`, `received_date`, `receipt_type`, `receiving_unit`, `status`, `observations` | 4.1, 4.2 |
 | `ReceiptRejectionCase` | Expuesta | `id`, `goods_receipt_id`, `resolution_type`, `resolution_deadline`, `resolved_at`, `outcome` | 4.5 |
@@ -56,22 +57,29 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 
 ## 2. Operaciones que ofrece
 
-Convenciones de error y paginación según [`estandares-api.md`](../../arquitectura/estandares-api.md). Rutas sin prefijo de tenant hasta resolver multitenancy (**[PENDIENTE P-03]**).
+Convenciones de error y paginación según [`estandares-api.md`](../../arquitectura/especificacion/estandares-api.md). Rutas sin prefijo de tenant hasta resolver multitenancy (**[PENDIENTE P-03]**).
 
 ### 2.0 Expediente (lecturas)
 
-Operaciones de consulta del expediente y recursos asociados. Requisito de [`musts-arquitectura.md`](../../arquitectura/musts-arquitectura.md) §10.2 y [`entregable-licitacion.md`](../../arquitectura/entregable-licitacion.md) §6.3.
+Operaciones de consulta del expediente y recursos asociados. Requisito de [`musts-arquitectura.md`](../../arquitectura/especificacion/musts-arquitectura.md) §10.2 y [`entregable-licitacion.md`](../../arquitectura/licitacion/entregable-licitacion.md) §6.3.
 
 **Autorización (placeholder hasta P-02):** scope `adquisiciones:read` (personas) / `adquisiciones.read` (M2M).
 
 #### `GET /procurement-cases` — `listProcurementCases`
-- **Sub-pasos:** — *(consulta transversal)*
-- **Entrada:** query `page`, `page_size`, `sort`, `order`; filtros `procurement_type`, `status`, `requesting_unit_id`, `folio`
+- **Sub-pasos:** 0.1 — [Consulta de expedientes](./procesos-transversales/0-consulta-expedientes.md)
+- **Entrada:** query `page`, `page_size`, `sort`, `order`; filtros `q`, `procurement_type`, `status`, `requesting_department_id`, `requesting_unit_id`, `folio`, `awaiting_my_action`
 - **Respuesta:** colección paginada de `ProcurementCaseSummary`
-- **Reglas:** solo lectura; sin efectos colaterales
+- **Reglas:**
+  | Regla | Severidad | Error |
+  |---|---|---|
+  | Solo lectura; sin efectos colaterales | — | — |
+  | Filtros combinables (AND). `q` busca en folio, descripción (glosa) y etiqueta de `procurement_type` | — | — |
+  | `requesting_department_id` restringe a unidades hijas del departamento | — | — |
+  | `awaiting_my_action=true` limita a expedientes en bandeja del actor autenticado | — | — |
+  | Si el rol es `adq.solicitante` o `adq.aprobador_unidad`, el scope de unidad del `RoleAssignment` se aplica **siempre**; `requesting_department_id` / `requesting_unit_id` ajenos se ignoran o rechazan | blocking | `FORBIDDEN` *(o se fuerza el scope sin error — decisión de implementación)* |
 
 #### `GET /procurement-cases/{case_id}` — `getProcurementCase`
-- **Sub-pasos:** — *(vista expediente)*
+- **Sub-pasos:** 0.1 *(navegación desde listado)* · vista de expediente
 - **Entrada:** `case_id` (= folio `ADQ-AAAA-NNNNN`)
 - **Respuesta:** `ProcurementCaseDetail`
 - **Reglas:**
@@ -111,7 +119,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 
 #### `POST /purchase-requests` — `createPurchaseRequest`
 - **Sub-pasos:** 1.1
-- **Entrada:** `PurchaseRequest` + `PurchaseRequestLine[]`
+- **Entrada:** `PurchaseRequest` + `PurchaseRequestLine[]` (`currency` a nivel de documento; `unit_price` **neto** en esa moneda; `tax_code` por línea)
 - **Respuesta:** `PurchaseRequest` con `status = draft`
 - **Reglas:**
   | Regla | Severidad | QA | Error |
@@ -121,11 +129,16 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | `unit_price` con referencia válida | blocking | — | `PRICE_REFERENCE_UNAVAILABLE` |
   | Desviación precio vs referencia dentro de tolerancia | blocking ⚠ | — | `PRICE_DEVIATION_EXCEEDED` |
   | Si `purchase_modality = direct_procurement`, `founded_resolution_attachment` presente | blocking | — | `FOUNDED_RESOLUTION_REQUIRED` |
-- **Dependencias invocadas:** `getPriceReference`, `checkStockAvailability` *(propuesta)*, `previewBudgetAvailability` *(informativa, bajo demanda desde enlace UI)*
+- **Dependencias invocadas:** `getPriceReference`, `previewBudgetAvailability` *(informativa, bajo demanda desde enlace UI)*. Verificación de stock/catálogo CM: sub-paso **1.0** (optativo).
+- **Notas:**
+  - Precio siempre neto (convención de plataforma); no se captura «neto/bruto» como elección del usuario.
+  - Totales derivados: neto, impuestos, bruto. Autoconsulta y precompromiso orientativo usan **bruto** en CLP (municipio = consumidor final).
+  - Si `currency` ≠ CLP, la tasa en 1.1 es referencial; el hito que congela la tasa para compromiso está pendiente (ficha 1-solped).
+  - ⚠ Pendiente normativo: umbrales de modalidad (UTM) ¿neto o bruto?
 
 #### `GET /budget-lines/{id}/preview-availability` — `previewBudgetAvailability`
 - **Sub-pasos:** 1.1, 1.2 *(autoconsulta informativa; no avanza el flujo)*
-- **Entrada:** `budget_line_id`, `fiscal_year`, `amount` (opcional — monto estimado de la SOLPED)
+- **Entrada:** `budget_line_id`, `fiscal_year`, `amount` (opcional — monto estimado de la SOLPED **bruto en CLP**)
 - **Respuesta:** `available_balance`, `committed_by_others`, `projected_balance` (misma forma que `checkBudgetAvailability`)
 - **Reglas:** solo lectura; no persiste verificación ni afecta `PurchaseRequest.status`; requiere RBAC de consulta sobre la línea
 - **Dependencias:** Presupuestos (cacheada)
@@ -249,17 +262,15 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 - **Dependencias:** `readMpProcess` (deseada)
 - **Evento emitido:** `MpStateChanged`
 
-#### `POST /procurement-cases/{id}/quotation-result` — `recordQuotationResult`
-- **Sub-pasos:** 3.2 *(modo degradado — registro manual)*
-- **Entrada:** `QuotationResult` (`selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `entry_mode`)
-- **Respuesta:** `QuotationResult`
-- **Dependencias:** `readMpProcess` (deseada)
+#### *(sin operación de usuario — solo sync MP)* 3.2 Cierre y selección de oferta
+- **Dependencias:** `readMpProcess` (deseada) — crea `QuotationResult` y avanza el `CaseStep`
 - **Evento emitido:** `QuotationClosed`
+- **UI:** deep link + badge `Pendiente en MP` / detalle solo lectura tras sync (plantilla §5.3 — sin transcripción)
 
-#### `POST /purchase-orders` — `registerPurchaseOrder` *(continúa el nombre usado antes de la reconciliación; cubre lectura MP o registro manual según `entry_mode`)*
-- **Sub-pasos:** 3.3
-- **Entrada:** `mp_oc_number`, `provider_rut`, `amount`, `entry_mode`
-- **Evento emitido:** `PurchaseOrderIssued` / `ProviderIneligibleBlocked`
+#### *(sin operación de usuario — solo sync MP)* 3.3 Emisión de la OC
+- **Dependencias:** `readMpProcess` (deseada) — espejo `PurchaseOrder` en `issued` o evento de bloqueo
+- **Eventos emitidos:** `PurchaseOrderIssued` / `ProviderIneligibleBlocked`
+- **UI:** deep link «Gestionar en MP»; sin registro manual de n° OC / montos
 
 #### `POST /purchase-orders/{id}/sync-accepted` — `syncPurchaseOrderAccepted`
 - **Sub-pasos:** 3.4 *(CA)* / 3.14 *(LP)*
@@ -509,15 +520,15 @@ Consolidado en torno a `readMpProcess`, operación única de lectura que atiende
 |---|---|---|---|---|
 | `readMpProcess` — vinculación | 2.3, 3.5 *(LP, diferida)* | — | Síncrona bloqueante (solo en la vinculación) | `MP_PROCESS_NOT_FOUND` / `MP_PROCESS_ORGANISM_MISMATCH` / `MP_PROCESS_TYPE_MISMATCH` / `MP_PROCESS_ALREADY_LINKED`; `MP_PROVIDER_UNAVAILABLE` → **[PENDIENTE P-32]** |
 | `readMpProcess` — período de cotización | 3.1 | Deseada | Asíncrona | Sin efecto de gestión (informativo); retroceso exponencial |
-| `readMpProcess` — cierre y selección | 3.2 | Deseada | Asíncrona | Modo degradado: registro manual (`entry_mode = manual`) |
-| `readMpProcess` — OC enviada / bloqueo | 3.3 | Deseada | Asíncrona | Modo degradado: se infiere del registro manual + deep link |
+| `readMpProcess` — cierre y selección | 3.2 | Deseada | Asíncrona | Modo degradado: pendiente en expediente + deep link; avance solo con lectura |
+| `readMpProcess` — OC enviada / bloqueo | 3.3 | Deseada | Asíncrona | Modo degradado: pendiente + deep link; espejo solo con lectura |
 | `readMpProcess` — OC Aceptada | 3.4 *(CA)*, 3.14 *(LP)* | **Confirmada** | Asíncrona | Reintento con backoff; `PurchaseOrder` en `pending_mp_sync` |
-| `readMpProcess` — OC Rechazada | 3.5 | Deseada | Asíncrona | Modo degradado: registro manual del rechazo |
-| `readMpProcess` — desierto | 3.6 | Deseada | Asíncrona | Presunción de desierto vencido el plazo, confirmación manual |
-| `readMpProcess` — foro/apertura/adjudicación *(LP)* | 3.6, 3.8, 3.10 | Deseada | Asíncrona | Modo degradado: registro manual del hito |
-| `checkCatalogAvailability` | 2.1 | — | Cacheada (frescura diaria) | Advertencia `CATALOG_STALE` |
+| `readMpProcess` — OC Rechazada | 3.5 | Deseada | Asíncrona | Modo degradado: esperando sync; tarea de decisión solo tras lectura |
+| `readMpProcess` — desierto | 3.6 | Deseada | Asíncrona | Pendiente / posible desierto hasta lectura; sin confirmación por transcripción |
+| `readMpProcess` — foro/apertura/adjudicación *(LP)* | 3.6, 3.8, 3.10 | Deseada | Asíncrona | Modo degradado: pendiente en expediente hasta lectura (LP: 0 deep links) |
+| `checkCatalogAvailability` | 1.0 *(si sync ChileCompra)*, 2.1 | — | Cacheada (frescura diaria) | Advertencia `CATALOG_STALE`; en 1.0 la banda CM se omite si no hay integración |
 
-Ver [`integracion-mercado-publico.md`](../../arquitectura/integracion-mercado-publico.md): sin escritura API hacia MP.
+Ver [`integracion-mercado-publico.md`](../../arquitectura/especificacion/integracion-mercado-publico.md): sin escritura API hacia MP.
 
 #### FirmaGob (C9)
 
@@ -552,13 +563,15 @@ Patrón upload-then-reference: el cliente sube vía `storeDocument` → recibe `
 | `storeDocument` | 1.1, 1.5, 4.1 | Síncrona bloqueante | `DOCUMENT_STORAGE_UNAVAILABLE`, `DOCUMENT_TYPE_NOT_ALLOWED`, `DOCUMENT_SIZE_EXCEEDED` |
 | `getDownloadUrl` | — *(lecturas de adjuntos)* | Síncrona | `DOCUMENT_NOT_FOUND`, `DOCUMENT_STORAGE_UNAVAILABLE` |
 
-Campos de adjunto en entidades expuestas: `founded_resolution_attachment`, `scanned_certificate_attachment`, `supporting_document_ref` — todos `DocumentRef`.
+Campos de adjunto en entidades expuestas: `founded_resolution_attachment`, `scanned_certificate_attachment`, `supporting_document_ref`, `PurchaseRequestAttachment.document_ref` — todos `DocumentRef`.
 
-### 3.6 Inventario *(propuesta, QA ítem 4)*
+### 3.6 Inventario *(propuesta, QA ítem 4 / P-44)*
 
 | Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
 |---|---|---|---|
-| `checkStockAvailability` | 1.1 | Síncrona bloqueante ⚠ | Procede sin verificación; log de auditoría |
+| `checkStockAvailability` | 1.0 *(optativo)* | Síncrona asesora | Si Inventario no está disponible y tampoco hay catálogo CM, el sub-paso 1.0 se **omite** (creación directa a 1.1). Si solo falla Inventario pero hay CM, 1.0 continúa con banda CM. |
+
+**Regla de omisión 1.0:** sin inventario utilizable (interno ni externo) **y** sin catálogo CM integrado → no se invoca esta pantalla; “Nuevo expediente” → `createPurchaseRequest` / UI 1.1.
 
 ---
 
@@ -632,7 +645,10 @@ La ficha QA original solo cubrió el piloto Compra Ágil. Las operaciones de Lic
 | Sub-paso | Operaciones ofrecidas | Dependencias | Eventos |
 |---|---|---|---|
 | — | `listProcurementCases`, `getProcurementCase`, `listProcurementCaseSteps`, `listPurchaseRequests`, `getPurchaseRequest`, `listPurchaseOrders`, `getPurchaseOrder` | — | — |
-| 1.1 | `createPurchaseRequest`, `submitPurchaseRequest` | `getPriceReference`, `checkStockAvailability`, `previewBudgetAvailability` | — |
+| 0.1 | `listProcurementCases`, `getProcurementCase` | — | — |
+| 0.2 | — *(navegación a 1.0/1.1)* | evaluación capacidades Inventario/CM | — |
+| 1.0 | — *(consulta deps)* | `checkStockAvailability`, `checkCatalogAvailability` *(cond.)* | — |
+| 1.1 | `createPurchaseRequest`, `submitPurchaseRequest` | `getPriceReference`, `previewBudgetAvailability` | — |
 | 1.2 | `approvePurchaseRequest`, `rejectPurchaseRequest` | `requestSignature`, `confirmSignature`, `previewBudgetAvailability` | `PurchaseRequestApproved` |
 | 1.3 | `verifyBudgetAvailability` | `checkBudgetAvailability` | — |
 | 1.4 | `requestBudgetFinancing` | — | `BudgetFinancingRequested` |
@@ -642,8 +658,8 @@ La ficha QA original solo cubrió el piloto Compra Ágil. Las operaciones de Lic
 | 2.2 | `approveModalityDecision`, `rejectModalityDecision` *(inferidos)* | `requestSignature`, `confirmSignature` (condicional) | `ProcurementModalityApproved` — **[PENDIENTE P-38]** |
 | 2.3 | `linkMpProcess` | `readMpProcess` | `MpProcessLinked` |
 | 3.1 *(CA)* | — *(lectura MP)* | `readMpProcess` | `MpStateChanged` |
-| 3.2 *(CA)* | `recordQuotationResult` *(inferido)* | `readMpProcess` | `QuotationClosed` |
-| 3.3 *(CA)* | `registerPurchaseOrder` | `readMpProcess` | `PurchaseOrderIssued`, `ProviderIneligibleBlocked` |
+| 3.2 *(CA)* | — *(sync MP)* | `readMpProcess` | `QuotationClosed` |
+| 3.3 *(CA)* | — *(sync MP)* | `readMpProcess` | `PurchaseOrderIssued`, `ProviderIneligibleBlocked` |
 | 3.4 *(CA)* | `syncPurchaseOrderAccepted` | MP, `commitBudget` (Presupuestos) | `PurchaseOrderAccepted`, `BudgetCommitmentCreated` |
 | 3.5 *(CA)* | — *(lectura MP)* | `readMpProcess` | `PurchaseOrderRejected` |
 | 3.6 *(CA)* | `releasePreCommitment` | `readMpProcess`, `releasePreCommitment` (Presupuestos) | `ProcurementProcessFailed` |

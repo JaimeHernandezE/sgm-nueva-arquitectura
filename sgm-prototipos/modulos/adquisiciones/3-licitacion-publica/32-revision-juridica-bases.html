@@ -23,23 +23,29 @@
         <span class="badge badge--active" id="header-badge">En revisión</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">
-          <strong>Bases — solo lectura</strong><br />
-          Bases técnicas: bases-tecnicas-v1.pdf · Bases administrativas: bases-admin-v1.pdf<br />
-          Criterios: Precio 40% · Experiencia 30% · Plazo 30% · Garantías: Seriedad $1.850.000 / Fiel cumplimiento $9.250.000
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Bases enviadas a revisión</h3>
+          <div class="info-panel">
+            <strong>Bases — solo lectura</strong><br />
+            Bases técnicas: bases-tecnicas-v1.pdf · Bases administrativas: bases-admin-v1.pdf<br />
+            Criterios: Precio 40% · Experiencia 30% · Plazo 30% · Garantías: Seriedad $1.850.000 / Fiel cumplimiento $9.250.000
+          </div>
+        </section>
 
-        <div class="form-row">
-          <label>Resultado <span class="required">*</span></label>
-          <select id="outcome">
-            <option value="approved" selected>Visto bueno</option>
-            <option value="observations">Con observaciones</option>
-          </select>
-        </div>
-        <div class="form-row" id="observations-row">
-          <label>Observaciones</label>
-          <textarea id="observations" placeholder="Detalle de las observaciones..."></textarea>
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Resultado de la revisión</h3>
+          <div class="form-row">
+            <label>Resultado <span class="required">*</span></label>
+            <select id="outcome">
+              <option value="approved" selected>Visto bueno</option>
+              <option value="observations">Con observaciones</option>
+            </select>
+          </div>
+          <div class="form-row" id="observations-row">
+            <label>Observaciones</label>
+            <textarea id="observations" placeholder="Detalle de las observaciones..."></textarea>
+          </div>
+        </section>
 
         <div class="banner hidden" id="result-banner"></div>
         <div class="info-panel hidden" id="next-step-panel">

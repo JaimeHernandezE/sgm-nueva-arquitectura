@@ -23,35 +23,41 @@
         <span class="badge badge--active" id="header-badge">Acta firmada</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">
-          <strong>Acta de Evaluación — solo lectura</strong><br />
-          Ranking: 1° Taller Municipal SpA (91,0) · 2° Mecánica Diesel Ñuble Ltda. (85,7)
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Acta de Evaluación</h3>
+          <div class="info-panel">
+            <strong>Solo lectura</strong><br />
+            Ranking: 1° Taller Municipal SpA (91,0) · 2° Mecánica Diesel Ñuble Ltda. (85,7)
+          </div>
+        </section>
 
-        <div class="form-row">
-          <label>Tipo de resolución <span class="required">*</span></label>
-          <select id="resolution-type">
-            <option value="award" selected>Adjudicar</option>
-            <option value="desertion">Declarar desierta</option>
-            <option value="revocation">Revocar</option>
-          </select>
-        </div>
-
-        <div id="award-panel">
+        <section class="form-section">
+          <h3 class="form-section__title">Resolución de adjudicación</h3>
           <div class="form-row">
-            <label>Oferta a adjudicar <span class="required">*</span></label>
-            <select id="awarded-offer">
-              <option value="1" selected>1° Taller Municipal SpA ($178.500.000)</option>
-              <option value="2">2° Mecánica Diesel Ñuble Ltda. ($182.300.000)</option>
+            <label>Tipo de resolución <span class="required">*</span></label>
+            <select id="resolution-type">
+              <option value="award" selected>Adjudicar</option>
+              <option value="desertion">Declarar desierta</option>
+              <option value="revocation">Revocar</option>
             </select>
           </div>
-          <div class="form-row" id="justification-row">
-            <label>Fundamentación (obligatoria si no es el 1° del ranking)</label>
-            <textarea id="justification"></textarea>
-          </div>
-        </div>
 
-        <div class="info-panel">Revisión jurídica previa: VB obtenido ✓ (reutiliza LegalReview)</div>
+          <div id="award-panel">
+            <div class="form-row">
+              <label>Oferta a adjudicar <span class="required">*</span></label>
+              <select id="awarded-offer">
+                <option value="1" selected>1° Taller Municipal SpA ($178.500.000)</option>
+                <option value="2">2° Mecánica Diesel Ñuble Ltda. ($182.300.000)</option>
+              </select>
+            </div>
+            <div class="form-row" id="justification-row">
+              <label>Fundamentación (obligatoria si no es el 1° del ranking)</label>
+              <textarea id="justification"></textarea>
+            </div>
+          </div>
+
+          <div class="info-panel">Revisión jurídica previa: VB obtenido ✓ (reutiliza LegalReview)</div>
+        </section>
 
         <div class="banner hidden" id="result-banner"></div>
         <div class="info-panel hidden" id="next-step-panel">

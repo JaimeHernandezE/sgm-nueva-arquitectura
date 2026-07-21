@@ -1,7 +1,7 @@
 # Wireframe: Registro recepción conforme
 
 **Sub-paso:** 4.1 — Registro de recepción física  
-**Rol:** Recepcionista (`adq.recepcionista`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
+**Rol:** Recepcionista (`adq.recepcionista`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)  
 **Operaciones:** `createGoodsReceipt`, `confirmGoodsReceipt`
 
 ## Layout
@@ -10,8 +10,10 @@
 +----------------------------------------------------------+
 | OC #5678 — Recepción conforme                             |
 +----------------------------------------------------------+
+| Contexto de la OC (solo lectura)                           |
 | OC: MP-12345 | Proveedor: 76.xxx.xxx-x | Monto: $XXX      |
 +----------------------------------------------------------+
+| Datos de recepción                                        |
 | Fecha recepción *     [ __ / __ / ____ ]                  |
 | Recibido por          [ Usuario actual    ]               |
 | Conformidad *         ( ) Conforme  ( ) No conforme       |

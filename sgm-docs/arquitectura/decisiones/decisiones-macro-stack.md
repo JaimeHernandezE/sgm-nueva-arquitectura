@@ -36,7 +36,7 @@ El **híbrido** es distinto del à la carte: el municipio opera contra el fronte
 
 **Decisión asentada.** Las bases de licitación **no exigirán un framework específico** (riesgo de impugnación por restricción de competencia). En su lugar, exigirán propiedades verificables — stack-agnósticas, definidas por SUBDERE y nunca delegadas al adjudicatario.
 
-El catálogo canónico de propiedades no negociables vive en [`principios-no-negociables.md`](./principios-no-negociables.md); este documento no lo duplica.
+El catálogo canónico de propiedades no negociables vive en [`principios-no-negociables.md`](../licitacion/principios-no-negociables.md); este documento no lo duplica.
 
 ## 4. Evaluación de candidatos de stack backend
 
@@ -97,7 +97,7 @@ El ecosistema solo existe si construir sobre la API es **económicamente viable 
 
 El proveedor del desarrollo original lanzó posteriormente un ERP municipal propio, construido sobre el conocimiento de dominio adquirido durante el contrato con SUBDERE, en ausencia de cláusulas robustas de propiedad intelectual. Con independencia de las acciones legales que se evalúen, el hecho fundamenta directamente varias decisiones de este documento:
 
-1. **Los no-negociables en [`principios-no-negociables.md`](./principios-no-negociables.md) son correctivos, no perfeccionismo.** Propiedad estatal del código, cláusulas de portabilidad y contratos verificables en recepción responden punto por punto a las debilidades del contrato anterior.
+1. **Los no-negociables en [`principios-no-negociables.md`](../licitacion/principios-no-negociables.md) son correctivos, no perfeccionismo.** Propiedad estatal del código, cláusulas de portabilidad y contratos verificables en recepción responden punto por punto a las debilidades del contrato anterior.
 2. **El conocimiento de dominio financiado por el Estado debe quedar en activos del Estado.** Todo el levantamiento, especificación y documentación del nuevo SGM se versiona en repositorios de propiedad de SUBDERE (`sgm-docs/`). Nada del valor generado durante el contrato debe ser apropiable en exclusiva por el adjudicatario.
 3. **La especificación completa neutraliza ventajas informativas en la licitación.** Debe anticiparse que actores con conocimiento previo del dominio (incluido el proveedor anterior) se presenten a la licitación. La respuesta no es la inhabilitación —jurídicamente frágil— sino una especificación tan completa que la ventaja de conocimiento se diluya, más criterios de evaluación que exijan evidencia verificable de calidad en proyectos previos.
 4. **[PENDIENTE P-17]** Revisión jurídica del contrato original completo (obligaciones de confidencialidad o de destino de los desarrollos que puedan sobrevivir aunque la PI no esté bien amarrada), previa a descartar acciones.
@@ -133,4 +133,4 @@ En un mecanismo de convocatoria abierta, el proveedor anterior no puede ser excl
 
 Los pendientes de este documento están registrados en [`pendientes.md`](./pendientes.md): P-01, P-02, P-13, P-14, P-15, P-16, P-17, P-18, P-19.
 
-Modelo consolidado de entregable exigible de licitación (API, contratos, sandbox): [`entregable-licitacion.md`](./entregable-licitacion.md).
+Modelo consolidado de entregable exigible de licitación (API, contratos, sandbox): [`entregable-licitacion.md`](../licitacion/entregable-licitacion.md).

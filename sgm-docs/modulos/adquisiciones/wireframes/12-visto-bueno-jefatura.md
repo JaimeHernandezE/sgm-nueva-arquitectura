@@ -1,7 +1,7 @@
 # Wireframe: Visto bueno de jefatura
 
 **Sub-paso:** 1.2 — Visto bueno de jefatura  
-**Rol:** Aprobador de unidad (`adq.aprobador_unidad`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)
+**Rol:** Aprobador de unidad (`adq.aprobador_unidad`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)
 **Operaciones:** `approvePurchaseRequest`, `rejectPurchaseRequest`, `previewBudgetAvailability` *(informativa)*
 
 ## Layout
@@ -10,7 +10,7 @@
 +----------------------------------------------------------+
 | SOLPED #1234 — Revisión jefatura          [Pendiente V°B°]|
 +----------------------------------------------------------+
-| [Datos SOLPED — solo lectura]                             |
+| Contexto SOLPED                                           |
 | Unidad: ... | Monto total: $XXX | Líneas: 3               |
 | Línea presup. indicada: Cuenta 22.01.03 (opcional)        |
 | [ Consultar saldo en línea presupuestaria ]  (enlace)     |
@@ -22,6 +22,7 @@
 | | Jefatura Unidad  | FirmaGob| Pendiente  |               |
 | +------------------+--------+-------------+               |
 +----------------------------------------------------------+
+| Decisión                                                  |
 | Comentarios (obligatorio si rechazo)                      |
 | [________________________________________________]        |
 +----------------------------------------------------------+

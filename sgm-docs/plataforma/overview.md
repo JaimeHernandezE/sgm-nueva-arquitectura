@@ -4,10 +4,10 @@
 
 Infraestructura **obligatoria** del SGM: identidad, RBAC, tenants, parámetros, auditoría, eventos, integraciones externas (MP, FirmaGob, SII) y gestión documental. No es un módulo à la carte — todo municipio que use SGM consume el core.
 
-Marco arquitectónico: [`arquitectura/plataforma-core.md`](../arquitectura/plataforma-core.md)  
+Marco arquitectónico: [`arquitectura/especificacion/plataforma-core.md`](../arquitectura/especificacion/plataforma-core.md)  
 Modelo de datos: [`modelo-datos/entidades-plataforma.md`](../modelo-datos/entidades-plataforma.md)  
 Contrato API: [`contracts.md`](./contracts.md)  
-Catálogo RBAC (borrador P-24, transversal): [`arquitectura/catalogo-roles.md`](../arquitectura/catalogo-roles.md)
+Catálogo RBAC (borrador P-24, transversal): [`arquitectura/especificacion/catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md)
 
 ## Dos consolas, una API
 

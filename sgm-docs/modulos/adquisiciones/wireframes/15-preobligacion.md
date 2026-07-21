@@ -1,7 +1,7 @@
 # Wireframe: Generación de preobligación
 
 **Sub-paso:** 1.6 — Generación de preobligación  
-**Rol:** Firmante CDP (`adq.firmante_cdp`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
+**Rol:** Firmante CDP (`adq.firmante_cdp`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)  
 **Operación:** `createBudgetPreCommitment`
 
 ## Layout
@@ -12,12 +12,14 @@
 +----------------------------------------------------------+
 | SOLPED #1234 — Preobligación presupuestaria               |
 +----------------------------------------------------------+
+| Preobligación                                             |
 | CDP vigente           CDP-2026-00891  (firmado 02/07/26)  |
 | Línea presupuestaria (solo lectura)  Cuenta / Programa ...   |
 | Monto preobligación * [ $ ____________ ]                |
 | Año fiscal *          [ 2026 ]                          |
 +----------------------------------------------------------+
-| Registro contable: pendiente / registrado                 |
+| Registro contable                                         |
+| Estado: pendiente / registrado                            |
 | Ref. asiento:       [ — / AS-2026-12345 ]               |
 +----------------------------------------------------------+
 | [ Cancelar ]                    [ Generar preobligación ] |

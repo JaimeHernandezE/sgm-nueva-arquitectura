@@ -17,30 +17,36 @@
         <div class="form-card">
           <div class="form-card__header"><span>Auditoría de plataforma</span></div>
           <div class="form-card__body">
-            <div class="form-row" style="display:flex;gap:12px;flex-wrap:wrap;">
-              <div>
-                <label>Desde <span class="required">*</span></label>
-                <input type="date" value="2026-07-01" />
+            <section class="form-section">
+              <h3 class="form-section__title">Filtros</h3>
+              <div class="form-row" style="display:flex;gap:12px;flex-wrap:wrap;">
+                <div>
+                  <label>Desde <span class="required">*</span></label>
+                  <input type="date" value="2026-07-01" />
+                </div>
+                <div>
+                  <label>Hasta <span class="required">*</span></label>
+                  <input type="date" value="2026-07-14" />
+                </div>
+                <div>
+                  <label>Acción (opcional)</label>
+                  <input type="text" placeholder="tenant.suspend" />
+                </div>
               </div>
-              <div>
-                <label>Hasta <span class="required">*</span></label>
-                <input type="date" value="2026-07-14" />
+              <button class="btn btn--primary" type="button" id="btn-search" style="margin:12px 0;">Buscar</button>
+            </section>
+            <section class="form-section">
+              <h3 class="form-section__title">Listado</h3>
+              <table class="form-table" id="audit-table">
+                <thead>
+                  <tr><th>Timestamp</th><th>Actor</th><th>Acción</th><th>Recurso</th></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <div class="info-panel" id="detail" style="margin-top:12px;">
+                Seleccione una fila para ver <code>payload_summary</code> (sin PII sensible).
               </div>
-              <div>
-                <label>Acción (opcional)</label>
-                <input type="text" placeholder="tenant.suspend" />
-              </div>
-            </div>
-            <button class="btn btn--primary" type="button" id="btn-search" style="margin:12px 0;">Buscar</button>
-            <table class="form-table" id="audit-table">
-              <thead>
-                <tr><th>Timestamp</th><th>Actor</th><th>Acción</th><th>Recurso</th></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-            <div class="info-panel" id="detail" style="margin-top:12px;">
-              Seleccione una fila para ver <code>payload_summary</code> (sin PII sensible).
-            </div>
+            </section>
           </div>
         </div>
       </div>

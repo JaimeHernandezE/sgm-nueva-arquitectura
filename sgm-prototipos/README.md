@@ -69,7 +69,7 @@ sgm-prototipos/
 │   ├── app-shell.js        # Sidebar módulos + siteUrl() + nav Plataforma
 │   ├── shell.css
 │   ├── modules-registry.js # Adquisiciones + Plataforma (consolas)
-│   ├── expedientes-demo.js # Perfiles de expediente demo (4 modalidades)
+│   ├── expedientes-demo.js # Perfiles de expediente demo (4 modalidades + caso sin saldo)
 │   ├── demo-data/          # Timeline por expediente + plataforma.js (core)
 │   ├── form-presets.js     # Valores de formulario por expediente
 │   ├── form-bootstrap.js   # Aplica presets al cargar HTML

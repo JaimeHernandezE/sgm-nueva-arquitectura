@@ -23,15 +23,15 @@ Sin dependencias de licenciamiento propietario que reintroduzcan lock-in. Compon
 ## 4. Cumplimiento normativo desde el diseño
 
 - **DS N°4/2020** — cumplimiento en el diseño de flujos y trazabilidad documental.
-- **DS N°7/2023** — ciberseguridad: gestión de incidentes, coordinación CSIRT, estándares mínimos de plataformas del Estado (detalle en [`seguridad.md`](./seguridad.md)).
+- **DS N°7/2023** — ciberseguridad: gestión de incidentes, coordinación CSIRT, estándares mínimos de plataformas del Estado (detalle en [`seguridad.md`](../especificacion/seguridad.md)).
 - **DS N°1/2015 (Ley N°20.422)** — accesibilidad del frontend base. **[PENDIENTE P-20]** especificación de accesibilidad no existe aún como documento.
-- **DS N°10/2023 (NTDEE)** — documentos y expedientes electrónicos: metadatos, estructura, formatos, actuaciones, retención y enlaces persistentes. Cumplimiento vía perfiles de mapeo sobre el dominio SGM — ver [`brechas-estandarizacion-ntdee-pisee.md`](./brechas-estandarizacion-ntdee-pisee.md).
-- **DS N°12/2023 (NTI / Red PISEE)** — interoperabilidad entre OAE vía nodo y Catálogo; borde PISEE en el core, sin confundir con la API interna — ver [`brechas-estandarizacion-ntdee-pisee.md`](./brechas-estandarizacion-ntdee-pisee.md).
+- **DS N°10/2023 (NTDEE)** — documentos y expedientes electrónicos: metadatos, estructura, formatos, actuaciones, retención y enlaces persistentes. Cumplimiento vía perfiles de mapeo sobre el dominio SGM — ver [`brechas-estandarizacion-ntdee-pisee.md`](../decisiones/brechas-estandarizacion-ntdee-pisee.md).
+- **DS N°12/2023 (NTI / Red PISEE)** — interoperabilidad entre OAE vía nodo y Catálogo; borde PISEE en el core, sin confundir con la API interna — ver [`brechas-estandarizacion-ntdee-pisee.md`](../decisiones/brechas-estandarizacion-ntdee-pisee.md).
 - **Ley 21.719** (protección de datos personales) — aplicable especialmente a datos de RRHH, proveedores y ciudadanos en módulos futuros (Rentas, JPL).
 - **Ley 19.886** (compras públicas) — tratamiento diferenciado por modalidad de compra (ver `modulos/adquisiciones/`), no un flujo genérico.
 - **Ley 19.799** (firma electrónica) — relevante para integración con FirmaGob/FirmaDigital.
 
-Especificación de seguridad completa: [`seguridad.md`](./seguridad.md).
+Especificación de seguridad completa: [`seguridad.md`](../especificacion/seguridad.md).
 
 ## 5. Propiedad del código de Estado
 
@@ -53,7 +53,7 @@ Los módulos funcionales **no** implementan clientes de object storage ni adapta
 
 ## 7. Validación fuerte del lado del servidor
 
-Toda regla de negocio bloqueante vive en el backend; el frontend solo la refleja. Las respuestas de error son verbosas y estructuradas según el esquema único definido en [`estandares-api.md`](./estandares-api.md) §3 — nunca un 400/422 sin cuerpo.
+Toda regla de negocio bloqueante vive en el backend; el frontend solo la refleja. Las respuestas de error son verbosas y estructuradas según el esquema único definido en [`estandares-api.md`](../especificacion/estandares-api.md) §3 — nunca un 400/422 sin cuerpo.
 
 ## 8. Trazabilidad de extremo a extremo (patrón expediente)
 

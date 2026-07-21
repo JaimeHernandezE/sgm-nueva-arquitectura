@@ -6,7 +6,7 @@
 
 *⚠ **Nota de ajuste a la etapa 2:** para CM, la vinculación MP (`mp_process_id`) ocurre en este sub-paso 3.2 (Compra Directa) o 3.3 (Gran Compra), no al cierre de la etapa 2 — la lógica es idéntica a la corrección ya documentada en LP §3.5. Propagar a `2-modalidad-compra.md` §2.3 la tabla de vinculación diferida por modalidad.*
 
-*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md) (P-24).*
+*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24).*
 
 ---
 
@@ -53,7 +53,7 @@
 | Materia | Valor |
 |---|---|
 | **Unidad municipal** | DAF Abastecimiento |
-| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
+| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | **Plataforma** | SGM → Mercado Público (deep link) |
 | **Obligatoriedad** | **Obligatorio** *(condicional a `procurement_route = compra_directa`)* |
 | **Interacción MP** | **Gestión** |
@@ -87,7 +87,7 @@
 | Materia | Valor |
 |---|---|
 | **Unidad municipal** | DAF Abastecimiento |
-| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
+| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | **Plataforma** | SGM → Mercado Público (deep link) |
 | **Obligatoriedad** | **Obligatorio** *(condicional a `procurement_route = gran_compra`)* |
 | **Interacción MP** | **Gestión** |
@@ -145,7 +145,7 @@
 
 **Edge cases:**
 - MP no disponible durante el período → sin efecto de gestión (paso informativo); la sincronización se retoma con retroceso exponencial.
-- Timer vence sin lectura de estado MP → SGM presume posible cierre y crea tarea de verificación al usuario (mismo patrón que CA 3.6 modo degradado).
+- Timer vence sin lectura de estado MP → SGM muestra **Pendiente en MP** / posible cierre y deep link; sin tarea de transcripción (plantilla §5.3).
 
 ---
 
@@ -154,7 +154,7 @@
 | Materia | Valor |
 |---|---|
 | **Unidad municipal** | DAF Abastecimiento |
-| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
+| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | **Plataforma** | Mercado Público |
 | **Obligatoriedad** | **Obligatorio** *(condicional a `gran_compra` con al menos una oferta)* |
 | **Interacción MP** | **Informativo** ⚠ *(candidato a Gestión optativa — ver pendiente)* |
@@ -162,10 +162,10 @@
 **Detalle:** Cerrado el período, el usuario compara y selecciona la mejor oferta **en MP**. Para SGM el paso es informativo: refleja que hubo selección y quién fue elegido. A diferencia de CA, en CM no hay revalidación de habilidad del proveedor al emitir la OC desde MP (el proveedor ya está adjudicado al Convenio Marco); sin embargo, la inhabilitación sobreviniente es un edge case que debe tratarse.
 
 **Lecturas MP:** cierre del período y oferta seleccionada (proveedor, monto) — **deseada**.
-**Modo degradado:** el usuario registra manualmente en SGM el resultado de la selección (proveedor y monto) antes de continuar; formulario mínimo sobre el expediente.
+**Modo degradado:** paso **Pendiente en MP** + deep link; sin campos editables. El `CaseStep` avanza solo con la lectura; luego badge y detalle solo lectura si aplica.
 
 **Entidad(es) y campos:**
-- `QuotationResult` *(sugerida, no confirmada en fuente; patrón compartido con CA)* — `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount`, `entry_mode` (`mp_read` | `manual`), `recorded_at`
+- `QuotationResult` *(sugerida, no confirmada en fuente; patrón compartido con CA)* — creada **solo por sync**: `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount`, `recorded_at`
 
 **Borde de módulo:**
 
@@ -176,7 +176,7 @@
 
 **Edge cases:**
 - Usuario no gestiona la selección en MP dentro de un plazo razonable → timer de escalamiento sobre el `CaseStep`. ⚠ Plazo pendiente.
-- Selección registrada manualmente difiere después de la lectura MP → la lectura MP prevalece (MP es fuente de verdad legal); discrepancia queda en auditoría.
+- Sin lectura → el expediente permanece en `Pendiente en MP`; no hay transcripción de proveedor/monto en SGM.
 
 > ⚠ **Pendiente de definir (con DM):** VB interno pre-OC como control configurable por municipio, igual que CA 3.2. Si se confirma, este sub-paso pasa a Gestión condicional.
 
@@ -187,7 +187,7 @@
 | Materia | Valor |
 |---|---|
 | **Unidad municipal** | DAF Abastecimiento |
-| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
+| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | **Plataforma** | SGM |
 | **Obligatoriedad** | **Condicional** *(solo si el período de competencia cierra sin ofertas)* |
 | **Interacción MP** | **Gestión** |
@@ -195,7 +195,7 @@
 **Detalle:** Ningún proveedor presentó oferta en los 10 días. **Confirmado:** el expediente cae automáticamente a **Compra Directa por Catálogo** (`procurement_route` se actualiza a `compra_directa`). El mismo `ProcurementCase` se reutiliza con su folio original — **el expediente no se cancela ni se crea uno nuevo**. Se invalida el `mp_process_id` de la Intención de Compra y el flujo retoma desde 3.2 con un nuevo ID de OC de catálogo. La transición queda trazada en auditoría con ambos valores de `procurement_route`.
 
 **Lecturas MP:** proceso desierto — **deseada**.
-**Modo degradado:** vencido `purchase_intent_deadline` sin registro de selección (3.5), SGM presume posible desierto y crea tarea de verificación al usuario, quien confirma manualmente contra MP.
+**Modo degradado:** vencido `purchase_intent_deadline` sin lectura de selección (3.5), SGM muestra pendiente / posible desierto + deep link; la transición a Compra Directa se confirma cuando llega la lectura de desierto — sin transcribir el estado MP en SGM.
 
 **Entidad(es) y campos:**
 - `ProcurementCase` (actualiza):
@@ -230,7 +230,7 @@
 **Lecturas MP:** OC Aceptada — **confirmada** (única lectura garantizada hoy). Sin modo degradado necesario para el camino feliz.
 
 **Entidad(es) y campos:**
-- `PurchaseOrder` *(crea)* — `procurement_case_id`, `mp_oc_number`, `provider_rut`, `amount` (monto real de la OC), `status` (`accepted`), `accepted_at`, `entry_mode` (`mp_read`)
+- `PurchaseOrder` *(crea por sync)* — `procurement_case_id`, `mp_oc_number`, `provider_rut`, `amount` (monto real de la OC), `status` (`accepted`), `accepted_at`
 - `BudgetCommitment` *(vía contrato con Presupuestos; entidad del módulo Presupuestos)* — referencia resultante en `procurement_case_id`
 - `CaseStep` — cierre de etapa 3, apertura de etapa 4
 
@@ -254,7 +254,7 @@
 | Materia | Valor |
 |---|---|
 | **Unidad municipal** | DAF Abastecimiento |
-| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
+| **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | **Plataforma** | Mercado Público → SGM |
 | **Obligatoriedad** | **Condicional** *(excluyente con 3.7; solo ocurre si el proveedor rechaza)* |
 | **Interacción MP** | **Gestión** |
@@ -262,10 +262,11 @@
 **Detalle:** El proveedor rechaza la OC. Solo puede hacerlo por las causales contractuales establecidas en las bases de licitación del Convenio Marco específico (ej. inconsistencias de valores/cantidades, dirección de despacho inválida). No hay vínculo legal; la preobligación se mantiene intacta. SGM crea tarea de decisión para el usuario: **(a) emitir OC al siguiente proveedor del catálogo** (Compra Directa) o al siguiente oferente (Gran Compra) — reejecuta 3.7 con nuevo proveedor; **(b) republicar** — nuevo proceso MP, nuevo `mp_process_id`; el mismo `ProcurementCase` se reutiliza con su folio original, trazado.
 
 **Lecturas MP:** OC Rechazada — **deseada** (evento crítico a negociar con ChileCompra).
-**Modo degradado:** el usuario registra el rechazo manualmente al verlo en MP; la tarea de decisión se crea igual con `entry_mode = manual`.
+**Modo degradado:** badge **Esperando sync MP** + deep link; sin transcripción del rechazo. La tarea de decisión se crea **solo** cuando llega la lectura.
 
 **Entidad(es) y campos:**
-- `PurchaseOrder` *(crea en estado `rejected`)* — `procurement_case_id`, `mp_oc_number`, `provider_rut`, `status` (`rejected`), `rejected_at`, `rejection_reason` (si la lectura lo trae), `entry_mode`
+- `PurchaseOrder` *(crea/actualiza por sync en estado `rejected`)* — `procurement_case_id`, `mp_oc_number`, `provider_rut`, `status` (`rejected`), `rejected_at`, `rejection_reason` (si la lectura lo trae)
+- Pantalla: decisión del usuario (siguiente proveedor / republicar) — **única acción editable en SGM** tras el evento
 - `CaseStep` — reapertura del paso correspondiente según decisión del usuario
 
 **Borde de módulo:**
@@ -287,7 +288,7 @@
 |---|---|---|
 | `ProcurementCase` | Raíz del expediente | Se fijan `procurement_route` (3.1), `mp_process_id` (3.2/3.3), se actualiza en 3.6 si desierto |
 | `PurchaseOrder` | 1:N con `ProcurementCase` | N por reemisiones (rechazos); espejo de MP — fuente de verdad legal es MP |
-| `QuotationResult` | 1:N con `ProcurementCase` | Sugerida — solo en ruta `gran_compra`; `entry_mode` distingue lectura MP de registro manual |
+| `QuotationResult` | 1:N con `ProcurementCase` | Sugerida — solo en ruta `gran_compra`; solo por lectura MP (sin transcripción manual) |
 | `MpProcessSnapshot` | 1:N con `ProcurementCase` | Sugerida — bitácora de sincronización MP, patrón común con CA |
 | `BudgetCommitment` | Referencia (módulo Presupuestos) | Creada vía contrato `commitBudget` en 3.7, por monto real de la OC |
 | `UtmValue` | Referencia global | Mismo objeto que 2.1; frescura mensual |

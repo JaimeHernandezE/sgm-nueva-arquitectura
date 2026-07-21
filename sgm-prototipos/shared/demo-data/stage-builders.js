@@ -20,7 +20,7 @@ function doneStep(partial) {
   };
 }
 
-/** Camino feliz CA: 3.1–3.4 ejecutados; 3.5 y 3.6 visibles como caminos alternativos (navegables). */
+/** Camino feliz CA: 3.1–3.4 ejecutados (sync MP); 3.5 y 3.6 visibles como caminos alternativos (navegables). */
 export function buildStage3CompraAgil() {
   return {
     id: 3,
@@ -30,34 +30,38 @@ export function buildStage3CompraAgil() {
     expanded: true,
     state: 'done',
     totalTime: 'Total etapa: 4 d 2 h (27-06 → 01-07)',
-    note: '3.5 (rechazo) y 3.6 (desierto/fallido) son caminos alternativos al feliz — se listan para explorar el prototipo.',
+    note: 'Datos de MP solo por sync (badge Pendiente en MP / Esperando sync MP mientras no hay lectura). 3.5 y 3.6 son caminos alternativos — listados para explorar.',
     steps: [
       doneStep({
         id: '3.1',
         name: 'Período de cotización',
         responsible: { unit: '—', role: 'N/A', name: '(monitoreo MP)' },
-        secondaryLine: 'Tiempo transcurrido: 2 d 14 h · ID Cotización: 4021-33-COT26 · 4 cotizaciones (1ª ronda MiPyme)',
+        action: { type: 'secondary', label: 'Ver detalle' },
+        secondaryLine: 'Tiempo: 2 d 14 h · ID Cotización: 4021-33-COT26 · 4 cotizaciones · Sincronizado desde MP',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
       doneStep({
         id: '3.2',
         name: 'Cierre y selección de oferta',
         responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
-        secondaryLine: 'Tiempo transcurrido: 0 d 3 h · Comercial Sur SpA · $ 1.240.000 · Menor precio',
+        action: { type: 'secondary', label: 'Ver detalle' },
+        secondaryLine: 'Tiempo: 0 d 3 h · Comercial Sur SpA · $ 1.240.000 · Sincronizado desde MP',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
       doneStep({
         id: '3.3',
         name: 'Emisión de la Orden de Compra',
         responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
-        secondaryLine: 'Tiempo transcurrido: 0 d 2 h · OC N° 4021-33-SE26 · Emitida en MP',
+        action: { type: 'secondary', label: 'Ver detalle' },
+        secondaryLine: 'Tiempo: 0 d 2 h · OC N° 4021-33-SE26 · Sincronizado desde MP',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
       doneStep({
         id: '3.4',
         name: 'Aceptación de la OC',
         responsible: { unit: '—', role: 'N/A', name: '(proveedor en MP)' },
-        secondaryLine: 'Tiempo transcurrido: 1 d 0 h · Vínculo perfeccionado · Compromiso cierto $ 1.240.000',
+        action: { type: 'secondary', label: 'Ver detalle' },
+        secondaryLine: 'Tiempo: 1 d 0 h · Vínculo perfeccionado · Compromiso cierto $ 1.240.000 · Lectura confirmada',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
       doneStep({
@@ -65,8 +69,8 @@ export function buildStage3CompraAgil() {
         name: 'Rechazo de la OC',
         responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
         action: { type: 'secondary', label: 'Ver camino alternativo' },
-        secondaryLine: 'Camino alternativo (excluyente con 3.4) · No ocurrió en este expediente',
-        pendingCondition: 'Excluyente con 3.4 — se muestra para explorar el prototipo de decisión post-rechazo.',
+        secondaryLine: 'Camino alternativo (excluyente con 3.4) · No ocurrió · Si ocurre: badge Esperando sync MP hasta lectura',
+        pendingCondition: 'Excluyente con 3.4 — se muestra para explorar el prototipo de decisión post-rechazo (tras sync).',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
       doneStep({
@@ -126,7 +130,8 @@ export function buildStage3ConvenioMarco() {
         id: '3.5',
         name: 'Selección de oferta Gran Compra',
         responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
-        secondaryLine: 'Mobiliario Chile Ltda. · $ 4.650.000 · Selección en MP',
+        secondaryLine: 'Mobiliario Chile Ltda. · $ 4.650.000 · Sincronizado desde MP',
+        action: { type: 'secondary', label: 'Ver detalle' },
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
       doneStep({
@@ -134,7 +139,7 @@ export function buildStage3ConvenioMarco() {
         name: 'Gran Compra desierta',
         responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
         action: { type: 'secondary', label: 'Ver camino alternativo' },
-        secondaryLine: 'Camino alternativo · Caería a compra_directa sobre el mismo folio · No ocurrió',
+        secondaryLine: 'Camino alternativo · Caería a compra_directa sobre el mismo folio · No ocurrió · Si aplica: Pendiente en MP hasta lectura',
         pendingCondition: 'Condicional a período sin ofertas — se muestra para explorar la caída automática a Compra Directa.',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
@@ -142,7 +147,8 @@ export function buildStage3ConvenioMarco() {
         id: '3.7',
         name: 'Emisión y aceptación de la OC',
         responsible: { unit: '—', role: 'N/A', name: '(proveedor en MP)' },
-        secondaryLine: 'OC N° 4021-88-OC26 · Compromiso cierto $ 4.650.000 · Hito contable',
+        action: { type: 'secondary', label: 'Ver detalle' },
+        secondaryLine: 'OC N° 4021-88-OC26 · Compromiso cierto $ 4.650.000 · Lectura confirmada',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
       doneStep({
@@ -150,15 +156,15 @@ export function buildStage3ConvenioMarco() {
         name: 'Rechazo de la OC',
         responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
         action: { type: 'secondary', label: 'Ver camino alternativo' },
-        secondaryLine: 'Camino alternativo (excluyente con 3.7) · No ocurrió en este expediente',
-        pendingCondition: 'Excluyente con 3.7 — se muestra para explorar decisión post-rechazo.',
+        secondaryLine: 'Camino alternativo (excluyente con 3.7) · No ocurrió · Si ocurre: Esperando sync MP',
+        pendingCondition: 'Excluyente con 3.7 — se muestra para explorar decisión post-rechazo (tras sync).',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
     ],
   };
 }
 
-/** LP showcase completo (14 sub-pasos). */
+/** LP demo completo (14 sub-pasos). */
 export function buildStage3LicitacionPublica() {
   return {
     id: 3,
@@ -206,7 +212,8 @@ export function buildStage3LicitacionPublica() {
         id: '3.6',
         name: 'Foro de preguntas y aclaraciones',
         responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
-        secondaryLine: 'Período cerrado · Aclaración a las bases publicada en MP',
+        secondaryLine: 'Período cerrado · Aclaración publicada · Sincronizado desde MP',
+        action: { type: 'secondary', label: 'Ver detalle' },
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
       doneStep({
@@ -221,7 +228,8 @@ export function buildStage3LicitacionPublica() {
         id: '3.8',
         name: 'Acto de apertura electrónica',
         responsible: { unit: '—', role: 'N/A', name: '(en MP)' },
-        secondaryLine: '5 ofertas recibidas · Apertura electrónica reflejada',
+        action: { type: 'secondary', label: 'Ver detalle' },
+        secondaryLine: 'Apertura electrónica · 5 ofertas · Sincronizado desde MP',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
       doneStep({
@@ -234,7 +242,8 @@ export function buildStage3LicitacionPublica() {
         id: '3.10',
         name: 'Resolución de adjudicación',
         responsible: { unit: 'Alcaldía', role: 'Aprobador de modalidad', name: 'Alcalde(sa)' },
-        secondaryLine: 'Adjudicada a Taller Municipal SpA · $ 178.500.000 · Preobligación ajustada',
+        action: { type: 'secondary', label: 'Ver detalle' },
+        secondaryLine: 'Adjudicada a Taller Municipal SpA · $ 178.500.000 · Publicada en MP · Sync lectura',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
       doneStep({

@@ -23,56 +23,65 @@
         <span class="badge">En curso</span>
       </div>
       <div class="form-card__body">
-        <div class="mode-toggle">
-          <button type="button" id="mode-electronic" class="is-active">Firma electrónica</button>
-          <button type="button" id="mode-scanned">CDP escaneado (papel)</button>
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Modo de firma</h3>
+          <div class="mode-toggle">
+            <button type="button" id="mode-electronic" class="is-active">Firma electrónica</button>
+            <button type="button" id="mode-scanned">CDP escaneado (papel)</button>
+          </div>
+        </section>
 
-        <div id="panel-electronic">
-          <div class="form-row form-row--readonly">
-            Verificado por: María López (1.3)
+        <section class="form-section">
+          <h3 class="form-section__title">Datos del CDP</h3>
+          <div id="panel-electronic">
+            <div class="form-row form-row--readonly">
+              Verificado por: María López (1.3)
+            </div>
+            <div class="form-row">
+              <label>Línea presupuestaria (solo lectura)</label>
+              <select><option>22.01.03 — Insumos oficina</option></select>
+            </div>
+            <div class="form-row">
+              <label>Monto certificado <span class="required">*</span></label>
+              <input type="text" value="1250000" />
+            </div>
+            <div class="form-row">
+              <label>Año fiscal <span class="required">*</span></label>
+              <input type="number" value="2026" />
+            </div>
           </div>
-          <div class="form-row">
-            <label>Línea presupuestaria (solo lectura)</label>
-            <select><option>22.01.03 — Insumos oficina</option></select>
-          </div>
-          <div class="form-row">
-            <label>Monto certificado <span class="required">*</span></label>
-            <input type="text" value="1250000" />
-          </div>
-          <div class="form-row">
-            <label>Año fiscal <span class="required">*</span></label>
-            <input type="number" value="2026" />
-          </div>
-        </div>
 
-        <div id="panel-scanned" class="hidden">
-          <div class="banner banner--info">
-            Modo: CDP escaneado — el documento físico firmado es la fuente de verdad; SGM registra metadatos + archivo.
+          <div id="panel-scanned" class="hidden">
+            <div class="banner banner--info">
+              Modo: CDP escaneado — el documento físico firmado es la fuente de verdad; SGM registra metadatos + archivo.
+            </div>
+            <div class="form-row">
+              <label>Nº correlativo CDP <span class="required">*</span></label>
+              <input type="text" value="CDP-2026-00891" />
+            </div>
+            <div class="form-row">
+              <label>Monto certificado <span class="required">*</span></label>
+              <input type="text" value="1250000" />
+            </div>
+            <div class="form-row">
+              <label>Fecha del documento <span class="required">*</span></label>
+              <input type="date" value="2026-06-26" />
+            </div>
+            <div class="form-row">
+              <label>Adjunto CDP firmado <span class="required">*</span></label>
+              <button class="btn btn--secondary" type="button">Seleccionar PDF o imagen…</button>
+              <small style="display:block;margin-top:4px;color:var(--text-muted);">(firmas manuscritas visibles)</small>
+            </div>
           </div>
-          <div class="form-row">
-            <label>Nº correlativo CDP <span class="required">*</span></label>
-            <input type="text" value="CDP-2026-00891" />
-          </div>
-          <div class="form-row">
-            <label>Monto certificado <span class="required">*</span></label>
-            <input type="text" value="1250000" />
-          </div>
-          <div class="form-row">
-            <label>Fecha del documento <span class="required">*</span></label>
-            <input type="date" value="2026-06-26" />
-          </div>
-          <div class="form-row">
-            <label>Adjunto CDP firmado <span class="required">*</span></label>
-            <button class="btn btn--secondary" type="button">Seleccionar PDF o imagen…</button>
-            <small style="display:block;margin-top:4px;color:var(--text-muted);">(firmas manuscritas visibles)</small>
-          </div>
-        </div>
+        </section>
 
-        <div class="info-panel info-panel--ok">
-          <strong>Panel: Revalidación de saldo</strong><br />
-          Saldo proyectado: $ 450.000 [OK]
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Revalidación de saldo</h3>
+          <div class="info-panel info-panel--ok">
+            <strong>Panel: Revalidación de saldo</strong><br />
+            Saldo proyectado: $ 450.000 [OK]
+          </div>
+        </section>
       </div>
       <div class="form-actions">
         <a class="btn btn--secondary" id="cancel-link" href="../00-expediente/index.html">Cancelar</a>

@@ -1,7 +1,7 @@
 # Wireframe: Emisión de CDP firmado
 
 **Sub-paso:** 1.5 — Emisión de CDP firmado  
-**Rol:** Firmante CDP (`adq.firmante_cdp`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
+**Rol:** Firmante CDP (`adq.firmante_cdp`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)  
 **Operación:** `issueBudgetAvailabilityCertificate` · `registerScannedBudgetAvailabilityCertificate` *(modo degradado)*
 
 ## Layout — firma electrónica (camino preferido)
@@ -12,12 +12,13 @@
 +----------------------------------------------------------+
 | SOLPED #1234 — Certificado de Disponibilidad (CDP)        |
 +----------------------------------------------------------+
+| Datos del CDP                                             |
 | Verificado por:  María López (1.3)                        |
 | Línea presupuestaria (solo lectura) [ Cuenta / Programa ... ]  |
 | Monto certificado *     [ $ ____________ ]                |
 | Año fiscal *            [ 2026 ]                          |
 +----------------------------------------------------------+
-| Panel: Revalidación de saldo                              |
+| Revalidación de saldo                                     |
 | Saldo proyectado:  $ 450.000  [OK]                        |
 +----------------------------------------------------------+
 | [ Cancelar ]              [ Emitir y firmar CDP ]         |
@@ -33,13 +34,14 @@ Visible cuando FirmaGob no está disponible o el usuario elige «Registrar CDP f
 | Modo: CDP escaneado — el documento físico firmado es la   |
 |       fuente de verdad; SGM registra metadatos + archivo  |
 +----------------------------------------------------------+
+| Datos del CDP                                             |
 | Nº correlativo CDP *    [ CDP-2026-00891 ]                |
 | Monto certificado *     [ $ ____________ ]                |
 | Fecha del documento *   [ __ / __ / ____ ]                |
 | Adjunto CDP firmado *   [ Seleccionar PDF o imagen... ]   |
 |                         (firmas manuscritas visibles)     |
 +----------------------------------------------------------+
-| Panel: Revalidación de saldo                              |
+| Revalidación de saldo                                     |
 | Saldo proyectado:  $ 450.000  [OK]                        |
 +----------------------------------------------------------+
 | [ Cancelar ]         [ Registrar CDP escaneado ]        |

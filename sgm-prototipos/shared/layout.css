@@ -73,6 +73,24 @@ h1 {
 
 .meta { font-size: 13px; color: var(--text-secondary); }
 
+.current-step-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.current-step-link:hover {
+  text-decoration: underline;
+}
+
+.current-step-link__id {
+  font-family: monospace;
+  font-weight: 700;
+}
+
 .global-badge {
   align-self: start;
   padding: 6px 16px;

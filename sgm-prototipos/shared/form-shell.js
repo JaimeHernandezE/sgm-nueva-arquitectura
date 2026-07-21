@@ -8,6 +8,7 @@ import stepsManifestTratoDirecto from './steps-manifest-trato-directo.js';
 
 const modalityManifestByExpediente = {
   'ADQ-2026-00123': stepsManifestCompraAgil,
+  'ADQ-2026-00142': stepsManifestCompraAgil,
   'ADQ-2026-00089': stepsManifestConvenioMarco,
   'ADQ-2026-00045': stepsManifestLicitacionPublica,
   'ADQ-2026-00012': stepsManifestTratoDirecto,

@@ -70,7 +70,7 @@ Raíz de trazabilidad de todo el ciclo SOLPED → Pago. El estado del expediente
 > `procurement_case_id` en cada entidad del ciclo es **desnormalización intencional** para trazabilidad y reportería directa (consultas por expediente sin recorrer la cadena de FKs). Se mantiene además de las FKs directas entre entidades.
 
 ### `PurchaseRequest` (SOLPED)
-**Visibilidad:** expuesta — campos en contrato: `id`, `requesting_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status`
+**Visibilidad:** expuesta — campos en contrato: `id`, `requesting_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `currency`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status`
 
 Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 
@@ -83,12 +83,25 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 | `requested_date` | fecha | **Obligatorio** |
 | `purchase_modality` | enum, **opcional** | **Opcional** — indicación provisional de modalidad. Valores: `agile_purchase`, `framework_agreement`, `public_tender`, `direct_procurement`. Confirmable en etapa 2. |
 | `founded_resolution_attachment` | ref. `DocumentRef` | **Obligatorio si** `purchase_modality = direct_procurement`. Resolución Fundada — almacenada vía C10 (`storeDocument`). |
+| `currency` | enum | **Obligatorio** (default `CLP`). Valores: `CLP`, `UF`, `UTM`, `USD`. Moneda del documento; todas las líneas se expresan en ella. No se mezclan monedas en una misma SOLPED. |
 | `proposed_budget_line_id` | ref. `BudgetLine` | **Opcional** — pista para autoconsulta (1.1, 1.2); no sustituye verificación en 1.3 |
 | `proposed_fiscal_year` | número | **Opcional** — año fiscal asociado a la línea propuesta |
 | `status` | enum | **Obligatorio**. Valores: `draft`, `pending_approval`, `pending_finance`, `quoting_in_progress`, `quote_void`, … |
 
+### `PurchaseRequestAttachment`
+**Visibilidad:** expuesta — campos en contrato: `id`, `purchase_request_id`, `attachment_type`, `description`, `document_ref`
+
+1:N con `PurchaseRequest`. Documentos de respaldo opcionales de la SOLPED (distintos de la Resolución Fundada). Origen: wireframe `11-creacion-solped.md`.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `purchase_request_id` | ref. `PurchaseRequest` | **Obligatorio** |
+| `attachment_type` | enum | **Obligatorio**. Valores: `quote` (cotización), `product_reference_photo` (foto referencial del producto), `technical_sheet` (ficha técnica), `other` (otro antecedente) |
+| `description` | texto | **Obligatorio** — qué respalda el archivo (ej. «Cotización ACME — resmas») |
+| `document_ref` | ref. `DocumentRef` | **Obligatorio** — almacenado vía C10 (`storeDocument`) |
+
 ### `PurchaseRequestLine`
-**Visibilidad:** expuesta — campos en contrato: `id`, `purchase_request_id`, `item_description`, `quantity`, `unit_of_measure`, `unit_price`, `price_source`
+**Visibilidad:** expuesta — campos en contrato: `id`, `purchase_request_id`, `item_description`, `quantity`, `unit_of_measure`, `unit_price`, `tax_code`, `price_source`
 
 1:N con `PurchaseRequest`.
 
@@ -97,8 +110,11 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 | `item_description` | texto | **Obligatorio** |
 | `quantity` | número | **Obligatorio** |
 | `unit_of_measure` | ref. `UnitOfMeasure` | **Obligatorio** |
-| `unit_price` | número | **Obligatorio** |
+| `unit_price` | número | **Obligatorio** — **neto**, expresado en `PurchaseRequest.currency`. Convención de plataforma: el usuario no elige neto/bruto |
+| `tax_code` | enum | **Obligatorio** (default `iva_19`). Valores: `iva_19`, `exempt`, `other`. Permite mezclar líneas afectas y exentas en la misma SOLPED. Catálogo ampliable — pendiente |
 | `price_source` | ref. `PriceReference` | **Obligatorio** — valor obtenido vía core `getPriceReference` (C9) |
+
+> Totales derivados (UI/servicio): subtotal neto = `quantity × unit_price`; impuesto de línea = subtotal × tasa(`tax_code`); total bruto del documento = suma(neto) + suma(impuestos). El municipio es **consumidor final** (IVA es costo): el precompromiso presupuestario orientativo usa el **total bruto**.
 
 ### `PriceReference`
 **Visibilidad:** interna — DTO de validación embebido en línea; datos desde core `getPriceReference` (C9 → SII u otra fuente oficial)
@@ -198,7 +214,6 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `supplier_eligibility_check` | booleano | **Opcional** (derivado) — resultado de validación de habilidad |
 | `cancellation_reason` | texto | **Obligatorio si** cancelación antes de emitir |
 | `fulfillment_status` | enum | **Opcional** (derivado). Valores: `pending`, `partially_received`, `fully_received` |
-| `entry_mode` | enum | **Obligatorio**. Valores: `mp_read` \| `manual` |
 
 ### `BudgetCommitment` (Compromiso Cierto / Obligación)
 **Visibilidad:** expuesta — campos en contrato: `id`, `purchase_order_id`, `budget_pre_commitment_id`, `committed_amount`, `commitment_date`, `source`
@@ -379,9 +394,9 @@ Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validac
 | `source` | enum | **Obligatorio**. Valores: `push`, `polling` |
 
 ### `QuotationResult` *(sugerida, no confirmada en fuente)*
-**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `entry_mode`
+**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `recorded_at`
 
-1:N con `ProcurementCase`. Resultado de la selección de oferta al cierre del período de cotización; `entry_mode` distingue si el dato proviene de lectura MP o de registro manual (modo degradado, ver `plantilla-maestra-sgm.md` §5.3). Origen: ficha `3-resolucion-compra.md` §3.2.
+1:N con `ProcurementCase`. Resultado de la selección de oferta al cierre del período de cotización; **solo se crea por sync** desde lectura MP (plantilla §5.3 — sin transcripción manual). Origen: ficha `3-resolucion-compra.md` §3.2.
 
 | Campo | Tipo | Notas |
 |---|---|---|
@@ -390,7 +405,6 @@ Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validac
 | `selected_provider_name` | texto | **Obligatorio** |
 | `offered_amount` | número | **Obligatorio** |
 | `lowest_price_selected` | booleano | **Obligatorio** |
-| `entry_mode` | enum | **Obligatorio**. Valores: `mp_read`, `manual` |
 | `recorded_at` | fecha/hora | **Obligatorio** (generado por sistema) |
 
 ### `ReceiptRejectionCase` *(sugerida, no confirmada en fuente)*
@@ -593,6 +607,9 @@ Estos puntos aparecen repetidos en más de una entidad/subproceso y son candidat
 
 - **Regla de tolerancia de desviación de montos/precios** — aparece en `PurchaseRequestLine.unit_price` vs. `PriceReference`, en `BudgetCommitment.committed_amount` vs. `BudgetPreCommitment.estimated_amount`, y en `ThreeWayMatch` (discrepancia entre OC/Recepción/Factura).
 - **Fuente(s) API externas confiables** — `PriceReference.source` queda sin fuente concreta definida.
+- **Hito que congela el tipo de cambio para compromiso presupuestario** — cuando `PurchaseRequest.currency` ≠ `CLP`, el presupuesto y la contabilidad operan en CLP. Falta definir en qué hito se fija la tasa auditable (fecha de resolución, de OC, de preobligación/CDP, u otro) y si la diferencia de cambio posterior es asiento de Contabilidad. Candidato a corregirse al documentar la generación de obligación/compromiso. La tasa mostrada en 1.1 es solo referencial.
+- **Umbrales de modalidad: neto vs bruto** — el gateway de modalidad compara montos contra umbrales en UTM (`NormativeParameter`). ¿Se compara el total neto o el total bruto (impuestos incluidos)? Definición normativa, no de diseño. Práctica usual en Mercado Público: impuestos incluidos — verificar. Impacta etapa 2 y el total que viaja desde la SOLPED.
+- **Catálogo de `tax_code`** — hoy `iva_19` / `exempt` / `other`; faltan retenciones y tasas especiales si el levantamiento lo requiere.
 - **Manejo de fallas de sincronización/disponibilidad de API externa** — relevante para `AgileQuoteProcess` (deep link sin completar) y `BudgetCommitment` (falla de notificación desde MP). Consolidado con la misma familia de resiliencia ante servicios externos de las etapas 2-4 — **[PENDIENTE P-32]**.
 
 ## Módulos aún no documentados

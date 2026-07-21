@@ -23,6 +23,69 @@ function formatResponsible(r) {
   return `${r.unit} / ${r.role} / ${r.name}`;
 }
 
+/**
+ * Marca el paso actual, deja pendientes los posteriores y pliega todo
+ * excepto la etapa que contiene el paso actual.
+ */
+export function applyCurrentStepFocus(stages, currentStepId) {
+  if (!currentStepId) {
+    return stages.map((stage) => ({
+      ...stage,
+      expanded: false,
+      steps: (stage.steps || []).map((step) => ({ ...step, current: false })),
+    }));
+  }
+
+  let passedCurrent = false;
+  let currentStageId = null;
+
+  const withSteps = stages.map((stage) => {
+    const steps = (stage.steps || []).map((step) => {
+      if (step.id === currentStepId) {
+        passedCurrent = true;
+        currentStageId = stage.id;
+        const primaryLabel =
+          step.action?.type === 'primary'
+            ? step.action.label
+            : step.origin?.kind === 'external'
+              ? 'Abrir paso'
+              : 'Completar formulario';
+        return {
+          ...step,
+          current: true,
+          status: 'active',
+          action: { type: 'primary', label: primaryLabel },
+        };
+      }
+      if (!passedCurrent) {
+        return { ...step, current: false };
+      }
+      if (step.omitted || step.status === 'omitted') {
+        return { ...step, current: false };
+      }
+      return {
+        ...step,
+        current: false,
+        status: 'pending',
+        action: { type: 'badge', label: 'Pendiente' },
+      };
+    });
+
+    return { ...stage, steps };
+  });
+
+  return withSteps.map((stage) => {
+    const isCurrentStage = stage.id === currentStageId;
+    const isAfter = currentStageId != null && Number(stage.id) > Number(currentStageId);
+    return {
+      ...stage,
+      expanded: isCurrentStage,
+      state: isCurrentStage ? 'active' : isAfter ? 'pending' : 'done',
+      status: isCurrentStage ? 'En curso' : isAfter ? 'Pendiente' : stage.status === 'En curso' ? 'Finalizada' : stage.status,
+    };
+  });
+}
+
 function resolveAction(step, viewerRole) {
   if (step.omitted || step.status === 'omitted') {
     return step.action?.type === 'badge' ? step.action : { type: 'badge', label: 'Omitido (optativo)' };
@@ -53,6 +116,7 @@ function renderAction(action, step) {
   const classes = ['badge'];
   if (action.active) classes.push('badge--active');
   if (action.label === 'Omitido (optativo)') classes.push('badge--omitted');
+  if (action.label === 'Pendiente en MP' || action.label === 'Esperando sync MP') classes.push('badge--active');
   return `<span class="${classes.join(' ')}">${action.label}</span>`;
 }
 
@@ -81,7 +145,7 @@ function renderStep(step, viewerRole) {
   `;
 }
 
-function renderStage(stage, viewerRole) {
+function renderStage(stage, viewerRole, expedienteId) {
   const stageClasses = ['stage'];
   if (stage.state === 'active') stageClasses.push('stage--active');
   if (stage.state === 'pending') stageClasses.push('stage--pending');
@@ -89,7 +153,7 @@ function renderStage(stage, viewerRole) {
   const badgeClasses = ['stage__badge'];
   if (stage.state === 'active') badgeClasses.push('stage__badge--active');
 
-  const stateKey = `${getExpedienteIdFromUrl()}-${stage.id}`;
+  const stateKey = `${expedienteId}-${stage.id}`;
   const isExpanded = expandedState[stateKey] ?? stage.expanded;
 
   return `
@@ -104,7 +168,7 @@ function renderStage(stage, viewerRole) {
       </button>
       ${isExpanded ? `
         <div class="stage__body">
-          ${stage.steps.map((s) => renderStep(s, viewerRole)).join('')}
+          ${(stage.steps || []).map((s) => renderStep(s, viewerRole)).join('')}
         </div>
         ${stage.totalTime ? `<div class="stage__footer">${stage.totalTime}</div>` : ''}
         ${stage.note ? `<div class="stage__note">${stage.note}</div>` : ''}
@@ -114,12 +178,21 @@ function renderStage(stage, viewerRole) {
 }
 
 function renderHeader(profile) {
+  const current = profile.currentStep;
+  const formUrl = current?.id ? getStepFormUrl(current.id, profile.id) : null;
+  const currentLink = current && formUrl
+    ? `<a class="current-step-link" href="${formUrl}"><span class="current-step-link__id">${current.id}</span> — ${current.name}</a>`
+    : current
+      ? `<div class="current-step-link"><span class="current-step-link__id">${current.id}</span> — ${current.name}</div>`
+      : '';
+
   return `
     <header class="expediente-header">
       <div>
         <div class="folio">${profile.id}</div>
         <div class="glosa">${profile.glosa}</div>
         <div class="meta">Modalidad: ${profile.modality} · Unidad de origen: ${profile.unit}</div>
+        ${currentLink}
       </div>
       <div class="global-badge">${profile.globalStatus}</div>
     </header>
@@ -129,14 +202,15 @@ function renderHeader(profile) {
 export function renderExpediente(viewerRole) {
   const expedienteId = getExpedienteIdFromUrl();
   const profile = getExpedienteProfile(expedienteId);
-  const stages = getStages(expedienteId);
+  const rawStages = getStages(expedienteId);
+  const stages = applyCurrentStepFocus(rawStages, profile.currentStep?.id);
   const demoPanel = document.getElementById('demo-panel');
   const legend = document.getElementById('expediente-legend');
 
   if (demoPanel) demoPanel.classList.remove('hidden');
   if (legend) legend.classList.remove('hidden');
 
-  const stagesHtml = stages.map((s) => renderStage(s, viewerRole)).join('');
+  const stagesHtml = stages.map((s) => renderStage(s, viewerRole, expedienteId)).join('');
   document.getElementById('app').innerHTML = renderHeader(profile) + stagesHtml;
 
   document.querySelectorAll('.stage__header').forEach((btn) => {

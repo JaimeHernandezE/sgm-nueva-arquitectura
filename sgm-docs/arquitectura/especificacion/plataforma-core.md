@@ -4,7 +4,7 @@
 > Estado: borrador para discusión interna (julio 2026).
 > Origen: hasta ahora Adquisiciones se especifica como módulo aislado; este documento define qué existe **debajo y alrededor** de los módulos funcionales — identidad, autorización, tenants, parámetros, auditoría, eventos, integraciones externas, gestión documental y administración mínima — para que la especificación del core tenga la misma disciplina contractual que la de los módulos de negocio.
 > Complementa `seguridad.md` (que define exigencias de seguridad del core sin declararlo como tal), `musts-arquitectura.md` §9 (notificaciones) y `plantilla-maestra-sgm.md` §5.2 (sincronización MP).
-> Pendientes registrados en [`pendientes.md`](./pendientes.md).
+> Pendientes registrados en [`pendientes.md`](../decisiones/pendientes.md).
 
 ---
 
@@ -41,7 +41,7 @@ Regla derivada del mandato general (`contrato-api-first.md` §1), aplicable text
 Consecuencias:
 
 - **Toda acción administrativa es una operación de API auditada** (ya exigido para roles en `seguridad.md` §3.3; aquí se generaliza a tenants, parámetros y credenciales).
-- El core tiene su propio `contracts.md` con las cuatro secciones de `contrato-api-first.md` §3. Borrador mínimo en [`plataforma/contracts.md`](../plataforma/contracts.md) — **[PENDIENTE P-48]** extender a ciclo de vida completo de tenants.
+- El core tiene su propio `contracts.md` con las cuatro secciones de `contrato-api-first.md` §3. Borrador mínimo en [`plataforma/contracts.md`](../../plataforma/contracts.md) — **[PENDIENTE P-48]** extender a ciclo de vida completo de tenants.
 - Las entidades del core (§4) se definen en el modelo de datos canónico con la misma regla de visibilidad interna/expuesta (`plantilla-maestra-sgm.md` §6.6).
 
 ## 3. Inventario de servicios del core
@@ -67,7 +67,7 @@ Nota sobre C9/C10: los módulos funcionales **declaran** dependencias en su `con
 
 ## 4. Entidades del core
 
-Entidades transversales que hoy las fichas usan de forma implícita (columnas Unidad municipal / Rol) sin definición canónica. Definición canónica en [`modelo-datos/entidades-plataforma.md`](../modelo-datos/entidades-plataforma.md), hermano de `entidades-core.md`, con la misma regla de obligatoriedad explícita de campos:
+Entidades transversales que hoy las fichas usan de forma implícita (columnas Unidad municipal / Rol) sin definición canónica. Definición canónica en [`modelo-datos/entidades-plataforma.md`](../../modelo-datos/entidades-plataforma.md), hermano de `entidades-core.md`, con la misma regla de obligatoriedad explícita de campos:
 
 | Entidad | Rol | Visibilidad propuesta |
 |---|---|---|
@@ -186,7 +186,7 @@ El RBAC es del core, pero cada request llega a un módulo. Cómo valida el módu
 
 Dos consolas, ambas consumidoras sin privilegios del contrato del core (§2). Se especifican con wireframes de baja fidelidad según `plantilla-maestra-sgm.md` §7 — estructura y operaciones, no estética.
 
-**Artefactos:** overview e índice en [`plataforma/overview.md`](../plataforma/overview.md); wireframes en [`plataforma/wireframes/`](../plataforma/wireframes/README.md). Operaciones admin aún sin cuerpo HTTP completo: `plataforma/contracts.md` §2.11.
+**Artefactos:** overview e índice en [`plataforma/overview.md`](../../plataforma/overview.md); wireframes en [`plataforma/wireframes/`](../../plataforma/wireframes/README.md). Operaciones admin aún sin cuerpo HTTP completo: `plataforma/contracts.md` §2.11.
 
 ### 9.1 Consola de plataforma (SUBDERE)
 
@@ -242,6 +242,6 @@ Preexistentes que este documento organiza: P-01, P-02, P-05, P-06, P-15, P-22, P
 - [`seguridad.md`](./seguridad.md) — exigencias de C1, C2, C5, C8
 - [`musts-arquitectura.md`](./musts-arquitectura.md) — §3 tenants a escala, §5 clasificación, §8 observabilidad, §9 eventos, §10 flujos
 - [`contrato-api-first.md`](./contrato-api-first.md) — mandato API y estructura de contratos
-- [`plantilla-maestra-sgm.md`](./plantilla-maestra-sgm.md) — §5.2 sincronización MP, §7 wireframes
-- [`decisiones-macro-stack.md`](./decisiones-macro-stack.md) — §1 modos de consumo, §2 soberanía del dato, §7 ecosistema
-- [`entregable-licitacion.md`](./entregable-licitacion.md) — modelo de entregable donde este core se integra
+- [`plantilla-maestra-sgm.md`](../instrucciones/plantilla-maestra-sgm.md) — §5.2 sincronización MP, §7 wireframes
+- [`decisiones-macro-stack.md`](../decisiones/decisiones-macro-stack.md) — §1 modos de consumo, §2 soberanía del dato, §7 ecosistema
+- [`entregable-licitacion.md`](../licitacion/entregable-licitacion.md) — modelo de entregable donde este core se integra

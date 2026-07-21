@@ -27,25 +27,31 @@
         <span class="badge badge--active" id="header-badge">En espera</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">
-          <strong>Contrato suscrito — solo lectura</strong><br />
-          Contrato N° 045-2026-CT · Taller Municipal SpA · $ 178.500.000
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Contrato suscrito</h3>
+          <div class="info-panel">
+            <strong>Solo lectura</strong><br />
+            Contrato N° 045-2026-CT · Taller Municipal SpA · $ 178.500.000
+          </div>
+        </section>
 
-        <p>
-          <button class="btn btn--secondary" type="button" id="deep-link-btn">Emitir OC en Mercado Público</button>
-          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Deep link — OC referida a la adjudicación</span>
-        </p>
+        <section class="form-section">
+          <h3 class="form-section__title">Emisión y aceptación de la OC</h3>
+          <p>
+            <button class="btn btn--secondary" type="button" id="deep-link-btn">Emitir OC en Mercado Público</button>
+            <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Deep link — OC referida a la adjudicación</span>
+          </p>
 
-        <div class="form-row">
-          <label>Simular lectura MP <em>(solo demo — no existe en la ficha)</em></label>
-          <select id="simulate-result">
-            <option value="accepted_ok" selected>OC Aceptada — compromiso OK</option>
-            <option value="accepted_budget_unavailable">OC Aceptada — BUDGET_UNAVAILABLE (monto real sin saldo)</option>
-            <option value="accepted_provider_down">OC Aceptada — Presupuestos no disponible (reintento)</option>
-            <option value="rejected_post_contract">OC Rechazada post-contrato (anomalía grave)</option>
-          </select>
-        </div>
+          <div class="form-row">
+            <label>Simular lectura MP <em>(solo demo — no existe en la ficha)</em></label>
+            <select id="simulate-result">
+              <option value="accepted_ok" selected>OC Aceptada — compromiso OK</option>
+              <option value="accepted_budget_unavailable">OC Aceptada — BUDGET_UNAVAILABLE (monto real sin saldo)</option>
+              <option value="accepted_provider_down">OC Aceptada — Presupuestos no disponible (reintento)</option>
+              <option value="rejected_post_contract">OC Rechazada post-contrato (anomalía grave)</option>
+            </select>
+          </div>
+        </section>
 
         <div class="banner hidden" id="result-banner"></div>
 

@@ -22,20 +22,25 @@
         <span class="badge badge--active">Pendiente</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">
-          <strong>Motivo — solo lectura</strong><br />
-          <label><input type="radio" name="cause" value="deserted" style="width:auto;display:inline-block;margin-right:6px;" checked />Desierto (nadie cotizó)</label>
-          <label><input type="radio" name="cause" value="all_rejected" style="width:auto;display:inline-block;margin-right:6px;" />Todas las ofertas rechazadas/inhábiles</label>
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Motivo del fallo</h3>
+          <div class="info-panel">
+            <strong>Motivo — solo lectura</strong><br />
+            <label><input type="radio" name="cause" value="deserted" style="width:auto;display:inline-block;margin-right:6px;" checked />Desierto (nadie cotizó)</label>
+            <label><input type="radio" name="cause" value="all_rejected" style="width:auto;display:inline-block;margin-right:6px;" />Todas las ofertas rechazadas/inhábiles</label>
+          </div>
+        </section>
 
-        <h3 style="font-size:14px;margin:16px 0 8px;">Decisión <span class="required">*</span></h3>
-        <div class="form-row">
-          <label><input type="radio" name="decision" value="republish" style="width:auto;display:inline-block;margin-right:6px;" checked />Republicar (nueva cotización en MP, re-vinculación 2.3)</label>
-          <label><input type="radio" name="decision" value="reassess" style="width:auto;display:inline-block;margin-right:6px;" />Reevaluar (reversión formal a etapa 2 — nueva ModalityDecision)</label>
-          <label><input type="radio" name="decision" value="cancel" style="width:auto;display:inline-block;margin-right:6px;" />Cancelar expediente (libera preobligación completa)</label>
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Decisión <span class="required">*</span></h3>
+          <div class="form-row">
+            <label><input type="radio" name="decision" value="republish" style="width:auto;display:inline-block;margin-right:6px;" checked />Republicar (nueva cotización en MP, re-vinculación 2.3)</label>
+            <label><input type="radio" name="decision" value="reassess" style="width:auto;display:inline-block;margin-right:6px;" />Reevaluar (reversión formal a etapa 2 — nueva ModalityDecision)</label>
+            <label><input type="radio" name="decision" value="cancel" style="width:auto;display:inline-block;margin-right:6px;" />Cancelar expediente (libera preobligación completa)</label>
+          </div>
 
-        <div class="banner hidden" id="result-banner"></div>
+          <div class="banner hidden" id="result-banner"></div>
+        </section>
       </div>
       <div class="form-actions">
         <span></span>
@@ -76,7 +81,7 @@
         setTimeout(() => { window.location.href = relativeFormHref('../procesos-transversales/23-vinculacion-mp.html'); }, 800);
       } else if (decision === 'reassess') {
         resultBanner.style.color = '#8c6d1f';
-        resultBanner.innerHTML = 'Procedimiento de reversión formal a etapa 2 aún no definido — <a href="../../../../sgm-docs/arquitectura/pendientes.md" target="_blank" rel="noopener">PENDIENTE P-34</a>. No se puede ejecutar en este prototipo.';
+        resultBanner.innerHTML = 'Procedimiento de reversión formal a etapa 2 aún no definido — <a href="../../../../sgm-docs/arquitectura/decisiones/pendientes.md" target="_blank" rel="noopener">PENDIENTE P-34</a>. No se puede ejecutar en este prototipo.';
       } else {
         demoAction('releasePreCommitment');
         resultBanner.classList.add('banner--info');

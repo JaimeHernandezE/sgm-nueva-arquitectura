@@ -58,8 +58,6 @@ paths:
     $ref: ./procesos-transversales/2-modalidad-compra.yaml#/paths/~1modality-decisions~1{id}~1reject
   /procurement-cases/{id}/mp-link:
     $ref: ./procesos-transversales/2-modalidad-compra.yaml#/paths/~1procurement-cases~1{id}~1mp-link
-  /procurement-cases/{id}/quotation-result:
-    $ref: ./1-compra-agil/3-resolucion-compra.yaml#/paths/~1procurement-cases~1{id}~1quotation-result
   /purchase-orders/{id}/sync-accepted:
     $ref: ./1-compra-agil/3-resolucion-compra.yaml#/paths/~1purchase-orders~1{id}~1sync-accepted
   /procurement-cases/{id}/release-pre-commitment:
@@ -88,14 +86,12 @@ paths:
   /purchase-orders:
     get:
       $ref: ./expediente.yaml#/paths/~1purchase-orders/get
-    post:
-      $ref: ./1-compra-agil/3-resolucion-compra.yaml#/paths/~1purchase-orders/post
 components:
   securitySchemes:
     bearerPersonas:
-      $ref: ../../../arquitectura/openapi/comunes.yaml#/components/securitySchemes/bearerPersonas
+      $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/securitySchemes/bearerPersonas
     bearerM2M:
-      $ref: ../../../arquitectura/openapi/comunes.yaml#/components/securitySchemes/bearerM2M
+      $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/securitySchemes/bearerM2M
   parameters:
     CaseId:
       name: case_id
@@ -117,7 +113,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+            $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
           example:
             error_code: UNAUTHENTICATED
             rule: Token de autenticación inválido o ausente
@@ -127,7 +123,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+            $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
           example:
             error_code: FORBIDDEN
             rule: El token no tiene scope suficiente para esta operación
@@ -137,13 +133,13 @@ components:
       content:
         application/json:
           schema:
-            $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+            $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
     ProcurementCaseNotFound:
       description: Expediente no encontrado.
       content:
         application/json:
           schema:
-            $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+            $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
           example:
             error_code: PROCUREMENT_CASE_NOT_FOUND
             field: id
@@ -154,7 +150,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+            $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
           example:
             error_code: PURCHASE_REQUEST_NOT_FOUND
             field: id
@@ -197,16 +193,43 @@ components:
         - framework_agreement
         - public_tender
         - direct_procurement
+    DocumentCurrency:
+      type: string
+      enum:
+        - CLP
+        - UF
+        - UTM
+        - USD
+      default: CLP
+      description: >
+        Moneda del documento SOLPED. Todas las líneas se expresan en ella;
+        no se mezclan monedas en una misma solicitud. Default CLP.
+    LineTaxCode:
+      type: string
+      enum:
+        - iva_19
+        - exempt
+        - other
+      default: iva_19
+      description: >
+        Código de impuesto por línea. El precio unitario es siempre neto;
+        el sistema calcula el impuesto. Permite mezclar afectas y exentas.
+        Catálogo ampliable (retenciones, tasas especiales) — pendiente.
+    PurchaseRequestAttachmentType:
+      type: string
+      enum:
+        - quote
+        - product_reference_photo
+        - technical_sheet
+        - other
+      description: >
+        Cotización, foto referencial del producto, ficha técnica u otro antecedente
+        de respaldo de la SOLPED.
     SignatureMode:
       type: string
       enum:
         - electronic
         - scanned
-    EntryMode:
-      type: string
-      enum:
-        - mp_sync
-        - manual
     ReceiptType:
       type: string
       enum:
@@ -373,6 +396,7 @@ components:
         - justification
         - requested_date
         - purchase_modality
+        - currency
         - status
       properties:
         id:
@@ -395,6 +419,8 @@ components:
           format: uuid
           nullable: true
           description: DocumentRef — subida previa vía core POST /documents (plataforma/contracts.md §2.10)
+        currency:
+          $ref: "#/components/schemas/DocumentCurrency"
         proposed_budget_line_id:
           type: string
           nullable: true
@@ -412,6 +438,7 @@ components:
         - quantity
         - unit_of_measure
         - unit_price
+        - tax_code
       properties:
         id:
           type: string
@@ -429,9 +456,34 @@ components:
         unit_price:
           type: number
           format: double
+          description: Precio unitario neto en la moneda del documento (`PurchaseRequest.currency`)
+        tax_code:
+          $ref: "#/components/schemas/LineTaxCode"
         price_source:
           type: string
           nullable: true
+    PurchaseRequestAttachment:
+      type: object
+      required:
+        - id
+        - purchase_request_id
+        - attachment_type
+        - description
+        - document_ref
+      properties:
+        id:
+          type: string
+        purchase_request_id:
+          type: string
+        attachment_type:
+          $ref: "#/components/schemas/PurchaseRequestAttachmentType"
+        description:
+          type: string
+          description: Qué respalda el archivo (ej. Cotización ACME — resmas)
+        document_ref:
+          type: string
+          format: uuid
+          description: DocumentRef — subida previa vía core POST /documents (plataforma/contracts.md §2.10)
     PurchaseRequestWithLines:
       allOf:
         - $ref: "#/components/schemas/PurchaseRequest"
@@ -443,6 +495,11 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/PurchaseRequestLine"
+            attachments:
+              type: array
+              items:
+                $ref: "#/components/schemas/PurchaseRequestAttachment"
+              description: Documentos de respaldo opcionales (0..N)
     CreatePurchaseRequestRequest:
       type: object
       required:
@@ -482,6 +539,7 @@ components:
               - quantity
               - unit_of_measure
               - unit_price
+              - tax_code
             properties:
               item_description:
                 type: string
@@ -495,6 +553,29 @@ components:
               unit_price:
                 type: number
                 format: double
+                description: Precio unitario neto en la moneda del documento (`currency`)
+              tax_code:
+                $ref: "#/components/schemas/LineTaxCode"
+        currency:
+          $ref: "#/components/schemas/DocumentCurrency"
+        attachments:
+          type: array
+          description: Documentos de respaldo opcionales — cotizaciones, fotos referenciales, fichas técnicas u otros
+          items:
+            type: object
+            required:
+              - attachment_type
+              - description
+              - document_ref
+            properties:
+              attachment_type:
+                $ref: "#/components/schemas/PurchaseRequestAttachmentType"
+              description:
+                type: string
+              document_ref:
+                type: string
+                format: uuid
+                description: DocumentRef — subida previa vía core POST /documents
     ApprovalDecisionRequest:
       type: object
       required:
@@ -763,15 +844,22 @@ components:
         mp_quote_id:
           type: string
           nullable: true
-    QuotationResultInput:
+    QuotationResult:
       type: object
+      description: Espejo de selección de oferta — solo creado por sync MP (sin POST de usuario).
       required:
+        - id
+        - procurement_case_id
         - selected_provider_rut
         - selected_provider_name
         - offered_amount
         - lowest_price_selected
-        - entry_mode
+        - recorded_at
       properties:
+        id:
+          type: string
+        procurement_case_id:
+          type: string
         selected_provider_rut:
           type: string
         selected_provider_name:
@@ -781,39 +869,9 @@ components:
           format: double
         lowest_price_selected:
           type: boolean
-        entry_mode:
-          $ref: "#/components/schemas/EntryMode"
-    QuotationResult:
-      allOf:
-        - $ref: "#/components/schemas/QuotationResultInput"
-        - type: object
-          required:
-            - id
-            - procurement_case_id
-          properties:
-            id:
-              type: string
-            procurement_case_id:
-              type: string
-    RegisterPurchaseOrderRequest:
-      type: object
-      required:
-        - mp_oc_number
-        - provider_rut
-        - amount
-        - entry_mode
-      properties:
-        procurement_case_id:
+        recorded_at:
           type: string
-        mp_oc_number:
-          type: string
-        provider_rut:
-          type: string
-        amount:
-          type: number
-          format: double
-        entry_mode:
-          $ref: "#/components/schemas/EntryMode"
+          format: date-time
     PurchaseOrder:
       type: object
       required:
@@ -850,8 +908,6 @@ components:
         fulfillment_status:
           type: string
           nullable: true
-        entry_mode:
-          $ref: "#/components/schemas/EntryMode"
     BudgetCommitment:
       type: object
       required:

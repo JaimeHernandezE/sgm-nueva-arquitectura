@@ -26,7 +26,7 @@ export default {
       processFicha: 'sgm-docs/modulos/adquisiciones/1. compra-agil/3-resolucion-compra.md',
       prototypeHtml: 'modulos/adquisiciones/1-compra-agil/32-cierre-seleccion-oferta.html',
       formPath: '../1-compra-agil/32-cierre-seleccion-oferta.html',
-      operations: ['recordQuotationResult'],
+      operations: [],
       origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
     },
     {
@@ -37,7 +37,7 @@ export default {
       processFicha: 'sgm-docs/modulos/adquisiciones/1. compra-agil/3-resolucion-compra.md',
       prototypeHtml: 'modulos/adquisiciones/1-compra-agil/33-emision-oc.html',
       formPath: '../1-compra-agil/33-emision-oc.html',
-      operations: ['registerPurchaseOrder'],
+      operations: [],
       origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
     },
     {

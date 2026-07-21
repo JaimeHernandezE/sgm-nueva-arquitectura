@@ -24,9 +24,8 @@
       </div>
       <div class="form-card__body">
 
-        <!-- 3.9a Designación -->
-        <div id="panel-a">
-          <strong>3.9a — Designación de integrantes</strong>
+        <section class="form-section" id="panel-a">
+          <h3 class="form-section__title">3.9a — Designación de integrantes</h3>
           <table class="form-table">
             <thead><tr><th>Nombre</th><th>Declaración de ausencia de conflictos</th></tr></thead>
             <tbody>
@@ -37,12 +36,10 @@
           </table>
           <div class="banner hidden" id="banner-a"></div>
           <button class="btn btn--primary" type="button" id="designate-btn">Generar acto de designación y solicitar firma</button>
-        </div>
+        </section>
 
-        <!-- 3.9b Admisibilidad -->
-        <div class="hidden" id="panel-b">
-          <hr />
-          <strong>3.9b — Admisibilidad de ofertas</strong>
+        <section class="form-section hidden" id="panel-b">
+          <h3 class="form-section__title">3.9b — Admisibilidad de ofertas</h3>
           <table class="form-table">
             <thead><tr><th>Proveedor</th><th>Monto</th><th>Admisible</th><th>Causal (si inadmisible)</th></tr></thead>
             <tbody>
@@ -65,12 +62,10 @@
           </table>
           <div class="banner hidden" id="banner-b"></div>
           <button class="btn btn--primary" type="button" id="admissibility-btn">Registrar admisibilidad</button>
-        </div>
+        </section>
 
-        <!-- 3.9c Evaluación -->
-        <div class="hidden" id="panel-c">
-          <hr />
-          <strong>3.9c — Evaluación y acta</strong>
+        <section class="form-section hidden" id="panel-c">
+          <h3 class="form-section__title">3.9c — Evaluación y acta</h3>
           <div class="info-panel">Criterios (de 3.1): Precio 40% · Experiencia 30% · Plazo 30%</div>
           <table class="form-table" id="scores-table">
             <thead><tr><th>Oferta</th><th>Precio (0-100)</th><th>Experiencia (0-100)</th><th>Plazo (0-100)</th><th>Total ponderado</th></tr></thead>
@@ -94,7 +89,7 @@
           <div class="info-panel" id="ranking-panel">Ranking: (se calcula al puntuar)</div>
           <div class="banner hidden" id="banner-c"></div>
           <button class="btn btn--primary" type="button" id="sign-btn">Firmar Acta de Evaluación</button>
-        </div>
+        </section>
 
         <div class="info-panel hidden" id="next-step-panel">
           Acta firmada — ranking cerrado. <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.10</a>

@@ -1,6 +1,6 @@
 ---
 description: Checklist de conexiones antes de editar UI SGM (docs + prototipos)
-globs: sgm-prototipos/**,sgm-docs/**/wireframes/**,sgm-docs/arquitectura/patron-vista-expediente.md,sgm-docs/modulos/adquisiciones/procesos-transversales/**
+globs: sgm-prototipos/**,sgm-docs/**/wireframes/**,sgm-docs/arquitectura/instrucciones/patron-vista-expediente.md,sgm-docs/arquitectura/instrucciones/patron-formularios-secciones.md,sgm-docs/modulos/adquisiciones/procesos-transversales/**
 alwaysApply: false
 ---
 
@@ -12,14 +12,19 @@ Antes de cambiar un sub-paso, pantalla o fila del expediente:
 2. Abrir el wireframe spec (`.md`) y la ficha de proceso referenciados.
 3. Verificar operaciones en `sgm-docs/modulos/adquisiciones/contracts.md`.
 4. Verificar campos en `sgm-docs/modelo-datos/entidades-core.md`.
-5. Si cambia tinte/origen: reglas 2a/2b en `sgm-docs/arquitectura/patron-vista-expediente.md`.
+5. Si cambia tinte/origen: reglas 2a/2b en `sgm-docs/arquitectura/instrucciones/patron-vista-expediente.md`.
+6. Si cambia layout de formulario: secciones tituladas según `sgm-docs/arquitectura/instrucciones/patron-formularios-secciones.md` (wireframe ASCII + HTML `.form-section`).
+7. Si cambia configuración de anclas de firma: `patron-edicion-anclas-firma.md` + catálogo de documentos firmables.
 
 ## Reglas
 
 - Ningún botón sin operación publicada en contrato.
 - Ningún campo sin entidad.campo en el modelo.
 - Toda obligatoriedad explícita en modelo, wireframe (columna Obligatorio) y prototipo (`*`, `(opcional)`, `(obligatorio si …)`).
+- Formularios con subtítulos de sección (`.form-section` / `.form-section__title`); sin campos huérfanos entre bloques temáticos.
 - Cambio en wireframe `.md` → actualizar prototipo HTML enlazado (y viceversa).
 - Cambio en fila del expediente → actualizar `demo-data.js` y `steps-manifest.json` + `.js`.
 - Specs `.md`/`.svg` permanecen en `sgm-docs/`; HTML solo en `sgm-prototipos/`.
-- Patrón transversal de filas/tintes del expediente: `arquitectura/patron-vista-expediente.md` (no vive en un módulo).
+- Patrón transversal de filas/tintes del expediente: `arquitectura/instrucciones/patron-vista-expediente.md` (no vive en un módulo).
+- Patrón de secciones en formularios: `arquitectura/instrucciones/patron-formularios-secciones.md`.
+- Patrón de anclas en plantillas firmables: `arquitectura/instrucciones/patron-edicion-anclas-firma.md`.

@@ -22,83 +22,174 @@
         <span class="badge badge--draft">Borrador</span>
       </div>
       <div class="form-card__body">
-        <div class="form-row">
-          <label>Unidad solicitante <span class="required">*</span></label>
-          <select>
-            <option>Unidad X</option>
-            <option>DAF Abastecimiento</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label>Descripción <span class="required">*</span></label>
-          <input type="text" value="Adquisición de insumos de oficina" />
-        </div>
-        <div class="form-row">
-          <label>Justificación <span class="required">*</span></label>
-          <textarea>Reposición de stock según plan anual.</textarea>
-        </div>
-        <div class="form-row">
-          <label>Fecha solicitada <span class="required">*</span></label>
-          <input type="date" value="2026-06-24" />
-        </div>
-        <div class="form-row">
-          <label>Modalidad de compra (opcional)</label>
-          <select id="purchase-modality">
-            <option value="">(sin indicar)</option>
-            <option value="agile_purchase">Compra Ágil</option>
-            <option value="framework_agreement">Convenio Marco</option>
-            <option value="public_tender">Licitación Pública</option>
-            <option value="direct_procurement">Trato Directo</option>
-          </select>
-        </div>
-        <div id="resolution-row" class="form-row hidden">
-          <label>Resolución Fundada (obligatorio si Trato Directo) <span class="required">*</span></label>
-          <button class="btn btn--secondary" type="button">Subir archivo</button>
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Datos de la solicitud</h3>
+          <div class="form-row">
+            <label>Unidad solicitante <span class="required">*</span></label>
+            <select>
+              <option>Unidad X</option>
+              <option>DAF Abastecimiento</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Descripción <span class="required">*</span></label>
+            <input type="text" id="solped-description" value="Adquisición de insumos de oficina" />
+          </div>
+          <div class="form-row">
+            <label>Justificación <span class="required">*</span></label>
+            <textarea>Reposición de stock según plan anual.</textarea>
+          </div>
+          <div class="form-row">
+            <label>Fecha solicitada <span class="required">*</span></label>
+            <input type="date" value="2026-06-24" />
+          </div>
+        </section>
 
-        <h3 style="font-size:14px;margin:20px 0 8px;">Líneas de bienes/servicios</h3>
-        <table class="form-table">
-          <thead>
-            <tr>
-              <th>Descr. <span class="required">*</span></th>
-              <th>Cant. <span class="required">*</span></th>
-              <th>UM <span class="required">*</span></th>
-              <th>Precio <span class="required">*</span></th>
-              <th>Ref.</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><input type="text" value="Resma papel carta" /></td>
-              <td><input type="number" value="50" /></td>
-              <td><select><option>Un</option></select></td>
-              <td><input type="text" value="4500" /></td>
-              <td>SII 42k</td>
-              <td><button class="btn btn--secondary" type="button">Eliminar</button></td>
-            </tr>
-          </tbody>
-        </table>
-        <button class="btn btn--secondary" type="button">+ Agregar línea</button>
+        <section class="form-section">
+          <h3 class="form-section__title">Líneas de bienes/servicios</h3>
+          <div class="form-row">
+            <label>Moneda <span class="required">*</span></label>
+            <select id="solped-currency">
+              <option value="CLP" selected>Peso (CLP)</option>
+              <option value="UF">UF</option>
+              <option value="UTM">UTM</option>
+              <option value="USD">Dólar (USD)</option>
+            </select>
+          </div>
+          <p class="form-section__hint" id="solped-fx-hint"></p>
+          <p class="form-section__hint">
+            El precio se ingresa <strong>neto</strong>. El impuesto se calcula por línea.
+          </p>
+          <table class="form-table" id="solped-lines">
+            <thead>
+              <tr>
+                <th>Descripción <span class="required">*</span></th>
+                <th>Cantidad <span class="required">*</span></th>
+                <th>Unidad <span class="required">*</span></th>
+                <th id="solped-price-header">Precio neto <span class="required">*</span></th>
+                <th>Impuesto <span class="required">*</span></th>
+                <th>Subtotal neto</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="solped-lines-body">
+              <tr class="solped-line">
+                <td><input type="text" name="line-description" value="Resma papel carta" /></td>
+                <td><input type="number" name="line-quantity" min="0" step="1" value="50" /></td>
+                <td>
+                  <select name="line-unit">
+                    <option>Un</option>
+                    <option>Kg</option>
+                    <option>Hr</option>
+                  </select>
+                </td>
+                <td><input type="number" name="line-price" min="0" step="1" value="4500" /></td>
+                <td>
+                  <select name="line-tax">
+                    <option value="iva_19" selected>IVA 19%</option>
+                    <option value="exempt">Exento</option>
+                    <option value="other">Otro</option>
+                  </select>
+                </td>
+                <td class="solped-line__subtotal" data-subtotal>0</td>
+                <td><button class="btn btn--secondary" type="button" data-remove-line>Eliminar</button></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="form-table__summary form-table__summary--secondary">
+                <td colspan="5" class="form-table__summary-label">Total neto</td>
+                <td id="solped-total-net" class="form-table__summary-value">0</td>
+                <td></td>
+              </tr>
+              <tr class="form-table__summary form-table__summary--secondary">
+                <td colspan="5" class="form-table__summary-label">Total impuestos</td>
+                <td id="solped-total-tax" class="form-table__summary-value">0</td>
+                <td></td>
+              </tr>
+              <tr class="form-table__summary">
+                <td colspan="5" class="form-table__summary-label">Total bruto</td>
+                <td id="solped-total-gross" class="form-table__summary-value">0</td>
+                <td></td>
+              </tr>
+              <tr class="form-table__summary form-table__summary--secondary" id="solped-clp-row" hidden>
+                <td colspan="5" class="form-table__summary-label">Total bruto en CLP</td>
+                <td id="solped-total-gross-clp" class="form-table__summary-value">0</td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+          <button class="btn btn--secondary" type="button" id="solped-lines-add">+ Agregar línea</button>
+        </section>
 
-        <div class="form-row" style="margin-top:16px;">
-          <label>Documentos adjuntos (opcional)</label>
-          <button class="btn btn--secondary" type="button">Subir archivo</button>
-        </div>
-        <div class="form-row">
-          <label>Línea presupuestaria (opcional)</label>
-          <select>
-            <option value="">(opcional) Cuenta/Programa</option>
-            <option>22.01.03 — Insumos oficina</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label>Año fiscal propuesto (opcional)</label>
-          <input type="number" value="2026" />
-        </div>
-        <p>
-          <button class="btn btn--link" type="button" id="balance-trigger">Consultar saldo en línea presupuestaria</button>
-        </p>
+        <section class="form-section">
+          <h3 class="form-section__title">Modalidad prevista (opcional)</h3>
+          <div class="form-row">
+            <label>Modalidad de compra (opcional)</label>
+            <select id="purchase-modality">
+              <option value="">(sin indicar)</option>
+              <option value="agile_purchase">Compra Ágil</option>
+              <option value="framework_agreement">Convenio Marco</option>
+              <option value="public_tender">Licitación Pública</option>
+              <option value="direct_procurement">Trato Directo</option>
+            </select>
+            <div class="banner banner--warning" id="cm-modality-warning" hidden></div>
+          </div>
+          <div id="resolution-row" class="form-row hidden">
+            <label>Resolución Fundada (obligatorio si Trato Directo) <span class="required">*</span></label>
+            <button class="btn btn--secondary" type="button">Subir archivo</button>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h3 class="form-section__title">Documentos de respaldo (opcional)</h3>
+          <p class="form-section__hint">
+            Cotizaciones, fotos referenciales del producto, fichas técnicas u otros antecedentes.
+          </p>
+          <table class="form-table">
+            <thead>
+              <tr>
+                <th>Tipo <span class="required">*</span></th>
+                <th>Descripción <span class="required">*</span></th>
+                <th>Archivo <span class="required">*</span></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <select>
+                    <option value="quote">Cotización</option>
+                    <option value="product_reference_photo">Foto referencial del producto</option>
+                    <option value="technical_sheet">Ficha técnica</option>
+                    <option value="other">Otro antecedente</option>
+                  </select>
+                </td>
+                <td><input type="text" value="Cotización referencial ACME — resmas" /></td>
+                <td><button class="btn btn--secondary" type="button">Subir archivo</button></td>
+                <td><button class="btn btn--secondary" type="button">Eliminar</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <button class="btn btn--secondary" type="button">+ Agregar adjunto</button>
+        </section>
+
+        <section class="form-section">
+          <h3 class="form-section__title">Pista presupuestaria (opcional)</h3>
+          <div class="form-row">
+            <label>Línea presupuestaria (opcional)</label>
+            <select>
+              <option value="">(opcional) Cuenta/Programa</option>
+              <option>22.01.03 — Insumos oficina</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Año fiscal propuesto (opcional)</label>
+            <input type="number" value="2026" />
+          </div>
+          <p>
+            <button class="btn btn--link" type="button" id="balance-trigger">Consultar saldo en línea presupuestaria</button>
+          </p>
+        </section>
       </div>
       <div class="form-actions">
         <button class="btn btn--secondary" type="button" id="save-draft">Guardar borrador</button>
@@ -127,9 +218,9 @@
         </div>
         <div class="form-row">
           <label>Monto estimado SOLPED</label>
-          <input type="text" value="$ 1.250.000" readonly />
+          <input type="text" id="balance-amount" value="$ 1.250.000" readonly />
         </div>
-        <div class="info-panel info-panel--ok">
+        <div class="info-panel info-panel--ok" id="balance-result">
           Disponible: $ 2.100.000 · Comprometido otros: $ 800.000<br />
           Saldo proyectado: $ 1.300.000
         </div>
@@ -148,10 +239,12 @@
     import { initAppShell } from '../../../shared/app-shell.js';
     import { getExpedienteId, renderBreadcrumb, demoAction, initBalancePanel, initModalityToggle } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
+    import { getFormPreset } from '../../../shared/form-presets.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
     const expedienteId = getExpedienteId();
+    const preset = getFormPreset(expedienteId);
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
       stageName: 'Etapa 1 · SOLPED',
@@ -161,6 +254,205 @@
 
     initModalityToggle('purchase-modality', 'resolution-row');
     bootstrapFormPage('solped');
+
+    /** Tasas fijas de demo · vigentes 2026-07-20 (referenciales; no congelan compromiso). */
+    const FX_DATE = '2026-07-20';
+    const FX = {
+      CLP: { rate: 1, code: 'CLP', label: 'CLP', decimals: 0, step: '1' },
+      UF: { rate: 39452.18, code: 'UF', label: 'UF', decimals: 2, step: '0.01' },
+      UTM: { rate: 65084, code: 'UTM', label: 'UTM', decimals: 4, step: '0.0001' },
+      USD: { rate: 945.5, code: 'USD', label: 'USD', decimals: 2, step: '0.01' },
+    };
+    const TAX = {
+      iva_19: { rate: 0.19, label: 'IVA 19%' },
+      exempt: { rate: 0, label: 'Exento' },
+      other: { rate: 0, label: 'Otro' },
+    };
+
+    const formatClp = (n) =>
+      new Intl.NumberFormat('es-CL', {
+        style: 'currency',
+        currency: 'CLP',
+        maximumFractionDigits: 0,
+      }).format(Number.isFinite(n) ? n : 0);
+
+    function formatDocAmount(n, currencyCode) {
+      const meta = FX[currencyCode] || FX.CLP;
+      const value = Number.isFinite(n) ? n : 0;
+      if (currencyCode === 'CLP') return formatClp(value);
+      const num = value.toLocaleString('es-CL', {
+        minimumFractionDigits: meta.decimals,
+        maximumFractionDigits: meta.decimals,
+      });
+      if (currencyCode === 'USD') return `US$ ${num}`;
+      return `${meta.label} ${num}`;
+    }
+
+    function formatFxDate(iso) {
+      const [y, m, d] = iso.split('-');
+      return `${d}-${m}-${y}`;
+    }
+
+    const currencySelect = document.getElementById('solped-currency');
+    const fxHint = document.getElementById('solped-fx-hint');
+    const priceHeader = document.getElementById('solped-price-header');
+    const linesBody = document.getElementById('solped-lines-body');
+    const totalNetEl = document.getElementById('solped-total-net');
+    const totalTaxEl = document.getElementById('solped-total-tax');
+    const totalGrossEl = document.getElementById('solped-total-gross');
+    const totalGrossClpEl = document.getElementById('solped-total-gross-clp');
+    const clpRow = document.getElementById('solped-clp-row');
+    const balanceAmount = document.getElementById('balance-amount');
+
+    function currentCurrency() {
+      return currencySelect?.value || 'CLP';
+    }
+
+    function parseNum(input) {
+      const n = Number(input?.value);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function taxRate(code) {
+      return TAX[code]?.rate ?? 0;
+    }
+
+    function taxSelectHtml(selected = 'iva_19') {
+      return `
+        <select name="line-tax">
+          <option value="iva_19"${selected === 'iva_19' ? ' selected' : ''}>IVA 19%</option>
+          <option value="exempt"${selected === 'exempt' ? ' selected' : ''}>Exento</option>
+          <option value="other"${selected === 'other' ? ' selected' : ''}>Otro</option>
+        </select>
+      `;
+    }
+
+    function updateCurrencyChrome() {
+      const code = currentCurrency();
+      const meta = FX[code] || FX.CLP;
+      if (priceHeader) {
+        priceHeader.innerHTML = `Precio neto (${meta.label}) <span class="required">*</span>`;
+      }
+      if (fxHint) {
+        if (code === 'CLP') {
+          fxHint.textContent = `Tipo de cambio referencial: moneda del documento = CLP (sin conversión) · vigente ${formatFxDate(FX_DATE)}.`;
+        } else {
+          fxHint.textContent =
+            `Tipo de cambio referencial: 1 ${meta.label} = ${formatClp(meta.rate)} · vigente ${formatFxDate(FX_DATE)} ` +
+            `(orientativo; no congela el compromiso presupuestario).`;
+        }
+      }
+      linesBody?.querySelectorAll('[name="line-price"]').forEach((input) => {
+        input.step = meta.step;
+      });
+    }
+
+    function recalcLines() {
+      const code = currentCurrency();
+      const meta = FX[code] || FX.CLP;
+      let totalNet = 0;
+      let totalTax = 0;
+      linesBody.querySelectorAll('.solped-line').forEach((row) => {
+        const qty = parseNum(row.querySelector('[name="line-quantity"]'));
+        const price = parseNum(row.querySelector('[name="line-price"]'));
+        const taxCode = row.querySelector('[name="line-tax"]')?.value || 'iva_19';
+        const net = qty * price;
+        const tax = net * taxRate(taxCode);
+        totalNet += net;
+        totalTax += tax;
+        const cell = row.querySelector('[data-subtotal]');
+        if (cell) cell.textContent = formatDocAmount(net, code);
+      });
+      const totalGross = totalNet + totalTax;
+      const totalGrossClp = totalGross * meta.rate;
+      if (totalNetEl) totalNetEl.textContent = formatDocAmount(totalNet, code);
+      if (totalTaxEl) totalTaxEl.textContent = formatDocAmount(totalTax, code);
+      if (totalGrossEl) totalGrossEl.textContent = formatDocAmount(totalGross, code);
+      if (totalGrossClpEl) totalGrossClpEl.textContent = formatClp(totalGrossClp);
+      if (clpRow) clpRow.hidden = code === 'CLP';
+      if (balanceAmount && !balanceAmount.dataset.locked) {
+        balanceAmount.value = formatClp(totalGrossClp);
+      }
+      const removeButtons = linesBody.querySelectorAll('[data-remove-line]');
+      removeButtons.forEach((btn) => {
+        btn.disabled = removeButtons.length <= 1;
+      });
+    }
+
+    function createLineRow(data = {}) {
+      const meta = FX[currentCurrency()] || FX.CLP;
+      const tr = document.createElement('tr');
+      tr.className = 'solped-line';
+      tr.innerHTML = `
+        <td><input type="text" name="line-description" value="${data.description ?? ''}" /></td>
+        <td><input type="number" name="line-quantity" min="0" step="1" value="${data.quantity ?? ''}" /></td>
+        <td>
+          <select name="line-unit">
+            <option${data.unit === 'Un' || !data.unit ? ' selected' : ''}>Un</option>
+            <option${data.unit === 'Kg' ? ' selected' : ''}>Kg</option>
+            <option${data.unit === 'Hr' ? ' selected' : ''}>Hr</option>
+          </select>
+        </td>
+        <td><input type="number" name="line-price" min="0" step="${meta.step}" value="${data.price ?? ''}" /></td>
+        <td>${taxSelectHtml(data.tax || 'iva_19')}</td>
+        <td class="solped-line__subtotal" data-subtotal>0</td>
+        <td><button class="btn btn--secondary" type="button" data-remove-line>Eliminar</button></td>
+      `;
+      return tr;
+    }
+
+    document.getElementById('solped-lines-add')?.addEventListener('click', () => {
+      linesBody.appendChild(createLineRow());
+      recalcLines();
+    });
+
+    linesBody?.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-remove-line]');
+      if (!btn) return;
+      const rows = linesBody.querySelectorAll('.solped-line');
+      if (rows.length <= 1) return;
+      btn.closest('.solped-line')?.remove();
+      recalcLines();
+    });
+
+    linesBody?.addEventListener('input', (e) => {
+      if (e.target.matches('[name="line-quantity"], [name="line-price"]')) recalcLines();
+    });
+
+    linesBody?.addEventListener('change', (e) => {
+      if (e.target.matches('[name="line-tax"]')) recalcLines();
+    });
+
+    currencySelect?.addEventListener('change', () => {
+      updateCurrencyChrome();
+      recalcLines();
+    });
+
+    document.getElementById('solped-lines')?.addEventListener('solped-lines:recalc', () => {
+      updateCurrencyChrome();
+      recalcLines();
+    });
+    updateCurrencyChrome();
+    recalcLines();
+
+    const budget = preset.budgetVerification;
+    if (budget?.insufficient) {
+      const amount = document.getElementById('balance-amount');
+      if (amount) {
+        amount.value = `$ ${budget.requestAmount}`;
+        amount.dataset.locked = '1';
+      }
+      const result = document.getElementById('balance-result');
+      if (result) {
+        result.classList.remove('info-panel--ok');
+        result.classList.add('info-panel--error');
+        result.innerHTML = `
+          Disponible: $ ${budget.available} · Comprometido otros: $ ${budget.committed}<br />
+          Saldo proyectado: $ ${budget.projected} <strong>[INSUFICIENTE]</strong>
+        `;
+      }
+    }
+
     initBalancePanel({
       triggerId: 'balance-trigger',
       modalId: 'balance-modal',
@@ -173,6 +465,38 @@
 
     document.getElementById('save-draft').addEventListener('click', () => demoAction('createPurchaseRequest'));
     document.getElementById('submit').addEventListener('click', () => demoAction('submitPurchaseRequest'));
+
+    // Contexto desde 1.0 (verificación previa / catálogo CM)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('from') === 'previa') {
+      const q = params.get('q');
+      const desc = document.getElementById('solped-description');
+      if (q && desc) desc.value = q;
+
+      if (params.get('cm') === '1') {
+        const modality = document.getElementById('purchase-modality');
+        const warn = document.getElementById('cm-modality-warning');
+        modality.value = 'framework_agreement';
+        modality.dispatchEvent(new Event('change'));
+        const code = params.get('cmCode') || '—';
+        const price = params.get('cmPrice');
+        const agreement = params.get('cmAgreement') || '—';
+        const name = params.get('cmName') || q || 'ítem';
+        const priceLabel = price
+          ? new Intl.NumberFormat('es-CL', {
+              style: 'currency',
+              currency: 'CLP',
+              maximumFractionDigits: 0,
+            }).format(Number(price))
+          : '—';
+        warn.hidden = false;
+        warn.innerHTML = `
+          <strong>Advertencia no bloqueante:</strong> «${name}» figura en el catálogo Convenio Marco
+          (ChileCompra). Convenio ${agreement} · código ${code} · precio catálogo ${priceLabel}.
+          Se sugiere modalidad Convenio Marco; puede cambiarla. La validación formal (V2) ocurre en etapa 2.1.
+        `;
+      }
+    }
   </script>
 </body>
 </html>

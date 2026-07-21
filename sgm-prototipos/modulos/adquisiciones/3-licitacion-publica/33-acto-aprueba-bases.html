@@ -23,27 +23,32 @@
         <span class="badge badge--active" id="header-badge">VB jurídico OK</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">
-          <strong>Bases aprobadas jurídicamente — solo lectura</strong><br />
-          Bases técnicas + administrativas · Revisión jurídica: VB
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Acto administrativo</h3>
+          <div class="info-panel">
+            <strong>Bases aprobadas jurídicamente — solo lectura</strong><br />
+            Bases técnicas + administrativas · Revisión jurídica: VB
+          </div>
+          <div class="form-row"><label>Tipo de acto</label><input value="Decreto/Resolución — aprobación de bases" readonly /></div>
+          <div class="form-row" id="threshold-row">
+            <label>¿Supera umbral de Toma de Razón?</label>
+            <select id="over-threshold">
+              <option value="yes" selected>Sí — aplica Toma de Razón (3.4)</option>
+              <option value="no">No — continúa directo a 3.5</option>
+            </select>
+          </div>
+        </section>
 
-        <div class="form-row"><label>Tipo de acto</label><input value="Decreto/Resolución — aprobación de bases" readonly /></div>
-        <div class="form-row" id="threshold-row">
-          <label>¿Supera umbral de Toma de Razón?</label>
-          <select id="over-threshold">
-            <option value="yes" selected>Sí — aplica Toma de Razón (3.4)</option>
-            <option value="no">No — continúa directo a 3.5</option>
-          </select>
-        </div>
-
-        <div class="form-row">
-          <label>Simular respuesta FirmaGob <em>(solo demo — no existe en la ficha)</em></label>
-          <select id="simulate-signature">
-            <option value="signed" selected>Firmado</option>
-            <option value="failed">Falla del servicio (reintento)</option>
-          </select>
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Firma electrónica</h3>
+          <div class="form-row">
+            <label>Simular respuesta FirmaGob <em>(solo demo — no existe en la ficha)</em></label>
+            <select id="simulate-signature">
+              <option value="signed" selected>Firmado</option>
+              <option value="failed">Falla del servicio (reintento)</option>
+            </select>
+          </div>
+        </section>
 
         <div class="banner hidden" id="result-banner"></div>
         <div class="info-panel hidden" id="next-step-panel">

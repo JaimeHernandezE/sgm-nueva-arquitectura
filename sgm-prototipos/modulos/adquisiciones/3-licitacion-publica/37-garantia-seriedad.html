@@ -23,30 +23,36 @@
         <span class="badge badge--active" id="header-badge">Condicional</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">Bases exigen Garantía de Seriedad: Sí · Monto mínimo $1.850.000 (por oferente)</div>
+        <section class="form-section">
+          <h3 class="form-section__title">Datos de la garantía</h3>
+          <div class="info-panel">Bases exigen Garantía de Seriedad: Sí · Monto mínimo $1.850.000 (por oferente)</div>
 
-        <div class="form-row"><label>Proveedor / oferente <span class="required">*</span></label>
-          <select id="provider">
-            <option value="taller_municipal" selected>Taller Municipal SpA</option>
-            <option value="mecanica_diesel_nuble">Mecánica Diesel Ñuble Ltda.</option>
-          </select>
-        </div>
-        <div class="form-row"><label>Tipo de instrumento <span class="required">*</span></label>
-          <select id="instrument-type">
-            <option value="boleta" selected>Boleta de garantía</option>
-            <option value="vale_vista">Vale vista</option>
-            <option value="poliza">Póliza de seguro</option>
-            <option value="fianza">Certificado de fianza</option>
-          </select>
-        </div>
-        <div class="form-row"><label>Monto <span class="required">*</span></label><input type="text" id="amount" value="1.850.000" /></div>
-        <div class="form-row"><label>Fecha de vencimiento <span class="required">*</span></label><input type="date" id="expiry" value="2026-05-15" /></div>
-        <div class="form-row"><label>Documento del instrumento <span class="required">*</span></label><input type="text" id="document-ref" placeholder="garantia-seriedad-taller-municipal.pdf" /></div>
+          <div class="form-row"><label>Proveedor / oferente <span class="required">*</span></label>
+            <select id="provider">
+              <option value="taller_municipal" selected>Taller Municipal SpA</option>
+              <option value="mecanica_diesel_nuble">Mecánica Diesel Ñuble Ltda.</option>
+            </select>
+          </div>
+          <div class="form-row"><label>Tipo de instrumento <span class="required">*</span></label>
+            <select id="instrument-type">
+              <option value="boleta" selected>Boleta de garantía</option>
+              <option value="vale_vista">Vale vista</option>
+              <option value="poliza">Póliza de seguro</option>
+              <option value="fianza">Certificado de fianza</option>
+            </select>
+          </div>
+          <div class="form-row"><label>Monto <span class="required">*</span></label><input type="text" id="amount" value="1.850.000" /></div>
+          <div class="form-row"><label>Fecha de vencimiento <span class="required">*</span></label><input type="date" id="expiry" value="2026-05-15" /></div>
+          <div class="form-row"><label>Documento del instrumento <span class="required">*</span></label><input type="text" id="document-ref" placeholder="garantia-seriedad-taller-municipal.pdf" /></div>
+        </section>
 
-        <table class="form-table" id="registered-table" style="display:none;">
-          <thead><tr><th>Proveedor</th><th>Monto</th><th>Vence</th><th>Estado</th></tr></thead>
-          <tbody id="registered-body"></tbody>
-        </table>
+        <section class="form-section">
+          <h3 class="form-section__title">Garantías registradas</h3>
+          <table class="form-table" id="registered-table" style="display:none;">
+            <thead><tr><th>Proveedor</th><th>Monto</th><th>Vence</th><th>Estado</th></tr></thead>
+            <tbody id="registered-body"></tbody>
+          </table>
+        </section>
 
         <div class="banner hidden" id="result-banner"></div>
         <div class="info-panel hidden" id="next-step-panel">

@@ -24,8 +24,8 @@ Tiempo transcurrido: N d N h · Última modificación: fecha · [contexto adicio
 - **Zona 3 — acción o estado:** exactamente uno de tres elementos (ver leyenda):
   - **Botón primario** (`Completar formulario`, `Aprobar`, `Registrar recepción`): el paso espera acción del usuario que está mirando. Solo visible si el RBAC lo habilita; para el resto, badge.
   - **Botón secundario** (`Ver formulario`, `Ver OC`, `Ver CDP`): consulta del documento/entidad del paso finalizado.
-  - **Badge**: estado puro sin acción (`Finalizado`, `En curso`, `Pendiente`, `Omitido (optativo)`, `Esperando MP`).
-- **Línea secundaria:** tiempo transcurrido y última modificación (de `CaseStep.started_at`/`completed_at`), más contexto propio del paso: monto preobligado (1.6), n° de cotizaciones (3.1), modo degradado (3.2), condición pendiente (3.4).
+  - **Badge**: estado puro sin acción (`Finalizado`, `En curso`, `Pendiente`, `Omitido (optativo)`, `Pendiente en MP`, `Esperando sync MP`).
+- **Línea secundaria:** tiempo transcurrido y última modificación (de `CaseStep.started_at`/`completed_at`), más contexto propio del paso: monto preobligado (1.6), n° de cotizaciones (3.1), pendiente de sync MP (3.2), condición pendiente (3.4).
 
 ## Correlación UI ↔ modelo / contrato
 
@@ -55,7 +55,7 @@ Tiempo transcurrido: N d N h · Última modificación: fecha · [contexto adicio
    - La condición se deriva de la ficha, no se decide en UI.
 3. **Caminos alternativos no se listan como pendientes:** en Compra Ágil, 3.5 (rechazo) y 3.6 (desierto) aparecen solo si ocurren, como intento registrado en la historia del paso — coherente con el pendiente de retrocesos del shell de expediente: la propuesta es "nuevo intento visible en el historial", no reescritura del paso.
 4. **El botón primario es personal:** la misma fila muestra `Completar formulario` al responsable habilitado y `En curso` (badge) a cualquier otro usuario. La UI refleja el permiso; la validación vive en el servidor.
-5. **Contexto degradado explícito:** cuando un dato entró por registro manual (`entry_mode = manual`), la línea secundaria lo dice y recuerda que MP prevalece — el usuario nunca debe dudar del origen del dato. Las reglas 2a/2b son la versión visual del mismo principio: origen siempre visible.
+5. **Pasos pendientes en MP:** todo sub-paso cuya acción principal ocurre en Mercado Público (o cuyo avance espera una lectura deseada aún no disponible) se muestra de forma **explícita** en el seguimiento con badge `Pendiente en MP` o `Esperando sync MP`, deep link «Gestionar en MP» si la modalidad lo declara, y sin campos editables de datos de MP. Tras la lectura, badge de estado (`Sincronizado`, `Finalizado`, etc.) y, si el volumen de información lo amerita, botón secundario a vista de detalle solo lectura; si no, basta el badge. **Prohibido** transcribir en SGM datos de negocio de MP (plantilla §5.3). Las reglas 2a/2b mantienen el origen siempre visible (`Mercado Público · solo lectura`).
 6. **Totales de etapa:** cada etapa desplegada cierra con su tiempo total; alimenta las métricas congeladas al cierre del expediente (ficha 5.5 cuando exista).
 
 ## Leyenda visual
@@ -65,7 +65,7 @@ Tiempo transcurrido: N d N h · Última modificación: fecha · [contexto adicio
 | Botón oscuro (`Completar formulario`) | Acción requerida del usuario actual (si RBAC lo habilita) |
 | Botón con borde (`Ver formulario`, `Ver OC`…) | Consulta de documento/entidad finalizada |
 | Badge gris | Estado sin acción disponible para el usuario actual |
-| Fondo azul + chip | Paso en plataforma externa a SGM — chip indica origen y modo (`solo lectura`, `registro manual`…) |
+| Fondo azul + chip | Paso en plataforma externa a SGM — chip indica origen y modo (`solo lectura`; Contraloría u otros fuera de MP pueden usar `registro manual`) |
 | Fondo rojizo + chip | Paso con borde hacia otro módulo SGM — chip indica módulo y modo (`dependencia`, `observado`, `consulta`) |
 
 **Modos del chip de módulo SGM** (derivados de §3.5):

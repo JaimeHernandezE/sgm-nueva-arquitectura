@@ -23,50 +23,55 @@
         <span class="badge badge--draft" id="header-badge">Borrador</span>
       </div>
       <div class="form-card__body">
-        <div class="form-row">
-          <label>Bases técnicas (adjunto) <span class="required">*</span></label>
-          <input type="text" id="technical-ref" placeholder="bases-tecnicas-v1.pdf" />
-        </div>
-        <div class="form-row">
-          <label>Bases administrativas (adjunto) <span class="required">*</span></label>
-          <input type="text" id="administrative-ref" placeholder="bases-admin-v1.pdf" />
-        </div>
-        <div class="form-row">
-          <label>¿Exige Garantía de Seriedad?</label>
-          <select id="requires-bid-bond">
-            <option value="yes" selected>Sí</option>
-            <option value="no">No</option>
-          </select>
-        </div>
-        <div class="form-row" id="bid-bond-amount-row">
-          <label>Monto mínimo Garantía de Seriedad</label>
-          <input type="text" id="bid-bond-amount" value="1.850.000" />
-        </div>
-        <div class="form-row">
-          <label>¿Exige Garantía de Fiel Cumplimiento?</label>
-          <select id="requires-performance-bond">
-            <option value="yes" selected>Sí</option>
-            <option value="no">No</option>
-          </select>
-        </div>
-        <div class="form-row" id="performance-bond-amount-row">
-          <label>Monto mínimo Garantía de Fiel Cumplimiento</label>
-          <input type="text" id="performance-bond-amount" value="9.250.000" />
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Datos de las bases</h3>
+          <div class="form-row">
+            <label>Bases técnicas (adjunto) <span class="required">*</span></label>
+            <input type="text" id="technical-ref" placeholder="bases-tecnicas-v1.pdf" />
+          </div>
+          <div class="form-row">
+            <label>Bases administrativas (adjunto) <span class="required">*</span></label>
+            <input type="text" id="administrative-ref" placeholder="bases-admin-v1.pdf" />
+          </div>
+          <div class="form-row">
+            <label>¿Exige Garantía de Seriedad?</label>
+            <select id="requires-bid-bond">
+              <option value="yes" selected>Sí</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div class="form-row" id="bid-bond-amount-row">
+            <label>Monto mínimo Garantía de Seriedad</label>
+            <input type="text" id="bid-bond-amount" value="1.850.000" />
+          </div>
+          <div class="form-row">
+            <label>¿Exige Garantía de Fiel Cumplimiento?</label>
+            <select id="requires-performance-bond">
+              <option value="yes" selected>Sí</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div class="form-row" id="performance-bond-amount-row">
+            <label>Monto mínimo Garantía de Fiel Cumplimiento</label>
+            <input type="text" id="performance-bond-amount" value="9.250.000" />
+          </div>
+        </section>
 
-        <strong>Criterios de evaluación (EvaluationCriterion)</strong>
-        <table class="form-table" id="criteria-table">
-          <thead>
-            <tr><th>Nombre</th><th>Ponderación %</th><th>Regla de puntuación</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><input type="text" class="crit-name" value="Precio" /></td><td><input type="number" class="crit-weight" value="40" /></td><td><input type="text" class="crit-rule" value="Menor precio = 100 pts" /></td></tr>
-            <tr><td><input type="text" class="crit-name" value="Experiencia" /></td><td><input type="number" class="crit-weight" value="30" /></td><td><input type="text" class="crit-rule" value="Escala 1-5" /></td></tr>
-            <tr><td><input type="text" class="crit-name" value="Plazo de entrega" /></td><td><input type="number" class="crit-weight" value="30" /></td><td><input type="text" class="crit-rule" value="Escala 1-5" /></td></tr>
-          </tbody>
-        </table>
-        <button class="btn btn--secondary" type="button" id="add-criterion">+ Agregar criterio</button>
-        <div class="info-panel" id="weight-sum-panel">Suma de ponderaciones: <span id="weight-sum">100</span> %</div>
+        <section class="form-section">
+          <h3 class="form-section__title">Criterios de evaluación (EvaluationCriterion)</h3>
+          <table class="form-table" id="criteria-table">
+            <thead>
+              <tr><th>Nombre</th><th>Ponderación %</th><th>Regla de puntuación</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><input type="text" class="crit-name" value="Precio" /></td><td><input type="number" class="crit-weight" value="40" /></td><td><input type="text" class="crit-rule" value="Menor precio = 100 pts" /></td></tr>
+              <tr><td><input type="text" class="crit-name" value="Experiencia" /></td><td><input type="number" class="crit-weight" value="30" /></td><td><input type="text" class="crit-rule" value="Escala 1-5" /></td></tr>
+              <tr><td><input type="text" class="crit-name" value="Plazo de entrega" /></td><td><input type="number" class="crit-weight" value="30" /></td><td><input type="text" class="crit-rule" value="Escala 1-5" /></td></tr>
+            </tbody>
+          </table>
+          <button class="btn btn--secondary" type="button" id="add-criterion">+ Agregar criterio</button>
+          <div class="info-panel" id="weight-sum-panel">Suma de ponderaciones: <span id="weight-sum">100</span> %</div>
+        </section>
 
         <div class="banner hidden" id="result-banner"></div>
 

@@ -1,7 +1,7 @@
 # Wireframe: Cruce de 3 vías (Match)
 
 **Sub-paso:** 5.1 — Cruce de 3 vías  
-**Rol:** Operador de pago (`adq.operador_pago`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
+**Rol:** Operador de pago (`adq.operador_pago`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)  
 **Operación:** `performThreeWayMatch`
 
 ## Layout

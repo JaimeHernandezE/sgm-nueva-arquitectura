@@ -1,7 +1,7 @@
 # Wireframe: Proceso desierto o fallido
 
 **Sub-paso:** 3.6 — Proceso desierto o fallido *(Compra Ágil, optativo — solo si el proceso fracasa)*  
-**Rol:** Gestor de compra (`adq.gestor_compra`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
+**Rol:** Gestor de compra (`adq.gestor_compra`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)  
 **Operación:** `releasePreCommitment` (si cancelación) · Dependencia: `readMpProcess` — desierto (deseada)
 
 ## Layout
@@ -10,17 +10,18 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Proceso desierto o fallido          [Pendiente]  |
 +----------------------------------------------------------------+
-| [Motivo — solo lectura]                                         |
+| Motivo del fallo (solo lectura)                               |
 | Causa: ( ) Desierto (nadie cotizó)  ( ) Todas las ofertas         |
 |          rechazadas/inhábiles                                    |
 +----------------------------------------------------------------+
-| Decisión *                                                       |
+| Decisión                                                       |
 | ( ) Republicar (nueva cotización en MP, re-vinculación 2.3)      |
 | ( ) Reevaluar (reversión formal a etapa 2 — nueva ModalityDecision)|
 | ( ) Cancelar expediente (libera preobligación completa)          |
 +----------------------------------------------------------------+
 | [ Confirmar decisión ]                                            |
 +----------------------------------------------------------------+
+| Resultado                                                        |
 | (banner según decisión)                                          |
 +----------------------------------------------------------------+
 ```
@@ -43,7 +44,7 @@
 
 ## Estados de pantalla
 
-- **Modo degradado:** vencido el plazo de cotización sin registro de selección (3.2), SGM presume posible desierto y crea tarea de verificación; el usuario confirma manualmente contra MP.
+- **Modo degradado:** vencido el plazo sin lectura de selección (3.2), el expediente muestra **Pendiente en MP** / posible desierto + deep link; la tarea de decisión se habilita cuando llega la lectura — sin confirmar por transcripción.
 - **Cancelado:** libera el 100% de la preobligación; notifica a la unidad solicitante.
 - **Reevaluar:** bloqueado en este prototipo — el procedimiento de reversión formal a etapa 2 no está definido (**[PENDIENTE P-34]**); se muestra la opción pero la acción real queda pendiente.
 

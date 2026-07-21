@@ -17,25 +17,31 @@
         <div class="form-card">
           <div class="form-card__header"><span>Monitoreo por tenant</span></div>
           <div class="form-card__body">
-            <div class="form-row">
-              <label>Tenant <span class="required">*</span></label>
-              <select>
-                <option>Mun. Alpha</option>
-                <option>Mun. Beta</option>
-              </select>
-            </div>
-            <div class="form-row">
-              <label>Ventana <span class="required">*</span></label>
-              <select>
-                <option>últimas 24 h</option>
-                <option>últimos 7 días</option>
-              </select>
-            </div>
-            <div class="banner banner--info" style="margin-top:16px;">
-              Pantalla estructural: la fuente de métricas y el contrato de consulta de observabilidad
-              están pendientes (musts §8, <strong>P-08</strong>). No se inventan endpoints ni métricas aquí.
-            </div>
-            <p class="subtitle" style="margin-top:24px;">Sin datos de observabilidad en este prototipo.</p>
+            <section class="form-section">
+              <h3 class="form-section__title">Filtros</h3>
+              <div class="form-row">
+                <label>Tenant <span class="required">*</span></label>
+                <select>
+                  <option>Mun. Alpha</option>
+                  <option>Mun. Beta</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label>Ventana <span class="required">*</span></label>
+                <select>
+                  <option>últimas 24 h</option>
+                  <option>últimos 7 días</option>
+                </select>
+              </div>
+            </section>
+            <section class="form-section">
+              <h3 class="form-section__title">Resultados</h3>
+              <div class="banner banner--info">
+                Pantalla estructural: la fuente de métricas y el contrato de consulta de observabilidad
+                están pendientes (musts §8, <strong>P-08</strong>). No se inventan endpoints ni métricas aquí.
+              </div>
+              <p class="subtitle">Sin datos de observabilidad en este prototipo.</p>
+            </section>
           </div>
           <div class="form-actions">
             <button class="btn btn--secondary" type="button" disabled>Actualizar</button>

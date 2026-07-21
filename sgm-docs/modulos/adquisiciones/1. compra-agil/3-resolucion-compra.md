@@ -4,7 +4,7 @@
 
 *Toda la etapa se rige por el estándar MP ↔ SGM de `plantilla-maestra-sgm.md` §5: integración solo lectura, clasificación Informativo/Gestión, lecturas confirmadas vs. deseadas y modo degradado. Lectura confirmada disponible hoy: **OC Aceptada**. Las demás lecturas de esta etapa son **deseadas** (dependen de la negociación con ChileCompra) y cada sub-paso documenta su modo degradado.*
 
-*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md) (P-24).*
+*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24).*
 
 ---
 
@@ -35,7 +35,7 @@
 | 2 | Evento | `MpStateChanged` (interno, agnóstico de push/polling) | — (consumidores: expediente, notificaciones) | Asíncrona | `MpProcessSnapshot` |
 
 **Edge cases:**
-- Ninguna MiPyme cotiza en primera ronda → ampliación a segunda ronda es acción del usuario en MP; con lectura deseada, SGM lo refleja; en degradado, el usuario puede registrarlo manualmente (opcional).
+- Ninguna MiPyme cotiza en primera ronda → ampliación a segunda ronda es acción del usuario en MP; con lectura deseada, SGM lo refleja; en degradado el expediente muestra el paso pendiente y el deep link (sin transcripción en SGM).
 - MP no disponible durante el período → sin efecto de gestión (paso informativo); la sincronización se retoma con retroceso exponencial.
 
 ---
@@ -45,7 +45,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Abastecimiento |
-| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | Mercado Público |
 | Optativo | Falso |
 | Interacción MP | **Informativo** ⚠ *(candidato a Gestión optativa, ver pendiente)* |
@@ -53,10 +53,10 @@
 **Detalle:** Cerrado el período, el usuario compara ofertas y selecciona **en MP**. Si no selecciona la de menor precio, MP exige justificación (regla de la plataforma, no de SGM). Legalmente no existe aprobación interna obligatoria en Compra Ágil; para SGM el paso es informativo: refleja que hubo selección y de quién.
 
 **Lecturas MP:** cierre del período y oferta seleccionada (proveedor, monto) — **deseada**.
-**Modo degradado:** el usuario registra manualmente en SGM el resultado de la selección (proveedor y monto ofertado) antes de continuar; formulario mínimo sobre el expediente.
+**Modo degradado:** paso **Pendiente en MP** en el expediente + deep link «Gestionar en MP»; sin campos editables. El `CaseStep` avanza solo cuando llega la lectura; entonces SGM muestra badge (y detalle solo lectura si el volumen lo amerita).
 
 **Entidad(es) y campos:**
-- `QuotationResult` — `procurement_case_id` (ref., **obligatorio**), `selected_provider_rut` (texto, **obligatorio**), `selected_provider_name` (texto, **obligatorio**), `offered_amount` (número, **obligatorio**), `lowest_price_selected` (booleano, **obligatorio**), `selection_justification` (texto, **obligatorio si** no es menor precio), `entry_mode` (enum, **obligatorio**), `recorded_at` (fecha/hora, **obligatorio**)
+- `QuotationResult` — creada **solo por sync** desde la lectura: `procurement_case_id` (ref., **obligatorio**), `selected_provider_rut` (texto, **obligatorio**), `selected_provider_name` (texto, **obligatorio**), `offered_amount` (número, **obligatorio**), `lowest_price_selected` (booleano, **obligatorio**), `selection_justification` (texto, **obligatorio si** no es menor precio), `recorded_at` (fecha/hora, **obligatorio**)
 
 **Borde de módulo:**
 
@@ -67,7 +67,7 @@
 
 **Edge cases:**
 - Usuario no gestiona la selección en MP dentro de un plazo razonable → timer de escalamiento sobre el `CaseStep` (propiedad de flujos, `musts-arquitectura.md` §10.4) — **[PENDIENTE P-33]** timers de escalamiento configurables.
-- Selección registrada manualmente difiere después de la lectura MP (cuando exista) → la lectura MP prevalece (MP es la fuente de verdad legal); discrepancia queda en auditoría.
+- Sin lectura disponible → el expediente permanece en `Pendiente en MP`; no hay transcripción de proveedor/monto en SGM (plantilla §5.3).
 
 > **[PENDIENTE P-39]** Visto bueno interno pre-OC como control configurable por municipio (con DM) — la ley no lo exige en Compra Ágil, pero municipios con control interno más estricto podrían quererlo. Si se confirma, este sub-paso pasa a Gestión condicional con un aprobador DAF y aplicaría segregación respecto de quien creó la SOLPED. Decisión suggest vs. enforce que debe resolverse explícitamente.
 
@@ -78,7 +78,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Abastecimiento |
-| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | Mercado Público |
 | Optativo | Falso |
 | Interacción MP | **Gestión condicional** |
@@ -86,10 +86,10 @@
 **Detalle:** El usuario emite la OC en MP hacia el proveedor seleccionado. Al emitir, MP **revalida la habilidad del proveedor** (declaración jurada de la cotización): si el proveedor se inhabilitó durante el proceso, MP bloquea la emisión. Camino feliz: informativo (SGM refleja "OC enviada, esperando aceptación"). Condición de gestión: **bloqueo por inhabilidad** → SGM crea tarea para el usuario con las alternativas (seleccionar la siguiente mejor oferta en MP, o cancelar).
 
 **Lecturas MP:** OC enviada — **deseada**. Proveedor inhábil / emisión bloqueada — **deseada** (evento crítico listado en los requerimientos a negociar con ChileCompra).
-**Modo degradado:** sin lecturas, el estado "OC enviada" se infiere del registro manual de 3.2 + deep link; el bloqueo por inhabilidad solo se conoce cuando el usuario lo ve en MP y lo registra manualmente para activar la gestión en SGM.
+**Modo degradado:** paso **Pendiente en MP** + deep link para emitir la OC en el portal; sin campos de n° OC / proveedor / monto. El espejo `PurchaseOrder` y el bloqueo por inhabilidad se materializan **solo** cuando llega la lectura.
 
 **Entidad(es) y campos:**
-- `PurchaseOrder` — `procurement_case_id` (ref., **obligatorio**), `mp_oc_id` (texto, **obligatorio**), `supplier_rut` (texto, **obligatorio**), `total_amount` (número, **obligatorio**), `status` (enum, **obligatorio**: `issued`, …), `entry_mode` (enum, **obligatorio**)
+- `PurchaseOrder` — creada **solo por sync**: `procurement_case_id` (ref., **obligatorio**), `mp_oc_id` (texto, **obligatorio**), `supplier_rut` (texto, **obligatorio**), `total_amount` (número, **obligatorio**), `status` (enum, **obligatorio**: `issued`, …)
 
 *(Nota de reconciliación: la ficha original usaba el estado `sent` y el evento `PurchaseOrderSent`; se normalizan aquí a `issued`/`PurchaseOrderIssued`, consistentes con el enum canónico de `entidades-core.md` y con el evento ya existente en `contracts.md`.)*
 
@@ -145,7 +145,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Abastecimiento |
-| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | Mercado Público → SGM |
 | Optativo | Falso *(excluyente con 3.4)* |
 | Interacción MP | **Gestión** |
@@ -153,11 +153,11 @@
 **Detalle:** El proveedor rechaza la OC. No hay vínculo legal; nada pasa a compromiso (la preobligación se mantiene intacta). SGM crea tarea de decisión para el usuario: **emitir OC a la segunda mejor oferta** (reejecuta 3.3 con nuevo proveedor) o **cancelar y republicar** (nueva cotización = nuevo proceso MP = re-vinculación 2.3; el expediente y su folio se conservan — es el mismo caso de compra con un nuevo intento, trazado).
 
 **Lecturas MP:** OC Rechazada — **deseada** (evento crítico en los requerimientos a negociar).
-**Modo degradado:** el usuario registra el rechazo manualmente al verlo en MP; la tarea de decisión se crea igual, con `entry_mode = manual`.
+**Modo degradado:** badge **Esperando sync MP** + deep link; sin transcripción del rechazo. La tarea de decisión (segunda oferta / republicar) se crea **solo** cuando llega la lectura `PurchaseOrderRejected`.
 
 **Entidad(es) y campos:**
-- Pantalla: `decision` (enum, **obligatorio** — segunda oferta / republicar)
-- `PurchaseOrder` (actualiza) — `status` (**obligatorio** = `rejected_by_supplier`), `rejection_reason` (texto, **opcional** — si MP lo trae)
+- Pantalla: `decision` (enum, **obligatorio** — segunda oferta / republicar) — **única acción editable en SGM** (fuera de MP)
+- `PurchaseOrder` (actualiza por sync) — `status` (**obligatorio** = `rejected_by_supplier`), `rejection_reason` (texto, **opcional** — si MP lo trae)
 
 **Borde de módulo:**
 
@@ -177,7 +177,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | DAF Abastecimiento (decisión) / Unidad Solicitante (informada) |
-| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Verdadero *(solo ocurre si el proceso fracasa)* |
 | Interacción MP | **Gestión** |
@@ -185,7 +185,7 @@
 **Detalle:** Nadie cotizó tras ambas rondas (desierto), o el proceso quedó sin ofertas viables (fallido, por acumulación de 3.3/3.5). Tarea de decisión: **(a) republicar** — nueva cotización en MP, típicamente con condiciones ajustadas; nuevo ID de proceso; re-vinculación conforme a 2.3 sobre el mismo expediente; **(b) reevaluar** — el monto, las condiciones o la modalidad no eran adecuados: reversión formal a la etapa 2 (nueva `ModalityDecision`, según el procedimiento de reversión pendiente allí — **[PENDIENTE P-34]**) o cancelación del expediente con liberación total de la preobligación y notificación a la unidad solicitante.
 
 **Lecturas MP:** proceso desierto — **deseada**.
-**Modo degradado:** vencido el plazo de cotización sin registro de selección (3.2), SGM presume posible desierto y crea la tarea de verificación al usuario, quien confirma manualmente contra MP.
+**Modo degradado:** vencido el plazo de cotización sin lectura de selección (3.2), SGM muestra el paso pendiente / posible desierto y deep link; la tarea de decisión (republicar / reevaluar / cancelar) se habilita cuando llega la lectura de desierto o el usuario actúa tras sync — **sin** transcribir en SGM el estado MP.
 
 **Entidad(es) y campos:**
 - Pantalla: `decision` (enum, **obligatorio** — republicar / reevaluar / cancelar)
@@ -211,7 +211,7 @@
 | Entidad | Tipo de relación | Notas |
 |---|---|---|
 | `PurchaseOrder` | 1:N con `ProcurementCase` | N por reemisiones (rechazos); espejo de MP, fuente de verdad legal es MP |
-| `QuotationResult` | 1:N con `ProcurementCase` | Sugerida — resultado de selección; `entry_mode` distingue lectura MP de registro manual |
+| `QuotationResult` | 1:N con `ProcurementCase` | Sugerida — resultado de selección; solo por lectura MP (sin transcripción manual) |
 | `MpProcessSnapshot` | 1:N con `ProcurementCase` | Sugerida — bitácora de sincronización MP, común a toda la etapa |
 | `BudgetCommitment` | Referencia (módulo Presupuestos) | Creada vía contrato `commitBudget` en 3.4, por monto real |
 | `BudgetPreCommitment` | Referencia (etapa 1) | Se ajusta (3.4) o libera (3.6) |

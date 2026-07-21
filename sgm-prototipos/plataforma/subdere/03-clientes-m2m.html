@@ -20,32 +20,37 @@
             <button class="btn btn--primary" type="button" id="btn-emit">+ Emitir</button>
           </div>
           <div class="form-card__body">
-            <table class="form-table" id="clients-table">
-              <thead>
-                <tr><th>Nombre</th><th>Scopes</th><th>Estado</th></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
+            <section class="form-section">
+              <h3 class="form-section__title">Listado</h3>
+              <table class="form-table" id="clients-table">
+                <thead>
+                  <tr><th>Nombre</th><th>Scopes</th><th>Estado</th></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </section>
             <div id="emit-panel" hidden style="margin-top:20px;">
-              <h3 style="font-size:14px;margin:0 0 12px;">Nuevo cliente M2M</h3>
-              <div class="form-row">
-                <label>Nombre <span class="required">*</span></label>
-                <input type="text" id="c-name" placeholder="Nombre del cliente" />
-              </div>
-              <div class="form-row">
-                <label>Scopes <span class="required">*</span></label>
-                <input type="text" id="c-scopes" value="adquisiciones.read" />
-              </div>
-              <div class="form-row">
-                <label>Tenants <span class="required">*</span></label>
-                <select id="c-tenants">
-                  <option>Mun. Alpha</option>
-                  <option>Mun. Beta</option>
-                </select>
-              </div>
-              <div class="banner banner--info" id="secret-banner" hidden>
-                client_secret mostrado una sola vez: <code>sk_demo_••••••••</code>
-              </div>
+              <section class="form-section">
+                <h3 class="form-section__title">Nuevo cliente M2M</h3>
+                <div class="form-row">
+                  <label>Nombre <span class="required">*</span></label>
+                  <input type="text" id="c-name" placeholder="Nombre del cliente" />
+                </div>
+                <div class="form-row">
+                  <label>Scopes <span class="required">*</span></label>
+                  <input type="text" id="c-scopes" value="adquisiciones.read" />
+                </div>
+                <div class="form-row">
+                  <label>Tenants <span class="required">*</span></label>
+                  <select id="c-tenants">
+                    <option>Mun. Alpha</option>
+                    <option>Mun. Beta</option>
+                  </select>
+                </div>
+                <div class="banner banner--info" id="secret-banner" hidden>
+                  client_secret mostrado una sola vez: <code>sk_demo_••••••••</code>
+                </div>
+              </section>
             </div>
           </div>
           <div class="form-actions">

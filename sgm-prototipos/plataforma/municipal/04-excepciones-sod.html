@@ -20,30 +20,35 @@
             <button class="btn btn--primary" type="button" id="btn-new">+ Nueva</button>
           </div>
           <div class="form-card__body">
-            <table class="form-table" id="sod-table">
-              <thead>
-                <tr><th>Usuario</th><th>Regla SoD</th><th>Motivo</th><th>Hasta</th></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-            <h3 style="font-size:14px;margin:20px 0 12px;">Nueva excepción</h3>
-            <div class="form-row">
-              <label>Usuario <span class="required">*</span></label>
-              <select><option>Ana Pérez</option></select>
-            </div>
-            <div class="form-row">
-              <label>Regla SoD <span class="required">*</span></label>
-              <select><option>aprobador ≠ formulador</option></select>
-            </div>
-            <div class="form-row">
-              <label>Motivo <span class="required">*</span></label>
-              <textarea placeholder="Justificación auditada…"></textarea>
-            </div>
-            <div class="form-row">
-              <label>Hasta <span class="required">*</span></label>
-              <input type="date" value="2026-12-31" />
-            </div>
-            <div class="banner banner--info">Toda excepción es explícita, registrada y auditada (P-25).</div>
+            <section class="form-section">
+              <h3 class="form-section__title">Listado</h3>
+              <table class="form-table" id="sod-table">
+                <thead>
+                  <tr><th>Usuario</th><th>Regla SoD</th><th>Motivo</th><th>Hasta</th></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </section>
+            <section class="form-section">
+              <h3 class="form-section__title">Nueva excepción</h3>
+              <div class="form-row">
+                <label>Usuario <span class="required">*</span></label>
+                <select><option>Ana Pérez</option></select>
+              </div>
+              <div class="form-row">
+                <label>Regla SoD <span class="required">*</span></label>
+                <select><option>aprobador ≠ formulador</option></select>
+              </div>
+              <div class="form-row">
+                <label>Motivo <span class="required">*</span></label>
+                <textarea placeholder="Justificación auditada…"></textarea>
+              </div>
+              <div class="form-row">
+                <label>Hasta <span class="required">*</span></label>
+                <input type="date" value="2026-12-31" />
+              </div>
+              <div class="banner banner--info">Toda excepción es explícita, registrada y auditada (P-25).</div>
+            </section>
           </div>
           <div class="form-actions">
             <button class="btn btn--secondary" type="button" id="btn-revoke">Revocar</button>

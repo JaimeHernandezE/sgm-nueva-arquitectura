@@ -2,14 +2,14 @@
 
 *Proceso transversal — documentado en el piloto [Compra Ágil](../1.%20compra-agil/overview.md). Etapa anterior: [4. Recepción Conforme](./4-recepcion-conforme.md)*
 
-*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md) (P-24).*
+*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24).*
 
 ## 5.1 — Cruce de 3 vías (Match)
 
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Contabilidad / Tesorería |
-| Rol | Operador de pago ([`adq.operador_pago`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Operador de pago ([`adq.operador_pago`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | SGM (cruce interno) + SII (factura) |
 | Optativo | Falso |
 
@@ -42,7 +42,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Contabilidad / Tesorería |
-| Rol | Operador de pago ([`adq.operador_pago`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Operador de pago ([`adq.operador_pago`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Falso |
 
@@ -69,7 +69,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Contabilidad / Tesorería |
-| Rol | Operador de pago ([`adq.operador_pago`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Operador de pago ([`adq.operador_pago`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Falso |
 
@@ -96,7 +96,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Tesorería |
-| Rol | Operador de pago ([`adq.operador_pago`](../../../arquitectura/catalogo-roles.md)) |
+| Rol | Operador de pago ([`adq.operador_pago`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | SGM |
 | Optativo | Falso |
 

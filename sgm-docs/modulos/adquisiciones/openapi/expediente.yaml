@@ -12,16 +12,24 @@ paths:
       summary: Listar expedientes de compra
       description: >
         Consulta paginada de expedientes. Solo lectura; sin efectos colaterales. Requiere scope `adquisiciones:read`
-        (personas) o `adquisiciones.read` (M2M).
-      x-subpasos: []
+        (personas) o `adquisiciones.read` (M2M). Sub-paso 0.1
+        (`procesos-transversales/0-consulta-expedientes.md`).
+      x-subpasos:
+        - "0.1"
       security:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Page
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/PageSize
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Sort
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Order
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Page
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/PageSize
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Sort
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Order
+        - name: q
+          in: query
+          description: >
+            Búsqueda libre en folio, descripción (glosa) y etiqueta de modalidad (`procurement_type`).
+          schema:
+            type: string
         - name: procurement_type
           in: query
           schema:
@@ -30,6 +38,13 @@ paths:
           in: query
           schema:
             $ref: ./adquisiciones.openapi.yaml#/components/schemas/ProcurementCaseStatus
+        - name: requesting_department_id
+          in: query
+          description: >
+            Filtra por departamento solicitante (incluye unidades hijas del departamento).
+            Ignorado o rechazado si el rol fuerza scope de unidad (`adq.solicitante`, `adq.aprobador_unidad`).
+          schema:
+            type: string
         - name: requesting_unit_id
           in: query
           schema:
@@ -38,6 +53,12 @@ paths:
           in: query
           schema:
             type: string
+        - name: awaiting_my_action
+          in: query
+          description: >
+            Si es true, limita a expedientes en bandeja del actor autenticado (por firmar / aprobar).
+          schema:
+            type: boolean
       responses:
         "200":
           description: Colección paginada de expedientes.
@@ -55,8 +76,10 @@ paths:
       tags:
         - expediente
       summary: Obtener detalle de expediente
-      description: Vista de expediente con paso actual resumido.
-      x-subpasos: []
+      description: >
+        Vista de expediente con paso actual resumido. Sub-paso 0.1 (navegación desde listado).
+      x-subpasos:
+        - "0.1"
       security:
         - bearerPersonas: []
         - bearerM2M: []
@@ -81,7 +104,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               example:
                 error_code: PROCUREMENT_CASE_NOT_FOUND
                 field: case_id
@@ -121,7 +144,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               example:
                 error_code: PROCUREMENT_CASE_NOT_FOUND
                 field: case_id
@@ -139,10 +162,10 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Page
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/PageSize
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Sort
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Order
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Page
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/PageSize
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Sort
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Order
         - name: procurement_case_id
           in: query
           schema:
@@ -187,7 +210,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               example:
                 error_code: PURCHASE_REQUEST_NOT_FOUND
                 field: id
@@ -205,10 +228,10 @@ paths:
         - bearerPersonas: []
         - bearerM2M: []
       parameters:
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Page
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/PageSize
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Sort
-        - $ref: ../../../arquitectura/openapi/comunes.yaml#/components/parameters/Order
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Page
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/PageSize
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Sort
+        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Order
         - name: procurement_case_id
           in: query
           schema:
@@ -253,7 +276,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               example:
                 error_code: PURCHASE_ORDER_NOT_FOUND
                 field: id

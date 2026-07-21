@@ -15,7 +15,7 @@ Ficha de flujo SOLPED → Pago para la modalidad Compra Ágil. Documenta la etap
 
 **Plazos característicos:** cotización abierta 2–5 días hábiles (los define el comprador); adjudicación usualmente en 24–48 horas tras el cierre; pago máximo 30 días corridos desde la recepción de la factura con recepción conforme.
 
-**Integración con Mercado Público** (unidireccional read-only, ver [`integracion-mercado-publico.md`](../../../arquitectura/integracion-mercado-publico.md)): 1 deep link (inicio de cotización, "Gestionar en MP") + 1 lectura API (OC Aceptada). **Hito contable crítico:** la lectura de "OC Aceptada" gatilla el paso de Pre-afectación a **Compromiso Cierto**. El usuario copia el ID de Cotización en el SGM al conectar; desde ese momento la SOLPED queda bloqueada en estado "En proceso de cotización".
+**Integración con Mercado Público** (unidireccional read-only, ver [`integracion-mercado-publico.md`](../../../arquitectura/especificacion/integracion-mercado-publico.md)): 1 deep link (inicio de cotización, "Gestionar en MP") + 1 lectura API (OC Aceptada). **Hito contable crítico:** la lectura de "OC Aceptada" gatilla el paso de Pre-afectación a **Compromiso Cierto**. El usuario copia el ID de Cotización en el SGM al conectar; desde ese momento la SOLPED queda bloqueada en estado "En proceso de cotización".
 
 **Edge cases normativos que el proceso debe cubrir:** cancelación de la solicitud antes de emitir OC (con motivo); proceso desierto (nadie cotiza → reevaluar presupuesto/condiciones y republicar); rechazo de OC por el proveedor (→ emitir a la segunda mejor oferta o cancelar y republicar); proveedor inhábil al momento de emitir OC (bloqueo).
 
@@ -31,12 +31,12 @@ Cada sub-paso documenta: Unidad municipal, Rol, Plataforma, Optativo, entidades 
 
 ## Convenciones de la ficha
 
-Alineadas con [`plantilla-maestra-sgm.md`](../../../arquitectura/plantilla-maestra-sgm.md) §3.2.
+Alineadas con [`plantilla-maestra-sgm.md`](../../../arquitectura/instrucciones/plantilla-maestra-sgm.md) §3.2.
 
 | Materia | Valores | Notas |
 |---|---|---|
 | Unidad municipal | Unidad Solicitante / DAF Finanzas / DAF Abastecimiento / Contabilidad / Tesorería / `—` | Departamento u oficina del municipio responsable del paso |
-| Rol | Nombre (usuarios) + código (sistema) del catálogo transversal [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md) (P-24), p. ej. `Solicitante ([adq.solicitante](…))`. `N/A` si automático o actor externo. |
+| Rol | Nombre (usuarios) + código (sistema) del catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24), p. ej. `Solicitante ([adq.solicitante](…))`. `N/A` si automático o actor externo. |
 | Plataforma | SGM / Mercado Público / Otra | Sistema donde se ejecuta la acción principal del sub-paso |
 | Optativo | Verdadero / Falso | Si el sub-paso puede omitirse en el flujo (`Verdadero`) o es obligatorio (`Falso`) |
 

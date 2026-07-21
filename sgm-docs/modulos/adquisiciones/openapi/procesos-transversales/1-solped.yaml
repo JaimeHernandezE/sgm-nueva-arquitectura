@@ -43,7 +43,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               examples:
                 missingFields:
                   value:
@@ -106,7 +106,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               example:
                 error_code: FOUNDED_RESOLUTION_REQUIRED
                 field: founded_resolution_attachment
@@ -151,7 +151,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               examples:
                 signatureRequired:
                   value:
@@ -238,7 +238,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               examples:
                 budgetUnavailable:
                   $ref: ../adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
@@ -324,7 +324,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               examples:
                 verificationRequired:
                   value:
@@ -387,7 +387,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               examples:
                 budgetUnavailable:
                   $ref: ../adquisiciones.openapi.yaml#/components/examples/BudgetUnavailableError
@@ -435,7 +435,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               examples:
                 cdpRequired:
                   value:

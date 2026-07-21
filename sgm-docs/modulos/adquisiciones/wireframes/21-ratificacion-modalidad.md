@@ -1,7 +1,7 @@
 # Wireframe: Ratificación o selección de modalidad
 
 **Sub-paso:** 2.1 — Ratificación o selección de modalidad  
-**Rol:** Gestor de compra (`adq.gestor_compra`) — catálogo [`catalogo-roles.md`](../../../arquitectura/catalogo-roles.md)  
+**Rol:** Gestor de compra (`adq.gestor_compra`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)  
 **Operaciones:** `confirmProcurementModality` · Dependencias: `getUtmValue` (SII, cacheada), `checkCatalogAvailability` (catálogo CM espejado, cacheada)
 
 ## Layout
@@ -10,10 +10,11 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Ratificación de modalidad         [Pendiente]    |
 +----------------------------------------------------------------+
-| [Datos SOLPED — solo lectura]                                   |
+| Datos de la solicitud (solo lectura)                            |
 | Unidad: Unidad Solicitante | Monto total estimado: $ 1.250.000   |
 | Modalidad indicada en SOLPED (1.1): Compra Ágil (provisional)    |
 +----------------------------------------------------------------+
+| Selección de modalidad                                          |
 | Modalidad a ratificar/seleccionar *                             |
 | ( ) Compra Ágil  ( ) Convenio Marco  ( ) Licitación Pública      |
 | ( ) Trato Directo                                                |
@@ -37,12 +38,14 @@
 | | V8 | Garantías exigibles (LP)       | N/A      | advisory    | |
 | +----+--------------------------------+----------+-------------+ |
 +----------------------------------------------------------------+
+| Datos condicionales                                           |
 | Causal de Trato Directo * (obligatorio si Trato Directo) [oculto] |
 | [________________________________________________]              |
 |                                                                   |
 | Justificación bypass catálogo CM * (obligatorio si aplica V2) [oculto] |
 | [________________________________________________]              |
 +----------------------------------------------------------------+
+| Opciones                                                      |
 | [ ] ¿Solicitar aprobación de jefatura antes de continuar? (opcional) |
 +----------------------------------------------------------------+
 | [ Cancelar ]                          [ Confirmar modalidad ]    |

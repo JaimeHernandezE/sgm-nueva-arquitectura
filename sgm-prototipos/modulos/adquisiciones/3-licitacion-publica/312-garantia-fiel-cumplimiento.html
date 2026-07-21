@@ -23,22 +23,25 @@
         <span class="badge badge--active" id="header-badge">Condicional</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">
-          Adjudicatario: Taller Municipal SpA · Monto adjudicado: $178.500.000<br />
-          Bases exigen Garantía de Fiel Cumplimiento: Sí · Mínimo $9.025.000
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Datos de la garantía</h3>
+          <div class="info-panel">
+            Adjudicatario: Taller Municipal SpA · Monto adjudicado: $178.500.000<br />
+            Bases exigen Garantía de Fiel Cumplimiento: Sí · Mínimo $9.025.000
+          </div>
 
-        <div class="form-row"><label>Tipo de instrumento <span class="required">*</span></label>
-          <select id="instrument-type">
-            <option value="poliza" selected>Póliza de seguro</option>
-            <option value="boleta">Boleta de garantía</option>
-            <option value="vale_vista">Vale vista</option>
-            <option value="fianza">Certificado de fianza</option>
-          </select>
-        </div>
-        <div class="form-row"><label>Monto <span class="required">*</span></label><input type="text" id="amount" value="9.250.000" /></div>
-        <div class="form-row"><label>Fecha de vencimiento <span class="required">*</span></label><input type="date" id="expiry" value="2027-03-15" /></div>
-        <div class="form-row"><label>Documento del instrumento <span class="required">*</span></label><input type="text" id="document-ref" placeholder="garantia-fiel-cumplimiento-taller-municipal.pdf" /></div>
+          <div class="form-row"><label>Tipo de instrumento <span class="required">*</span></label>
+            <select id="instrument-type">
+              <option value="poliza" selected>Póliza de seguro</option>
+              <option value="boleta">Boleta de garantía</option>
+              <option value="vale_vista">Vale vista</option>
+              <option value="fianza">Certificado de fianza</option>
+            </select>
+          </div>
+          <div class="form-row"><label>Monto <span class="required">*</span></label><input type="text" id="amount" value="9.250.000" /></div>
+          <div class="form-row"><label>Fecha de vencimiento <span class="required">*</span></label><input type="date" id="expiry" value="2027-03-15" /></div>
+          <div class="form-row"><label>Documento del instrumento <span class="required">*</span></label><input type="text" id="document-ref" placeholder="garantia-fiel-cumplimiento-taller-municipal.pdf" /></div>
+        </section>
 
         <div class="banner hidden" id="result-banner"></div>
         <div class="info-panel hidden" id="next-step-panel">

@@ -23,38 +23,48 @@
         <span class="badge">En curso</span>
       </div>
       <div class="form-card__body">
-        <div class="form-row">
-          <label>Línea presupuestaria <span class="required">*</span></label>
-          <select>
-            <option>22.01.03 — Insumos oficina</option>
-            <option>22.01.05 — Útiles de escritorio</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label>Monto estimado <span class="required">*</span></label>
-          <input type="text" value="1250000" />
-        </div>
-        <div class="form-row">
-          <label>Año fiscal <span class="required">*</span></label>
-          <input type="number" value="2026" />
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Verificación presupuestaria</h3>
+          <div class="form-row">
+            <label>Línea presupuestaria <span class="required">*</span></label>
+            <select>
+              <option>22.01.03 — Insumos oficina</option>
+              <option>22.01.05 — Útiles de escritorio</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Monto estimado <span class="required">*</span></label>
+            <input type="text" value="1250000" />
+          </div>
+          <div class="form-row">
+            <label>Año fiscal <span class="required">*</span></label>
+            <input type="number" value="2026" />
+          </div>
+        </section>
 
-        <div class="info-panel info-panel--ok">
-          <strong>Panel: Disponibilidad presupuestaria</strong><br />
-          Saldo disponible actual: $ 1.200.000<br />
-          Comprometido otras SOLPED: $ 300.000<br />
-          Monto esta solicitud: $ 450.000<br />
-          Saldo proyectado: $ 450.000 <strong>[OK]</strong>
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Disponibilidad presupuestaria</h3>
+          <div class="info-panel info-panel--ok" id="budget-panel">
+            <strong>Panel: Disponibilidad presupuestaria</strong><br />
+            <span id="budget-panel-body">
+              Saldo disponible actual: $ 1.200.000<br />
+              Comprometido otras SOLPED: $ 300.000<br />
+              Monto esta solicitud: $ 450.000<br />
+              Saldo proyectado: $ 450.000 <strong>[OK]</strong>
+            </span>
+          </div>
+        </section>
 
-        <div class="form-row">
-          <label>Comentarios (obligatorio si rechazo)</label>
-          <textarea></textarea>
-        </div>
-
-        <p>
-          <a class="btn btn--link" href="16-solicitar-financiamiento.html" id="financing-link">Solicitar financiamiento a DAF (sub-paso 1.4)</a>
-        </p>
+        <section class="form-section">
+          <h3 class="form-section__title">Decisión</h3>
+          <div class="form-row">
+            <label>Comentarios (obligatorio si rechazo)</label>
+            <textarea></textarea>
+          </div>
+          <p>
+            <a class="btn btn--link" href="16-solicitar-financiamiento.html" id="financing-link">Solicitar financiamiento a DAF (sub-paso 1.4)</a>
+          </p>
+        </section>
       </div>
       <div class="form-actions">
         <button class="btn btn--secondary" type="button" id="reject">Rechazar</button>
@@ -71,10 +81,13 @@
     import { initAppShell } from '../../../shared/app-shell.js';
     import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
+    import { getFormPreset } from '../../../shared/form-presets.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
     const expedienteId = getExpedienteId();
+    const preset = getFormPreset(expedienteId);
+    const budget = preset.budgetVerification;
 
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
@@ -91,6 +104,21 @@
 
     document.getElementById('financing-link').href = relativeFormHref('16-solicitar-financiamiento.html');
     document.getElementById('financing-btn').href = relativeFormHref('16-solicitar-financiamiento.html');
+
+    if (budget?.insufficient) {
+      const panel = document.getElementById('budget-panel');
+      panel.classList.remove('info-panel--ok');
+      panel.classList.add('info-panel--error');
+      document.getElementById('budget-panel-body').innerHTML = `
+        Saldo disponible actual: $ ${budget.available}<br />
+        Comprometido otras SOLPED: $ ${budget.committed}<br />
+        Monto esta solicitud: $ ${budget.requestAmount}<br />
+        Saldo proyectado: $ ${budget.projected} <strong>[INSUFICIENTE]</strong>
+      `;
+      const confirmBtn = document.getElementById('confirm');
+      confirmBtn.disabled = true;
+      confirmBtn.title = 'Deshabilitado: saldo insuficiente (BUDGET_UNAVAILABLE)';
+    }
 
     bootstrapFormPage('solped-step');
 

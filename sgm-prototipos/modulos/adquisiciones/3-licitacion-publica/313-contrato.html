@@ -23,23 +23,27 @@
         <span class="badge badge--active" id="header-badge">Adjudicación firme</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">
-          Adjudicatario: Taller Municipal SpA · Monto: $178.500.000<br />
-          Garantía de Fiel Cumplimiento: En custodia ✓
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Datos del contrato</h3>
+          <div class="info-panel">
+            Adjudicatario: Taller Municipal SpA · Monto: $178.500.000<br />
+            Garantía de Fiel Cumplimiento: En custodia ✓
+          </div>
 
-        <div class="form-row"><label>Fecha de inicio <span class="required">*</span></label><input type="date" id="start-date" value="2026-04-01" /></div>
-        <div class="form-row"><label>Fecha de término <span class="required">*</span></label><input type="date" id="end-date" value="2027-03-31" /></div>
-        <div class="form-row"><label>Documento del contrato (adjunto) <span class="required">*</span></label><input type="text" id="document-ref" placeholder="contrato-taller-municipal.pdf" /></div>
+          <div class="form-row"><label>Fecha de inicio <span class="required">*</span></label><input type="date" id="start-date" value="2026-04-01" /></div>
+          <div class="form-row"><label>Fecha de término <span class="required">*</span></label><input type="date" id="end-date" value="2027-03-31" /></div>
+          <div class="form-row"><label>Documento del contrato (adjunto) <span class="required">*</span></label><input type="text" id="document-ref" placeholder="contrato-taller-municipal.pdf" /></div>
 
-        <div class="banner hidden" id="draft-banner"></div>
+          <div class="banner hidden" id="draft-banner"></div>
+        </section>
 
-        <div class="hidden" id="signature-panel">
+        <section class="form-section hidden" id="signature-panel">
+          <h3 class="form-section__title">Firmas</h3>
           <div class="form-row"><label>Firma municipal (FirmaGob)</label><span class="badge" id="municipal-sig-badge">Pendiente</span></div>
           <div class="form-row"><label>Firma del proveedor <em>mecanismo PENDIENTE P-67</em></label><span class="badge" id="provider-sig-badge">Pendiente</span></div>
           <button class="btn btn--secondary" type="button" id="sign-municipal">Simular firma FirmaGob (demo)</button>
           <button class="btn btn--secondary" type="button" id="sign-provider">Simular firma proveedor (demo)</button>
-        </div>
+        </section>
 
         <div class="info-panel hidden" id="no-subscription-panel">
           <strong>Adjudicatario no suscribe en plazo</strong><br />

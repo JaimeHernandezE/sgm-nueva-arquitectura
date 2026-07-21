@@ -23,44 +23,50 @@
         <span class="badge badge--active" id="header-badge">Pendiente vinculación</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">
-          <strong>Decisión de modalidad — solo lectura</strong><br />
-          Modalidad confirmada: <strong>Compra Ágil</strong> · Gateway V1–V8: OK
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Contexto de modalidad</h3>
+          <div class="info-panel">
+            <strong>Decisión de modalidad — solo lectura</strong><br />
+            Modalidad confirmada: <strong>Compra Ágil</strong> · Gateway V1–V8: OK
+          </div>
+        </section>
 
-        <p>
-          <button class="btn btn--secondary" type="button" id="deep-link-btn">Gestionar en MP</button>
-          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Deep link — navegación pura, sin escritura API (ver <code>integracion-mercado-publico.md</code>)</span>
-        </p>
+        <section class="form-section">
+          <h3 class="form-section__title">Vinculación Mercado Público</h3>
+          <p>
+            <button class="btn btn--secondary" type="button" id="deep-link-btn">Gestionar en MP</button>
+            <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Deep link — navegación pura, sin escritura API (ver <code>integracion-mercado-publico.md</code>)</span>
+          </p>
 
-        <div class="form-row">
-          <label>Código / ID del proceso en Mercado Público <span class="required">*</span></label>
-          <input type="text" id="mp-code" value="4021-33-COT26" />
-        </div>
+          <div class="form-row">
+            <label>Código / ID del proceso en Mercado Público <span class="required">*</span></label>
+            <input type="text" id="mp-code" value="4021-33-COT26" />
+          </div>
 
-        <div class="form-row">
-          <label>Simular resultado de validación <em>(solo demo — no existe en la ficha)</em></label>
-          <select id="simulate-result">
-            <option value="ok" selected>OK — vincula correctamente</option>
-            <option value="not_found">MP_PROCESS_NOT_FOUND</option>
-            <option value="organism_mismatch">MP_PROCESS_ORGANISM_MISMATCH</option>
-            <option value="type_mismatch">MP_PROCESS_TYPE_MISMATCH</option>
-            <option value="already_linked">MP_PROCESS_ALREADY_LINKED</option>
-            <option value="provider_unavailable">MP_PROVIDER_UNAVAILABLE</option>
-          </select>
-        </div>
+          <div class="form-row">
+            <label>Simular resultado de validación <em>(solo demo — no existe en la ficha)</em></label>
+            <select id="simulate-result">
+              <option value="ok" selected>OK — vincula correctamente</option>
+              <option value="not_found">MP_PROCESS_NOT_FOUND</option>
+              <option value="organism_mismatch">MP_PROCESS_ORGANISM_MISMATCH</option>
+              <option value="type_mismatch">MP_PROCESS_TYPE_MISMATCH</option>
+              <option value="already_linked">MP_PROCESS_ALREADY_LINKED</option>
+              <option value="provider_unavailable">MP_PROVIDER_UNAVAILABLE</option>
+            </select>
+          </div>
 
-        <div class="banner banner--info" id="mp-status-hint" style="margin-top:8px;">
-          Tipo esperado según modalidad confirmada.
-        </div>
+          <div class="banner banner--info" id="mp-status-hint" style="margin-top:8px;">
+            Tipo esperado según modalidad confirmada.
+          </div>
 
-        <div class="banner hidden" id="result-banner"></div>
+          <div class="banner hidden" id="result-banner"></div>
 
-        <div class="info-panel hidden" id="next-step-panel">
-          Vínculo registrado. SOLPED bloqueada «En proceso de cotización» — arranca la sincronización de estados MP.<br />
-          Continúa en etapa 3 · Resolución de Compra (específica de la modalidad).
-          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Volver al expediente</a>
-        </div>
+          <div class="info-panel hidden" id="next-step-panel">
+            Vínculo registrado. SOLPED bloqueada «En proceso de cotización» — arranca la sincronización de estados MP.<br />
+            Continúa en etapa 3 · Resolución de Compra (específica de la modalidad).
+            <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Volver al expediente</a>
+          </div>
+        </section>
       </div>
       <div class="form-actions">
         <button class="btn btn--secondary" type="button" id="cancel-link-btn">Cancelar</button>

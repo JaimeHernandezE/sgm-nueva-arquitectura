@@ -49,7 +49,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               examples:
                 modalityAmountExceeded:
                   value:
@@ -118,7 +118,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               example:
                 error_code: SIGNATURE_REQUIRED
                 rule: Se requiere firma electrónica válida (FirmaGob)
@@ -208,7 +208,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
               examples:
                 mpNotFound:
                   value:

@@ -61,10 +61,14 @@ export function applySolpedPreset() {
   if (dateInput) setValue(dateInput, s.date);
   setSelect(document.getElementById('purchase-modality'), s.purchaseModality);
 
-  const lineInputs = document.querySelectorAll('.form-table tbody input');
+  const lineTable = document.getElementById('solped-lines');
+  const lineInputs = lineTable
+    ? lineTable.querySelectorAll('tbody input')
+    : document.querySelectorAll('.form-table tbody input');
   if (lineInputs[0]) setValue(lineInputs[0], s.lineDescription);
   if (lineInputs[1]) setValue(lineInputs[1], s.lineQty);
-  if (lineInputs[3]) setValue(lineInputs[3], s.linePrice);
+  if (lineInputs[2]) setValue(lineInputs[2], s.linePrice);
+  lineTable?.dispatchEvent(new Event('solped-lines:recalc', { bubbles: true }));
 
   const resolutionRow = document.getElementById('resolution-row');
   if (resolutionRow) {

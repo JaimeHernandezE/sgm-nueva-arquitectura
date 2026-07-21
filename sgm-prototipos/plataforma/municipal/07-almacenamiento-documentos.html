@@ -17,56 +17,59 @@
         <div class="form-card">
           <div class="form-card__header"><span>Almacenamiento de documentos (C10)</span></div>
           <div class="form-card__body">
-            <div class="form-row">
-              <label>Backend <span class="required">*</span></label>
-              <label><input type="radio" name="backend" value="platform" checked /> platform</label>
-              <label><input type="radio" name="backend" value="tenant_owned" /> tenant_owned</label>
-              <label><input type="radio" name="backend" value="external_dms" /> external_dms</label>
-            </div>
+            <section class="form-section">
+              <h3 class="form-section__title">Backend de almacenamiento</h3>
+              <div class="form-row">
+                <label>Backend <span class="required">*</span></label>
+                <label><input type="radio" name="backend" value="platform" checked /> platform</label>
+                <label><input type="radio" name="backend" value="tenant_owned" /> tenant_owned</label>
+                <label><input type="radio" name="backend" value="external_dms" /> external_dms</label>
+              </div>
 
-            <div id="block-platform">
-              <div class="banner banner--info">Solo lectura — provisionado por SUBDERE.</div>
-              <div class="form-row">
-                <label>Bucket</label>
-                <input type="text" id="bucket" value="sgm-tenant-alpha" readonly />
+              <div id="block-platform">
+                <div class="banner banner--info">Solo lectura — provisionado por SUBDERE.</div>
+                <div class="form-row">
+                  <label>Bucket</label>
+                  <input type="text" id="bucket" value="sgm-tenant-alpha" readonly />
+                </div>
               </div>
-            </div>
 
-            <div id="block-owned" hidden>
-              <div class="form-row">
-                <label>Bucket <span class="required">*</span></label>
-                <input type="text" id="ow-bucket" placeholder="mi-bucket-municipal" />
+              <div id="block-owned" hidden>
+                <div class="form-row">
+                  <label>Bucket <span class="required">*</span></label>
+                  <input type="text" id="ow-bucket" placeholder="mi-bucket-municipal" />
+                </div>
+                <div class="form-row">
+                  <label>Región <span class="required">*</span></label>
+                  <input type="text" id="ow-region" placeholder="us-east-1" />
+                </div>
+                <div class="form-row">
+                  <label>Endpoint <span class="required">*</span> (S3-compatible)</label>
+                  <input type="url" id="ow-endpoint" placeholder="https://…" />
+                </div>
+                <button class="btn btn--secondary" type="button" id="btn-rot-ow">Rotar credenciales…</button>
               </div>
-              <div class="form-row">
-                <label>Región <span class="required">*</span></label>
-                <input type="text" id="ow-region" placeholder="us-east-1" />
-              </div>
-              <div class="form-row">
-                <label>Endpoint <span class="required">*</span> (S3-compatible)</label>
-                <input type="url" id="ow-endpoint" placeholder="https://…" />
-              </div>
-              <button class="btn btn--secondary" type="button" id="btn-rot-ow">Rotar credenciales…</button>
-            </div>
 
-            <div id="block-dms" hidden>
-              <div class="form-row">
-                <label>Adaptador <span class="required">*</span></label>
-                <select id="dms-adapter"><option value="stub_generic">stub_generic — Stub DMS genérico</option></select>
+              <div id="block-dms" hidden>
+                <div class="form-row">
+                  <label>Adaptador <span class="required">*</span></label>
+                  <select id="dms-adapter"><option value="stub_generic">stub_generic — Stub DMS genérico</option></select>
+                </div>
+                <div class="form-row">
+                  <label>Base URL <span class="required">*</span></label>
+                  <input type="url" id="dms-url" placeholder="https://dms.municipio.cl" />
+                </div>
+                <div class="form-row">
+                  <label>Repositorio <span class="required">*</span></label>
+                  <input type="text" id="dms-repo" placeholder="repositorio-id" />
+                </div>
+                <button class="btn btn--secondary" type="button" id="btn-rot-dms">Rotar credenciales…</button>
               </div>
-              <div class="form-row">
-                <label>Base URL <span class="required">*</span></label>
-                <input type="url" id="dms-url" placeholder="https://dms.municipio.cl" />
-              </div>
-              <div class="form-row">
-                <label>Repositorio <span class="required">*</span></label>
-                <input type="text" id="dms-repo" placeholder="repositorio-id" />
-              </div>
-              <button class="btn btn--secondary" type="button" id="btn-rot-dms">Rotar credenciales…</button>
-            </div>
 
-            <div class="banner banner--info" style="margin-top:16px;">
-              MIME/tamaños/retención: P-58. Primer DMS certificado: P-59. Módulos solo ven DocumentRef.
-            </div>
+              <div class="banner banner--info" style="margin-top:16px;">
+                MIME/tamaños/retención: P-58. Primer DMS certificado: P-59. Módulos solo ven DocumentRef.
+              </div>
+            </section>
           </div>
           <div class="form-actions">
             <button class="btn btn--secondary" type="button" id="btn-test">Probar conexión</button>

@@ -23,18 +23,20 @@
         <span class="badge badge--active" id="header-badge">Condicional</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">
-          Umbral de Toma de Razón vigente: $ 150.000.000 (<code>NormativeParameter</code>) · Monto del proceso: $ 185.000.000 → Aplica Toma de Razón
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Envío a Contraloría</h3>
+          <div class="info-panel">
+            Umbral de Toma de Razón vigente: $ 150.000.000 (<code>NormativeParameter</code>) · Monto del proceso: $ 185.000.000 → Aplica Toma de Razón
+          </div>
+          <div id="submit-panel">
+            <div class="form-row"><label>N° de oficio de envío <span class="required">*</span></label><input type="text" id="submission-ref" placeholder="Of. N° 210-2026" /></div>
+            <div class="form-row"><label>Fecha de envío</label><input type="date" id="submission-date" /></div>
+          </div>
+          <div class="info-panel hidden" id="pending-panel">Estado: en tramitación en CGR… (típicamente semanas).</div>
+        </section>
 
-        <div id="submit-panel">
-          <div class="form-row"><label>N° de oficio de envío <span class="required">*</span></label><input type="text" id="submission-ref" placeholder="Of. N° 210-2026" /></div>
-          <div class="form-row"><label>Fecha de envío</label><input type="date" id="submission-date" /></div>
-        </div>
-
-        <div class="info-panel hidden" id="pending-panel">Estado: en tramitación en CGR… (típicamente semanas).</div>
-
-        <div class="hidden" id="outcome-panel">
+        <section class="form-section hidden" id="outcome-panel">
+          <h3 class="form-section__title">Resultado de Contraloría</h3>
           <div class="form-row">
             <label>Resultado <span class="required">*</span></label>
             <select id="outcome">
@@ -44,7 +46,7 @@
             </select>
           </div>
           <div class="form-row"><label>Oficio de respuesta (adjunto) <span class="required">*</span></label><input type="text" id="response-ref" placeholder="Of. resp. N° 340-2026" /></div>
-        </div>
+        </section>
 
         <div class="banner hidden" id="result-banner"></div>
         <div class="info-panel hidden" id="next-step-panel">

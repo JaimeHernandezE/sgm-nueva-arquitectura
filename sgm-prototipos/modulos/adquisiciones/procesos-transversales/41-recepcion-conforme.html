@@ -22,59 +22,67 @@
         <span class="badge badge--active">Borrador</span>
       </div>
       <div class="form-card__body">
-        <div class="info-panel">
-          <strong>OC — solo lectura</strong><br />
-          MP-12345 · Proveedor: 76.123.456-7 · Monto: $ 1.240.000
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Datos de recepción</h3>
+          <div class="info-panel">
+            <strong>OC — solo lectura</strong><br />
+            MP-12345 · Proveedor: 76.123.456-7 · Monto: $ 1.240.000
+          </div>
 
-        <div class="form-row">
-          <label>Fecha recepción <span class="required">*</span></label>
-          <input type="date" value="2026-07-15" />
-        </div>
-        <div class="form-row form-row--readonly">
-          <label>Recibido por</label>
-          Ana Pérez (usuario actual)
-        </div>
-        <div class="form-row">
-          <label>Conformidad <span class="required">*</span></label>
-          <label style="font-weight:normal;margin-right:16px;">
-            <input type="radio" name="conformity" value="conforme" checked style="width:auto;display:inline-block;margin-right:6px;" />
-            Conforme
-          </label>
-          <label style="font-weight:normal;">
-            <input type="radio" name="conformity" value="no_conforme" style="width:auto;display:inline-block;margin-right:6px;" />
-            No conforme
-          </label>
-        </div>
-        <div class="form-row">
-          <label>Observaciones (obligatorio si no conforme)</label>
-          <textarea id="observations" placeholder="Detalle del rechazo o reservas…"></textarea>
-        </div>
+          <div class="form-row">
+            <label>Fecha recepción <span class="required">*</span></label>
+            <input type="date" value="2026-07-15" />
+          </div>
+          <div class="form-row form-row--readonly">
+            <label>Recibido por</label>
+            Ana Pérez (usuario actual)
+          </div>
+          <div class="form-row">
+            <label>Conformidad <span class="required">*</span></label>
+            <label style="font-weight:normal;margin-right:16px;">
+              <input type="radio" name="conformity" value="conforme" checked style="width:auto;display:inline-block;margin-right:6px;" />
+              Conforme
+            </label>
+            <label style="font-weight:normal;">
+              <input type="radio" name="conformity" value="no_conforme" style="width:auto;display:inline-block;margin-right:6px;" />
+              No conforme
+            </label>
+          </div>
+          <div class="form-row">
+            <label>Observaciones (obligatorio si no conforme)</label>
+            <textarea id="observations" placeholder="Detalle del rechazo o reservas…"></textarea>
+          </div>
+        </section>
 
-        <h3 style="font-size:14px;margin:16px 0 8px;">Líneas recibidas</h3>
-        <table class="form-table">
-          <thead>
-            <tr>
-              <th>Ítem OC</th>
-              <th>Cant. OC</th>
-              <th>Cant. recibida <span class="required">*</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Producto A</td>
-              <td>10</td>
-              <td><input type="number" value="10" /></td>
-            </tr>
-          </tbody>
-        </table>
+        <section class="form-section">
+          <h3 class="form-section__title">Líneas recibidas</h3>
+          <table class="form-table">
+            <thead>
+              <tr>
+                <th>Ítem OC</th>
+                <th>Cant. OC</th>
+                <th>Cant. recibida <span class="required">*</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Producto A</td>
+                <td>10</td>
+                <td><input type="number" value="10" /></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
 
-        <div class="form-row" style="margin-top:16px;">
-          <label>Documentos adjuntos <span class="required">*</span></label>
-          <button class="btn btn--secondary" type="button">Factura electrónica</button>
-          <button class="btn btn--secondary" type="button">Guía despacho</button>
-          <button class="btn btn--secondary" type="button">+ Subir</button>
-        </div>
+        <section class="form-section">
+          <h3 class="form-section__title">Documentos adjuntos</h3>
+          <div class="form-row">
+            <label>Documentos adjuntos <span class="required">*</span></label>
+            <button class="btn btn--secondary" type="button">Factura electrónica</button>
+            <button class="btn btn--secondary" type="button">Guía despacho</button>
+            <button class="btn btn--secondary" type="button">+ Subir</button>
+          </div>
+        </section>
       </div>
       <div class="form-actions">
         <button class="btn btn--secondary" type="button" id="draft">Guardar borrador</button>

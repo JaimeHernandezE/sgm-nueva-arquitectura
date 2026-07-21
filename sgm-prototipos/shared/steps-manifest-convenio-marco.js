@@ -54,7 +54,7 @@ export default {
       processFicha: 'sgm-docs/modulos/adquisiciones/2. convenio-marco/3-resolucion-compra-convenio-marco v2.md',
       prototypeHtml: 'modulos/adquisiciones/2-convenio-marco/35-seleccion-oferta.html',
       formPath: '../2-convenio-marco/35-seleccion-oferta.html',
-      operations: ['recordQuotationResult'],
+      operations: [],
       origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
     },
     {

@@ -20,16 +20,17 @@ entidades-core.md            →  campos de formulario
 ## Navegación del prototipo
 
 ```
-index.html → modulos/adquisiciones/index.html (bienvenida)
+index.html → modulos/adquisiciones/index.html (hub: modalidades + configuraciones)
            → 01-listado-expedientes.html
            → 00-expediente/index.html?expediente=<id>
+           → configuraciones/ (firmas / editor anclas)
 
 Sidebar «Plataforma» → plataforma/index.html (hub consolas)
                      → subdere/* | municipal/*
 ```
 
-- Sidebar derecho: módulos SGM (`shared/app-shell.js`, `shared/modules-registry.js`) — incluye **Plataforma** (core) y Adquisiciones.
-- Perfiles de expediente: [`shared/expedientes-demo.js`](./shared/expedientes-demo.js) — los **4** expedientes del listado tienen detalle completo (etapas 1–5). La etapa 3 es específica por modalidad.
+- Sidebar derecho: módulos SGM (`shared/app-shell.js`, `shared/modules-registry.js`) — incluye **Plataforma** (core) y Adquisiciones (nav: Inicio, Expedientes, **Configuraciones**).
+- Perfiles de expediente: [`shared/expedientes-demo.js`](./shared/expedientes-demo.js) — **5** expedientes con detalle completo (4 modalidades + caso sin saldo `ADQ-2026-00142`). La etapa 3 es específica por modalidad.
 - Datos demo por expediente: [`shared/demo-data/`](./shared/demo-data/) (`getStages(expedienteId)`).
 - Datos demo core: [`shared/demo-data/plataforma.js`](./shared/demo-data/plataforma.js).
 - Presets de formularios: [`shared/form-presets.js`](./shared/form-presets.js) + [`shared/form-bootstrap.js`](./shared/form-bootstrap.js).
@@ -46,13 +47,15 @@ Antes de modificar un sub-paso `N.M`:
 4. Verificar **operaciones** en `contracts.md` — ningún botón sin operación.
 5. Verificar **campos** en `entidades-core.md`.
 6. Verificar **obligatoriedad explícita** en los tres niveles: `entidades-core.md` (obligatorio / opcional / obligatorio si), tabla **Obligatorio** del wireframe spec, y etiqueta del HTML (`*`, `(opcional)` o `(obligatorio si …)`).
-7. Si cambia tinte/origen: revisar reglas 2a/2b en [`patron-vista-expediente.md`](../sgm-docs/arquitectura/patron-vista-expediente.md).
-8. Actualizar **prototipo HTML**, **expediente** (`shared/demo-data/<modalidad>.js`) y **preset** (`form-presets.js`) en el mismo cambio.
+7. Verificar **secciones tituladas** del formulario (`.form-section` / subtítulos) según [`patron-formularios-secciones.md`](../sgm-docs/arquitectura/instrucciones/patron-formularios-secciones.md) — wireframe ASCII y HTML con los mismos títulos.
+8. Si cambia tinte/origen: revisar reglas 2a/2b en [`patron-vista-expediente.md`](../sgm-docs/arquitectura/instrucciones/patron-vista-expediente.md).
+9. Actualizar **prototipo HTML**, **expediente** (`shared/demo-data/<modalidad>.js`) y **preset** (`form-presets.js`) en el mismo cambio.
 
 ## Etapa 1 — SOLPED (transversal, 4 modalidades)
 
 | stepId | Wireframe | Prototipo | Operaciones principales |
 |---|---|---|---|
+| 1.0 | `sgm-docs/.../wireframes/10-verificacion-previa.md` | `procesos-transversales/10-verificacion-previa.html` | `checkStockAvailability`, `checkCatalogAvailability` *(optativo; omitible)* |
 | 1.1 | `sgm-docs/.../wireframes/11-creacion-solped.md` | `procesos-transversales/11-creacion-solped.html` | `createPurchaseRequest`, `submitPurchaseRequest`, `previewBudgetAvailability` |
 | 1.2 | `12-visto-bueno-jefatura.md` | `12-visto-bueno-jefatura.html` | `approvePurchaseRequest`, `rejectPurchaseRequest` |
 | 1.3 | `13-verificacion-disponibilidad.md` | `13-verificacion-disponibilidad.html` | `verifyBudgetAvailability` |
@@ -90,8 +93,8 @@ Enlazada desde el shell del expediente vía manifiestos de modalidad (`form-shel
 | stepId | Wireframe | Prototipo | Operaciones principales |
 |---|---|---|---|
 | 3.1 | `31-periodo-cotizacion.md` | `1-compra-agil/31-periodo-cotizacion.html` | — (sin operación, solo lectura MP) |
-| 3.2 | `32-cierre-seleccion-oferta.md` | `1-compra-agil/32-cierre-seleccion-oferta.html` | `recordQuotationResult` |
-| 3.3 | `33-emision-oc.md` | `1-compra-agil/33-emision-oc.html` | `registerPurchaseOrder` |
+| 3.2 | `32-cierre-seleccion-oferta.md` | `1-compra-agil/32-cierre-seleccion-oferta.html` | — (sync MP; deep link) |
+| 3.3 | `33-emision-oc.md` | `1-compra-agil/33-emision-oc.html` | — (sync MP; deep link) |
 | 3.4 | `34-aceptacion-oc.md` | `1-compra-agil/34-aceptacion-oc.html` | `syncPurchaseOrderAccepted` (hito crítico) |
 | 3.5 | `35-rechazo-oc.md` | `1-compra-agil/35-rechazo-oc.html` | — (excluyente con 3.4; camino alternativo) |
 | 3.6 | `36-proceso-desierto-fallido.md` | `1-compra-agil/36-proceso-desierto-fallido.html` | `releasePreCommitment` (camino alternativo) |
@@ -177,6 +180,19 @@ No usa expediente ni `?expediente=`. Breadcrumb: Plataforma › Consola › Pant
 | Integraciones municipio | `06-integraciones-municipio.md` | `06-integraciones-municipio.html` | `upsertTenantIntegration`, `rotateIntegrationCredential` |
 | Almacenamiento | `07-almacenamiento-documentos.md` | `07-almacenamiento-documentos.html` | `upsertTenantStorage`, `getTenantStorage` |
 | Recertificación | `08-recertificacion-accesos.md` | `08-recertificacion-accesos.html` | `listAccessRecertificationReport` |
+
+## Configuraciones de módulo (Adquisiciones)
+
+Pantallas fuera del flujo de expediente (no viven en `steps-manifest`). Nav: `adquisicionesNav` → Configuraciones.
+
+| Pantalla | Wireframe | Prototipo | Operación |
+|---|---|---|---|
+| Hub módulo | `wireframes/00-hub-modulo.md` | `modulos/adquisiciones/index.html` | — |
+| Configuraciones | `90-configuraciones.md` | `configuraciones/index.html` | — |
+| Firmas (lista) | `91-config-firmas-lista.md` | `configuraciones/91-firmas.html` | — |
+| Editor anclas CDP | `92-config-firmas-editor-anclas.md` | `configuraciones/92-editor-anclas.html` | `configureDocumentTemplate` |
+
+Catálogo: [`sgm-docs/modulos/adquisiciones/catalogo-documentos-firmables.md`](../sgm-docs/modulos/adquisiciones/catalogo-documentos-firmables.md) · patrón: [`patron-edicion-anclas-firma.md`](../sgm-docs/arquitectura/instrucciones/patron-edicion-anclas-firma.md).
 
 ## Reglas de tinte (resumen)
 

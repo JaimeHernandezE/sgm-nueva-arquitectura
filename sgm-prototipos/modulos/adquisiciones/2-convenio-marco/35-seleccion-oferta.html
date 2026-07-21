@@ -16,22 +16,38 @@
       <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
-    <!-- Operaciones: recordQuotationResult -->
 
     <div class="form-card">
       <div class="form-card__header">
         <span>ADQ-2026-00089 — Selección de oferta Gran Compra</span>
-        <span class="badge badge--active" id="header-badge">Hecho</span>
+        <span class="badge badge--active" id="header-badge">Pendiente en MP</span>
       </div>
       <div class="form-card__body">
-        <div class="form-row"><label>RUT proveedor <span class="required">*</span></label><input type="text" value="76.998.877-5" /></div>
-        <div class="form-row"><label>Nombre proveedor <span class="required">*</span></label><input type="text" value="Mobiliario Chile Ltda." /></div>
-        <div class="form-row"><label>Monto ofertado (CLP) <span class="required">*</span></label><input type="text" value="4650000" /></div>
-        <div class="banner banner--info">Modo degradado: registro manual. MP prevalece si la lectura llega después.</div>
+        <section class="form-section">
+          <h3 class="form-section__title">Acción en Mercado Público</h3>
+          <p class="form-section__hint">La selección ocurre en MP. Sin campos editables en SGM.</p>
+          <a class="btn btn--primary" href="https://www.mercadopublico.cl" target="_blank" rel="noopener">Gestionar en MP</a>
+        </section>
+
+        <section class="form-section" id="pending-section">
+          <h3 class="form-section__title">Estado de sincronización</h3>
+          <div class="banner banner--info">
+            Esperando lectura MP de oferta seleccionada. El paso avanza solo con sync.
+          </div>
+          <button class="btn btn--secondary" type="button" id="simulate-sync">Simular lectura MP (demo)</button>
+        </section>
+
+        <section class="form-section hidden" id="synced-section">
+          <h3 class="form-section__title">Oferta seleccionada — solo lectura</h3>
+          <div class="info-panel">
+            <strong>Sincronizado desde MP</strong><br />
+            Proveedor: Mobiliario Chile Ltda. · RUT 76.998.877-5<br />
+            Monto ofertado: $ 4.650.000
+          </div>
+        </section>
       </div>
       <div class="form-actions">
         <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
       </div>
     </div>
       </div>
@@ -41,7 +57,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -61,9 +77,11 @@
     });
 
     document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
-    document.getElementById('confirm').addEventListener('click', () => {
-      demoAction('recordQuotationResult');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+
+    document.getElementById('simulate-sync').addEventListener('click', () => {
+      document.getElementById('header-badge').textContent = 'Sincronizado';
+      document.getElementById('pending-section').classList.add('hidden');
+      document.getElementById('synced-section').classList.remove('hidden');
     });
   </script>
 </body>
