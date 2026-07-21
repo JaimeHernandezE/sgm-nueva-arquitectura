@@ -79,7 +79,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
     import { getFormPreset } from '../../../shared/form-presets.js';
 
@@ -95,6 +95,7 @@
       stepName: 'Verificación de disponibilidad presupuestaria',
       stepId: '1.3',
     });
+    initStepSimulation({ stepId: '1.3' });
 
     document.getElementById('origin-banner').innerHTML = renderOriginBanner({
       kind: 'module',

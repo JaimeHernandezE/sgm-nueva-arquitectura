@@ -72,7 +72,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -84,6 +84,7 @@
       stepName: 'Recepción y custodia de Garantía de Seriedad',
       stepId: '3.7',
     });
+    initStepSimulation({ stepId: '3.7' });
     document.getElementById('origin-banner').innerHTML = renderOriginBanner({
       kind: 'module',
       label: 'Tesorería',

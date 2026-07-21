@@ -103,7 +103,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -115,6 +115,7 @@
       stepName: 'Comisión evaluadora y acta de evaluación',
       stepId: '3.9',
     });
+    initStepSimulation({ stepId: '3.9' });
     document.getElementById('origin-banner').innerHTML = '';
 
     const headerBadge = document.getElementById('header-badge');

@@ -69,7 +69,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, relativeFormHref } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -81,6 +81,7 @@
       stepName: 'Cierre y selección de oferta',
       stepId: '3.2',
     });
+    initStepSimulation({ stepId: '3.2' });
 
     document.getElementById('origin-banner').innerHTML = renderOriginBanner({
       kind: 'external',

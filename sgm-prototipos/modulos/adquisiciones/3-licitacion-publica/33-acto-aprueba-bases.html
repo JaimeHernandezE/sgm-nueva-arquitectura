@@ -68,7 +68,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -80,6 +80,7 @@
       stepName: 'Acto administrativo que aprueba las bases',
       stepId: '3.3',
     });
+    initStepSimulation({ stepId: '3.3' });
     document.getElementById('origin-banner').innerHTML = '';
 
     const resultBanner = document.getElementById('result-banner');

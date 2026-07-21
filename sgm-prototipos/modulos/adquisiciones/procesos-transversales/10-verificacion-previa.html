@@ -74,7 +74,7 @@
 
   <script type="module">
     import { initAppShell, siteUrl, renderAdqBreadcrumb } from '../../../shared/app-shell.js';
-    import { demoAction } from '../../../shared/form-shell.js';
+    import { demoAction, initStepSimulation } from '../../../shared/form-shell.js';
     import {
       searchInventory,
       searchCmCatalog,
@@ -90,6 +90,7 @@
         { label: '1.0 — Verificación previa' },
       ],
     });
+    initStepSimulation({ stepId: '1.0' });
 
     const els = {
       q: document.getElementById('search-q'),

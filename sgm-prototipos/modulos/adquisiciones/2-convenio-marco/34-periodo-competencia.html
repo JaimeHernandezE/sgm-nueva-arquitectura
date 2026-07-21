@@ -41,7 +41,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -53,6 +53,7 @@
       stepName: 'Período de competencia Gran Compra',
       stepId: '3.4',
     });
+    initStepSimulation({ stepId: '3.4' });
 
     document.getElementById('origin-banner').innerHTML = renderOriginBanner({
       kind: 'external',

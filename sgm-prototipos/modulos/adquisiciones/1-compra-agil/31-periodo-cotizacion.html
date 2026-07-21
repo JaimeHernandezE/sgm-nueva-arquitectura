@@ -56,7 +56,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, relativeFormHref } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -68,6 +68,7 @@
       stepName: 'Período de cotización',
       stepId: '3.1',
     });
+    initStepSimulation({ stepId: '3.1' });
 
     document.getElementById('origin-banner').innerHTML = renderOriginBanner({
       kind: 'external',

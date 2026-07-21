@@ -159,7 +159,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
@@ -171,6 +171,7 @@
       stepName: 'Ratificación o selección de modalidad',
       stepId: '2.1',
     });
+    initStepSimulation({ stepId: '2.1' });
 
     bootstrapFormPage('modalidad');
 

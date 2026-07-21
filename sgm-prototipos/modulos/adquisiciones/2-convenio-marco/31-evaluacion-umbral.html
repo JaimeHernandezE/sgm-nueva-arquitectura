@@ -44,7 +44,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -56,6 +56,7 @@
       stepName: 'Evaluación de umbral y determinación de ruta',
       stepId: '3.1',
     });
+    initStepSimulation({ stepId: '3.1' });
 
     document.getElementById('origin-banner').innerHTML = '';
 

@@ -65,7 +65,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -77,6 +77,7 @@
       stepName: 'Revisión jurídica de bases',
       stepId: '3.2',
     });
+    initStepSimulation({ stepId: '3.2' });
     document.getElementById('origin-banner').innerHTML = '';
 
     const outcomeSelect = document.getElementById('outcome');

@@ -1,5 +1,15 @@
 import { siteUrl, renderAdqBreadcrumb } from './app-shell.js';
 import { getExpedienteIdFromUrl, getExpedienteDetailUrl } from './expedientes-demo.js';
+import { getStages } from './demo-data/index.js';
+import {
+  ROLE_CATALOG,
+  roleName,
+  stepRoleCodes,
+  getSimulationFromUrl,
+  setSimulationInUrl,
+  withSimulationParams,
+  compareStepIds,
+} from './roles.js';
 import stepsManifest from './steps-manifest.js';
 import stepsManifestCompraAgil from './steps-manifest-compra-agil.js';
 import stepsManifestConvenioMarco from './steps-manifest-convenio-marco.js';
@@ -28,7 +38,7 @@ export function getExpedienteUrl(expedienteId) {
  */
 export function relativeFormHref(htmlPath, expedienteId = getExpedienteIdFromUrl()) {
   const path = htmlPath.replace(/\.html$/i, '').replace(/\/index$/i, '/');
-  return `${path}?expediente=${encodeURIComponent(expedienteId)}`;
+  return withSimulationParams(`${path}?expediente=${encodeURIComponent(expedienteId)}`);
 }
 
 function findStepEntry(stepId, expedienteId) {
@@ -44,7 +54,14 @@ function findStepEntry(stepId, expedienteId) {
 export function getStepFormUrl(stepId, expedienteId = getExpedienteIdFromUrl()) {
   const entry = findStepEntry(stepId, expedienteId);
   if (!entry?.prototypeHtml) return null;
-  return siteUrl(`${entry.prototypeHtml}?expediente=${encodeURIComponent(expedienteId)}`);
+  return withSimulationParams(siteUrl(`${entry.prototypeHtml}?expediente=${encodeURIComponent(expedienteId)}`));
+}
+
+/** Pasos transversales + etapa 3 de la modalidad del expediente, en orden de flujo. */
+export function orderedStepsForExpediente(expedienteId = getExpedienteIdFromUrl()) {
+  const modality = modalityManifestByExpediente[expedienteId];
+  const merged = [...stepsManifest.steps, ...(modality?.steps || [])];
+  return merged.sort((a, b) => compareStepIds(a.stepId, b.stepId));
 }
 
 export function renderBreadcrumb({ expedienteId, stageName, stepName, stepId }) {
@@ -132,4 +149,144 @@ export function initCdpModeToggle(electronicId, scannedId, electronicPanelId, sc
   btnElectronic.addEventListener('click', () => setMode('electronic'));
   btnScanned.addEventListener('click', () => setMode('scanned'));
   setMode('electronic');
+}
+
+/* ------------------------------------------------------------------ */
+/* Panel de simulación por rol y por sub-paso en pantallas de sub-paso */
+/* ------------------------------------------------------------------ */
+
+function findDemoStep(stepId, expedienteId) {
+  for (const stage of getStages(expedienteId)) {
+    const step = (stage.steps || []).find((s) => s.id === stepId);
+    if (step) return step;
+  }
+  return null;
+}
+
+function disableFormControls() {
+  document
+    .querySelectorAll('.form-card input, .form-card select, .form-card textarea, .form-card button')
+    .forEach((el) => { el.disabled = true; });
+}
+
+function setSimulationBanner(text, blocked) {
+  let banner = document.getElementById('sim-banner');
+  if (!text) {
+    banner?.remove();
+    return;
+  }
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'sim-banner';
+    banner.className = 'banner banner--info';
+    const card = document.querySelector('.form-card');
+    card?.parentNode?.insertBefore(banner, card);
+  }
+  banner.textContent = text;
+  banner.style.color = blocked ? '#a33333' : '';
+}
+
+function applyGating(stepId, expedienteId) {
+  const { rol, paso } = getSimulationFromUrl();
+  if (!rol && !paso) {
+    setSimulationBanner(null);
+    return;
+  }
+
+  const headerBadge = document.getElementById('header-badge');
+
+  if (paso) {
+    const cmp = compareStepIds(paso, stepId);
+    if (cmp > 0) {
+      setSimulationBanner(`Simulación: este sub-paso se asume aprobado (el expediente simulado va en ${paso}).`, false);
+      disableFormControls();
+      return;
+    }
+    if (cmp < 0) {
+      if (headerBadge) headerBadge.textContent = 'Pendiente';
+      setSimulationBanner(`Pendiente — el expediente simulado va en el sub-paso ${paso}.`, true);
+      disableFormControls();
+      return;
+    }
+  }
+
+  if (rol) {
+    const step = findDemoStep(stepId, expedienteId);
+    if (!step) {
+      setSimulationBanner(`Simulando como ${roleName(rol)} (${rol}) — sub-paso sin responsable registrado en demo-data, sin restricción.`, false);
+      return;
+    }
+    const codes = stepRoleCodes(step);
+    if (!codes.includes(rol)) {
+      if (headerBadge) headerBadge.textContent = 'Pendiente';
+      const responsible = step?.responsible?.role || 'otro rol / automático';
+      setSimulationBanner(`Pendiente para ${roleName(rol)} — acción de: ${responsible}.`, true);
+      disableFormControls();
+    } else {
+      setSimulationBanner(`Simulando como ${roleName(rol)} (${rol}) — acción habilitada.`, false);
+    }
+  }
+}
+
+/**
+ * Panel de simulación en pantallas de sub-paso. Sin `rol`/`paso` en la URL,
+ * los selects muestran su default y no se aplica ningún gating (vista actual).
+ * El select de sub-paso navega a la pantalla del paso elegido (anteriores
+ * asumidos aprobados); el de rol re-aplica la habilitación en vivo.
+ */
+export function initStepSimulation({ stepId }) {
+  const expedienteId = getExpedienteIdFromUrl();
+  const simulation = getSimulationFromUrl();
+  const anchor = document.getElementById('origin-banner') || document.getElementById('breadcrumb');
+  if (!anchor || document.getElementById('sim-panel')) return;
+
+  const panel = document.createElement('div');
+  panel.className = 'demo-panel';
+  panel.id = 'sim-panel';
+  panel.innerHTML = `
+    <label>Ver como rol:
+      <select id="sim-role"><option value="">— (vista actual)</option></select>
+    </label>
+    <label>Situar en sub-paso:
+      <select id="sim-step"><option value="">— (estado actual)</option></select>
+    </label>
+  `;
+  anchor.insertAdjacentElement('afterend', panel);
+
+  const roleSelect = panel.querySelector('#sim-role');
+  ROLE_CATALOG.forEach(({ code, name }) => {
+    const opt = document.createElement('option');
+    opt.value = code;
+    opt.textContent = `${name} (${code})`;
+    roleSelect.appendChild(opt);
+  });
+  roleSelect.value = simulation.rol || '';
+
+  const stepSelect = panel.querySelector('#sim-step');
+  orderedStepsForExpediente(expedienteId).forEach((entry) => {
+    const opt = document.createElement('option');
+    opt.value = entry.stepId;
+    opt.textContent = `${entry.stepId} — ${entry.stepName}`;
+    stepSelect.appendChild(opt);
+  });
+  stepSelect.value = simulation.paso || '';
+
+  roleSelect.addEventListener('change', () => {
+    setSimulationInUrl({ rol: roleSelect.value || null, paso: stepSelect.value || null });
+    window.location.reload();
+  });
+  stepSelect.addEventListener('change', () => {
+    const paso = stepSelect.value || null;
+    setSimulationInUrl({ rol: roleSelect.value || null, paso });
+    if (paso && paso !== stepId) {
+      const target = getStepFormUrl(paso, expedienteId);
+      if (target) {
+        window.location.href = target;
+        return;
+      }
+    }
+    window.location.reload();
+  });
+
+  applyGating(stepId, expedienteId);
 }

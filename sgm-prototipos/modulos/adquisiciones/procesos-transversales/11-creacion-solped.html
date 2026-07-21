@@ -237,7 +237,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, demoAction, initBalancePanel, initModalityToggle } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, demoAction, initBalancePanel, initModalityToggle, initStepSimulation } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
     import { getFormPreset } from '../../../shared/form-presets.js';
 
@@ -251,6 +251,7 @@
       stepName: 'Creación de solicitud',
       stepId: '1.1',
     });
+    initStepSimulation({ stepId: '1.1' });
 
     initModalityToggle('purchase-modality', 'resolution-row');
     bootstrapFormPage('solped');

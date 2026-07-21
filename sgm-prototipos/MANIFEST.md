@@ -36,6 +36,7 @@ Sidebar «Plataforma» → plataforma/index.html (hub consolas)
 - Presets de formularios: [`shared/form-presets.js`](./shared/form-presets.js) + [`shared/form-bootstrap.js`](./shared/form-bootstrap.js).
 - Manifiesto activo del shell: [`shared/steps-manifest.json`](./shared/steps-manifest.json) — pasos **transversales** (1.1–1.6, 2.1–2.3, 4.1, 5.1).
 - Etapa 3 por modalidad: `steps-manifest-compra-agil.js`, `steps-manifest-convenio-marco.js`, `steps-manifest-licitacion-publica.js`, `steps-manifest-trato-directo.js` (fusionados en `getStepFormUrl`).
+- **Panel de simulación** ([`shared/roles.js`](./shared/roles.js) + `initStepSimulation` en `form-shell.js`): dos selects por expediente — «Ver como rol» (10 códigos `adq.*` del catálogo P-24) y «Situar en sub-paso». Sin selección, la vista se mantiene en su estado actual. Con rol: la acción del paso activo solo queda habilitada si el rol coincide con el responsable (`responsible.role` → `ROLE_TEXT_TO_CODES`); si no, se ve **Pendiente**. Con sub-paso: los anteriores se asumen aprobados y los siguientes quedan pendientes. La selección viaja por query string (`?rol=…&paso=…`) entre el expediente y las pantallas de sub-paso (donde el select de paso navega a la pantalla elegida).
 
 ## Checklist obligatoria
 

@@ -48,7 +48,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
@@ -61,6 +61,7 @@
       stepName: 'Solicitar financiamiento a DAF',
       stepId: '1.4',
     });
+    initStepSimulation({ stepId: '1.4' });
     document.getElementById('origin-banner').innerHTML = renderOriginBanner({
       kind: 'module',
       label: 'Presupuestos',

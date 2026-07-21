@@ -57,7 +57,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -69,6 +69,7 @@
       stepName: 'Selección de oferta Gran Compra',
       stepId: '3.5',
     });
+    initStepSimulation({ stepId: '3.5' });
 
     document.getElementById('origin-banner').innerHTML = renderOriginBanner({
       kind: 'external',

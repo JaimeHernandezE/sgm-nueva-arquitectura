@@ -69,7 +69,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -81,6 +81,7 @@
       stepName: 'Aceptación de la OC',
       stepId: '3.4',
     });
+    initStepSimulation({ stepId: '3.4' });
 
     document.getElementById('origin-banner').innerHTML = renderOriginBanner({
       kind: 'external',

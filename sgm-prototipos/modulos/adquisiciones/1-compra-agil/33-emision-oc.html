@@ -86,7 +86,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, relativeFormHref } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -98,6 +98,7 @@
       stepName: 'Emisión de la Orden de Compra',
       stepId: '3.3',
     });
+    initStepSimulation({ stepId: '3.3' });
 
     document.getElementById('origin-banner').innerHTML = renderOriginBanner({
       kind: 'external',

@@ -2,11 +2,19 @@ import { getStages } from './demo-data/index.js';
 import { getExpedienteIdFromUrl, getExpedienteProfile } from './expedientes-demo.js';
 import { renderAdqBreadcrumb } from './app-shell.js';
 import { getStepFormUrl } from './form-shell.js';
+import {
+  ROLE_CATALOG,
+  stepRoleCodes,
+  roleName,
+  getSimulationFromUrl,
+  setSimulationInUrl,
+  withSimulationParams,
+} from './roles.js';
 
 let expandedState = {};
 
 export function getFormUrl(stepId) {
-  return getStepFormUrl(stepId, getExpedienteIdFromUrl());
+  return withSimulationParams(getStepFormUrl(stepId, getExpedienteIdFromUrl()));
 }
 
 export function resolveOrigin(step) {
@@ -26,8 +34,11 @@ function formatResponsible(r) {
 /**
  * Marca el paso actual, deja pendientes los posteriores y pliega todo
  * excepto la etapa que contiene el paso actual.
+ *
+ * Con `assumePreviousDone` (simulación de sub-paso) los anteriores no
+ * omitidos se fuerzan a aprobados, independiente del estado en demo-data.
  */
-export function applyCurrentStepFocus(stages, currentStepId) {
+export function applyCurrentStepFocus(stages, currentStepId, { assumePreviousDone = false } = {}) {
   if (!currentStepId) {
     return stages.map((stage) => ({
       ...stage,
@@ -58,6 +69,14 @@ export function applyCurrentStepFocus(stages, currentStepId) {
         };
       }
       if (!passedCurrent) {
+        if (assumePreviousDone && !(step.omitted || step.status === 'omitted')) {
+          return {
+            ...step,
+            current: false,
+            status: 'done',
+            action: { type: 'secondary', label: 'Ver formulario' },
+          };
+        }
         return { ...step, current: false };
       }
       if (step.omitted || step.status === 'omitted') {
@@ -86,12 +105,21 @@ export function applyCurrentStepFocus(stages, currentStepId) {
   });
 }
 
-function resolveAction(step, viewerRole) {
+/**
+ * Capa de rol sobre la acción del paso.
+ * Sin rol seleccionado: comportamiento actual (responsable habilitado).
+ * Con rol: la acción primaria del paso activo solo queda habilitada si el
+ * rol coincide con el responsable del paso; si no, se ve Pendiente.
+ */
+function resolveAction(step, simulation) {
   if (step.omitted || step.status === 'omitted') {
     return step.action?.type === 'badge' ? step.action : { type: 'badge', label: 'Omitido (optativo)' };
   }
-  if (step.action?.type === 'primary' && viewerRole === 'other') {
-    return { type: 'badge', label: 'En curso', active: true };
+  if (step.action?.type === 'primary' && simulation?.rol) {
+    const codes = stepRoleCodes(step);
+    if (!codes.includes(simulation.rol)) {
+      return { type: 'badge', label: 'Pendiente — acción de otro rol', active: true };
+    }
   }
   return step.action;
 }
@@ -120,9 +148,9 @@ function renderAction(action, step) {
   return `<span class="${classes.join(' ')}">${action.label}</span>`;
 }
 
-function renderStep(step, viewerRole) {
+function renderStep(step, simulation) {
   const origin = resolveOrigin(step);
-  const action = resolveAction(step, viewerRole);
+  const action = resolveAction(step, simulation);
   const classes = ['step'];
   if (origin.tint === 'external') classes.push('step--external');
   if (origin.tint === 'module') classes.push('step--module');
@@ -145,7 +173,7 @@ function renderStep(step, viewerRole) {
   `;
 }
 
-function renderStage(stage, viewerRole, expedienteId) {
+function renderStage(stage, simulation, expedienteId) {
   const stageClasses = ['stage'];
   if (stage.state === 'active') stageClasses.push('stage--active');
   if (stage.state === 'pending') stageClasses.push('stage--pending');
@@ -168,7 +196,7 @@ function renderStage(stage, viewerRole, expedienteId) {
       </button>
       ${isExpanded ? `
         <div class="stage__body">
-          ${(stage.steps || []).map((s) => renderStep(s, viewerRole)).join('')}
+          ${(stage.steps || []).map((s) => renderStep(s, simulation)).join('')}
         </div>
         ${stage.totalTime ? `<div class="stage__footer">${stage.totalTime}</div>` : ''}
         ${stage.note ? `<div class="stage__note">${stage.note}</div>` : ''}
@@ -177,14 +205,26 @@ function renderStage(stage, viewerRole, expedienteId) {
   `;
 }
 
-function renderHeader(profile) {
-  const current = profile.currentStep;
-  const formUrl = current?.id ? getStepFormUrl(current.id, profile.id) : null;
+function findStepById(stages, stepId) {
+  for (const stage of stages) {
+    const step = (stage.steps || []).find((s) => s.id === stepId);
+    if (step) return step;
+  }
+  return null;
+}
+
+function renderHeader(profile, currentStep, simulation) {
+  const current = currentStep || profile.currentStep;
+  const formUrl = current?.id ? withSimulationParams(getStepFormUrl(current.id, profile.id)) : null;
+  const simulatedTag = simulation?.paso ? ' (simulado)' : '';
   const currentLink = current && formUrl
-    ? `<a class="current-step-link" href="${formUrl}"><span class="current-step-link__id">${current.id}</span> — ${current.name}</a>`
+    ? `<a class="current-step-link" href="${formUrl}"><span class="current-step-link__id">${current.id}</span> — ${current.name}${simulatedTag}</a>`
     : current
-      ? `<div class="current-step-link"><span class="current-step-link__id">${current.id}</span> — ${current.name}</div>`
+      ? `<div class="current-step-link"><span class="current-step-link__id">${current.id}</span> — ${current.name}${simulatedTag}</div>`
       : '';
+  const roleLine = simulation?.rol
+    ? `<div class="meta">Viendo como: ${roleName(simulation.rol)} (${simulation.rol})</div>`
+    : '';
 
   return `
     <header class="expediente-header">
@@ -192,6 +232,7 @@ function renderHeader(profile) {
         <div class="folio">${profile.id}</div>
         <div class="glosa">${profile.glosa}</div>
         <div class="meta">Modalidad: ${profile.modality} · Unidad de origen: ${profile.unit}</div>
+        ${roleLine}
         ${currentLink}
       </div>
       <div class="global-badge">${profile.globalStatus}</div>
@@ -199,19 +240,25 @@ function renderHeader(profile) {
   `;
 }
 
-export function renderExpediente(viewerRole) {
+export function renderExpediente(simulation = getSimulationFromUrl()) {
   const expedienteId = getExpedienteIdFromUrl();
   const profile = getExpedienteProfile(expedienteId);
   const rawStages = getStages(expedienteId);
-  const stages = applyCurrentStepFocus(rawStages, profile.currentStep?.id);
+  const effectiveStepId = simulation.paso || profile.currentStep?.id;
+  const stages = applyCurrentStepFocus(rawStages, effectiveStepId, {
+    assumePreviousDone: Boolean(simulation.paso),
+  });
   const demoPanel = document.getElementById('demo-panel');
   const legend = document.getElementById('expediente-legend');
 
   if (demoPanel) demoPanel.classList.remove('hidden');
   if (legend) legend.classList.remove('hidden');
 
-  const stagesHtml = stages.map((s) => renderStage(s, viewerRole, expedienteId)).join('');
-  document.getElementById('app').innerHTML = renderHeader(profile) + stagesHtml;
+  const effectiveStep = findStepById(stages, effectiveStepId);
+  const currentStep = effectiveStep ? { id: effectiveStep.id, name: effectiveStep.name } : profile.currentStep;
+
+  const stagesHtml = stages.map((s) => renderStage(s, simulation, expedienteId)).join('');
+  document.getElementById('app').innerHTML = renderHeader(profile, currentStep, simulation) + stagesHtml;
 
   document.querySelectorAll('.stage__header').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -220,7 +267,7 @@ export function renderExpediente(viewerRole) {
       const stage = stages.find((s) => s.id === id);
       const current = expandedState[stateKey] ?? stage?.expanded ?? false;
       expandedState[stateKey] = !current;
-      renderExpediente(viewerRole);
+      renderExpediente(simulation);
     });
   });
 }
@@ -239,14 +286,50 @@ export function renderExpedienteBreadcrumb() {
   });
 }
 
+function populateSimulationSelects(simulation) {
+  const roleSelect = document.getElementById('sim-role');
+  const stepSelect = document.getElementById('sim-step');
+  if (!roleSelect || !stepSelect) return;
+
+  ROLE_CATALOG.forEach(({ code, name }) => {
+    const opt = document.createElement('option');
+    opt.value = code;
+    opt.textContent = `${name} (${code})`;
+    roleSelect.appendChild(opt);
+  });
+  roleSelect.value = simulation.rol || '';
+
+  const stages = getStages(getExpedienteIdFromUrl());
+  stages.forEach((stage) => {
+    const group = document.createElement('optgroup');
+    group.label = `${stage.id} · ${stage.name}`;
+    (stage.steps || []).forEach((step) => {
+      if (step.omitted || step.status === 'omitted') return;
+      const opt = document.createElement('option');
+      opt.value = step.id;
+      opt.textContent = `${step.id} — ${step.name}`;
+      group.appendChild(opt);
+    });
+    stepSelect.appendChild(group);
+  });
+  stepSelect.value = simulation.paso || '';
+}
+
 export function initExpediente() {
   renderExpedienteBreadcrumb();
 
-  const roleSelect = document.getElementById('viewer-role');
-  const viewerRole = roleSelect?.value || 'responsible';
+  const simulation = getSimulationFromUrl();
+  populateSimulationSelects(simulation);
+  renderExpediente(simulation);
 
-  renderExpediente(viewerRole);
-  roleSelect?.addEventListener('change', (e) => {
-    renderExpediente(e.target.value);
-  });
+  const onChange = () => {
+    const next = {
+      rol: document.getElementById('sim-role')?.value || null,
+      paso: document.getElementById('sim-step')?.value || null,
+    };
+    setSimulationInUrl(next);
+    renderExpediente(next);
+  };
+  document.getElementById('sim-role')?.addEventListener('change', onChange);
+  document.getElementById('sim-step')?.addEventListener('change', onChange);
 }

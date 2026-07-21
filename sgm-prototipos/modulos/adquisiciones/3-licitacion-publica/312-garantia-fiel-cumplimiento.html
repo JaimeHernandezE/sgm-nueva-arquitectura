@@ -61,7 +61,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -73,6 +73,7 @@
       stepName: 'Garantía de Fiel Cumplimiento',
       stepId: '3.12',
     });
+    initStepSimulation({ stepId: '3.12' });
     document.getElementById('origin-banner').innerHTML = renderOriginBanner({
       kind: 'module',
       label: 'Tesorería',

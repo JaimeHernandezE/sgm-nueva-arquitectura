@@ -95,7 +95,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, demoAction, initBalancePanel } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, demoAction, initBalancePanel, initStepSimulation } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
@@ -107,6 +107,7 @@
       stepName: 'Visto bueno de jefatura',
       stepId: '1.2',
     });
+    initStepSimulation({ stepId: '1.2' });
 
     bootstrapFormPage('solped-step');
 
