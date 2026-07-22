@@ -76,7 +76,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Solo lectura; sin efectos colaterales | — | — |
   | Filtros combinables (AND). `q` busca en folio, descripción (glosa) y etiqueta de `procurement_type` | — | — |
   | `requesting_department_id` restringe a unidades hijas del departamento | — | — |
-  | `awaiting_my_action=true` limita a expedientes que esperan acción del actor (firmar / aprobar según rol). Las pendientes detalladas por usuario se listan en la bandeja del sistema de notificaciones (plataforma, musts §9), no como columna del listado | — | — |
+  | `awaiting_my_action=true` limita a expedientes que esperan acción del actor (firmar / aprobar según rol). Las pendientes detalladas por usuario se listan en la bandeja del sistema de notificaciones (plataforma C6, [`notificaciones/overview.md`](../../plataforma/notificaciones/overview.md); musts §9), no como columna del listado | — | — |
   | `requested_amount` = total bruto SOLPED / preobligación; `awarded_amount` = OC activa o contrato cuando existe | — | — |
   | Si el rol es `adq.solicitante` o `adq.aprobador_unidad`, el scope de unidad del `RoleAssignment` se aplica **siempre**; `requesting_department_id` / `requesting_unit_id` ajenos se ignoran o rechazan | blocking | `FORBIDDEN` *(o se fuerza el scope sin error — decisión de implementación)* |
 

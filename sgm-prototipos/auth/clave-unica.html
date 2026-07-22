@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ingreso ClaveÚnica — SGM (simulación)</title>
+  <link rel="stylesheet" href="../shared/landing.css" />
+</head>
+<body class="auth-body">
+  <div class="auth-demo-banner" role="status">
+    <strong>Simulación de prototipo.</strong> No es el sitio oficial de ClaveÚnica ni valida credenciales reales.
+  </div>
+
+  <form class="auth-card" id="cu-form" autocomplete="off">
+    <div class="auth-card__brand">
+      <strong>ClaveÚnica</strong>
+      <small>Acceso simulado al SGM</small>
+    </div>
+
+    <label for="run">RUN</label>
+    <input id="run" name="run" type="text" inputmode="numeric" value="12.345.678-9" required />
+
+    <label for="pin">Clave</label>
+    <input id="pin" name="pin" type="password" value="demo" required />
+
+    <div class="auth-card__actions">
+      <button class="btn-cu" type="submit">Continuar</button>
+    </div>
+
+    <p class="auth-card__hint">
+      Usa cualquier clave. El prototipo inicia sesión como <strong>Ana Pérez</strong> (Municipalidad Alpha) y abre el home del SGM.
+    </p>
+    <a class="auth-card__back" id="link-back" href="../index.html">← Volver al inicio</a>
+  </form>
+
+  <script type="module">
+    import { siteUrl } from '../shared/app-shell.js';
+    import { loginDemo, isLoggedIn, postLoginUrl } from '../shared/auth-demo.js';
+
+    document.getElementById('link-back').href = siteUrl('index.html');
+
+    if (isLoggedIn()) {
+      window.location.replace(postLoginUrl(siteUrl));
+    }
+
+    document.getElementById('cu-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      loginDemo();
+      window.location.assign(postLoginUrl(siteUrl));
+    });
+  </script>
+</body>
+</html>

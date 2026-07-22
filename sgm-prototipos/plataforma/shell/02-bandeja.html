@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bandeja de notificaciones — SGM</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header">
+            <span>Bandeja de entrada</span>
+            <button class="btn btn--secondary" type="button" id="btn-read-all">Marcar todas leídas</button>
+          </div>
+          <div class="form-card__body">
+            <section class="form-section">
+              <h3 class="form-section__title">Filtros</h3>
+              <div class="form-row" style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
+                <div>
+                  <label for="f-kind">Tipo</label>
+                  <select id="f-kind">
+                    <option value="">Todos</option>
+                    <option value="action_required">Acción requerida</option>
+                    <option value="info">Informativa</option>
+                    <option value="deadline">Plazo</option>
+                    <option value="escalation">Escalamiento</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="f-module">Módulo</label>
+                  <select id="f-module">
+                    <option value="">Todos</option>
+                    <option value="Adquisiciones">Adquisiciones</option>
+                    <option value="Plataforma">Plataforma</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="f-read">Leída</label>
+                  <select id="f-read">
+                    <option value="">Todas</option>
+                    <option value="false">No leídas</option>
+                    <option value="true">Leídas</option>
+                  </select>
+                </div>
+                <div style="flex:1;min-width:160px;">
+                  <label for="f-q">Buscar folio / texto</label>
+                  <input type="search" id="f-q" placeholder="ADQ-2026-…" />
+                </div>
+              </div>
+            </section>
+            <section class="form-section">
+              <h3 class="form-section__title">Notificaciones</h3>
+              <table class="form-table" id="notif-table">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Título</th>
+                    <th>Módulo</th>
+                    <th>Tipo</th>
+                    <th>Fecha</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <p class="subtitle" id="notif-empty" hidden>No hay notificaciones con estos filtros.</p>
+            </section>
+            <section class="form-section" id="notif-detail" hidden>
+              <h3 class="form-section__title">Detalle</h3>
+              <div id="notif-detail-body"></div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderAdqBreadcrumb, siteUrl } from '../../shared/app-shell.js';
+    import { demoAction } from '../../shared/form-shell.js';
+    import {
+      listDemoNotifications,
+      markNotificationRead,
+      markAllNotificationsRead,
+      kindBadgeClass,
+      kindLabel,
+    } from '../../shared/notifications-ui.js';
+
+    initAppShell({ activeModule: 'plataforma', activeNav: 'bandeja', console: null });
+    document.getElementById('breadcrumb').innerHTML = renderAdqBreadcrumb({
+      items: [
+        { label: 'Plataforma', href: 'plataforma/index.html' },
+        { label: 'Notificaciones' },
+        { label: 'Bandeja' },
+      ],
+    });
+
+    demoAction('listNotifications');
+
+    function filtered() {
+      const kind = document.getElementById('f-kind').value;
+      const mod = document.getElementById('f-module').value;
+      const read = document.getElementById('f-read').value;
+      const q = document.getElementById('f-q').value.trim().toLowerCase();
+      return listDemoNotifications().filter((n) => {
+        if (kind && n.kind !== kind) return false;
+        if (mod && n.module !== mod) return false;
+        if (read === 'true' && !n.read) return false;
+        if (read === 'false' && n.read) return false;
+        if (q) {
+          const hay = `${n.title} ${n.body} ${n.resource_id || ''}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderTable() {
+      const rows = filtered();
+      const tbody = document.querySelector('#notif-table tbody');
+      const empty = document.getElementById('notif-empty');
+      empty.hidden = rows.length > 0;
+      tbody.innerHTML = rows
+        .map((n) => {
+          const when = n.created_at.replace('T', ' ').slice(0, 16);
+          return `<tr data-id="${n.id}" class="${n.read ? '' : 'is-unread'}">
+            <td>${n.read ? '○' : '●'}</td>
+            <td><button type="button" class="linkish" data-detail="${n.id}">${n.title}</button></td>
+            <td>${n.module}</td>
+            <td><span class="${kindBadgeClass(n.kind)}">${kindLabel(n.kind)}</span></td>
+            <td>${when}</td>
+            <td><a class="btn btn--secondary" href="${siteUrl(n.deep_link)}" data-go="${n.id}">${n.cta_label}</a></td>
+          </tr>`;
+        })
+        .join('');
+
+      tbody.querySelectorAll('[data-detail]').forEach((btn) => {
+        btn.addEventListener('click', () => showDetail(btn.getAttribute('data-detail')));
+      });
+      tbody.querySelectorAll('[data-go]').forEach((a) => {
+        a.addEventListener('click', () => markNotificationRead(a.getAttribute('data-go')));
+      });
+    }
+
+    function showDetail(id) {
+      const n = listDemoNotifications().find((x) => x.id === id);
+      if (!n) return;
+      demoAction('getNotification');
+      const panel = document.getElementById('notif-detail');
+      const body = document.getElementById('notif-detail-body');
+      panel.hidden = false;
+      body.innerHTML = `
+        <p><strong>${n.title}</strong></p>
+        <p class="subtitle">Tipo ${kindLabel(n.kind)} · Evento ${n.source_event_type}</p>
+        <p>${n.body || ''}</p>
+        <p class="subtitle">Recurso: ${n.resource_type || '—'} ${n.resource_id || ''}</p>
+        <div class="form-actions" style="margin:0;padding:0;border:0;">
+          <a class="btn btn--primary" href="${siteUrl(n.deep_link)}" id="detail-go">${n.cta_label}</a>
+          <button class="btn btn--secondary" type="button" id="detail-read">Marcar leída</button>
+        </div>
+      `;
+      document.getElementById('detail-go').addEventListener('click', () => markNotificationRead(id));
+      document.getElementById('detail-read').addEventListener('click', () => {
+        markNotificationRead(id);
+        renderTable();
+        showDetail(id);
+      });
+    }
+
+    ['f-kind', 'f-module', 'f-read', 'f-q'].forEach((id) => {
+      document.getElementById(id).addEventListener('input', renderTable);
+      document.getElementById(id).addEventListener('change', renderTable);
+    });
+
+    document.getElementById('btn-read-all').addEventListener('click', () => {
+      markAllNotificationsRead(filtered().map((n) => n.id));
+      renderTable();
+    });
+
+    renderTable();
+  </script>
+  <style>
+    .linkish {
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--tint-external-accent);
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+    }
+    .linkish:hover { text-decoration: underline; }
+    #notif-table tr.is-unread td { font-weight: 600; }
+  </style>
+</body>
+</html>

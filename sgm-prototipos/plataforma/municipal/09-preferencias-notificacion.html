@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preferencias de notificación — Consola municipal</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header"><span>Preferencias de notificación</span></div>
+          <div class="form-card__body">
+            <section class="form-section">
+              <h3 class="form-section__title">Canales</h3>
+              <div class="form-row">
+                <label><input type="checkbox" checked disabled /> Bandeja in-app (siempre activa)</label>
+              </div>
+              <div class="form-row">
+                <label><input type="checkbox" id="email-enabled" /> Correo electrónico</label>
+              </div>
+              <div class="form-row">
+                <label><input type="checkbox" disabled /> WhatsApp — no disponible en v1</label>
+              </div>
+            </section>
+            <section class="form-section">
+              <h3 class="form-section__title">Correo — por tipo</h3>
+              <div class="form-row">
+                <label>Acción requerida (obligatorios del municipio) <span class="required">*</span></label>
+                <input type="text" value="fijo: sí (política)" disabled />
+              </div>
+              <div class="form-row">
+                <label for="email-info">Informativas <span class="required">*</span></label>
+                <select id="email-info">
+                  <option value="true">sí</option>
+                  <option value="false">no</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label for="email-deadline">Recordatorios / plazos <span class="required">*</span></label>
+                <select id="email-deadline">
+                  <option value="true">sí</option>
+                  <option value="false">no</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label for="email-digest">Digest diario (agrupado) <span class="required">*</span></label>
+                <select id="email-digest">
+                  <option value="false">no</option>
+                  <option value="true">sí</option>
+                </select>
+              </div>
+              <p class="subtitle">El municipio puede forzar correo en hechos críticos; esos no admiten opt-out.</p>
+            </section>
+            <section class="form-section">
+              <h3 class="form-section__title">Horario (correo)</h3>
+              <div class="form-row">
+                <label for="quiet-start">No molestar desde (opcional)</label>
+                <input type="time" id="quiet-start" />
+              </div>
+              <div class="form-row">
+                <label for="quiet-end">No molestar hasta (opcional)</label>
+                <input type="time" id="quiet-end" />
+              </div>
+              <div class="form-row">
+                <label for="quiet-weekends">Solo días hábiles <span class="required">*</span></label>
+                <select id="quiet-weekends">
+                  <option value="true">sí</option>
+                  <option value="false">no</option>
+                </select>
+              </div>
+            </section>
+            <section class="form-section">
+              <h3 class="form-section__title">Política municipal (solo lectura demo)</h3>
+              <p class="subtitle" id="policy-summary"></p>
+            </section>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn--secondary" type="button" id="btn-cancel">Cancelar</button>
+            <button class="btn btn--primary" type="button" id="btn-save">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderPlataformaBreadcrumb } from '../../shared/app-shell.js';
+    import { demoAction } from '../../shared/form-shell.js';
+    import {
+      notificationPreferences as prefs,
+      tenantNotificationPolicy as policy,
+    } from '../../shared/demo-data/plataforma.js';
+    import { kindLabel } from '../../shared/notifications-ui.js';
+
+    initAppShell({ activeModule: 'plataforma', console: 'municipal', activeNav: '09-prefs' });
+    document.getElementById('breadcrumb').innerHTML = renderPlataformaBreadcrumb({
+      consoleLabel: 'Consola municipal',
+      screenLabel: 'Preferencias de notificación',
+    });
+
+    demoAction('getNotificationPreferences');
+
+    document.getElementById('email-enabled').checked = prefs.email_enabled;
+    document.getElementById('email-info').value = String(prefs.email_for_info);
+    document.getElementById('email-deadline').value = String(prefs.email_for_deadline);
+    document.getElementById('email-digest').value = String(prefs.email_digest_daily);
+    document.getElementById('quiet-start').value = prefs.quiet_hours_start || '';
+    document.getElementById('quiet-end').value = prefs.quiet_hours_end || '';
+    document.getElementById('quiet-weekends').value = String(prefs.quiet_weekends);
+    document.getElementById('policy-summary').textContent =
+      `Tipos obligatorios: ${policy.mandatory_email_kinds.map(kindLabel).join(', ')}. ` +
+      `Eventos forzados: ${policy.mandatory_email_event_types.join(', ')}.`;
+
+    document.getElementById('btn-save').addEventListener('click', () => {
+      demoAction('upsertNotificationPreferences');
+    });
+    document.getElementById('btn-cancel').addEventListener('click', () => {
+      history.back();
+    });
+  </script>
+</body>
+</html>

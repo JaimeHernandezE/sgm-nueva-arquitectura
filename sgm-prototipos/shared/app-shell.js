@@ -5,6 +5,8 @@ import {
   plataformaSubdereNav,
   plataformaMunicipalNav,
 } from './modules-registry.js';
+import { mountNotificationBell } from './notifications-ui.js';
+import { requireAuth } from './auth-demo.js';
 
 let siteBase = null;
 
@@ -100,9 +102,16 @@ function renderModuleNav(activeModuleId, activeNavId, consoleId) {
 }
 
 /**
- * @param {{ activeModule?: string, activeNav?: string|null, console?: 'subdere'|'municipal'|null }} opts
+ * @param {{ activeModule?: string, activeNav?: string|null, console?: 'subdere'|'municipal'|null, skipAuth?: boolean }} opts
  */
-export function initAppShell({ activeModule = 'adquisiciones', activeNav = null, console: consoleId = null } = {}) {
+export function initAppShell({
+  activeModule = 'adquisiciones',
+  activeNav = null,
+  console: consoleId = null,
+  skipAuth = false,
+} = {}) {
+  if (!skipAuth && !requireAuth({ siteUrl })) return;
+
   const sidebar = document.getElementById('app-sidebar');
   if (!sidebar) return;
 
@@ -111,6 +120,8 @@ export function initAppShell({ activeModule = 'adquisiciones', activeNav = null,
     <ul class="app-sidebar__modules">${renderModuleList(activeModule)}</ul>
     ${renderModuleNav(activeModule, activeNav, consoleId)}
   `;
+
+  mountNotificationBell({ siteUrl });
 }
 
 export function renderAdqBreadcrumb({ items }) {

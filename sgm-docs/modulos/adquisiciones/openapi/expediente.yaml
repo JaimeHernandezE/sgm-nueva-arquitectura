@@ -83,7 +83,8 @@ paths:
           description: >
             Si es true, limita a expedientes que esperan acción del actor autenticado
             (por firmar / aprobar). Las pendientes detalladas por usuario se listan en
-            la bandeja del sistema transversal de notificaciones (musts §9).
+            la bandeja del sistema transversal de notificaciones
+            (musts §9; plataforma/notificaciones).
           schema:
             type: boolean
       responses:

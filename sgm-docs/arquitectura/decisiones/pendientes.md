@@ -9,7 +9,7 @@ Registro centralizado de pendientes de los documentos de arquitectura. En cada d
 | P-03 | Multitenancy explícita en el contrato API (tenant en ruta, token, o ambos) | estandares-api §6 | ninguna | Abierto |
 | P-04 | Plazo mínimo de convivencia entre versiones deprecadas de contratos | estandares-api §2 | ninguna | Abierto |
 | P-05 | Mecanismo de entrega de eventos (webhooks, cola, polling) | contrato-api-first §3.4, musts-arquitectura §9.4, modulos/adquisiciones/contracts.md §4 | ninguna | Abierto |
-| P-06 | Matriz evento → canal → destinatario por rol | musts-arquitectura §9.3, §12 | ninguna | Abierto |
+| P-06 | Matriz evento → canal → destinatario por rol — borrador en [`plataforma/notificaciones/matriz-evento-canal.md`](../../plataforma/notificaciones/matriz-evento-canal.md) | musts-arquitectura §9.3, §12; plataforma/notificaciones | ninguna | **Borrador** |
 | P-07 | Perfil de pico con datos reales de pilotos (razón pico/promedio) | musts-arquitectura §1, §12 | pilotos | Abierto |
 | P-08 | Frescura requerida de la capa de lectura por caso de uso | musts-arquitectura §4, §12 | ninguna | Abierto |
 | P-09 | Clasificación de validaciones del piloto Compra Ágil (síncrona/asíncrona/cacheada) | musts-arquitectura §5, §12 | ninguna | Abierto |

@@ -86,7 +86,7 @@
 1. **Filtros acumulables:** buscador y filtros se combinan con AND. Dentro de `q`, la coincidencia es por folio **o** glosa **o** modalidad (OR de campos de texto).
 2. **Alcance RBAC (servidor):** con `adq.solicitante` / `adq.aprobador_unidad` el scope de `requesting_unit_id` de la asignación se aplica **siempre**. Intentos de ampliar con `requesting_department_id` / `requesting_unit_id` ajenos se ignoran o rechazan.
 3. **Proceso activo:** en UI es un checkbox que fija `status=in_progress`. Otros valores de `status` siguen disponibles vía API.
-4. **Por firmar / aprobar:** filtro de expedientes que esperan acción del actor (`awaiting_my_action`). No hay columna “Bandeja”: el listado de **acciones pendientes por usuario** corresponde a la bandeja de entrada del sistema de notificaciones ([`musts-arquitectura.md`](../../../arquitectura/especificacion/musts-arquitectura.md) §9).
+4. **Por firmar / aprobar:** filtro de expedientes que esperan acción del actor (`awaiting_my_action`). No hay columna “Bandeja”: el listado de **acciones pendientes por usuario** corresponde a la bandeja de entrada del sistema de notificaciones ([`musts-arquitectura.md`](../../../arquitectura/especificacion/musts-arquitectura.md) §9; [`notificaciones/overview.md`](../../../plataforma/notificaciones/overview.md), wireframe [`02-bandeja.md`](../../../plataforma/wireframes/shell/02-bandeja.md)).
 5. **Monto:** prioriza adjudicado (`PurchaseOrder.total_amount` / `Contract.amount`) sobre solicitado (total bruto SOLPED / `BudgetPreCommitment.estimated_amount`).
 6. **Paginación:** hasta **50** filas por página (`page_size=50`).
 7. **Orden por encabezado:** cada columna del listado ordena con `sort` + `order`; clic repetido en la misma columna invierte el sentido.

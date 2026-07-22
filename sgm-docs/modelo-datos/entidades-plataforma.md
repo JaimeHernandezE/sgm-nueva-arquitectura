@@ -1,6 +1,6 @@
 # Entidades de plataforma
 
-Fuente canónica de entidades del **core de plataforma**: identidad, RBAC, tenants, parámetros, auditoría, integraciones externas y gestión documental. Los módulos funcionales **referencian** estas entidades — no las redefinen.
+Fuente canónica de entidades del **core de plataforma**: identidad, RBAC, tenants, parámetros, auditoría, eventos/notificaciones (C6), integraciones externas y gestión documental. Los módulos funcionales **referencian** estas entidades — no las redefinen.
 
 Marco: [`arquitectura/especificacion/plataforma-core.md`](../arquitectura/especificacion/plataforma-core.md)  
 Contrato HTTP: [`plataforma/contracts.md`](../plataforma/contracts.md)
@@ -165,8 +165,115 @@ Parámetro normativo de plataforma (umbrales UTM, tramos de licitación, etc.). 
 | `key` | texto | **Obligatorio** |
 | `value` | JSON | **Obligatorio** |
 
-### `AuditRecord` / `EventSubscription` / `ApiClient`
+### `AuditRecord` / `ApiClient`
 Ver `plataforma-core.md` §4 y `plataforma/contracts.md`.
+
+---
+
+## Eventos y notificaciones (C6)
+
+Visión: [`plataforma/notificaciones/overview.md`](../plataforma/notificaciones/overview.md). Contrato: [`plataforma/contracts.md`](../plataforma/contracts.md) §2.7.
+
+### `EventSubscription`
+**Visibilidad:** expuesta (administración)
+
+Suscripción de un consumidor M2M (webhook) a tipos de evento. Mecanismo de entrega: **[P-05]**.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `id` | UUID | **Obligatorio** |
+| `tenant_id` | ref. `Tenant` | **Obligatorio** — scope del suscriptor |
+| `event_types` | texto[] | **Obligatorio** — nombres de evento de dominio |
+| `delivery_url` | URL | **Obligatorio** |
+| `scopes` | texto[] | **Obligatorio** — scopes M2M autorizados |
+| `status` | enum | **Obligatorio**. `active`, `paused`, `revoked` |
+| `created_at` | fecha/hora | **Obligatorio** |
+
+### `Notification`
+**Visibilidad:** expuesta (solo dueño / actor destinatario)
+
+Ítem de bandeja / campanita generado a partir de un evento de dominio.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `id` | UUID | **Obligatorio** |
+| `tenant_id` | ref. `Tenant` | **Obligatorio** |
+| `recipient_user_id` | ref. `User` | **Obligatorio** |
+| `module` | texto | **Obligatorio** — p. ej. `adquisiciones`, `plataforma` |
+| `kind` | enum | **Obligatorio**. `action_required`, `info`, `deadline`, `escalation` |
+| `title` | texto | **Obligatorio** |
+| `body` | texto | **Opcional** |
+| `source_event_type` | texto | **Obligatorio** — nombre del evento de dominio |
+| `source_event_id` | texto | **Obligatorio** — id idempotente del evento |
+| `dedupe_key` | texto | **Obligatorio** — único por destinatario; evita spam |
+| `resource_type` | texto | **Opcional** — p. ej. `ProcurementCase` |
+| `resource_id` | texto | **Opcional** — **Obligatorio si** hay deep link de recurso |
+| `deep_link` | texto | **Obligatorio** — ruta estable al paso/recurso |
+| `read_at` | fecha/hora | **Opcional** — nulo = no leída |
+| `created_at` | fecha/hora | **Obligatorio** |
+
+### `NotificationDelivery`
+**Visibilidad:** interna (consultable en admin de fallos)
+
+Intento de entrega por canal (auditoría operativa de C6).
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `id` | UUID | **Obligatorio** |
+| `notification_id` | ref. `Notification` | **Obligatorio** |
+| `channel` | enum | **Obligatorio**. `inbox`, `email`, `docdigital`, `webhook`, `sms`, `whatsapp` |
+| `status` | enum | **Obligatorio**. `pending`, `sent`, `failed`, `skipped` |
+| `attempted_at` | fecha/hora | **Obligatorio** |
+| `error_code` | texto | **Opcional** — si `failed` |
+| `provider_ref` | texto | **Opcional** — id externo del proveedor |
+
+`inbox` se materializa al crear `Notification`; filas `NotificationDelivery` registran correo, DocDigital, webhook, etc.
+
+### `NotificationPreference`
+**Visibilidad:** expuesta (propietario)
+
+Preferencias de canal del usuario, acotadas por `TenantNotificationPolicy`.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `id` | UUID | **Obligatorio** |
+| `tenant_id` | ref. `Tenant` | **Obligatorio** |
+| `user_id` | ref. `User` | **Obligatorio** |
+| `email_enabled` | booleano | **Obligatorio** |
+| `email_for_info` | booleano | **Obligatorio** |
+| `email_for_deadline` | booleano | **Obligatorio** |
+| `email_digest_daily` | booleano | **Obligatorio** |
+| `quiet_hours_start` | hora | **Opcional** |
+| `quiet_hours_end` | hora | **Opcional** |
+| `quiet_weekends` | booleano | **Obligatorio** — si true, no correo en no hábiles (salvo obligatorios) |
+
+### `TenantNotificationPolicy`
+**Visibilidad:** expuesta (administración municipal)
+
+Qué hechos exigen correo sin opt-out.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `id` | UUID | **Obligatorio** |
+| `tenant_id` | ref. `Tenant` | **Obligatorio** |
+| `mandatory_email_kinds` | enum[] | **Obligatorio** — tipicamente incluye `action_required` |
+| `mandatory_email_event_types` | texto[] | **Opcional** — eventos concretos forzados |
+| `updated_at` | fecha/hora | **Obligatorio** |
+
+### `NotificationTemplate`
+**Visibilidad:** interna (admin SUBDERE / municipal según alcance)
+
+Plantilla de título/cuerpo por `source_event_type` y canal.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `id` | UUID | **Obligatorio** |
+| `tenant_id` | ref. `Tenant` | **Opcional** — nulo = plantilla de plataforma |
+| `source_event_type` | texto | **Obligatorio** |
+| `channel` | enum | **Obligatorio**. `inbox`, `email`, `docdigital` |
+| `subject_template` | texto | **Obligatorio** |
+| `body_template` | texto | **Obligatorio** |
+| `locale` | texto | **Obligatorio** — p. ej. `es-CL` |
 
 ---
 

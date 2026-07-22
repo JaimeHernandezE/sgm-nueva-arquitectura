@@ -45,6 +45,7 @@ export const adquisicionesNav = [
 
 export const plataformaHubNav = [
   { id: 'hub', label: 'Inicio', path: 'plataforma/index.html' },
+  { id: 'bandeja', label: 'Bandeja', path: 'plataforma/shell/02-bandeja.html' },
 ];
 
 export const plataformaSubdereNav = [
@@ -68,4 +69,5 @@ export const plataformaMunicipalNav = [
   { id: '06-integraciones', label: 'Integraciones', path: 'plataforma/municipal/06-integraciones-municipio.html' },
   { id: '07-storage', label: 'Almacenamiento', path: 'plataforma/municipal/07-almacenamiento-documentos.html' },
   { id: '08-recert', label: 'Recertificación', path: 'plataforma/municipal/08-recertificacion-accesos.html' },
+  { id: '09-prefs', label: 'Notificaciones', path: 'plataforma/municipal/09-preferencias-notificacion.html' },
 ];

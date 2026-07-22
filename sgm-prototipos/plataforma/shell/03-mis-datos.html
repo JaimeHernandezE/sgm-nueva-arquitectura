@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mis datos — SGM</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header"><span>Mis datos</span></div>
+          <div class="form-card__body">
+            <section class="form-section">
+              <h3 class="form-section__title">Datos personales</h3>
+              <div class="form-row">
+                <label for="user-run">RUN</label>
+                <input type="text" id="user-run" disabled />
+              </div>
+              <div class="form-row">
+                <label for="user-name">Nombre visible</label>
+                <input type="text" id="user-name" disabled />
+              </div>
+              <div class="form-row">
+                <label for="user-status">Estado</label>
+                <input type="text" id="user-status" disabled />
+              </div>
+            </section>
+
+            <section class="form-section">
+              <h3 class="form-section__title">Organización y roles</h3>
+              <p class="form-section__hint">
+                Asignaciones vigentes (usuario + nodo orgánico + rol). Presentación según catálogo P-24
+                (<code>name</code> / <code>code</code>. No se editan en esta pantalla.
+              </p>
+              <table class="form-table" id="roles-table">
+                <thead>
+                  <tr>
+                    <th>Depto › Unidad</th>
+                    <th>Rol</th>
+                    <th>Code</th>
+                    <th>Vigencia</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <p class="subtitle" id="roles-empty" hidden>Sin roles asignados.</p>
+            </section>
+
+            <section class="form-section">
+              <h3 class="form-section__title">Solicitar cambio</h3>
+              <p class="form-section__hint">
+                La solicitud llega al administrador municipal; no modifica tus datos hasta que la aprueben
+                (<code>updateUser</code>. Trámites laborales (vacaciones, liquidaciones, etc.) quedan fuera — módulo RRHH futuro.
+              </p>
+              <div class="form-row">
+                <label for="proposed-name">Nombre visible propuesto (opcional)</label>
+                <input type="text" id="proposed-name" placeholder="Nuevo nombre visible" />
+              </div>
+              <div class="form-row">
+                <label for="change-reason">Motivo / detalle <span class="required">*</span></label>
+                <textarea id="change-reason" rows="3" placeholder="Describe el cambio solicitado"></textarea>
+              </div>
+              <div class="form-actions">
+                <button class="btn btn--primary" type="button" id="btn-request">Enviar solicitud al administrador</button>
+              </div>
+              <p class="subtitle" id="request-feedback" hidden></p>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderAdqBreadcrumb } from '../../shared/app-shell.js';
+    import { demoAction } from '../../shared/form-shell.js';
+    import { getSession } from '../../shared/auth-demo.js';
+    import { getDemoCurrentUserProfile } from '../../shared/demo-data/plataforma.js';
+
+    initAppShell({ activeModule: 'plataforma', activeNav: 'hub', console: null });
+    document.getElementById('breadcrumb').innerHTML = renderAdqBreadcrumb({
+      items: [
+        { label: 'Plataforma', href: 'plataforma/index.html' },
+        { label: 'Cuenta' },
+        { label: 'Mis datos' },
+      ],
+    });
+
+    demoAction('getCurrentUser');
+
+    const session = getSession();
+    const { user, assignments } = getDemoCurrentUserProfile(session?.user || {});
+
+    document.getElementById('user-run').value = user.run;
+    document.getElementById('user-name').value = user.display_name;
+    document.getElementById('user-status').value = user.status;
+
+    const tbody = document.querySelector('#roles-table tbody');
+    const empty = document.getElementById('roles-empty');
+    if (assignments.length === 0) {
+      empty.hidden = false;
+      tbody.innerHTML = '';
+    } else {
+      empty.hidden = true;
+      tbody.innerHTML = assignments
+        .map(
+          (a) => `<tr>
+            <td>${a.node_label}</td>
+            <td>${a.role_name}</td>
+            <td><code>${a.role_code}</code></td>
+            <td>${a.valid_from} — ${a.valid_until || '—'}</td>
+          </tr>`
+        )
+        .join('');
+    }
+
+    document.getElementById('btn-request').addEventListener('click', () => {
+      const reason = document.getElementById('change-reason').value.trim();
+      const feedback = document.getElementById('request-feedback');
+      if (!reason) {
+        feedback.hidden = false;
+        feedback.textContent = 'Indica el motivo / detalle de la solicitud.';
+        return;
+      }
+      demoAction('requestProfileChange');
+      feedback.hidden = false;
+      feedback.textContent =
+        'Solicitud enviada (demo). El administrador municipal aplicará el cambio con updateUser.';
+      document.getElementById('change-reason').value = '';
+      document.getElementById('proposed-name').value = '';
+    });
+  </script>
+</body>
+</html>

@@ -29,12 +29,18 @@
             <a class="btn btn--secondary" id="link-municipal" href="municipal/01-usuarios.html" style="display:block;text-align:center;padding:16px;">
               Consola municipal
               <small style="display:block;font-weight:400;margin-top:4px;">
-                Usuarios, roles, SoD, parámetros operativos, integraciones del tenant, documentos
+                Usuarios, roles, SoD, parámetros operativos, integraciones del tenant, documentos, preferencias de notificación
+              </small>
+            </a>
+            <a class="btn btn--secondary" id="link-bandeja" href="shell/02-bandeja.html" style="display:block;text-align:center;padding:16px;">
+              Bandeja de notificaciones
+              <small style="display:block;font-weight:400;margin-top:4px;">
+                Campanita global (shell) · acciones pendientes e informativas (C6)
               </small>
             </a>
           </div>
         </div>
-        <p class="subtitle">Prototipo interactivo para validación UX — no es diseño visual de licitación.</p>
+        <p class="subtitle">Prototipo interactivo para validación UX — no es diseño visual de licitación. Usa la 🔔 del encabezado en cualquier pantalla.</p>
       </div>
     </main>
     <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
@@ -44,6 +50,7 @@
     initAppShell({ activeModule: 'plataforma', activeNav: 'hub', console: null });
     document.getElementById('link-subdere').href = siteUrl('plataforma/subdere/01-gestion-tenants.html');
     document.getElementById('link-municipal').href = siteUrl('plataforma/municipal/01-usuarios.html');
+    document.getElementById('link-bandeja').href = siteUrl('plataforma/shell/02-bandeja.html');
   </script>
 </body>
 </html>

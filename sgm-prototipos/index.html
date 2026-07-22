@@ -2,12 +2,48 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=modulos/adquisiciones/index.html" />
-  <title>SGM — Prototipos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SGM — Sistema de Gestión Municipal</title>
+  <meta name="description" content="Sistema de Gestión Municipal: compras, presupuesto y operación municipal en una sola plataforma." />
+  <link rel="stylesheet" href="shared/landing.css" />
 </head>
-<body>
-  <p>Redirigiendo al módulo Adquisiciones…
-    <a href="modulos/adquisiciones/index.html">Abrir prototipos</a>
-  </p>
+<body class="landing-body">
+  <div class="landing">
+    <div class="landing__sky" aria-hidden="true"></div>
+    <div class="landing__grain" aria-hidden="true"></div>
+
+    <nav class="landing__nav">
+      <a class="landing__logo" href="index.html">SGM <span>prototipo</span></a>
+    </nav>
+
+    <main class="landing__hero">
+      <p class="landing__brand">SGM</p>
+      <h1 class="landing__headline">Gestión municipal en un solo lugar</h1>
+      <p class="landing__lead">
+        Compras, expediente y bandeja de trabajo para el municipio — prototipo interactivo de validación.
+      </p>
+      <div class="landing__cta">
+        <a class="btn-land btn-land--primary" id="btn-login" href="auth/clave-unica.html">
+          Ingresar con ClaveÚnica
+        </a>
+      </div>
+    </main>
+
+    <p class="landing__footnote">
+      Simulación de acceso. No conecta con ClaveÚnica real ni con datos municipales productivos.
+    </p>
+  </div>
+
+  <script type="module">
+    import { siteUrl } from './shared/app-shell.js';
+    import { isLoggedIn } from './shared/auth-demo.js';
+
+    const login = document.getElementById('btn-login');
+    login.href = siteUrl('auth/clave-unica.html');
+
+    if (isLoggedIn()) {
+      window.location.replace(siteUrl('home.html'));
+    }
+  </script>
 </body>
 </html>

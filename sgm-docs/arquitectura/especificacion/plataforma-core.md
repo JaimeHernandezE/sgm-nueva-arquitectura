@@ -53,7 +53,7 @@ Consecuencias:
 | C3 | **Gestión de tenants** | Ciclo de vida del municipio: alta, aprovisionamiento de schema, configuración, suspensión, baja; catálogo de módulos habilitados por tenant | `principios-no-negociables.md` §2, `musts-arquitectura.md` §3 | **Nuevo en este documento** (§5) |
 | C4 | **Parámetros** | Dos familias: `NormativeParameter` (legal, administrado por SUBDERE, doble control, vigencia temporal) y parámetros operativos por tenant (perfil de recepción, vistos buenos configurables) | Fichas etapa 2; **P-37**, **P-39**, **P-42** | Entidad definida; administración sin especificar (§6) |
 | C5 | **Auditoría** | Registro inmutable append-only, consultable vía API con scope restringido | `seguridad.md` §5 | Exigencias definidas; retención abierta (**P-26**) |
-| C6 | **Eventos y notificaciones** | Servicio transversal suscrito a eventos de dominio; entrega por canal según reglas por rol/unidad/municipio; webhooks firmados hacia terceros | `musts-arquitectura.md` §9, `seguridad.md` §8.4 | Diseño exigido; mecanismo y matriz abiertos (**P-05**, **P-06**) |
+| C6 | **Eventos y notificaciones** | Servicio transversal suscrito a eventos de dominio; entrega por canal según reglas por rol/unidad/municipio; webhooks firmados hacia terceros; bandeja/campanita in-app | `musts-arquitectura.md` §9, `seguridad.md` §8.4; producto: [`plataforma/notificaciones/overview.md`](../../plataforma/notificaciones/overview.md) | Diseño exigido; mecanismo **P-05**; matriz **P-06** en borrador |
 | C7 | **Sincronización Mercado Público** | Servicio único de plataforma que produce el evento interno (`MpStateChanged`) sea por push o polling; los módulos nunca conocen el mecanismo | `plantilla-maestra-sgm.md` §5.2, `integracion-mercado-publico.md` | Estándar definido; es servicio de plataforma, no de Adquisiciones |
 | C8 | **Ciclo de vida de usuarios** | Alta/modificación/baja como flujos especificados; subrogancias con vencimiento automático; recertificación | `seguridad.md` §9 | Exigencias definidas; proceso real abierto (**P-28**) |
 | C9 | **Adaptadores de integración externa** | FirmaGob (`requestSignature`, `confirmSignature`); SII (`getUtmValue`, `getPriceReference`); credenciales y config por tenant vía `TenantIntegrationConfig` | `seguridad.md` §7, `contrato-api-first.md` §2 | Marco en §7; detalle en `plataforma/contracts.md` (**P-48**, **P-57**) |
@@ -84,6 +84,11 @@ Entidades transversales que hoy las fichas usan de forma implícita (columnas Un
 | `TenantParameter` | Parámetro operativo por tenant (perfil de recepción **P-42**, visto bueno pre-OC **P-39**), distinto de `NormativeParameter` | Expuesta (administración municipal) |
 | `AuditRecord` | Registro de auditoría según `seguridad.md` §5.2 | Expuesta (scope restringido) |
 | `EventSubscription` | Suscripción de un consumidor (servicio de notificaciones, webhook de tercero) a eventos de dominio | Expuesta (administración) |
+| `Notification` | Ítem de bandeja/campanita por destinatario, derivado de evento de dominio | Expuesta (destinatario) |
+| `NotificationDelivery` | Intento de entrega por canal (correo, DocDigital, webhook, …) | Interna (admin fallos) |
+| `NotificationPreference` | Preferencias de canal del usuario | Expuesta (propietario) |
+| `TenantNotificationPolicy` | Hechos de correo obligatorio sin opt-out | Expuesta (admin municipal) |
+| `NotificationTemplate` | Plantilla título/cuerpo por evento y canal | Interna |
 | `ExternalProvider` | Catálogo de proveedores externos integrables (`mercado_publico`, `firma_gob`, `sii`, `clave_unica`) | Interna |
 | `TenantIntegrationConfig` | Configuración no secreta por tenant y proveedor (organismo MP, base URL, etc.) | Expuesta (administración) |
 | `IntegrationCredential` | Referencia a secreto en gestor dedicado; rotación auditada | Interna |
@@ -212,8 +217,11 @@ Dos consolas, ambas consumidoras sin privilegios del contrato del core (§2). Se
 | Integraciones del municipio | `TenantIntegrationConfig` (MP, FirmaGob si aplica) |
 | Almacenamiento de documentos | `TenantStorageConfig`: bucket propio (`tenant_owned`) o DMS (`external_dms`) |
 | Recertificación de accesos | Reporte de cuentas y última actividad (`seguridad.md` §9.4) |
+| Preferencias de notificación | Canales del usuario acotados por `TenantNotificationPolicy` (C6) |
 
-**P-52:** wireframes de ambas consolas creados (`plataforma/wireframes/`); cuerpos HTTP de ops *(inferidas)* pendientes en **P-48** (§2.11 del contrato).
+**Shell global (no es consola admin):** campanita y bandeja de notificaciones — [`plataforma/notificaciones/overview.md`](../../plataforma/notificaciones/overview.md); ficha **Mis datos** (identidad + `RoleAssignment` vigentes + solicitud de cambio al admin) — wireframes `plataforma/wireframes/shell/`. Frontera: self-service laboral (vacaciones, liquidaciones, etc.) queda en el módulo RRHH futuro, no en esta ficha.
+
+**P-52:** wireframes de ambas consolas creados (`plataforma/wireframes/`); cuerpos HTTP de ops *(inferidas)* pendientes en **P-48** (§2.11 del contrato). Wireframes shell (C6 + mis datos) y preferencias añadidos; ops inbox y `requestProfileChange` en contracts §2.7 / §2.11.
 
 ## 10. Foliación
 

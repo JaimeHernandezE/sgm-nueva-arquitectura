@@ -20,16 +20,19 @@ entidades-core.md            →  campos de formulario
 ## Navegación del prototipo
 
 ```
-index.html → modulos/adquisiciones/index.html (hub: modalidades + configuraciones)
-           → 01-listado-expedientes.html
-           → 00-expediente/index.html?expediente=<id>
-           → configuraciones/ (firmas / editor anclas)
+index.html (landing GitHub Pages)
+  → auth/clave-unica.html (simulación ClaveÚnica)
+  → home.html → plataforma/shell/02-bandeja.html
 
-Sidebar «Plataforma» → plataforma/index.html (hub consolas)
-                     → subdere/* | municipal/*
+Desde bandeja / sidebar:
+  → modulos/adquisiciones/…
+  → plataforma/subdere/* | municipal/*
+  → campanita global (notifications-ui.js)
 ```
 
+- **Auth demo:** [`shared/auth-demo.js`](./shared/auth-demo.js) — `sessionStorage`; `initAppShell` exige sesión (salvo pantallas públicas).
 - Sidebar derecho: módulos SGM (`shared/app-shell.js`, `shared/modules-registry.js`) — incluye **Plataforma** (core) y Adquisiciones (nav: Inicio, Expedientes, **Configuraciones**).
+- Topbar C6: campanita + menú de cuenta / cerrar sesión (`shared/notifications-ui.js`); datos en `demo-data/plataforma.js` (`notifications`).
 - Perfiles de expediente: [`shared/expedientes-demo.js`](./shared/expedientes-demo.js) — **5** expedientes con detalle completo (4 modalidades + caso sin saldo `ADQ-2026-00142`). La etapa 3 es específica por modalidad.
 - Datos demo por expediente: [`shared/demo-data/`](./shared/demo-data/) (`getStages(expedienteId)`).
 - Datos demo core: [`shared/demo-data/plataforma.js`](./shared/demo-data/plataforma.js).
@@ -182,6 +185,17 @@ No usa expediente ni `?expediente=`. Breadcrumb: Plataforma › Consola › Pant
 | Integraciones municipio | `06-integraciones-municipio.md` | `06-integraciones-municipio.html` | `upsertTenantIntegration`, `rotateIntegrationCredential` |
 | Almacenamiento | `07-almacenamiento-documentos.md` | `07-almacenamiento-documentos.html` | `upsertTenantStorage`, `getTenantStorage` |
 | Recertificación | `08-recertificacion-accesos.md` | `08-recertificacion-accesos.html` | `listAccessRecertificationReport` |
+| Preferencias de notificación | `09-preferencias-notificacion.md` | `09-preferencias-notificacion.html` | `getNotificationPreferences`, `upsertNotificationPreferences` |
+
+### Shell — cuenta y notificaciones (C6)
+
+Campanita global montada por `initAppShell` → `notifications-ui.js` (todas las pantallas). Visión: [`sgm-docs/plataforma/notificaciones/overview.md`](../sgm-docs/plataforma/notificaciones/overview.md). Menú de cuenta: Mis datos, Preferencias, Bandeja.
+
+| Pantalla | Wireframe | Prototipo | Operaciones principales |
+|---|---|---|---|
+| Campanita (dropdown) | `shell/01-campanita.md` | (chrome en `shared/notifications-ui.js`) | `listNotifications`, `markNotificationRead` |
+| Bandeja | `shell/02-bandeja.md` | `plataforma/shell/02-bandeja.html` | `listNotifications`, `getNotification`, `markNotificationRead`, `markAllNotificationsRead` |
+| Mis datos | `shell/03-mis-datos.md` | `plataforma/shell/03-mis-datos.html` | `getCurrentUser`, `requestProfileChange` |
 
 ## Configuraciones de módulo (Adquisiciones)
 

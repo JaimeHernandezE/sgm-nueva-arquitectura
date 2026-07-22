@@ -2,11 +2,12 @@
 
 ## Qué cubre
 
-Infraestructura **obligatoria** del SGM: identidad, RBAC, tenants, parámetros, auditoría, eventos, integraciones externas (MP, FirmaGob, SII) y gestión documental. No es un módulo à la carte — todo municipio que use SGM consume el core.
+Infraestructura **obligatoria** del SGM: identidad, RBAC, tenants, parámetros, auditoría, eventos y notificaciones (C6), integraciones externas (MP, FirmaGob, SII) y gestión documental. No es un módulo à la carte — todo municipio que use SGM consume el core.
 
 Marco arquitectónico: [`arquitectura/especificacion/plataforma-core.md`](../arquitectura/especificacion/plataforma-core.md)  
 Modelo de datos: [`modelo-datos/entidades-plataforma.md`](../modelo-datos/entidades-plataforma.md)  
 Contrato API: [`contracts.md`](./contracts.md)  
+Notificaciones (C6): [`notificaciones/overview.md`](./notificaciones/overview.md) · matriz P-06: [`notificaciones/matriz-evento-canal.md`](./notificaciones/matriz-evento-canal.md)  
 Catálogo RBAC (borrador P-24, transversal): [`arquitectura/especificacion/catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md)
 
 ## Dos consolas, una API
@@ -44,6 +45,17 @@ Fuente de pantallas: `plataforma-core.md` §9. Wireframes: [`wireframes/`](./wir
 | Integraciones del municipio | [`municipal/06-integraciones-municipio.md`](./wireframes/municipal/06-integraciones-municipio.md) | `upsertTenantIntegration`, `rotateIntegrationCredential`; *(inferida)* `listTenantIntegrations` |
 | Almacenamiento de documentos | [`municipal/07-almacenamiento-documentos.md`](./wireframes/municipal/07-almacenamiento-documentos.md) | `upsertTenantStorage`; *(inferida)* `getTenantStorage` |
 | Recertificación de accesos | [`municipal/08-recertificacion-accesos.md`](./wireframes/municipal/08-recertificacion-accesos.md) | *(inferida)* `listAccessRecertificationReport` |
+| Preferencias de notificación | [`municipal/09-preferencias-notificacion.md`](./wireframes/municipal/09-preferencias-notificacion.md) | `getNotificationPreferences`, `upsertNotificationPreferences`; *(inferida)* `upsertTenantNotificationPolicy` |
+
+## Shell — cuenta y notificaciones (C6)
+
+Superficie del **propio usuario** (no es consola admin). Presente en todas las consolas y módulos. Visión C6: [`notificaciones/overview.md`](./notificaciones/overview.md). Entrada habitual: menú de cuenta del topbar.
+
+| Pantalla | Wireframe | Operaciones |
+|---|---|---|
+| Campanita | [`shell/01-campanita.md`](./wireframes/shell/01-campanita.md) | `listNotifications`; *(inferida)* `markNotificationRead` |
+| Bandeja de entrada | [`shell/02-bandeja.md`](./wireframes/shell/02-bandeja.md) | `listNotifications`, `getNotification`; *(inferidas)* `markNotificationRead`, `markAllNotificationsRead` |
+| Mis datos | [`shell/03-mis-datos.md`](./wireframes/shell/03-mis-datos.md) | `getCurrentUser`; *(inferida)* `requestProfileChange` |
 
 Las operaciones *(inferidas)* están listadas en [`contracts.md`](./contracts.md) §2.11 hasta cerrar **P-48**.
 
@@ -58,4 +70,4 @@ Las operaciones *(inferidas)* están listadas en [`contracts.md`](./contracts.md
 
 ## Estado
 
-Wireframes (**P-52**) y prototipos HTML de ambas consolas. Cuerpos HTTP de ops admin pendientes en **P-48**.
+Wireframes (**P-52**) y prototipos HTML de ambas consolas. Shell: C6 ([`notificaciones/`](./notificaciones/overview.md), bandeja + campanita) y ficha [`shell/03-mis-datos`](./wireframes/shell/03-mis-datos.md) (prototipo [`03-mis-datos.html`](../../sgm-prototipos/plataforma/shell/03-mis-datos.html)); preferencias en municipal/09. Cuerpos HTTP de ops admin e inbox pendientes en **P-48**. Matriz **P-06** en borrador.

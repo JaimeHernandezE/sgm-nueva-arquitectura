@@ -22,21 +22,18 @@ Los prototipos se publican en **GitHub Pages** al hacer push a `main` (workflow 
 https://jaimehernandeze.github.io/sgm-nueva-arquitectura/
 ```
 
-Redirige al módulo Adquisiciones. Flujo de navegación:
+Abre el **landing** de SGM. Flujo de acceso:
 
 ```
-/ → modulos/adquisiciones/ (bienvenida)
-  → 01-listado-expedientes.html
-  → 00-expediente/index.html?expediente=...
+/ (landing)
+  → auth/clave-unica.html   (simulación ClaveÚnica)
+  → home.html               (bienvenida → redirige)
+  → plataforma/shell/02-bandeja.html   (bandeja de entrada)
 ```
 
-**URL pública:**
+Desde la bandeja, el sidebar lleva a Adquisiciones, consolas de plataforma, etc.
 
-```
-https://jaimehernandeze.github.io/sgm-nueva-arquitectura/
-```
-
-Listado de expedientes:
+**Listado de expedientes** (requiere sesión demo):
 
 ```
 https://jaimehernandeze.github.io/sgm-nueva-arquitectura/modulos/adquisiciones/01-listado-expedientes.html
@@ -63,10 +60,15 @@ npx serve sgm-prototipos
 
 ```
 sgm-prototipos/
-├── index.html              # Redirige a Adquisiciones
+├── index.html              # Landing (entrada GitHub Pages)
+├── home.html               # Post-login → redirige a bandeja
+├── auth/clave-unica.html   # Simulación ClaveÚnica
 ├── MANIFEST.md
 ├── shared/
-│   ├── app-shell.js        # Sidebar módulos + siteUrl() + nav Plataforma
+│   ├── auth-demo.js        # Sesión demo (sessionStorage)
+│   ├── landing.css         # Estilos landing / auth
+│   ├── app-shell.js        # Sidebar + siteUrl() + requireAuth
+│   ├── notifications-ui.js # Campanita + menú cuenta
 │   ├── shell.css
 │   ├── modules-registry.js # Adquisiciones + Plataforma (consolas)
 │   ├── expedientes-demo.js # Perfiles de expediente demo (4 modalidades + caso sin saldo)
@@ -77,8 +79,9 @@ sgm-prototipos/
 │   ├── steps-manifest-*.js # Etapa 3 por modalidad (CA, CM, LP, TD)
 ├── plataforma/             # Consolas del core (SUBDERE + municipal)
 │   ├── index.html          # Hub elegir consola
+│   ├── shell/              # Bandeja C6 + Mis datos (cuenta)
 │   ├── subdere/            # 01–07 pantallas admin plataforma
-│   └── municipal/          # 01–08 pantallas admin municipio
+│   └── municipal/          # 01–09 pantallas admin municipio
 └── modulos/
     └── adquisiciones/
         ├── index.html                  # Bienvenida del módulo
@@ -91,7 +94,7 @@ sgm-prototipos/
         └── 4-trato-directo/            # Etapa 3 Trato Directo
 ```
 
-Local: `npx serve sgm-prototipos` → `/plataforma` (hub) o `/modulos/adquisiciones`.
+Local: `npx serve sgm-prototipos` → `/` (landing) → login → bandeja.
 
 Cada fila del listado abre un expediente con **las 5 etapas** parametrizadas por modalidad vía `?expediente=`. La **etapa 3** es específica de cada modalidad y está enlazada desde el shell. Los formularios transversales reutilizan el mismo HTML; los valores visibles vienen de `form-presets.js`.
 

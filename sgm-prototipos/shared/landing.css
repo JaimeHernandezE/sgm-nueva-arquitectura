@@ -1,0 +1,334 @@
+/* Landing + auth demo (sin shell de aplicación) */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap');
+
+:root {
+  --land-ink: #0c1f2e;
+  --land-deep: #14344a;
+  --land-sea: #1a5a6e;
+  --land-mist: #d7e6ea;
+  --land-sand: #e8d5b5;
+  --land-accent: #c45c26;
+  --land-paper: #f3efe6;
+  --land-white: #faf8f4;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body.landing-body {
+  font-family: 'Source Sans 3', system-ui, sans-serif;
+  color: var(--land-white);
+  background: var(--land-ink);
+}
+
+.landing {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+}
+
+.landing__sky {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 90% 70% at 70% 20%, rgba(26, 90, 110, 0.55), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 15% 80%, rgba(196, 92, 38, 0.22), transparent 50%),
+    linear-gradient(165deg, #0a1824 0%, #14344a 42%, #1a5a6e 100%);
+  z-index: 0;
+}
+
+.landing__grain {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.landing__nav {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem clamp(1.25rem, 4vw, 3rem);
+  animation: land-fade-down 0.7s ease both;
+}
+
+.landing__logo {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.35rem;
+  letter-spacing: 0.06em;
+  color: var(--land-white);
+  text-decoration: none;
+}
+
+.landing__logo span {
+  font-weight: 500;
+  opacity: 0.7;
+  margin-left: 0.35rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+.landing__hero {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  align-content: center;
+  gap: 1.25rem;
+  max-width: 40rem;
+  padding: clamp(2rem, 8vh, 5rem) clamp(1.25rem, 4vw, 3rem) clamp(3rem, 10vh, 6rem);
+  animation: land-rise 0.9s 0.15s ease both;
+}
+
+.landing__brand {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(3rem, 10vw, 5.5rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.landing__headline {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(1.35rem, 3.2vw, 1.85rem);
+  font-weight: 500;
+  line-height: 1.25;
+  margin: 0;
+  color: var(--land-mist);
+  max-width: 22ch;
+}
+
+.landing__lead {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: rgba(247, 244, 238, 0.82);
+  max-width: 36ch;
+}
+
+.landing__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  animation: land-rise 0.9s 0.35s ease both;
+}
+
+.btn-land {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.35rem;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.btn-land:hover {
+  transform: translateY(-1px);
+}
+
+.btn-land--primary {
+  background: var(--land-sand);
+  color: var(--land-ink);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.btn-land--primary:hover {
+  background: #f0e2c8;
+}
+
+.btn-land--ghost {
+  background: transparent;
+  color: var(--land-mist);
+  border: 1px solid rgba(215, 230, 234, 0.35);
+}
+
+.btn-land--ghost:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.landing__footnote {
+  position: relative;
+  z-index: 2;
+  padding: 0 clamp(1.25rem, 4vw, 3rem) 1.5rem;
+  font-size: 0.8rem;
+  color: rgba(215, 230, 234, 0.55);
+  animation: land-fade-down 0.7s 0.5s ease both;
+}
+
+/* —— Auth ClaveÚnica (simulación) —— */
+
+body.auth-body {
+  font-family: 'Source Sans 3', system-ui, sans-serif;
+  color: var(--land-ink);
+  background:
+    linear-gradient(180deg, #e8eef2 0%, var(--land-paper) 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.auth-demo-banner {
+  width: min(420px, 100%);
+  margin-bottom: 0.75rem;
+  padding: 0.55rem 0.85rem;
+  background: #fff3cd;
+  border: 1px solid #c9a227;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: #5c4a00;
+  animation: land-fade-down 0.5s ease both;
+}
+
+.auth-card {
+  width: min(420px, 100%);
+  background: var(--land-white);
+  border: 1px solid #c5d0d6;
+  border-radius: 6px;
+  padding: 1.75rem 1.5rem 1.5rem;
+  box-shadow: 0 12px 40px rgba(12, 31, 46, 0.08);
+  animation: land-rise 0.55s ease both;
+}
+
+.auth-card__brand {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.auth-card__brand strong {
+  display: block;
+  font-size: 1.35rem;
+  color: #0d47a1;
+  letter-spacing: -0.01em;
+}
+
+.auth-card__brand small {
+  color: #5a6a75;
+  font-size: 0.85rem;
+}
+
+.auth-card label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0.85rem 0 0.35rem;
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #9aabb5;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 1rem;
+}
+
+.auth-card input:focus {
+  outline: 2px solid #0d47a1;
+  outline-offset: 1px;
+}
+
+.auth-card__actions {
+  margin-top: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.btn-cu {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font: inherit;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  background: #0d47a1;
+  color: #fff;
+}
+
+.btn-cu:hover {
+  background: #0a3a82;
+}
+
+.auth-card__back {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #5a6a75;
+}
+
+.auth-card__hint {
+  margin: 1rem 0 0;
+  font-size: 0.8rem;
+  color: #5a6a75;
+  line-height: 1.4;
+}
+
+/* —— Home redirect flash —— */
+
+body.home-body {
+  font-family: 'Source Sans 3', system-ui, sans-serif;
+  background: var(--land-paper);
+  color: var(--land-ink);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.home-redirect {
+  text-align: center;
+  animation: land-rise 0.45s ease both;
+}
+
+.home-redirect h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.5rem;
+  margin: 0 0 0.5rem;
+}
+
+.home-redirect p {
+  margin: 0;
+  color: #5a6a75;
+}
+
+@keyframes land-fade-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes land-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .landing__hero {
+    padding-top: 2rem;
+  }
+}

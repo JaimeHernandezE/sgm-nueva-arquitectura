@@ -40,7 +40,7 @@ Desde esta pantalla también se inicia la creación de un expediente nuevo (sub-
 - Departamento mostrado en UI: derivado del nodo orgánico padre de `requesting_unit_id` (`OrganizationalUnit`, plataforma).
 - **Creación** (columna UI): `created_at` formateado (fecha local del tenant); ordenable con `sort=created_at`.
 - **Monto** (columna UI): muestra `awarded_amount` si existe (etiqueta «Adjudicado»); si no, `requested_amount` («Solicitado»); «—» si aún no hay ninguno.
-- **Acciones pendientes del actor:** no van en una columna del listado. El filtro “Por firmar / aprobar” (`awaiting_my_action=true`) acota el listado a expedientes que esperan acción del usuario; el **detalle de pendientes por usuario** vive en la bandeja de entrada del **sistema transversal de notificaciones** ([`musts-arquitectura.md`](../../../arquitectura/especificacion/musts-arquitectura.md) §9).
+- **Acciones pendientes del actor:** no van en una columna del listado. El filtro “Por firmar / aprobar” (`awaiting_my_action=true`) acota el listado a expedientes que esperan acción del usuario; el **detalle de pendientes por usuario** vive en la bandeja de entrada del **sistema transversal de notificaciones** ([`musts-arquitectura.md`](../../../arquitectura/especificacion/musts-arquitectura.md) §9; producto: [`plataforma/notificaciones/overview.md`](../../../plataforma/notificaciones/overview.md), wireframe [`shell/02-bandeja.md`](../../../plataforma/wireframes/shell/02-bandeja.md)).
 
 **Borde de módulo:**
 

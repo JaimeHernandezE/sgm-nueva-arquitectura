@@ -24,7 +24,10 @@
 | `NormativeParameter` | Expuesta (lectura) | `id`, `key`, `value`, `valid_from`, `valid_until`, `legal_reference` |
 | `TenantParameter` | Expuesta | `id`, `tenant_id`, `key`, `value` |
 | `AuditRecord` | Expuesta (scope restringido) | `id`, `timestamp`, `actor_id`, `action`, `resource_type`, `resource_id`, `payload_summary` |
-| `EventSubscription` | Expuesta (admin) | `id`, `event_types`, `delivery_url`, `scopes`, `status` |
+| `EventSubscription` | Expuesta (admin) | `id`, `tenant_id`, `event_types`, `delivery_url`, `scopes`, `status`, `created_at` |
+| `Notification` | Expuesta (destinatario) | `id`, `module`, `kind`, `title`, `body`, `source_event_type`, `resource_type`, `resource_id`, `deep_link`, `read_at`, `created_at` |
+| `NotificationPreference` | Expuesta (propietario) | `id`, `email_enabled`, `email_for_info`, `email_for_deadline`, `email_digest_daily`, `quiet_hours_start`, `quiet_hours_end`, `quiet_weekends` |
+| `TenantNotificationPolicy` | Expuesta (admin municipal) | `id`, `tenant_id`, `mandatory_email_kinds`, `mandatory_email_event_types`, `updated_at` |
 | `DocumentRef` | Expuesta | `id` |
 | `Document` | Expuesta (metadatos) | `id`, `content_type`, `size_bytes`, `sha256`, `retention_class`, `created_at` |
 | `TenantIntegrationConfig` | Expuesta (admin) | `id`, `tenant_id`, `provider_id`, `enabled`, parámetros no secretos |
@@ -55,11 +58,21 @@ Rutas sin prefijo de tenant hasta resolver **[P-03]**.
 ### 2.2 Identidad
 
 #### `GET /users/me` — `getCurrentUser`
-- **Respuesta:** `User` + `RoleAssignment[]` activas en el tenant del token
+- **Uso:** sesión/autorización y ficha **Mis datos** ([`wireframes/shell/03-mis-datos.md`](./wireframes/shell/03-mis-datos.md)).
+- **Respuesta:** `User` + `RoleAssignment[]` **activas** en el tenant del token.
+- **Enriquecimiento (UI):** cada ítem de `RoleAssignment` embebe `role` (`Role`: al menos `code`, `name`, `module`, `process_area`) y `organizational_unit` (`OrganizationalUnit` del nodo + `parent` departamento si `kind = unit`), para evitar N+1. Presentación de roles según [`catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) (`name` visible; `code` técnico).
+- **Notas:** no hay «departamento home» en `User` — el vínculo orgánico son las N asignaciones. Sin email/cargo en `User` v1 (gap conocido respecto a canal correo en preferencias y firmante en C9; corrección de identidad laboral enriquecida → módulo RRHH futuro).
 
 #### `GET /users/{id}` — `getUser`
 - **Respuesta:** `User`
 - **Errores:** `USER_NOT_FOUND`
+
+#### `POST /users/me/profile-change-requests` — `requestProfileChange` *(inferida — detalle HTTP en §2.11 / P-48)*
+- **Uso:** el funcionario solicita al administrador municipal un cambio de datos personales; **no** muta `User` en el acto (el admin aplica vía `updateUser`).
+- **Entrada (borrador):** `proposed_display_name` (opcional), `reason` (obligatorio)
+- **Respuesta (borrador):** acuse con `id`, `status` (`pending`), `created_at`
+- **Errores:** `VALIDATION_ERROR` (motivo vacío); `USER_NOT_ACTIVE` si `status ≠ active`
+- **Frontera RRHH:** no cubre vacaciones, liquidaciones ni otros trámites laborales.
 
 ### 2.3 Autorización
 
@@ -109,7 +122,11 @@ Rutas sin prefijo de tenant hasta resolver **[P-03]**.
 - **Respuesta:** colección paginada de `AuditRecord`
 - **Reglas:** scope restringido; sin datos personales en `payload_summary`.
 
-### 2.7 Eventos (stub P-05)
+### 2.7 Eventos y notificaciones (C6)
+
+Visión: [`notificaciones/overview.md`](./notificaciones/overview.md). Matriz borrador **P-06:** [`notificaciones/matriz-evento-canal.md`](./notificaciones/matriz-evento-canal.md). Mecanismo de entrega a sistemas: **[P-05]**.
+
+#### Webhooks M2M
 
 #### `POST /event-subscriptions` — `registerWebhook`
 - **Entrada:** `event_types[]`, `delivery_url`, `secret`
@@ -117,6 +134,45 @@ Rutas sin prefijo de tenant hasta resolver **[P-03]**.
 
 #### `GET /event-subscriptions` — `listEventSubscriptions`
 - **Respuesta:** colección de `EventSubscription`
+
+#### Bandeja y campanita
+
+#### `GET /notifications` — `listNotifications`
+- **Uso:** campanita (recientes) y bandeja completa
+- **Entrada:** filtros `kind`, `module`, `read` (`true` \| `false` \| omitir), `from`, `to`, `q` (texto/folio), `limit`, cursor/página; `unread_first` (boolean)
+- **Respuesta:** colección paginada de `Notification` del actor (incl. ítems por subrogancia activa)
+- **Reglas:** solo destinatario; sin filtrar por tenant ajeno
+
+#### `GET /notifications/{id}` — `getNotification`
+- **Respuesta:** `Notification`
+- **Errores:** `NOTIFICATION_NOT_FOUND`, `FORBIDDEN`
+
+#### `POST /notifications/{id}/read` — `markNotificationRead` *(inferido — P-48)*
+- **Efecto:** setea `read_at` si estaba nulo (idempotente)
+- **Respuesta:** `Notification`
+
+#### `POST /notifications/read-all` — `markAllNotificationsRead` *(inferido — P-48)*
+- **Entrada:** filtros opcionales (mismos que listado)
+- **Efecto:** marca leídas las del actor que cumplan filtro
+- **Respuesta:** `{ updated_count }`
+
+#### Preferencias
+
+#### `GET /notification-preferences/me` — `getNotificationPreferences`
+- **Respuesta:** `NotificationPreference` del actor (crea defaults si no existe)
+
+#### `PUT /notification-preferences/me` — `upsertNotificationPreferences`
+- **Entrada:** campos de preferencia
+- **Respuesta:** `NotificationPreference`
+- **Reglas:** rechaza opt-out de correo cuando `TenantNotificationPolicy` marca el kind/evento como obligatorio → `POLICY_FORBIDS_OPT_OUT`
+
+#### `GET /tenant/notification-policy` — `getTenantNotificationPolicy` *(inferido — P-48)*
+- **Respuesta:** `TenantNotificationPolicy`
+
+#### `PUT /tenant/notification-policy` — `upsertTenantNotificationPolicy` *(inferido — P-48)*
+- **Uso:** admin municipal — hechos de correo obligatorio
+- **Entrada:** `mandatory_email_kinds`, `mandatory_email_event_types`
+- **Respuesta:** `TenantNotificationPolicy`
 
 ### 2.8 Clientes M2M (admin)
 
@@ -253,6 +309,11 @@ Operaciones citadas en wireframes de [`overview.md`](./overview.md) / [`wirefram
 | `listTenantIntegrations` | `municipal/06-integraciones-municipio` | |
 | `getTenantStorage` | `municipal/07-almacenamiento-documentos` | Lectura config C10 |
 | `listAccessRecertificationReport` | `municipal/08-recertificacion-accesos` | Reporte §9.4 seguridad |
+| `markNotificationRead` | `shell/01-campanita`, `shell/02-bandeja` | C6 bandeja |
+| `markAllNotificationsRead` | `shell/02-bandeja` | Bulk leídas |
+| `requestProfileChange` | `shell/03-mis-datos` | Solicitud de cambio de datos al admin; no muta `User` |
+| `getTenantNotificationPolicy` | `municipal/09-preferencias-notificacion` | Lectura política |
+| `upsertTenantNotificationPolicy` | idem (admin) | Correo obligatorio por tenant |
 
 ---
 
@@ -283,13 +344,14 @@ Los módulos **no** acceden a tablas del core ni a APIs de terceros; consumen la
 | `TenantProvisioned` | Alta tenant | `tenant_id`, `schema_name` |
 | `ApiClientRevoked` | Revocación M2M | `api_client_id`, `revoked_at` |
 
-**[PENDIENTE P-05]** mecanismo de entrega (webhooks, cola).
+**[PENDIENTE P-05]** mecanismo de entrega (webhooks, cola).  
+**[PENDIENTE P-06]** matriz evento → canal → destinatario — borrador en [`notificaciones/matriz-evento-canal.md`](./notificaciones/matriz-evento-canal.md).
 
 ---
 
 ## 5. Relación con Adquisiciones
 
-`modulos/adquisiciones/contracts.md` §3 declara dependencias hacia módulos de negocio (Presupuestos, Contabilidad, Tesorería) y hacia el **core** (integraciones C7/C9, documentos C10). Las siguientes capacidades se resuelven vía **este contrato**:
+`modulos/adquisiciones/contracts.md` §3 declara dependencias hacia módulos de negocio (Presupuestos, Contabilidad, Tesorería) y hacia el **core** (integraciones C7/C9, documentos C10, notificaciones C6). Las siguientes capacidades se resuelven vía **este contrato**:
 
 - Identidad del funcionario originante (**P-23**)
 - Scopes y roles para RBAC
@@ -297,3 +359,5 @@ Los módulos **no** acceden a tablas del core ni a APIs de terceros; consumen la
 - `readMpProcess` / `MpStateChanged`
 - `requestSignature`, `confirmSignature`
 - `storeDocument`, `getDownloadUrl` — adjuntos como `DocumentRef`
+- Bandeja / campanita C6 (`listNotifications`, …) — pendientes del actor; no columna en listado de expedientes
+

@@ -324,6 +324,147 @@ export const auditRecords = [
   },
 ];
 
+/** Notificaciones demo (C6) — bandeja / campanita. */
+export const notifications = [
+  {
+    id: 'n-001',
+    module: 'Adquisiciones',
+    kind: 'action_required',
+    title: 'Firmar CDP — ADQ-2026-00045',
+    body: 'Debes firmar el certificado de disponibilidad presupuestaria para continuar la SOLPED.',
+    source_event_type: 'BudgetAvailabilityCertificateIssued',
+    resource_type: 'ProcurementCase',
+    resource_id: 'ADQ-2026-00045',
+    deep_link: 'modulos/adquisiciones/procesos-transversales/14-emision-cdp.html?expediente=ADQ-2026-00045',
+    cta_label: 'Ir a firmar',
+    created_at: '2026-07-22T09:12:00',
+    age_label: 'hace 12m',
+    read: false,
+  },
+  {
+    id: 'n-002',
+    module: 'Adquisiciones',
+    kind: 'info',
+    title: 'OC aceptada — proveedor ACME',
+    body: 'Tu compra fue confirmada. Proveedor ACME SpA; entrega estimada según OC.',
+    source_event_type: 'PurchaseOrderAccepted',
+    resource_type: 'ProcurementCase',
+    resource_id: 'ADQ-2026-00123',
+    deep_link: 'modulos/adquisiciones/00-expediente/?expediente=ADQ-2026-00123',
+    cta_label: 'Abrir expediente',
+    created_at: '2026-07-22T08:01:00',
+    age_label: 'hace 1h',
+    read: false,
+  },
+  {
+    id: 'n-003',
+    module: 'Adquisiciones',
+    kind: 'action_required',
+    title: 'Modalidad pendiente de aprobación',
+    body: 'La decisión de modalidad del expediente ADQ-2026-00089 espera tu visto bueno.',
+    source_event_type: 'ProcurementModalityConfirmed',
+    resource_type: 'ProcurementCase',
+    resource_id: 'ADQ-2026-00089',
+    deep_link: 'modulos/adquisiciones/procesos-transversales/22-aprobacion-jefatura.html?expediente=ADQ-2026-00089',
+    cta_label: 'Ir a actuar',
+    created_at: '2026-07-21T16:40:00',
+    age_label: 'ayer',
+    read: true,
+  },
+  {
+    id: 'n-004',
+    module: 'Adquisiciones',
+    kind: 'action_required',
+    title: 'Confirmar recepción — OC vinculada',
+    body: 'Hay bienes pendientes de recepción conforme.',
+    source_event_type: 'PurchaseOrderAccepted',
+    resource_type: 'ProcurementCase',
+    resource_id: 'ADQ-2026-00142',
+    deep_link: 'modulos/adquisiciones/procesos-transversales/41-recepcion-conforme.html?expediente=ADQ-2026-00142',
+    cta_label: 'Ir a recepción',
+    created_at: '2026-07-21T11:00:00',
+    age_label: 'ayer',
+    read: false,
+  },
+  {
+    id: 'n-005',
+    module: 'Plataforma',
+    kind: 'info',
+    title: 'Cliente M2M revocado',
+    body: 'Se revocó el cliente ac_99. Revisa integraciones si aplica.',
+    source_event_type: 'ApiClientRevoked',
+    resource_type: 'ApiClient',
+    resource_id: 'ac_99',
+    deep_link: 'plataforma/subdere/03-clientes-m2m.html',
+    cta_label: 'Ver clientes M2M',
+    created_at: '2026-07-14T09:02:00',
+    age_label: 'hace 8d',
+    read: true,
+  },
+  {
+    id: 'n-006',
+    module: 'Adquisiciones',
+    kind: 'deadline',
+    title: 'Plazo de cotización próximo a vencer',
+    body: 'Quedan 2 días hábiles para el cierre del período de cotización.',
+    source_event_type: 'MpStateChanged',
+    resource_type: 'ProcurementCase',
+    resource_id: 'ADQ-2026-00201',
+    deep_link: 'modulos/adquisiciones/1-compra-agil/31-periodo-cotizacion.html?expediente=ADQ-2026-00201',
+    cta_label: 'Ver cotización',
+    created_at: '2026-07-20T10:00:00',
+    age_label: 'hace 2d',
+    read: true,
+  },
+];
+
+export const notificationPreferences = {
+  email_enabled: true,
+  email_for_info: true,
+  email_for_deadline: true,
+  email_digest_daily: false,
+  quiet_hours_start: '20:00',
+  quiet_hours_end: '08:00',
+  quiet_weekends: true,
+};
+
+export const tenantNotificationPolicy = {
+  mandatory_email_kinds: ['action_required'],
+  mandatory_email_event_types: ['PurchaseOrderRejected', 'ProcurementProcessFailed'],
+};
+
+/**
+ * Espejo demo de getCurrentUser enriquecido (ficha Mis datos).
+ * @param {{ id?: string, run?: string }} sessionUser
+ */
+export function getDemoCurrentUserProfile(sessionUser = {}) {
+  const user =
+    users.find((u) => u.id === sessionUser.id) ||
+    users.find((u) => u.run === sessionUser.run) ||
+    users.find((u) => u.display_name === sessionUser.display_name) ||
+    users[0];
+
+  const roleByCode = Object.fromEntries(catalogRoles.map((r) => [r.code, r]));
+  const assignments = roleAssignments
+    .filter((a) => a.user_id === user.id)
+    .map((a) => {
+      const role = roleByCode[a.role] || { code: a.role, name: a.role, module: '—' };
+      return {
+        ...a,
+        role_code: role.code,
+        role_name: role.name,
+        role_module: role.module,
+        node_label: a.node_label,
+        department: a.department,
+        unit: a.unit,
+        valid_from: a.valid_from,
+        valid_until: a.valid_until,
+      };
+    });
+
+  return { user, assignments };
+}
+
 export const modeLabels = {
   hosted_full: 'hosted_full',
   hosted_hybrid: 'hosted_hybrid',
