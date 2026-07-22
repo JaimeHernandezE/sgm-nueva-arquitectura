@@ -43,6 +43,10 @@ Lecturas y sincronización vía **core (C7)** — contraparte en fichas: `Core (
 
 `diagramas/` — BPMN de cada macroproceso en formato `.drawio`, editable.
 
+## Comparativa con Odoo
+
+[`comparativa-odoo-vs-nuevo.md`](./comparativa-odoo-vs-nuevo.md) — mapeo de entidades, campos presentes en Odoo y ausentes (o pendientes) en el dominio nuevo, e interdependencias con Presupuesto, Contabilidad, Inventario, Tesorería y Core.
+
 ## Contrato API
 
 [`contracts.md`](./contracts.md) — contrato del módulo (piloto Compra Ágil). Estándares transversales en [`arquitectura/especificacion/estandares-api.md`](../../arquitectura/especificacion/estandares-api.md).
