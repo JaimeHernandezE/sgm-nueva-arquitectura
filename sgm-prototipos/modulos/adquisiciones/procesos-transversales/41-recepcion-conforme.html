@@ -126,6 +126,10 @@
       });
     });
 
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    const nextStepLink = document.getElementById('next-step-link');
+
     document.getElementById('draft').addEventListener('click', () => demoValidation('registerReceipt'));
     document.getElementById('confirm').addEventListener('click', () => {
       const noConforme = document.querySelector('input[name="conformity"]:checked').value === 'no_conforme';
@@ -134,7 +138,13 @@
         return;
       }
       demoValidation('confirmReceipt');
-      setTimeout(() => { window.location.href = getExpedienteUrl(expedienteId); }, 800);
+      nextStepText.textContent = noConforme
+        ? 'Recepción no conforme registrada — observaciones adjuntas.'
+        : 'Recepción conforme registrada.';
+      nextStepLink.href = getExpedienteUrl(expedienteId);
+      nextStepPanel.classList.remove('hidden');
+      document.getElementById('confirm').disabled = true;
+      document.getElementById('draft').disabled = true;
     });
   </script>
 </body>

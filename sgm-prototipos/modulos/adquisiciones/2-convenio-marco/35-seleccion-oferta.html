@@ -42,9 +42,14 @@
           <div class="info-panel">
             <strong>Sincronizado desde MP</strong><br />
             Proveedor: Mobiliario Chile Ltda. · RUT 76.998.877-5<br />
-            Monto ofertado: $ 4.650.000
+            Monto ofertado: $ 78.000.000
           </div>
         </section>
+
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text">Continúa a 3.7 (Emisión y aceptación de la OC) cuando el proveedor acepte en MP.</span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.7</a>
+        </div>
       </div>
       <div class="form-actions">
         <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
@@ -57,7 +62,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, relativeFormHref, renderBreadcrumb, renderOriginBanner, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -83,6 +88,8 @@
       document.getElementById('header-badge').textContent = 'Sincronizado';
       document.getElementById('pending-section').classList.add('hidden');
       document.getElementById('synced-section').classList.remove('hidden');
+      document.getElementById('next-step-link').href = relativeFormHref('37-aceptacion-oc.html');
+      document.getElementById('next-step-panel').classList.remove('hidden');
     });
   </script>
 </body>

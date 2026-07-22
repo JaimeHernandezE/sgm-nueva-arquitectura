@@ -16,7 +16,6 @@
       <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
-    
 
     <div class="form-card">
       <div class="form-card__header">
@@ -25,14 +24,27 @@
       </div>
       <div class="form-card__body">
         <section class="form-section">
-          <h3 class="form-section__title">Decisión ante Gran Compra desierta</h3>
-          <div class="banner banner--info">Camino alternativo: si no hay ofertas, procurement_route pasa a compra_directa sobre el mismo folio (no se cancela el expediente).</div>
-          <div class="form-row"><label>Decisión</label><select><option>Confirmar desierto → Compra Directa (3.2)</option></select></div>
+          <h3 class="form-section__title">Transición a Compra Directa</h3>
+          <div class="info-panel">
+            <strong>Período de competencia cerrado sin ofertas — solo lectura</strong><br />
+            Ruta anterior: <code>gran_compra</code> · ID Intención de Compra: 4021-88-IC26
+          </div>
+          <div class="banner banner--info">
+            El expediente cae automáticamente a Compra Directa por Catálogo: se invalida el ID de Intención de Compra
+            y el flujo retoma desde 3.2 con un nuevo ID de OC de catálogo. Mismo folio ADQ-2026-00089 — no se cancela
+            ni se crea un expediente nuevo.
+          </div>
         </section>
+
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text">Continúa a 3.2 (Compra Directa por Catálogo) con un nuevo ID de OC de catálogo.</span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.2</a>
+        </div>
       </div>
       <div class="form-actions">
         <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+        <button class="btn btn--primary" type="button" id="confirm">Confirmar caída a Compra Directa</button>
       </div>
     </div>
       </div>
@@ -42,7 +54,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, relativeFormHref, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -63,9 +75,18 @@
     });
 
     document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
+
     document.getElementById('confirm').addEventListener('click', () => {
-      demoAction('demo');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+      demoAction('GranCompraDesierta');
+      const resultBanner = document.getElementById('result-banner');
+      resultBanner.classList.remove('hidden');
+      resultBanner.className = 'banner banner--info';
+      resultBanner.textContent = 'Transición registrada — procurement_route actualizado a compra_directa, mp_process_id anterior invalidado. Auditoría conserva ambos valores de ruta.';
+      document.getElementById('header-badge').textContent = 'Caído a Compra Directa';
+      document.getElementById('confirm').disabled = true;
+
+      document.getElementById('next-step-link').href = relativeFormHref('32-compra-directa-catalogo.html');
+      document.getElementById('next-step-panel').classList.remove('hidden');
     });
   </script>
 </body>

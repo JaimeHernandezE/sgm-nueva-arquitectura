@@ -101,7 +101,7 @@ export function buildStage3ConvenioMarco() {
         id: '3.1',
         name: 'Evaluación de umbral y determinación de ruta',
         responsible: { unit: '—', role: 'N/A', name: '(automático)' },
-        secondaryLine: 'Ruta: gran_compra · Monto $ 4.800.000 ≥ 1.000 UTM · UTM mes emisión aplicada',
+        secondaryLine: 'Ruta: gran_compra · Monto $ 80.000.000 ≥ 1.000 UTM · UTM mes emisión aplicada',
       }),
       doneStep({
         id: '3.2',
@@ -130,7 +130,7 @@ export function buildStage3ConvenioMarco() {
         id: '3.5',
         name: 'Selección de oferta Gran Compra',
         responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
-        secondaryLine: 'Mobiliario Chile Ltda. · $ 4.650.000 · Sincronizado desde MP',
+        secondaryLine: 'Mobiliario Chile Ltda. · $ 78.000.000 · Sincronizado desde MP',
         action: { type: 'secondary', label: 'Ver detalle' },
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
@@ -148,7 +148,7 @@ export function buildStage3ConvenioMarco() {
         name: 'Emisión y aceptación de la OC',
         responsible: { unit: '—', role: 'N/A', name: '(proveedor en MP)' },
         action: { type: 'secondary', label: 'Ver detalle' },
-        secondaryLine: 'OC N° 4021-88-OC26 · Compromiso cierto $ 4.650.000 · Lectura confirmada',
+        secondaryLine: 'OC N° 4021-88-OC26 · Compromiso cierto $ 78.000.000 · Lectura confirmada',
         origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
       doneStep({
