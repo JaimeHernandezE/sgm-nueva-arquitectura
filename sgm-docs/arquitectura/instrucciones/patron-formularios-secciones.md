@@ -58,6 +58,17 @@ Implementación en [`sgm-prototipos/shared/forms.css`](../../../sgm-prototipos/s
 | Documentos de respaldo (opcional) | Tabla de adjuntos + hint de tipos |
 | Pista presupuestaria (opcional) | Línea, año fiscal, enlace consulta saldo |
 
+## Badges de severidad en tablas de validación
+
+Toda tabla de reglas de validación (`contracts.md`, columna Severidad: `blocking`/`advisory`) se muestra en el prototipo como **badge en español**, nunca como texto plano ni en el vocabulario en inglés del contrato:
+
+| Severidad (`contracts.md`) | Badge | Clase |
+|---|---|---|
+| `blocking` | Bloqueante (rojo) | `badge badge--blocking` |
+| `advisory` | Advertencia (ámbar) | `badge badge--advisory` |
+
+Implementación en [`sgm-prototipos/shared/forms.css`](../../../sgm-prototipos/shared/forms.css) (mismos colores que usa `tone` para la columna Resultado evaluada en vivo: bloqueante `#a33333`, advertencia `#8c6d1f` — consistencia visual entre severidad fija y resultado dinámico, sin fusionar ambas columnas). Ejemplo: [`21-ratificacion-modalidad.html`](../../../sgm-prototipos/modulos/adquisiciones/procesos-transversales/21-ratificacion-modalidad.html), tabla "Resultado del gateway de validación".
+
 ## Contraejemplos
 
 - Lista continua de `form-row` sin títulos entre cabecera, tablas y acciones secundarias.

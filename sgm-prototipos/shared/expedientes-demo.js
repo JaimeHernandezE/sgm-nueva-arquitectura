@@ -42,9 +42,9 @@ export const expedientesDemo = [
     unitId: 'ou-obras',
     status: 'in_progress',
     awaitingMyAction: true,
-    globalStatus: 'En evaluación · comisión (3.9)',
+    globalStatus: 'Contrato suscrito · en espera de OC en MP (3.14)',
     fullDetail: true,
-    currentStep: { id: '3.9', name: 'Comisión evaluadora y acta de evaluación' },
+    currentStep: { id: '3.14', name: 'Emisión y aceptación de la OC' },
   },
   {
     id: 'ADQ-2026-00012',

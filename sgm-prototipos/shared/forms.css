@@ -57,6 +57,18 @@
   border-color: #c9a227;
 }
 
+.badge--blocking {
+  background: #fdeaea;
+  border-color: #a33333;
+  color: #a33333;
+}
+
+.badge--advisory {
+  background: #fdf6e3;
+  border-color: #8c6d1f;
+  color: #8c6d1f;
+}
+
 .form-card {
   border: 1px solid var(--border);
   border-radius: 8px;

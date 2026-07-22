@@ -92,7 +92,9 @@
         </section>
 
         <div class="info-panel hidden" id="next-step-panel">
-          Acta firmada — ranking cerrado. <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.10</a>
+          Acta de Evaluación firmada — ranking cerrado. Documentos habilitados para subir a Mercado Público.
+          <a class="btn btn--primary" href="https://www.mercadopublico.cl" target="_blank" rel="noopener" style="margin-left:8px;">Subir documentos a MP</a>
+          <a class="btn btn--secondary" id="back-to-expediente-link" href="#" style="margin-left:8px;">Volver al expediente</a>
         </div>
       </div>
     </div>
@@ -187,8 +189,8 @@
       headerBadge.textContent = 'Acta firmada';
       document.getElementById('sign-btn').disabled = true;
       document.querySelectorAll('#scores-table .score').forEach((el) => { el.disabled = true; });
+      document.getElementById('back-to-expediente-link').href = getExpedienteUrl(expedienteId);
       document.getElementById('next-step-panel').classList.remove('hidden');
-      document.getElementById('next-step-link').href = relativeFormHref('310-resolucion-adjudicacion.html');
     });
   </script>
 </body>

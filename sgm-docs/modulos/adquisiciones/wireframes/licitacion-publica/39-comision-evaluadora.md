@@ -56,7 +56,8 @@ Tres momentos secuenciales en la misma pantalla, como pasos internos.
 +----------------------------------------------------------------+
 | [ Firmar Acta de Evaluación (integrantes) ]                      |
 +----------------------------------------------------------------+
-| (banner: acta firmada, ranking cerrado — habilita 3.10)          |
+| Acta firmada, ranking cerrado — documentos habilitados para      |
+| subir a MP.       [ Subir documentos a MP ] [ Volver al exp. ]  |
 +----------------------------------------------------------------+
 ```
 
@@ -89,7 +90,7 @@ Tres momentos secuenciales en la misma pantalla, como pasos internos.
 - **3.9a bloqueado:** integrante sin `conflict_declaration_ref` no puede habilitarse a evaluar — `CONFLICT_DECLARATION_REQUIRED`.
 - **3.9b:** oferta inadmisible queda fuera de 3.9c aunque tenga mejor precio; causal visible en el acta.
 - **3.9c bloqueado:** `SCORES_INCONSISTENT_WITH_CRITERIA` si el puntaje total por oferta no cuadra con los pesos de `EvaluationCriterion` — el acta no puede firmarse hasta corregir.
-- **Firmada (camino feliz):** evento `EvaluationCompleted`; habilita 3.10 con la propuesta de adjudicación precargada.
+- **Firmada (camino feliz):** evento `EvaluationCompleted`; habilita 3.10 con la propuesta de adjudicación precargada. La pantalla no deriva directo a 3.10: solo ofrece subir los documentos firmados (designación, admisibilidad, acta) a Mercado Público y volver al expediente; el usuario entra a 3.10 desde ahí cuando corresponda.
 - **Empate en ranking:** requiere criterio de desempate declarado en las bases (3.1); bases sin ese criterio generan advertencia en 3.1, no aquí.
 - **Conflicto sobreviniente:** reemplazo de integrante por acto modificatorio, trazado vía `CommitteeMember.replaced_by_member_id`.
 
