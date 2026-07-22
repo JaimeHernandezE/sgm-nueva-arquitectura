@@ -91,7 +91,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -146,7 +146,7 @@
         alert('Bases técnicas y administrativas obligatorias (demo).');
         return;
       }
-      demoAction('createTenderBases');
+      demoValidation('createTenderBases');
       resultBanner.classList.remove('hidden');
       resultBanner.className = 'banner banner--info';
       resultBanner.textContent = 'Borrador guardado — TenderBases.status = draft.';
@@ -158,7 +158,7 @@
         alert('CRITERIA_WEIGHTS_INVALID — la suma de ponderaciones debe ser 100% (demo).');
         return;
       }
-      demoAction('submitBasesForLegalReview');
+      demoValidation('submitBasesForLegalReview');
       resultBanner.classList.remove('hidden');
       resultBanner.className = 'banner banner--info';
       resultBanner.textContent = 'Bases enviadas a revisión jurídica — TenderBases.status = legal_review.';

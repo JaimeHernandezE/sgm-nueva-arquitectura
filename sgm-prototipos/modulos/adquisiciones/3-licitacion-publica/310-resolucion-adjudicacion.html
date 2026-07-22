@@ -77,7 +77,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -119,7 +119,7 @@
           alert('AWARD_JUSTIFICATION_REQUIRED — fundamentación obligatoria al adjudicar a una oferta distinta del 1° del ranking (demo).');
           return;
         }
-        demoAction('issueAwardResolution');
+        demoValidation('issueAwardResolution');
         demoAction('requestSignature');
         demoAction('confirmSignature');
         demoAction('adjustPreCommitment');
@@ -129,7 +129,7 @@
         nextStepText.textContent = 'Continuar a 3.11 (Toma de Razón de la adjudicación, si aplica umbral) o directo a 3.12/3.13.';
         nextStepLink.href = relativeFormHref('311-toma-razon-adjudicacion.html');
       } else if (type === 'desertion') {
-        demoAction('issueAwardResolution');
+        demoValidation('issueAwardResolution');
         resultBanner.className = 'banner';
         resultBanner.style.color = '#a33333';
         resultBanner.textContent = 'Proceso declarado desierto — decisión posterior fuera de este paso: relicitar (nuevo proceso MP, mismo expediente) o Trato Directo por causal de licitación desierta.';
@@ -137,7 +137,7 @@
         nextStepText.textContent = 'Fin de esta ruta — decisión de relicitar o Trato Directo se toma en 2-modalidad-compra.md §2.1 (fuera del alcance de este prototipo).';
         nextStepLink.href = '#';
       } else {
-        demoAction('issueAwardResolution');
+        demoValidation('issueAwardResolution');
         resultBanner.className = 'banner';
         resultBanner.style.color = '#a33333';
         resultBanner.textContent = 'Proceso revocado por interés público.';

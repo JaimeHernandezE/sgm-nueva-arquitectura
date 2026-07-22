@@ -71,7 +71,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -117,7 +117,7 @@
         alert('Documento de aclaración obligatorio (demo).');
         return;
       }
-      demoAction('recordClarification');
+      demoValidation('recordClarification');
       resultBanner.classList.remove('hidden');
       resultBanner.className = 'banner banner--info';
 

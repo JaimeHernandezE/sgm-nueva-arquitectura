@@ -135,7 +135,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `currency` | enum | **Obligatorio** (default CLP) |
 
 ### `PurchaseRequestApproval`
-**Visibilidad:** expuesta — campos en contrato: `id`, `purchase_request_id`, `approver_id`, `decision`, `decision_date`, `comments`
+**Visibilidad:** expuesta — campos en contrato: `id`, `purchase_request_id`, `approver_id`, `decision`, `disposition`, `decision_date`, `comments`
 
 1:N con `PurchaseRequest`. Historial de decisiones — permite múltiples ciclos rechazo/reenvío.
 
@@ -144,6 +144,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `purchase_request_id` | ref. `PurchaseRequest` | **Obligatorio** |
 | `approver_id` | ref. `User` | **Obligatorio** |
 | `decision` | enum | **Obligatorio**. Valores: `approved`, `rejected` |
+| `disposition` | enum | **Obligatorio si** `decision = rejected`. Valores: `return_to_draft` (vuelve a 1.1), `cancel` (cierra expediente). Default histórico: `return_to_draft`. |
 | `decision_date` | fecha | **Obligatorio** (generado por sistema al registrar) |
 | `comments` | texto | **Obligatorio si** `decision = rejected` |
 

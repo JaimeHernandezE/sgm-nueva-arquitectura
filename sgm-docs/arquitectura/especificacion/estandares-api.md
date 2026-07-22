@@ -21,7 +21,11 @@ La especificación OpenAPI de cada módulo se versiona en el repositorio. El có
 
 ## 3. Errores verbosos y estructurados
 
-Toda respuesta de error (`4xx`, `5xx` de negocio) incluye cuerpo JSON con el esquema único:
+Toda respuesta de error (`4xx`, `5xx` de negocio) incluye cuerpo JSON estructurado. Hay **dos formas** según el caso:
+
+### 3.1 Error de un solo código (`ErrorResponse`)
+
+Para fallas de negocio o de proveedor con un único código (ej. saldo insuficiente, FirmaGob caído):
 
 ```json
 {
@@ -41,7 +45,48 @@ Toda respuesta de error (`4xx`, `5xx` de negocio) incluye cuerpo JSON con el esq
 | `legal_reference` | No | Ancla normativa cuando la regla tiene respaldo legal |
 | `severity` | Sí | `blocking` (impide avanzar) o `advisory` (informa sin bloquear) |
 
-**Nunca** un `400`/`422` sin cuerpo. La validación bloqueante vive en el servidor; el frontend solo la refleja. Esquema OpenAPI compartido: [`openapi/comunes.yaml`](./openapi/comunes.yaml) (`ErrorResponse`).
+### 3.2 Varias reglas de validación (`ValidationErrorResponse`)
+
+Cuando una operación de escritura (típicamente un submit de formulario) viola **una o más** reglas de campo/documento, la API responde con un agregado. Cada ítem es un `ValidationIssue` (mismos campos que `ErrorResponse`). El frontend muestra **todos** los `issues` (modal o listado); si hay al menos uno `blocking`, no avanza.
+
+```json
+{
+  "error_code": "VALIDATION_FAILED",
+  "rule": "La solicitud no cumple una o más reglas de validación",
+  "severity": "blocking",
+  "issues": [
+    {
+      "error_code": "MISSING_REQUIRED_FIELD",
+      "field": "requesting_unit",
+      "rule": "El campo Unidad solicitante es obligatorio.",
+      "severity": "blocking"
+    },
+    {
+      "error_code": "MISSING_REQUIRED_FIELD",
+      "field": "description",
+      "rule": "El campo Descripción es obligatorio.",
+      "severity": "blocking"
+    }
+  ]
+}
+```
+
+| Campo (raíz) | Obligatorio | Descripción |
+|---|---|---|
+| `error_code` | Sí | Agregado: `VALIDATION_FAILED` |
+| `rule` | Sí | Resumen legible |
+| `severity` | Sí | `blocking` si **algún** issue es `blocking`; si no, `advisory` |
+| `field` | No | Omitir o `null` cuando hay varios campos |
+| `issues` | Sí | Lista de `ValidationIssue` (`minItems: 1`) |
+
+| HTTP | Cuándo |
+|---|---|
+| `422` | Hay al menos un issue con `severity: blocking` |
+| `200` (éxito) con `warnings[]` | Solo issues `advisory` que no impiden el avance (opcionales en el cuerpo de éxito de la operación) |
+
+**Nunca** un `400`/`422` sin cuerpo. La validación bloqueante vive en el servidor; el frontend solo la refleja. Esquemas OpenAPI compartidos: [`openapi/comunes.yaml`](./openapi/comunes.yaml) (`ErrorResponse`, `ValidationIssue`, `ValidationErrorResponse`).
+
+Las fichas de sub-paso documentan el catálogo por acción de UI en §3.6 Validaciones ([`plantilla-maestra-sgm.md`](../instrucciones/plantilla-maestra-sgm.md)); cada código debe existir en `contracts.md` y en OpenAPI.
 
 ## 4. Paginación, filtrado y orden
 

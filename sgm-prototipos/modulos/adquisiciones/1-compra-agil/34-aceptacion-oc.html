@@ -69,7 +69,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -103,7 +103,7 @@
       resultBanner.className = 'banner';
 
       if (scenario === 'accepted_ok') {
-        demoAction('syncPurchaseOrderAccepted');
+        demoValidation('syncPurchaseOrderAccepted');
         resultBanner.classList.add('banner--info');
         resultBanner.textContent = 'OC Aceptada (confirmada) · commitBudget OK · Compromiso Cierto registrado por monto real.';
         document.getElementById('header-badge').textContent = 'Aceptada';

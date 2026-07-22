@@ -51,6 +51,24 @@
 | 3 | Operación | `confirmProcurementModality` | — (Adquisiciones) | — | Entrada: `selected_modality`, justificaciones condicionales — Respuesta: `ModalityDecision`, `CaseStep[]` instanciados |
 | 4 | Evento | `ProcurementModalityConfirmed` | — (consumidores: expediente, reportería, auditoría) | Asíncrona | `ModalityDecision`, `ProcurementCase` (`id`, `procurement_type`) |
 
+**Validaciones:** *(gateway V1–V8 → acción Confirmar modalidad; detalle normativo arriba)*
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Confirmar modalidad | `confirmProcurementModality` | `MISSING_REQUIRED_FIELD` | `selected_modality` | El campo Modalidad de compra es obligatorio. | blocking |
+| Confirmar modalidad | `confirmProcurementModality` | `MODALITY_AMOUNT_EXCEEDED` | `selected_modality` | Compra Ágil no procede: el monto estimado supera el umbral en UTM vigente. | blocking |
+| Confirmar modalidad | `confirmProcurementModality` | `FRAMEWORK_AGREEMENT_FIRST_OPTION` | `catalog_bypass_justification` | Existe cobertura en Convenio Marco; se exige justificación para elegir otra modalidad. | blocking |
+| Confirmar modalidad | `confirmProcurementModality` | `DIRECT_PROCUREMENT_CAUSE_REQUIRED` | `direct_procurement_cause` | Trato Directo requiere causal legal y resolución fundada. | blocking |
+| Confirmar modalidad | `confirmProcurementModality` | `UTM_VALUE_UNAVAILABLE` | — | No hay valor UTM vigente para evaluar umbrales. | blocking |
+| Confirmar modalidad | `confirmProcurementModality` | `MODALITY_ALREADY_CONFIRMED` | — | La modalidad ya está confirmada en este expediente. | blocking |
+| Confirmar modalidad | `confirmProcurementModality` | `PUBLIC_TENDER_SUGGESTED` | `selected_modality` | Se sugiere Licitación Pública según monto y cobertura de catálogo. | advisory |
+| Confirmar modalidad | `confirmProcurementModality` | `COMPTROLLER_REVIEW_REQUIRED` | `selected_modality` | El monto puede exigir Toma de Razón de Contraloría. | advisory |
+| Confirmar modalidad | `confirmProcurementModality` | `SPLITTING_SUSPECTED` | — | Posible fraccionamiento detectado en compras recientes de la unidad. | advisory |
+| Confirmar modalidad | `confirmProcurementModality` | `TENDER_TIER_INFO` | `selected_modality` | Tramo de licitación y plazo mínimo de publicación informados. | advisory |
+| Confirmar modalidad | `confirmProcurementModality` | `TENDER_GUARANTEES_REQUIRED` | `selected_modality` | Se informarán garantías exigibles según monto. | advisory |
+| Confirmar modalidad | `confirmProcurementModality` | `CATALOG_STALE` | — | Catálogo CM fuera de ventana de frescura; V2 se evalúa con advertencia. | advisory |
+| Confirmar modalidad | `confirmProcurementModality` | `AGILE_PURCHASE_AVAILABLE` | `selected_modality` | Existe Compra Ágil como vía más expedita para este monto. | advisory |
+
 **Edge cases:**
 - Modalidad de la SOLPED contradice el gateway (ej. venía como Compra Ágil y el monto supera 100 UTM) → el sistema no permite ratificar; usuario debe seleccionar modalidad válida; el cambio queda en auditoría con ambos valores.
 - Ítem en catálogo CM pero usuario selecciona otra modalidad sin justificación → `FRAMEWORK_AGREEMENT_FIRST_OPTION` (`severity: blocking`).
@@ -88,6 +106,15 @@
 |---|---|---|---|---|---|
 | 1 | Dependencia *(si se confirma firma)* | `requestSignature`, `confirmSignature` | Core (FirmaGob) | Síncrona bloqueante | Firma de la aprobación, si DM la exige |
 | 2 | Evento | `ProcurementModalityApproved` | — (consumidores: expediente, auditoría) | Asíncrona | `ModalityDecisionApproval`, `ProcurementCase.id` |
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Aprobar modalidad | `approveModalityDecision` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida. | blocking |
+| Aprobar modalidad | `approveModalityDecision` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking |
+| Aprobar modalidad | `approveModalityDecision` | `SEGREGATION_OF_DUTIES_VIOLATION` | `approver_id` | Quien aprueba no puede ser quien decidió la modalidad en 2.1. | blocking |
+| Rechazar modalidad | `rejectModalityDecision` | `MISSING_REQUIRED_FIELD` | `comments` | El campo Comentarios es obligatorio al rechazar. | blocking |
 
 **Edge cases:**
 - Rechazo de jefatura → `ModalityDecision` queda sin efecto; el flujo retorna a 2.1 para nueva selección (los `CaseStep` instanciados se anulan con auditoría).
@@ -130,6 +157,17 @@ Registrado y validado el código — sea la ejecución inmediata o diferida —,
 | 2 | Sistema externo (lectura) | `readMpProcess` | Core (Mercado Público) | Síncrona bloqueante (solo en la vinculación) | Entrada: `mp_process_id` — Respuesta: existencia, tipo de proceso, organismo comprador, estado actual |
 | 3 | Operación | `linkMpProcess` | — (Adquisiciones) | — | Entrada: `mp_process_id` — valida contra `readMpProcess` antes de persistir |
 | 4 | Evento | `MpProcessLinked` | — (consumidores: expediente, servicio de sincronización de estados MP) | Asíncrona | `ProcurementCase` (`id`, `mp_process_id`, `procurement_type`) — gatilla el inicio del polling/webhook de estados |
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Vincular proceso MP | `linkMpProcess` | `MISSING_REQUIRED_FIELD` | `mp_process_id` | El campo Código / ID de proceso MP es obligatorio. | blocking |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_NOT_FOUND` | `mp_process_id` | El proceso MP no existe o el código es inválido. | blocking |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_ORGANISM_MISMATCH` | `mp_process_id` | El organismo comprador del proceso MP no coincide con el municipio. | blocking |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_TYPE_MISMATCH` | `mp_process_id` | El tipo de proceso MP no coincide con la modalidad confirmada. | blocking |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_ALREADY_LINKED` | `mp_process_id` | El código MP ya está vinculado a otro expediente. | blocking |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROVIDER_UNAVAILABLE` | — | Mercado Público no está disponible para validar el vínculo. | blocking |
 
 **Edge cases:**
 - Código MP inexistente o con formato inválido → `MP_PROCESS_NOT_FOUND` (`severity: blocking`); no se persiste el vínculo.

@@ -45,37 +45,57 @@ paths:
         "404":
           $ref: ../adquisiciones.openapi.yaml#/components/responses/ProcurementCaseNotFound
         "422":
-          description: Regla de negocio violada.
+          description: Regla(s) de negocio violada(s). Una sola regla → ErrorResponse; varias → ValidationErrorResponse.
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                oneOf:
+                  - $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                  - $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ValidationErrorResponse
               examples:
                 modalityAmountExceeded:
                   value:
                     error_code: MODALITY_AMOUNT_EXCEEDED
-                    rule: El monto excede 100 UTM para Compra Ágil
+                    field: selected_modality
+                    rule: Compra Ágil no procede: el monto estimado supera el umbral en UTM vigente.
                     severity: blocking
                 frameworkFirst:
                   value:
                     error_code: FRAMEWORK_AGREEMENT_FIRST_OPTION
-                    rule: El catálogo de Convenio Marco es la primera opción sin justificación
+                    field: catalog_bypass_justification
+                    rule: Existe cobertura en Convenio Marco; se exige justificación para elegir otra modalidad.
                     severity: blocking
                 directCause:
                   value:
                     error_code: DIRECT_PROCUREMENT_CAUSE_REQUIRED
-                    rule: Trato directo requiere causal y resolución fundada
+                    field: direct_procurement_cause
+                    rule: Trato Directo requiere causal legal y resolución fundada.
                     severity: blocking
                 alreadyConfirmed:
                   value:
                     error_code: MODALITY_ALREADY_CONFIRMED
-                    rule: La modalidad ya fue confirmada
+                    rule: La modalidad ya está confirmada en este expediente.
                     severity: blocking
                 utmUnavailable:
                   value:
                     error_code: UTM_VALUE_UNAVAILABLE
-                    rule: No fue posible obtener el valor UTM vigente
+                    rule: No hay valor UTM vigente para evaluar umbrales.
                     severity: blocking
+                gatewayMultiple:
+                  summary: Varias reglas bloqueantes del gateway (ValidationErrorResponse)
+                  value:
+                    error_code: VALIDATION_FAILED
+                    rule: La solicitud no cumple una o más reglas de validación
+                    severity: blocking
+                    issues:
+                      - error_code: MISSING_REQUIRED_FIELD
+                        field: selected_modality
+                        rule: El campo Modalidad de compra es obligatorio.
+                        severity: blocking
+                      - error_code: FRAMEWORK_AGREEMENT_FIRST_OPTION
+                        field: catalog_bypass_justification
+                        rule: Existe cobertura en Convenio Marco; se exige justificación para elegir otra modalidad.
+                        severity: blocking
   /modality-decisions/{id}/approve:
     post:
       operationId: approveModalityDecision
@@ -204,29 +224,50 @@ paths:
         "404":
           $ref: ../adquisiciones.openapi.yaml#/components/responses/ProcurementCaseNotFound
         "422":
-          description: Regla de negocio violada.
+          description: Regla(s) de negocio violada(s). Una sola regla → ErrorResponse; varias → ValidationErrorResponse.
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                oneOf:
+                  - $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                  - $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ValidationErrorResponse
               examples:
                 mpNotFound:
                   value:
                     error_code: MP_PROCESS_NOT_FOUND
-                    rule: El proceso de Mercado Público no existe
+                    field: mp_process_id
+                    rule: El proceso MP no existe o el código es inválido.
                     severity: blocking
                 organismMismatch:
                   value:
                     error_code: MP_PROCESS_ORGANISM_MISMATCH
-                    rule: El organismo comprador no coincide con el tenant
+                    field: mp_process_id
+                    rule: El organismo comprador del proceso MP no coincide con el municipio.
                     severity: blocking
                 typeMismatch:
                   value:
                     error_code: MP_PROCESS_TYPE_MISMATCH
-                    rule: El tipo de proceso MP no coincide con la modalidad confirmada
+                    field: mp_process_id
+                    rule: El tipo de proceso MP no coincide con la modalidad confirmada.
                     severity: blocking
                 alreadyLinked:
                   value:
                     error_code: MP_PROCESS_ALREADY_LINKED
-                    rule: El código MP ya está vinculado a otro expediente
+                    field: mp_process_id
+                    rule: El código MP ya está vinculado a otro expediente.
                     severity: blocking
+                linkMultiple:
+                  summary: Varias reglas de vinculación (ValidationErrorResponse)
+                  value:
+                    error_code: VALIDATION_FAILED
+                    rule: La solicitud no cumple una o más reglas de validación
+                    severity: blocking
+                    issues:
+                      - error_code: MISSING_REQUIRED_FIELD
+                        field: mp_process_id
+                        rule: El campo Código / ID de proceso MP es obligatorio.
+                        severity: blocking
+                      - error_code: MP_PROCESS_NOT_FOUND
+                        field: mp_process_id
+                        rule: El proceso MP no existe o el código es inválido.
+                        severity: blocking

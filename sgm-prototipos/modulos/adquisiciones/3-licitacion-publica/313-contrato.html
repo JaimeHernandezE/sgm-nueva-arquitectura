@@ -69,7 +69,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -93,7 +93,7 @@
         alert('Documento del contrato obligatorio (demo).');
         return;
       }
-      demoAction('draftContract');
+      demoValidation('draftContract');
       const draftBanner = document.getElementById('draft-banner');
       draftBanner.classList.remove('hidden');
       draftBanner.className = 'banner banner--info';
@@ -126,7 +126,7 @@
         alert('Ambas firmas (municipal y proveedor) son necesarias antes de confirmar (demo).');
         return;
       }
-      demoAction('signContract');
+      demoValidation('signContract');
       const resultBanner = document.getElementById('result-banner');
       resultBanner.classList.remove('hidden');
       resultBanner.className = 'banner banner--info';

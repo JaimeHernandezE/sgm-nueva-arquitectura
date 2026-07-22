@@ -45,6 +45,8 @@ Desde esta pantalla también se inicia la creación de un expediente nuevo (sub-
 
 > La resolución de `requesting_department_id` a unidades hijas usa el catálogo orgánico del tenant (`OrganizationalUnit`, plataforma). No es dependencia de otro módulo de negocio; es dato de identidad/organización del core de plataforma.
 
+**Validaciones:** Sin validaciones de formulario — solo lecturas (`listProcurementCases`, `getProcurementCase`). Errores de auth/scope (`FORBIDDEN`, `PROCUREMENT_CASE_NOT_FOUND`) son de API, no de captura de campos.
+
 **API (contrato ↔ OpenAPI):**
 
 | operationId | HTTP | Spec |
@@ -101,6 +103,8 @@ Las operaciones de escritura del alta están en la ficha **1.1**:
 | `submitPurchaseRequest` | `POST /purchase-requests/{id}/submit` | 1.1 | idem |
 | `checkStockAvailability` | *(dep. Inventario)* | 1.0 | [`contracts.md`](../contracts.md) §3.6 |
 | `checkCatalogAvailability` | *(dep. catálogo CM)* | 1.0, 2.1 | [`contracts.md`](../contracts.md) §3 |
+
+**Validaciones:** Sin validaciones de formulario — solo navegación UI hacia 1.0/1.1; las validaciones de escritura viven en la ficha 1.1.
 
 **Edge cases:**
 - Tenant sin Inventario ni CM → 0.2 salta a 1.1 (omisión de 1.0).

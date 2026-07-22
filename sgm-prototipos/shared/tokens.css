@@ -19,6 +19,9 @@
   --btn-primary-fg: #ffffff;
   --badge-bg: #e8e8e8;
   --badge-active-bg: #bbbbbb;
+
+  --warning-bg: #fff8e6;
+  --warning-border: #c9a227;
 }
 
 * { box-sizing: border-box; }

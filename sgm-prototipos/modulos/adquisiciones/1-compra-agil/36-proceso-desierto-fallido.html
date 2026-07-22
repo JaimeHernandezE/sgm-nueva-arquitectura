@@ -59,7 +59,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -97,7 +97,7 @@
         resultBanner.style.color = '#8c6d1f';
         resultBanner.innerHTML = 'Procedimiento de reversión formal a etapa 2 aún no definido — <a href="../../../../sgm-docs/arquitectura/decisiones/pendientes.md" target="_blank" rel="noopener">PENDIENTE P-34</a>. No se puede ejecutar en este prototipo.';
       } else {
-        demoAction('releasePreCommitment');
+        demoValidation('releasePreCommitment');
         resultBanner.classList.add('banner--info');
         resultBanner.textContent = 'Expediente cancelado — preobligación liberada al 100%. Notificando a la unidad solicitante.';
         nextStepText.textContent = '';
