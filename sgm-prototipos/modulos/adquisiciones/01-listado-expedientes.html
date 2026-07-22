@@ -89,18 +89,24 @@
             <table class="expedientes-table">
               <thead>
                 <tr>
-                  <th>Folio</th>
-                  <th>Glosa</th>
-                  <th>Departamento</th>
-                  <th>Modalidad</th>
-                  <th>Estado</th>
-                  <th>Bandeja</th>
+                  <th class="th-sortable" data-sort="folio" scope="col" tabindex="0" role="columnheader" aria-sort="none">Folio</th>
+                  <th class="th-sortable" data-sort="created_at" scope="col" tabindex="0" role="columnheader" aria-sort="none">Creación</th>
+                  <th class="th-sortable" data-sort="description" scope="col" tabindex="0" role="columnheader" aria-sort="none">Glosa</th>
+                  <th class="th-sortable" data-sort="requesting_department" scope="col" tabindex="0" role="columnheader" aria-sort="none">Departamento</th>
+                  <th class="th-sortable" data-sort="procurement_type" scope="col" tabindex="0" role="columnheader" aria-sort="none">Modalidad</th>
+                  <th class="th-sortable" data-sort="status" scope="col" tabindex="0" role="columnheader" aria-sort="none">Estado</th>
+                  <th class="th-sortable" data-sort="amount" scope="col" tabindex="0" role="columnheader" aria-sort="none" title="Adjudicado si existe; si no, solicitado">Monto</th>
                 </tr>
               </thead>
               <tbody id="expedientes-tbody"></tbody>
             </table>
             <p class="list-empty" id="list-empty" hidden>No hay expedientes con estos criterios</p>
           </div>
+        </div>
+
+        <div class="list-pager" id="list-pager" hidden>
+          <button type="button" class="btn btn--secondary" id="btn-prev-page">Anterior</button>
+          <button type="button" class="btn btn--secondary" id="btn-next-page">Siguiente</button>
         </div>
       </div>
     </main>
@@ -111,6 +117,9 @@
     import {
       expedientesDemo,
       DEMO_SOLICITANTE_UNIT_ID,
+      displayAmount,
+      formatClp,
+      formatCreatedAt,
       getExpedienteDetailUrl,
       listDepartmentsFromDemo,
       statusLabel,
@@ -124,6 +133,26 @@
         { label: 'Expedientes' },
       ],
     });
+
+    const PAGE_SIZE = 50;
+    const SORT_KEYS = {
+      folio: (e) => e.id,
+      created_at: (e) => e.createdAt || '',
+      description: (e) => e.glosa,
+      requesting_department: (e) => e.department,
+      procurement_type: (e) => e.modality,
+      status: (e) => e.status,
+      amount: (e) => {
+        const shown = displayAmount(e);
+        return shown ? shown.value : -1;
+      },
+    };
+
+    const state = {
+      page: 1,
+      sort: 'folio',
+      order: 'asc',
+    };
 
     const els = {
       viewer: document.getElementById('viewer-scope'),
@@ -140,6 +169,9 @@
       tbody: document.getElementById('expedientes-tbody'),
       count: document.getElementById('list-count'),
       empty: document.getElementById('list-empty'),
+      pager: document.getElementById('list-pager'),
+      prevPage: document.getElementById('btn-prev-page'),
+      nextPage: document.getElementById('btn-next-page'),
     };
 
     for (const d of listDepartmentsFromDemo()) {
@@ -181,6 +213,17 @@
       });
     }
 
+    function compareValues(a, b) {
+      if (typeof a === 'number' && typeof b === 'number') return a - b;
+      return String(a).localeCompare(String(b), 'es', { sensitivity: 'base', numeric: true });
+    }
+
+    function applySort(rows) {
+      const getter = SORT_KEYS[state.sort] || SORT_KEYS.folio;
+      const dir = state.order === 'desc' ? -1 : 1;
+      return rows.slice().sort((left, right) => dir * compareValues(getter(left), getter(right)));
+    }
+
     function updateScopeUi() {
       const isSolicitante = els.viewer.value === 'solicitante';
       els.deptField.hidden = isSolicitante;
@@ -190,33 +233,61 @@
         : 'Todos los expedientes del tenant (roles DAF / lectura amplia).';
     }
 
+    function updateSortHeaders() {
+      document.querySelectorAll('.expedientes-table th.th-sortable').forEach((th) => {
+        const key = th.dataset.sort;
+        if (key === state.sort) {
+          th.setAttribute('aria-sort', state.order === 'asc' ? 'ascending' : 'descending');
+        } else {
+          th.setAttribute('aria-sort', 'none');
+        }
+      });
+    }
+
     function render() {
       updateScopeUi();
+      updateSortHeaders();
       const base = scopedBase();
-      const rows = applyFilters(base);
+      const filtered = applySort(applyFilters(base));
+      const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+      if (state.page > totalPages) state.page = totalPages;
+      const start = (state.page - 1) * PAGE_SIZE;
+      const pageRows = filtered.slice(start, start + PAGE_SIZE);
+      const from = filtered.length === 0 ? 0 : start + 1;
+      const to = start + pageRows.length;
 
-      els.count.textContent = `Mostrando ${rows.length} de ${base.length}`;
-      els.empty.hidden = rows.length > 0;
+      els.count.textContent =
+        filtered.length === 0
+          ? `Mostrando 0 de ${base.length}`
+          : `Mostrando ${from}–${to} de ${filtered.length} (página ${state.page} de ${totalPages}; máx. ${PAGE_SIZE} por página) · alcance ${base.length}`;
+      els.empty.hidden = filtered.length > 0;
+      els.pager.hidden = filtered.length <= PAGE_SIZE;
+      els.prevPage.disabled = state.page <= 1;
+      els.nextPage.disabled = state.page >= totalPages;
 
-      els.tbody.innerHTML = rows
+      els.tbody.innerHTML = pageRows
         .map((exp) => {
           const stubBadge = exp.fullDetail
             ? ''
             : '<span class="badge badge--stub">Solo listado · sin contenido</span>';
-          const bandeja = exp.awaitingMyAction
-            ? '<span class="badge badge--awaiting">Por firmar</span>'
-            : '—';
+          const shown = displayAmount(exp);
+          let montoCell = '—';
+          if (shown) {
+            const kindLabel = shown.kind === 'awarded' ? 'Adjudicado' : 'Solicitado';
+            montoCell = `<span class="amount-cell">${formatClp(shown.value)}</span> <span class="amount-kind">${kindLabel}</span>`;
+          }
           const navAttrs = exp.fullDetail
             ? `data-href="${siteUrl(getExpedienteDetailUrl(exp.id))}" tabindex="0" role="link"`
             : 'class="row--stub" title="Sin detalle demo"';
           return `
         <tr ${navAttrs}>
           <td class="folio-cell">${exp.id}</td>
+          <td class="date-cell">${formatCreatedAt(exp.createdAt)}</td>
           <td>${exp.glosa} ${stubBadge}</td>
           <td>${exp.department}</td>
           <td>${exp.modality}</td>
           <td><span class="badge">${statusLabel(exp.status)}</span></td>
-          <td>${bandeja}</td>
+          <td class="amount-td">${montoCell}</td>
         </tr>`;
         })
         .join('');
@@ -235,13 +306,52 @@
       });
     }
 
+    function resetPageAndRender() {
+      state.page = 1;
+      render();
+    }
+
+    function toggleSort(sortKey) {
+      if (state.sort === sortKey) {
+        state.order = state.order === 'asc' ? 'desc' : 'asc';
+      } else {
+        state.sort = sortKey;
+        state.order = 'asc';
+      }
+      state.page = 1;
+      render();
+    }
+
     els.clear.addEventListener('click', () => {
       els.q.value = '';
       els.department.value = '';
       els.modality.value = '';
       els.active.checked = false;
       els.awaiting.checked = false;
+      resetPageAndRender();
+    });
+
+    els.prevPage.addEventListener('click', () => {
+      if (state.page > 1) {
+        state.page -= 1;
+        render();
+      }
+    });
+
+    els.nextPage.addEventListener('click', () => {
+      state.page += 1;
       render();
+    });
+
+    document.querySelectorAll('.expedientes-table th.th-sortable').forEach((th) => {
+      const activate = () => toggleSort(th.dataset.sort);
+      th.addEventListener('click', activate);
+      th.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          activate();
+        }
+      });
     });
 
     els.nuevo.addEventListener('click', () => {
@@ -257,12 +367,12 @@
     });
 
     ['change', 'input'].forEach((evt) => {
-      els.viewer.addEventListener(evt, render);
-      els.q.addEventListener(evt, render);
-      els.department.addEventListener(evt, render);
-      els.modality.addEventListener(evt, render);
-      els.active.addEventListener(evt, render);
-      els.awaiting.addEventListener(evt, render);
+      els.viewer.addEventListener(evt, resetPageAndRender);
+      els.q.addEventListener(evt, resetPageAndRender);
+      els.department.addEventListener(evt, resetPageAndRender);
+      els.modality.addEventListener(evt, resetPageAndRender);
+      els.active.addEventListener(evt, resetPageAndRender);
+      els.awaiting.addEventListener(evt, resetPageAndRender);
     });
 
     const modalityFromUrl = new URLSearchParams(window.location.search).get('modality');

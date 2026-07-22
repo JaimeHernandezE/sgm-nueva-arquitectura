@@ -408,6 +408,45 @@
   font-weight: bold;
 }
 
+.expedientes-table th.th-sortable {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.expedientes-table th.th-sortable:hover {
+  background: var(--tint-external-bg);
+}
+
+.expedientes-table th.th-sortable[aria-sort="ascending"]::after,
+.expedientes-table th.th-sortable[aria-sort="descending"]::after {
+  margin-left: 0.35em;
+  font-weight: normal;
+  color: var(--text-muted, #555);
+}
+
+.expedientes-table th.th-sortable[aria-sort="ascending"]::after {
+  content: "▲";
+  font-size: 0.7em;
+}
+
+.expedientes-table th.th-sortable[aria-sort="descending"]::after {
+  content: "▼";
+  font-size: 0.7em;
+}
+
+.list-pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0 0;
+}
+
+.list-pager[hidden] {
+  display: none;
+}
+
 .expedientes-table tbody tr[data-href] {
   cursor: pointer;
 }
@@ -425,6 +464,28 @@
   font-family: monospace;
   font-size: 12px;
   white-space: nowrap;
+}
+
+.expedientes-table .date-cell {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.expedientes-table .amount-td {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.expedientes-table .amount-cell {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.expedientes-table .amount-kind {
+  display: block;
+  font-size: 11px;
+  font-weight: normal;
+  color: var(--text-muted, #555);
 }
 
 .list-toolbar {

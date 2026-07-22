@@ -356,6 +356,18 @@ components:
         created_at:
           type: string
           format: date-time
+        requested_amount:
+          type: number
+          description: >
+            Total bruto solicitado (CLP): suma de líneas de PurchaseRequest /
+            BudgetPreCommitment.estimated_amount. Ausente si aún no hay SOLPED con monto.
+          nullable: true
+        awarded_amount:
+          type: number
+          description: >
+            Monto adjudicado/contratado (CLP) cuando existe PurchaseOrder activa
+            (total_amount) o Contract.amount. Ausente antes de adjudicación/OC.
+          nullable: true
     CaseStepSummary:
       type: object
       required:

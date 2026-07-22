@@ -19,7 +19,9 @@
 | Plataforma | SGM |
 | Optativo | Falso *(pantalla de entrada del módulo; siempre disponible para quien tenga `listProcurementCases`)* |
 
-**Detalle:** Pantalla de consulta paginada de expedientes de compra (`ProcurementCase`). El usuario busca por folio/glosa/modalidad, aplica filtros acumulables (departamento solicitante, modalidad, proceso activo, bandeja “por firmar/aprobar”) y abre el detalle de un expediente. El **alcance** lo impone el servidor según el `RoleAssignment`: los perfiles de unidad solicitante no pueden ampliar el universo con filtros de departamento/unidad ajenos; los perfiles DAF / lectura amplia ven el tenant y pueden filtrar por departamento.
+**Detalle:** Pantalla de consulta paginada de expedientes de compra (`ProcurementCase`). El usuario busca por folio/glosa/modalidad, aplica filtros acumulables (departamento solicitante, modalidad, proceso activo, “por firmar/aprobar”) y abre el detalle de un expediente. El **alcance** lo impone el servidor según el `RoleAssignment`: los perfiles de unidad solicitante no pueden ampliar el universo con filtros de departamento/unidad ajenos; los perfiles DAF / lectura amplia ven el tenant y pueden filtrar por departamento.
+
+**Paginación y orden (UI):** la tabla muestra hasta **50 ítems por página** (`page_size` = 50; dentro del tope de plataforma 100 de [`estandares-api.md`](../../../arquitectura/especificacion/estandares-api.md) §4). Los encabezados de columna son controles de orden: un clic fija `sort` al campo de esa columna y alterna `order` (`asc` ↔ `desc`); el cambio recarga `listProcurementCases` manteniendo filtros y página (o vuelve a `page=1` si el orden cambia el conjunto visible).
 
 Desde esta pantalla también se inicia la creación de un expediente nuevo (sub-paso **0.2**), que deriva a la etapa SOLPED (**1.0** optativo o **1.1**).
 
@@ -32,9 +34,13 @@ Desde esta pantalla también se inicia la creación de un expediente nuevo (sub-
   - `status` (enum, **obligatorio**: `in_progress` \| `completed` \| `cancelled` \| `deserted`)
   - `current_step_name` (texto, **opcional** en summary — derivado del `CaseStep` actual)
   - `requesting_unit_id` (ref. `OrganizationalUnit`, **obligatorio**)
-  - `created_at` (fecha/hora, **obligatorio**)
+  - `created_at` (fecha/hora, **obligatorio** — columna UI «Creación», inmediatamente tras Folio)
+  - `requested_amount` (número CLP, **opcional** — total bruto solicitado: suma de líneas de `PurchaseRequest` / `BudgetPreCommitment.estimated_amount`)
+  - `awarded_amount` (número CLP, **opcional** — monto adjudicado/contratado cuando existe: `PurchaseOrder.total_amount` activo o `Contract.amount`)
 - Departamento mostrado en UI: derivado del nodo orgánico padre de `requesting_unit_id` (`OrganizationalUnit`, plataforma).
-- Bandeja “por firmar/aprobar”: derivado de query `awaiting_my_action` (no es campo persistido del expediente).
+- **Creación** (columna UI): `created_at` formateado (fecha local del tenant); ordenable con `sort=created_at`.
+- **Monto** (columna UI): muestra `awarded_amount` si existe (etiqueta «Adjudicado»); si no, `requested_amount` («Solicitado»); «—» si aún no hay ninguno.
+- **Acciones pendientes del actor:** no van en una columna del listado. El filtro “Por firmar / aprobar” (`awaiting_my_action=true`) acota el listado a expedientes que esperan acción del usuario; el **detalle de pendientes por usuario** vive en la bandeja de entrada del **sistema transversal de notificaciones** ([`musts-arquitectura.md`](../../../arquitectura/especificacion/musts-arquitectura.md) §9).
 
 **Borde de módulo:**
 
@@ -55,6 +61,12 @@ Desde esta pantalla también se inicia la creación de un expediente nuevo (sub-
 | `getProcurementCase` | `GET /procurement-cases/{case_id}` | idem |
 
 Query de `listProcurementCases` (todos **opcionales** salvo paginación estándar): `page`, `page_size`, `sort`, `order`, `q`, `procurement_type`, `status`, `requesting_department_id`, `requesting_unit_id`, `folio`, `awaiting_my_action`.
+
+| Parámetro UI | Convención en esta pantalla |
+|---|---|
+| `page_size` | **50** (máximo de página del listado; no superar el tope de plataforma 100) |
+| `sort` vía encabezado | `folio` \| `created_at` \| `description` \| `requesting_department` \| `procurement_type` \| `status` \| `amount` *(monto mostrado: adjudicado si existe, si no solicitado)* |
+| `order` | `asc` \| `desc` — alterna al repetir clic en el mismo encabezado |
 
 **Edge cases:**
 - Sin resultados para los filtros/scope → colección vacía; UI muestra estado vacío (no es error).

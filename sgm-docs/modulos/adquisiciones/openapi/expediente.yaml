@@ -14,6 +14,7 @@ paths:
         Consulta paginada de expedientes. Solo lectura; sin efectos colaterales. Requiere scope `adquisiciones:read`
         (personas) o `adquisiciones.read` (M2M). Sub-paso 0.1
         (`procesos-transversales/0-consulta-expedientes.md`).
+        UI del listado: `page_size` = 50; encabezados ordenan con `sort` + `order`.
       x-subpasos:
         - "0.1"
       security:
@@ -21,8 +22,32 @@ paths:
         - bearerM2M: []
       parameters:
         - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Page
-        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/PageSize
-        - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Sort
+        - name: page_size
+          in: query
+          description: >
+            Tamaño de página. En UI del listado 0.1 se usa 50 (máximo de pantalla;
+            tope de plataforma 100).
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: sort
+          in: query
+          description: >
+            Campo de orden del listado (encabezados de columna).
+            Valores: folio, created_at, description, requesting_department, procurement_type,
+            status, amount (`amount` = awarded_amount si existe; si no, requested_amount).
+          schema:
+            type: string
+            enum:
+              - folio
+              - created_at
+              - description
+              - requesting_department
+              - procurement_type
+              - status
+              - amount
         - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Order
         - name: q
           in: query
@@ -56,7 +81,9 @@ paths:
         - name: awaiting_my_action
           in: query
           description: >
-            Si es true, limita a expedientes en bandeja del actor autenticado (por firmar / aprobar).
+            Si es true, limita a expedientes que esperan acción del actor autenticado
+            (por firmar / aprobar). Las pendientes detalladas por usuario se listan en
+            la bandeja del sistema transversal de notificaciones (musts §9).
           schema:
             type: boolean
       responses:
