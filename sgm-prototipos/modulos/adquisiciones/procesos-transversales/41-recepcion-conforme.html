@@ -83,6 +83,11 @@
             <button class="btn btn--secondary" type="button">+ Subir</button>
           </div>
         </section>
+
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Volver al expediente</a>
+        </div>
       </div>
       <div class="form-actions">
         <button class="btn btn--secondary" type="button" id="draft">Guardar borrador</button>
@@ -121,6 +126,10 @@
       });
     });
 
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    const nextStepLink = document.getElementById('next-step-link');
+
     document.getElementById('draft').addEventListener('click', () => demoAction('createGoodsReceipt'));
     document.getElementById('confirm').addEventListener('click', () => {
       const noConforme = document.querySelector('input[name="conformity"]:checked').value === 'no_conforme';
@@ -129,7 +138,13 @@
         return;
       }
       demoAction('confirmGoodsReceipt');
-      setTimeout(() => { window.location.href = getExpedienteUrl(expedienteId); }, 800);
+      nextStepText.textContent = noConforme
+        ? 'Recepción no conforme registrada — observaciones adjuntas.'
+        : 'Recepción conforme registrada.';
+      nextStepLink.href = getExpedienteUrl(expedienteId);
+      nextStepPanel.classList.remove('hidden');
+      document.getElementById('confirm').disabled = true;
+      document.getElementById('draft').disabled = true;
     });
   </script>
 </body>

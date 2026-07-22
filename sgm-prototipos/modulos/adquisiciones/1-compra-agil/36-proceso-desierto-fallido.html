@@ -40,6 +40,11 @@
           </div>
 
           <div class="banner hidden" id="result-banner"></div>
+
+          <div class="info-panel hidden" id="next-step-panel">
+            <span id="next-step-text"></span>
+            <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
+          </div>
         </section>
       </div>
       <div class="form-actions">
@@ -69,6 +74,9 @@
     initStepSimulation({ stepId: '3.6' });
 
     const resultBanner = document.getElementById('result-banner');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    const nextStepLink = document.getElementById('next-step-link');
 
     document.getElementById('confirm').addEventListener('click', () => {
       const decision = document.querySelector('input[name="decision"]:checked').value;
@@ -78,16 +86,26 @@
 
       if (decision === 'republish') {
         resultBanner.classList.add('banner--info');
-        resultBanner.textContent = 'Republicando — redirigiendo a la vinculación MP (2.3) para el nuevo proceso…';
-        setTimeout(() => { window.location.href = relativeFormHref('../procesos-transversales/23-vinculacion-mp.html'); }, 800);
+        resultBanner.textContent = 'Republicando — nueva cotización en Mercado Público.';
+        nextStepText.textContent = 'Continúe a la vinculación con Mercado Público (2.3) para el nuevo proceso.';
+        nextStepLink.textContent = 'Continuar a 2.3';
+        nextStepLink.href = relativeFormHref('../procesos-transversales/23-vinculacion-mp.html');
+        nextStepPanel.classList.remove('hidden');
+        document.getElementById('confirm').disabled = true;
+        document.querySelectorAll('input[name="decision"]').forEach((el) => { el.disabled = true; });
       } else if (decision === 'reassess') {
         resultBanner.style.color = '#8c6d1f';
         resultBanner.innerHTML = 'Procedimiento de reversión formal a etapa 2 aún no definido — <a href="../../../../sgm-docs/arquitectura/decisiones/pendientes.md" target="_blank" rel="noopener">PENDIENTE P-34</a>. No se puede ejecutar en este prototipo.';
       } else {
         demoAction('releasePreCommitment');
         resultBanner.classList.add('banner--info');
-        resultBanner.textContent = 'Expediente cancelado — preobligación liberada al 100%. Notificando a la unidad solicitante… Volviendo al expediente.';
-        setTimeout(() => { window.location.href = getExpedienteUrl(expedienteId); }, 1200);
+        resultBanner.textContent = 'Expediente cancelado — preobligación liberada al 100%. Notificando a la unidad solicitante.';
+        nextStepText.textContent = '';
+        nextStepLink.textContent = 'Volver al expediente';
+        nextStepLink.href = getExpedienteUrl(expedienteId);
+        nextStepPanel.classList.remove('hidden');
+        document.getElementById('confirm').disabled = true;
+        document.querySelectorAll('input[name="decision"]').forEach((el) => { el.disabled = true; });
       }
     });
   </script>
