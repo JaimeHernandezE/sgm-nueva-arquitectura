@@ -53,5 +53,5 @@
 
 ## Notas
 
-- Este es el punto donde se ejecuta la vinculación que en Compra Ágil y Convenio Marco ocurre al cierre de la etapa 2 — en LP queda diferida hasta que las bases están aprobadas (y tomadas de razón si aplicó). Ver `2-modalidad-compra.md` §2.3.
+- Este es el punto donde se ejecuta la vinculación que en Compra Ágil ocurre al cierre de la etapa 2 — en LP (y en CM, sub-pasos 3.2/3.3) queda diferida hasta que corresponde dentro del subproceso de la modalidad. Ver `2-modalidad-compra.md` §2.3.
 - Interacción MP: **Gestión** (registro del ID); luego **informativa** (monitoreo).

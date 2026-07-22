@@ -29,7 +29,7 @@ Si el campo aparece en un formulario, la marca debe coincidir con la tabla Campo
 ## Adquisiciones
 
 ### `ProcurementCase` (Expediente de Compra)
-**Visibilidad:** expuesta — campos en contrato: `id` (= `folio`), `procurement_type`, `status`, `current_step_id`, `description`, `requesting_unit_id`, `created_at`, `mp_process_id`, `mp_linked_at`, `mp_process_type`
+**Visibilidad:** expuesta — campos en contrato: `id` (= `folio`), `procurement_type`, `status`, `current_step_id`, `description`, `requesting_unit_id`, `created_at`, `mp_process_id`, `mp_linked_at`, `mp_process_type`, `procurement_route`, `route_decided_at`, `purchase_intent_published_at`, `purchase_intent_deadline`
 
 Raíz de trazabilidad de todo el ciclo SOLPED → Pago. El estado del expediente es **distinto** del estado documental de sus entidades hijas (`PurchaseRequest.status`, `PurchaseOrder.status`, etc.) — no fusionar ambos conceptos.
 
@@ -46,6 +46,10 @@ Raíz de trazabilidad de todo el ciclo SOLPED → Pago. El estado del expediente
 | `mp_process_id` | texto | **Opcional** hasta vinculación MP; **Obligatorio si** vinculación completada (salvo Trato Directo en fase inicial). Origen: ficha `2-modalidad-compra.md` §2.3. |
 | `mp_linked_at` | fecha/hora | **Opcional** hasta vinculación; **Obligatorio si** `mp_process_id` presente. Origen: ficha `2-modalidad-compra.md` §2.3. |
 | `mp_process_type` | enum | **Opcional** hasta vinculación; **Obligatorio si** `mp_process_id` presente. Coherente con `procurement_type`. Origen: ficha `2-modalidad-compra.md` §2.3. |
+| `procurement_route` | enum (`gran_compra` \| `compra_directa`) | **Solo Convenio Marco.** **Obligatorio** desde 3.1 (compuerta automática por umbral `FRAMEWORK_AGREEMENT_GRAN_COMPRA_UTM_LIMIT`); puede actualizarse de `gran_compra` a `compra_directa` en 3.6 (Gran Compra desierta). Origen: ficha `2. convenio-marco/3-resolucion-compra-convenio-marco v2.md` §3.1/§3.6. |
+| `route_decided_at` | fecha/hora | **Solo Convenio Marco.** **Obligatorio** junto con `procurement_route`; timestamp de la evaluación automática de umbral (3.1). Origen: ficha CM §3.1. |
+| `purchase_intent_published_at` | fecha/hora | **Solo Convenio Marco, ruta `gran_compra`.** **Obligatorio** al publicar la Intención de Compra (3.3). Origen: ficha CM §3.3. |
+| `purchase_intent_deadline` | fecha/hora | **Solo Convenio Marco, ruta `gran_compra`.** **Obligatorio** junto con `purchase_intent_published_at`; calculado `published_at + 10 días corridos` (Directiva N° 15 ChileCompra). Origen: ficha CM §3.3. |
 
 ### `CaseStep` (Paso de Expediente)
 **Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `step_number`, `name`, `status`, `responsible_unit_id`, `responsible_role`, `responsible_user_id`, `started_at`, `completed_at`, `elapsed_display`
@@ -383,7 +387,7 @@ Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validac
 ### `MpProcessSnapshot` *(sugerida, no confirmada en fuente)*
 **Visibilidad:** interna — bitácora producida por servicio C7 del core; ver [`entidades-plataforma.md`](entidades-plataforma.md)
 
-1:N con `ProcurementCase`. Bitácora de sincronización de estado con Mercado Público, común a toda la etapa 3 (período de cotización, cierre/selección, emisión/aceptación/rechazo de OC, desierto/fallido) — agnóstica de si el mecanismo de origen es push o polling. Origen: ficha `3-resolucion-compra.md` §3.1.
+1:N con `ProcurementCase`. Bitácora de sincronización de estado con Mercado Público, común a toda la etapa 3 (período de cotización, cierre/selección, emisión/aceptación/rechazo de OC, desierto/fallido) — agnóstica de si el mecanismo de origen es push o polling. Origen: ficha `1. compra-agil/3-resolucion-compra.md` §3.1; reutilizada íntegramente por Convenio Marco (ficha `2. convenio-marco/3-resolucion-compra-convenio-marco v2.md` §3.4).
 
 | Campo | Tipo | Notas |
 |---|---|---|
@@ -396,7 +400,7 @@ Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validac
 ### `QuotationResult` *(sugerida, no confirmada en fuente)*
 **Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `recorded_at`
 
-1:N con `ProcurementCase`. Resultado de la selección de oferta al cierre del período de cotización; **solo se crea por sync** desde lectura MP (plantilla §5.3 — sin transcripción manual). Origen: ficha `3-resolucion-compra.md` §3.2.
+1:N con `ProcurementCase`. Resultado de la selección de oferta al cierre del período de cotización; **solo se crea por sync** desde lectura MP (plantilla §5.3 — sin transcripción manual). Origen: ficha `1. compra-agil/3-resolucion-compra.md` §3.2; reutilizada íntegramente por Convenio Marco (ficha `2. convenio-marco/3-resolucion-compra-convenio-marco v2.md` §3.5, ruta `gran_compra`).
 
 | Campo | Tipo | Notas |
 |---|---|---|

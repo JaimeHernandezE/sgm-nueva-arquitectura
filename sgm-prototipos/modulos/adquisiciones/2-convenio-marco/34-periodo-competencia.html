@@ -16,22 +16,44 @@
       <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
-    
 
     <div class="form-card">
       <div class="form-card__header">
         <span>ADQ-2026-00089 — Período de competencia Gran Compra</span>
-        <span class="badge badge--active" id="header-badge">Cerrado</span>
+        <span class="badge badge--active" id="header-badge">En curso — MP</span>
       </div>
       <div class="form-card__body">
         <section class="form-section">
           <h3 class="form-section__title">Monitoreo del período de competencia</h3>
-          <div class="info-panel"><strong>Monitoreo MP — solo lectura</strong><br />Plazo: 10 días corridos · Ofertas recibidas: 3 (demo)<br />Modo degradado: timer sobre deadline; detalle vía deep link a MP.</div>
+          <div class="info-panel">
+            <strong>Monitoreo MP — solo lectura</strong><br />
+            Intención de Compra: ID 4021-88-IC26 · Publicada: 14-03-2026<br />
+            Plazo (10 días corridos): vence 24-03-2026
+          </div>
+          <a class="btn btn--primary" href="https://www.mercadopublico.cl" target="_blank" rel="noopener">Ver proceso en Mercado Público</a>
         </section>
+
+        <section class="form-section">
+          <h3 class="form-section__title">Simulación de lectura MP</h3>
+          <p class="form-section__hint">Solo demo — no existe en la ficha del sub-paso.</p>
+          <div class="form-row">
+            <label>Simular cierre del período <em>(solo demo)</em></label>
+            <select id="simulate-result">
+              <option value="with_offers" selected>Cierre con ofertas — 3 recibidas</option>
+              <option value="no_offers">Cierre sin ofertas — Gran Compra desierta</option>
+            </select>
+          </div>
+        </section>
+
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
+        </div>
       </div>
       <div class="form-actions">
         <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+        <button class="btn btn--primary" type="button" id="execute">Simular lectura de cierre</button>
       </div>
     </div>
       </div>
@@ -41,7 +63,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, relativeFormHref, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -62,9 +84,33 @@
     });
 
     document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
-    document.getElementById('confirm').addEventListener('click', () => {
-      demoAction('demo');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+
+    const simulateResult = document.getElementById('simulate-result');
+    const resultBanner = document.getElementById('result-banner');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    const nextStepLink = document.getElementById('next-step-link');
+    const executeBtn = document.getElementById('execute');
+
+    executeBtn.addEventListener('click', () => {
+      demoAction('MpStateChanged');
+      resultBanner.classList.remove('hidden');
+      resultBanner.className = 'banner banner--info';
+      executeBtn.disabled = true;
+      simulateResult.disabled = true;
+
+      if (simulateResult.value === 'with_offers') {
+        resultBanner.textContent = 'Período cerrado — 3 ofertas recibidas.';
+        document.getElementById('header-badge').textContent = 'Cerrado — con ofertas';
+        nextStepText.textContent = 'Continúa a 3.5 (Selección de oferta Gran Compra).';
+        nextStepLink.href = relativeFormHref('35-seleccion-oferta.html');
+      } else {
+        resultBanner.textContent = 'Período cerrado — sin ofertas recibidas (proceso desierto).';
+        document.getElementById('header-badge').textContent = 'Cerrado — desierto';
+        nextStepText.textContent = 'Continúa a 3.6 (Gran Compra desierta).';
+        nextStepLink.href = relativeFormHref('36-gran-compra-desierta.html');
+      }
+      nextStepPanel.classList.remove('hidden');
     });
   </script>
 </body>

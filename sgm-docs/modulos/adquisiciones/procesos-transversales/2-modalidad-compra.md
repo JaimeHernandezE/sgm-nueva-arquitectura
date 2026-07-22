@@ -104,21 +104,21 @@
 | Unidad municipal | DAF Finanzas / DAF Abastecimiento |
 | Rol | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | Plataforma | SGM → MP (deep link) / SGM |
-| Optativo | Condicional por modalidad — inmediata en CA/CM; diferida en LP y TD (ver tabla) |
+| Optativo | Condicional por modalidad — inmediata en CA; diferida en CM, LP y TD (ver tabla) |
 
 **Detalle:** La etapa 2 cierra con la modalidad confirmada (2.1, más 2.2 si aplica). La vinculación MP ocurre en el momento que la modalidad define; cuando es diferida, este sub-paso se ejecuta dentro del subproceso de la modalidad, reutilizando íntegramente su operación (`linkMpProcess`), sus validaciones y sus edge cases. El usuario crea el proceso en Mercado Público (vía deep link, actuando directamente en el portal conforme al principio de integración solo lectura) y **registra en SGM el código/ID del proceso MP**, estableciendo el vínculo que habilita las lecturas de estado de ahí en adelante. El identificador registrado y el momento de la vinculación varían según modalidad:
 
 | Modalidad | Momento de vinculación | Código que se registra |
 |---|---|---|
 | Compra Ágil | Inmediato (cierre de etapa 2) | ID de Cotización |
-| Convenio Marco | Inmediato (cierre de etapa 2) | ID de OC de catálogo o de Intención de Compra (Gran Compra) |
+| Convenio Marco | **Diferido** — sub-paso 3.2 (Compra Directa) o 3.3 (Gran Compra) de su etapa 3, según la ruta que fije el gateway de umbral (3.1) | ID de OC de catálogo (3.2) o de Intención de Compra (3.3, Gran Compra) |
 | Licitación Pública | **Diferido** — sub-paso 3.5 de su etapa 3, tras bases aprobadas (y Toma de Razón si aplicó) | ID de la licitación |
 | Trato Directo | **Diferido** — en su subproceso, al momento de la publicación (regla de publicidad en 24 horas) | ID del proceso publicado |
 
 Registrado y validado el código — sea la ejecución inmediata o diferida —, el expediente queda bloqueado en estado "vinculado" y **arranca en ese momento** la sincronización de estados (no al cierre de la etapa 2); el seguimiento pasa a las lecturas de estado documentadas en `arquitectura/especificacion/integracion-mercado-publico.md`.
 
 **Entidad(es) y campos:**
-- `ProcurementCase.mp_process_id` (texto, **obligatorio** al completar, salvo TD), `ProcurementCase.mp_linked_at` (fecha, **obligatorio si** `mp_process_id` presente), `ProcurementCase.mp_process_type` (enum, **obligatorio si** `mp_process_id` presente)
+- `ProcurementCase.mp_process_id` (texto, **obligatorio** al completar este sub-paso — hoy solo se ejecuta de forma inmediata en Compra Ágil; en CM/LP/TD el sub-paso queda `omitted` aquí y el campo se completa recién en el sub-paso diferido de su etapa 3), `ProcurementCase.mp_linked_at` (fecha, **obligatorio si** `mp_process_id` presente), `ProcurementCase.mp_process_type` (enum, **obligatorio si** `mp_process_id` presente)
 - Pantalla: código/ID proceso MP (texto, **obligatorio**)
 - `PurchaseRequest.status` (enum, **obligatorio** — transiciona al estado de la modalidad)
 

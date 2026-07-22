@@ -16,22 +16,50 @@
       <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
-    <!-- Operaciones: syncPurchaseOrderAccepted, commitBudget -->
 
     <div class="form-card">
       <div class="form-card__header">
         <span>ADQ-2026-00089 — Emisión y aceptación de la OC</span>
-        <span class="badge badge--active" id="header-badge">Aceptada</span>
+        <span class="badge badge--active" id="header-badge">En espera</span>
       </div>
       <div class="form-card__body">
         <section class="form-section">
-          <h3 class="form-section__title">Aceptación de la OC</h3>
-          <div class="info-panel"><strong>Hito contable — lectura MP confirmada</strong><br />OC N° 4021-88-OC26 · Mobiliario Chile Ltda. · $ 4.650.000<br />commitBudget por monto real · avance a recepción conforme.</div>
+          <h3 class="form-section__title">Contexto de la OC</h3>
+          <div class="info-panel">
+            <strong>OC en Mercado Público — solo lectura</strong><br />
+            Proveedor: Mobiliario Chile Ltda. · Monto ofertado: $ 78.000.000
+          </div>
         </section>
+
+        <section class="form-section">
+          <h3 class="form-section__title">Acción en Mercado Público</h3>
+          <p class="form-section__hint">La aceptación de la OC ocurre en MP. SGM no permite ingresar n° OC ni montos.</p>
+          <a class="btn btn--primary" href="https://www.mercadopublico.cl" target="_blank" rel="noopener">Gestionar en MP</a>
+        </section>
+
+        <section class="form-section">
+          <h3 class="form-section__title">Simulación de lectura MP</h3>
+          <p class="form-section__hint">Solo demo — no existe en la ficha del sub-paso.</p>
+          <div class="form-row">
+            <label>Simular lectura MP <em>(solo demo)</em></label>
+            <select id="simulate-result">
+              <option value="accepted_ok" selected>OC Aceptada — compromiso OK</option>
+              <option value="accepted_budget_unavailable">OC Aceptada — BUDGET_UNAVAILABLE (monto real sin saldo)</option>
+              <option value="accepted_provider_down">OC Aceptada — Presupuestos no disponible (reintento)</option>
+              <option value="rejected">OC Rechazada por el proveedor</option>
+            </select>
+          </div>
+        </section>
+
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
+        </div>
       </div>
       <div class="form-actions">
         <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+        <button class="btn btn--primary" type="button" id="execute">Ejecutar</button>
       </div>
     </div>
       </div>
@@ -41,7 +69,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, relativeFormHref, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -54,7 +82,6 @@
       stepId: '3.7',
     });
     initStepSimulation({ stepId: '3.7' });
-
     document.getElementById('origin-banner').innerHTML = renderOriginBanner({
       kind: 'external',
       label: 'Mercado Público',
@@ -62,9 +89,51 @@
     });
 
     document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
-    document.getElementById('confirm').addEventListener('click', () => {
-      demoAction('syncPurchaseOrderAccepted');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+
+    const simulateSelect = document.getElementById('simulate-result');
+    const resultBanner = document.getElementById('result-banner');
+    const executeBtn = document.getElementById('execute');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    const nextStepLink = document.getElementById('next-step-link');
+
+    executeBtn.addEventListener('click', () => {
+      const scenario = simulateSelect.value;
+      resultBanner.classList.remove('hidden');
+      resultBanner.className = 'banner';
+      resultBanner.style.color = '';
+
+      if (scenario === 'accepted_ok') {
+        demoAction('syncPurchaseOrderAccepted');
+        resultBanner.classList.add('banner--info');
+        resultBanner.textContent = 'OC Aceptada (confirmada) · commitBudget OK · Compromiso Cierto registrado por el monto real.';
+        document.getElementById('header-badge').textContent = 'Aceptada';
+        nextStepText.textContent = 'Expediente avanza a Recepción Conforme (etapa 4, transversal). Vuelve al expediente.';
+        nextStepLink.href = getExpedienteUrl(expedienteId);
+        executeBtn.disabled = true;
+        simulateSelect.disabled = true;
+        nextStepPanel.classList.remove('hidden');
+      } else if (scenario === 'accepted_budget_unavailable') {
+        demoAction('syncPurchaseOrderAccepted (commitBudget: BUDGET_UNAVAILABLE)');
+        resultBanner.style.color = '#a33333';
+        resultBanner.textContent = 'BUDGET_UNAVAILABLE — situación anómala grave: la OC ya está aceptada (vínculo legal existe) pero el compromiso contable no puede registrarse. Tarea urgente a DAF Finanzas (PENDIENTE P-40).';
+        document.getElementById('header-badge').textContent = 'Aceptada — compromiso pendiente';
+      } else if (scenario === 'accepted_provider_down') {
+        demoAction('syncPurchaseOrderAccepted (Presupuestos no disponible)');
+        resultBanner.classList.add('banner--info');
+        resultBanner.textContent = 'Presupuestos no disponible — reintento con retroceso exponencial. Estado intermedio "aceptada, compromiso pendiente". Idempotencia por purchase_order_ref.';
+        document.getElementById('header-badge').textContent = 'Aceptada — compromiso pendiente';
+      } else {
+        demoAction('PurchaseOrderRejected');
+        resultBanner.classList.add('banner--info');
+        resultBanner.textContent = 'OC Rechazada por el proveedor. No hay vínculo legal — la preobligación se mantiene intacta.';
+        document.getElementById('header-badge').textContent = 'Rechazada';
+        nextStepText.textContent = 'Continúa a 3.8 (Rechazo de la OC) para decidir siguiente proveedor o republicar.';
+        nextStepLink.href = relativeFormHref('38-rechazo-oc.html');
+        executeBtn.disabled = true;
+        simulateSelect.disabled = true;
+        nextStepPanel.classList.remove('hidden');
+      }
     });
   </script>
 </body>

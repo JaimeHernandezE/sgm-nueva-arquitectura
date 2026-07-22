@@ -16,25 +16,40 @@
       <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
-    <!-- Operaciones: getUtmValue -->
 
     <div class="form-card">
       <div class="form-card__header">
         <span>ADQ-2026-00089 — Evaluación de umbral y determinación de ruta</span>
-        <span class="badge badge--active" id="header-badge">Automático</span>
+        <span class="badge badge--active" id="header-badge">Compuerta automática</span>
       </div>
       <div class="form-card__body">
         <section class="form-section">
           <h3 class="form-section__title">Determinación de ruta</h3>
-          <div class="info-panel"><strong>Compuerta automática</strong><br />Monto estimado: $ 4.800.000 · Umbral Gran Compra: 1.000 UTM (NormativeParameter)</div>
-          <div class="form-row"><label>Ruta determinada</label><input type="text" value="gran_compra" readonly /></div>
-          <div class="form-row"><label>UTM mes emisión (CLP)</label><input type="text" value="68.017" readonly /></div>
-          <div class="banner banner--info">Monto ≥ 1.000 UTM → Gran Compra (Art. 90 D.S. 661/2024). Evento: ProcurementRouteDecided.</div>
+          <div class="info-panel">
+            <strong>Monto estimado (de la SOLPED / preobligación) — solo lectura</strong><br />
+            $ 80.000.000
+          </div>
+          <div class="form-row">
+            <label>Valor UTM del mes en curso <em>(solo demo — simula caída de fuente)</em></label>
+            <select id="simulate-utm">
+              <option value="ok" selected>Disponible — $ 65.084</option>
+              <option value="unavailable">No disponible / sin caché del mes</option>
+            </select>
+          </div>
+          <div class="info-panel" id="utm-panel">
+            Equivalente en UTM: <strong id="utm-equiv">1.229,30 UTM</strong> · Umbral Gran Compra (<code>NormativeParameter</code>): 1.000 UTM
+          </div>
         </section>
+
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
+        </div>
       </div>
       <div class="form-actions">
-        <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+        <span></span>
+        <button class="btn btn--primary" type="button" id="evaluate">Evaluar umbral</button>
       </div>
     </div>
       </div>
@@ -44,7 +59,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, relativeFormHref, renderBreadcrumb, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -57,13 +72,61 @@
       stepId: '3.1',
     });
     initStepSimulation({ stepId: '3.1' });
-
     document.getElementById('origin-banner').innerHTML = '';
 
-    document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
-    document.getElementById('confirm').addEventListener('click', () => {
+    const MONTO = 80000000;
+    const UTM_VALUE = 65084;
+    const GRAN_COMPRA_LIMIT_UTM = 1000;
+
+    const simulateUtm = document.getElementById('simulate-utm');
+    const utmPanel = document.getElementById('utm-panel');
+    const utmEquivEl = document.getElementById('utm-equiv');
+    const resultBanner = document.getElementById('result-banner');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    const nextStepLink = document.getElementById('next-step-link');
+    const evaluateBtn = document.getElementById('evaluate');
+
+    function updateUtmPreview() {
+      if (simulateUtm.value === 'unavailable') {
+        utmPanel.classList.add('hidden');
+        return;
+      }
+      utmPanel.classList.remove('hidden');
+      const montoUtm = MONTO / UTM_VALUE;
+      utmEquivEl.textContent = `${montoUtm.toFixed(2)} UTM`;
+    }
+    simulateUtm.addEventListener('change', updateUtmPreview);
+    updateUtmPreview();
+
+    evaluateBtn.addEventListener('click', () => {
+      resultBanner.classList.remove('hidden');
+      resultBanner.className = 'banner';
+
+      if (simulateUtm.value === 'unavailable') {
+        resultBanner.style.color = '#a33333';
+        resultBanner.textContent = 'UTM_VALUE_UNAVAILABLE — fuente UTM no disponible y sin valor cacheado del mes en curso; la evaluación de umbral no puede ejecutarse.';
+        return;
+      }
+
       demoAction('getUtmValue');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+      const montoUtm = MONTO / UTM_VALUE;
+      const route = montoUtm >= GRAN_COMPRA_LIMIT_UTM ? 'gran_compra' : 'compra_directa';
+      demoAction('ProcurementRouteDecided');
+
+      resultBanner.classList.add('banner--info');
+      resultBanner.textContent = route === 'gran_compra'
+        ? `Ruta determinada: Gran Compra (${montoUtm.toFixed(2)} UTM ≥ 1.000 UTM). Evento ProcurementRouteDecided emitido.`
+        : `Ruta determinada: Compra Directa por Catálogo (${montoUtm.toFixed(2)} UTM < 1.000 UTM). Evento ProcurementRouteDecided emitido.`;
+      document.getElementById('header-badge').textContent = route === 'gran_compra' ? 'Ruta: Gran Compra' : 'Ruta: Compra Directa';
+      evaluateBtn.disabled = true;
+      simulateUtm.disabled = true;
+
+      nextStepText.textContent = route === 'gran_compra'
+        ? 'Continúa a 3.3 (Publicación de Intención de Compra / Gran Compra).'
+        : 'Continúa a 3.2 (Compra Directa por Catálogo).';
+      nextStepLink.href = relativeFormHref(route === 'gran_compra' ? '33-intencion-gran-compra.html' : '32-compra-directa-catalogo.html');
+      nextStepPanel.classList.remove('hidden');
     });
   </script>
 </body>

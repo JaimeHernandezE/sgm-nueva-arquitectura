@@ -16,7 +16,6 @@
       <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
-    
 
     <div class="form-card">
       <div class="form-card__header">
@@ -26,17 +25,38 @@
       <div class="form-card__body">
         <section class="form-section">
           <h3 class="form-section__title">Contexto del rechazo</h3>
-          <div class="banner banner--info">Excluyente con 3.7. Decisión: siguiente proveedor del catálogo / oferente, o republicar (nuevo mp_process_id, mismo folio).</div>
+          <div class="banner banner--info">
+            Excluyente con 3.7. El proveedor rechazó la OC en Mercado Público (solo por causales contractuales de las
+            bases del Convenio Marco). No hay vínculo legal — la preobligación se mantiene intacta.
+          </div>
         </section>
 
         <section class="form-section">
-          <h3 class="form-section__title">Decisión <span class="required">*</span></h3>
-          <div class="form-row"><label>Decisión <span class="required">*</span></label><select><option>Emitir OC a siguiente proveedor</option><option>Republicar proceso MP</option></select></div>
+          <h3 class="form-section__title">Decisión</h3>
+          <div class="form-row">
+            <label>Decisión <span class="required">*</span></label>
+            <select id="decision">
+              <option value="next_provider" selected>Emitir OC al siguiente proveedor del catálogo / oferente</option>
+              <option value="republish">Republicar proceso MP (nuevo mp_process_id, mismo folio)</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>
+              <input type="checkbox" id="no-alternative" style="width:auto;display:inline-block;margin-right:6px;" />
+              Simular: no existe proveedor alternativo en catálogo <em>(solo demo)</em>
+            </label>
+          </div>
         </section>
+
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
+        </div>
       </div>
       <div class="form-actions">
         <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+        <button class="btn btn--primary" type="button" id="confirm">Confirmar decisión</button>
       </div>
     </div>
       </div>
@@ -46,7 +66,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, relativeFormHref, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -67,9 +87,42 @@
     });
 
     document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
+
+    const decisionSelect = document.getElementById('decision');
+    const noAlternative = document.getElementById('no-alternative');
+    const resultBanner = document.getElementById('result-banner');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    const nextStepLink = document.getElementById('next-step-link');
+
     document.getElementById('confirm').addEventListener('click', () => {
-      demoAction('demo');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+      resultBanner.classList.remove('hidden');
+      resultBanner.className = 'banner';
+
+      if (decisionSelect.value === 'next_provider' && noAlternative.checked) {
+        resultBanner.style.color = '#a33333';
+        resultBanner.textContent = 'NO_ALTERNATIVE_PROVIDER_AVAILABLE — no existe proveedor alternativo en catálogo. Única vía: republicar o reevaluar modalidad (reversión a etapa 2).';
+        return;
+      }
+
+      demoAction('recordPurchaseOrderRejectionDecision');
+      resultBanner.classList.add('banner--info');
+      decisionSelect.disabled = true;
+      noAlternative.disabled = true;
+      document.getElementById('confirm').disabled = true;
+
+      if (decisionSelect.value === 'next_provider') {
+        resultBanner.textContent = 'Decisión registrada — se reejecuta la emisión y aceptación de OC con el siguiente proveedor.';
+        document.getElementById('header-badge').textContent = 'Reintentando con siguiente proveedor';
+        nextStepText.textContent = 'Continúa a 3.7 (Emisión y aceptación de la OC) con el nuevo proveedor.';
+        nextStepLink.href = relativeFormHref('37-aceptacion-oc.html');
+      } else {
+        resultBanner.textContent = 'Decisión registrada — se republica el proceso en Mercado Público con un nuevo mp_process_id, mismo folio.';
+        document.getElementById('header-badge').textContent = 'Republicando';
+        nextStepText.textContent = 'Continúa a 3.3 (Publicación de Intención de Compra / Gran Compra) con el nuevo proceso MP.';
+        nextStepLink.href = relativeFormHref('33-intencion-gran-compra.html');
+      }
+      nextStepPanel.classList.remove('hidden');
     });
   </script>
 </body>

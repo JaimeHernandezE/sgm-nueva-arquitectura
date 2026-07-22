@@ -1,6 +1,6 @@
 # Macroproceso: Convenio Marco
 
-**Estado: pendiente de documentar.** Ficha de flujo SOLPED → Pago para la modalidad Convenio Marco. Las etapas 2 y 3 serán específicas de esta modalidad; las etapas transversales (1, 4 y 5) están en [`procesos-transversales/`](../procesos-transversales/overview.md). Ver [Compra Ágil](../1.%20compra-agil/overview.md) como referencia de estructura.
+Ficha de flujo SOLPED → Pago para la modalidad Convenio Marco. Documenta la etapa **específica** de esta modalidad (3, "Resolución de Compra"); las etapas transversales (1, 2, 4 y 5) están en [`procesos-transversales/`](../procesos-transversales/overview.md). Ver [`3-resolucion-compra-convenio-marco v2.md`](./3-resolucion-compra-convenio-marco%20v2.md) para el detalle de los 8 sub-pasos.
 
 ## Contexto de la modalidad
 

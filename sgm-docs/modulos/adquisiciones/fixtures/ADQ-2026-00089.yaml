@@ -1,10 +1,18 @@
 fixture: ADQ-2026-00089
 tenant: municipio-demo-norte
 module: adquisiciones
-title: Convenio Marco — post etapa 2, etapa 3 pendiente
+title: Convenio Marco — etapa 3 activa (Gran Compra, pendiente selección en MP)
 business_state: >
   Expediente con modalidad Convenio Marco confirmada; preobligación activa;
-  etapa 3-CM sin iniciar (ruta gran compra / compra directa por definir en etapa 3).
+  ruta Gran Compra determinada en 3.1 (monto ≥ 1.000 UTM); Intención de
+  Compra publicada y vinculada en 3.3 (ID 4021-88-IC26); actualmente en 3.5
+  (Selección de oferta Gran Compra), pendiente de lectura MP. Etapa 3 con
+  ficha de flujo, 8 wireframes, entidades reconciliadas en entidades-core.md,
+  operaciones formalizadas en contracts.md §2.7 y prototipo HTML interactivo
+  (8/8 sub-pasos, con escenarios y validaciones bloqueantes de la ficha).
+  Pendiente separado: openapi/2-convenio-marco/ sigue siendo solo un README
+  stub — los example_ref de este fixture no tienen aún examples reales de CM
+  en el spec OpenAPI (ver openapi/README.md).
 seeds:
   - entity: ProcurementCase
     id: ADQ-2026-00089

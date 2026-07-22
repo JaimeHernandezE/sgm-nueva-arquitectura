@@ -16,28 +16,50 @@
       <div class="page">
     <div id="breadcrumb"></div>
     <div id="origin-banner"></div>
-    <!-- Operaciones: linkMpProcess -->
 
     <div class="form-card">
       <div class="form-card__header">
         <span>ADQ-2026-00089 — Compra Directa por Catálogo</span>
-        <span class="badge badge--active" id="header-badge">Ruta alternativa</span>
+        <span class="badge badge--active" id="header-badge">Pendiente vinculación</span>
       </div>
       <div class="form-card__body">
         <section class="form-section">
-          <h3 class="form-section__title">Contexto de ruta</h3>
-          <div class="banner banner--info">Ruta alternativa (&lt; 1.000 UTM). En este expediente la ruta es Gran Compra; esta pantalla ilustra la Compra Directa.</div>
+          <h3 class="form-section__title">Ítem de catálogo</h3>
+          <div class="info-panel">
+            <strong>Datos SOLPED — solo lectura</strong><br />
+            Silla ergonómica CM-8842 · Proveedor adjudicado del Convenio Marco · Monto según ruta: si llega directo de 3.1 (&lt; 1.000 UTM) es el monto de la SOLPED; si llega por caída desde 3.6 (Gran Compra desierta), es el mismo monto de esa Gran Compra
+          </div>
+          <a class="btn btn--primary" href="https://www.mercadopublico.cl" target="_blank" rel="noopener">Ir al catálogo Convenio Marco en Mercado Público</a>
         </section>
 
         <section class="form-section">
-          <h3 class="form-section__title">Vinculación OC de catálogo</h3>
-          <div class="form-row"><label>ID OC de catálogo en MP <span class="required">*</span></label><input type="text" value="4021-88-OC-CAT" /></div>
-          <div class="info-panel">Vinculación diferida: valida readMpProcess (existencia, organismo, tipo = catalog_oc) y emite MpProcessLinked.</div>
+          <h3 class="form-section__title">Vinculación de la OC de catálogo</h3>
+          <div class="form-row">
+            <label>ID de la OC de catálogo en MP <span class="required">*</span></label>
+            <input type="text" id="mp-id" placeholder="Ej. 4021-88-OC-CAT" />
+          </div>
+          <div class="form-row">
+            <label>Simular resultado de validación <em>(solo demo)</em></label>
+            <select id="simulate-result">
+              <option value="ok" selected>Vínculo válido</option>
+              <option value="not_found">Proceso MP no existe</option>
+              <option value="organism_mismatch">Organismo comprador no coincide</option>
+              <option value="type_mismatch">Tipo de proceso no coincide (no es OC de catálogo CM)</option>
+              <option value="already_linked">Código ya vinculado a otro expediente</option>
+              <option value="provider_unavailable">API de MP no disponible</option>
+            </select>
+          </div>
         </section>
+
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          <span id="next-step-text"></span>
+          <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar</a>
+        </div>
       </div>
       <div class="form-actions">
         <a class="btn btn--secondary" id="back-link" href="#">Volver al expediente</a>
-        <button class="btn btn--primary" type="button" id="confirm">Confirmar (demo)</button>
+        <button class="btn btn--primary" type="button" id="link-btn">Validar y vincular</button>
       </div>
     </div>
       </div>
@@ -47,7 +69,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, relativeFormHref, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -68,9 +90,51 @@
     });
 
     document.getElementById('back-link').href = getExpedienteUrl(expedienteId);
-    document.getElementById('confirm').addEventListener('click', () => {
+
+    const mpId = document.getElementById('mp-id');
+    const simulateResult = document.getElementById('simulate-result');
+    const resultBanner = document.getElementById('result-banner');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    const nextStepText = document.getElementById('next-step-text');
+    const nextStepLink = document.getElementById('next-step-link');
+    const linkBtn = document.getElementById('link-btn');
+
+    const ERRORS = {
+      not_found: 'MP_PROCESS_NOT_FOUND — el proceso indicado no existe en Mercado Público.',
+      organism_mismatch: 'MP_PROCESS_ORGANISM_MISMATCH — el organismo comprador del proceso MP no coincide con el tenant.',
+      type_mismatch: 'MP_PROCESS_TYPE_MISMATCH — el proceso no es una OC de catálogo Convenio Marco.',
+      already_linked: 'MP_PROCESS_ALREADY_LINKED — este código ya está vinculado a otro expediente.',
+      provider_unavailable: 'MP_PROVIDER_UNAVAILABLE — Mercado Público no responde; el vínculo no se persiste sin validación.',
+    };
+
+    linkBtn.addEventListener('click', () => {
+      resultBanner.classList.remove('hidden');
+      resultBanner.className = 'banner';
+
+      if (!mpId.value.trim()) {
+        resultBanner.style.color = '#a33333';
+        resultBanner.textContent = 'Ingrese el ID de la OC de catálogo antes de validar.';
+        return;
+      }
+
+      const scenario = simulateResult.value;
+      if (scenario !== 'ok') {
+        resultBanner.style.color = '#a33333';
+        resultBanner.textContent = ERRORS[scenario];
+        return;
+      }
+
       demoAction('linkMpProcess');
-      document.getElementById('header-badge').textContent = 'Registrado (demo)';
+      resultBanner.classList.add('banner--info');
+      resultBanner.textContent = 'Vinculado — MpProcessLinked emitido. Expediente en "OC emitida, esperando aceptación".';
+      document.getElementById('header-badge').textContent = 'Vinculado';
+      linkBtn.disabled = true;
+      mpId.disabled = true;
+      simulateResult.disabled = true;
+
+      nextStepText.textContent = 'Continúa a 3.7 (Emisión y aceptación de la OC) cuando el proveedor acepte en MP.';
+      nextStepLink.href = relativeFormHref('37-aceptacion-oc.html');
+      nextStepPanel.classList.remove('hidden');
     });
   </script>
 </body>
