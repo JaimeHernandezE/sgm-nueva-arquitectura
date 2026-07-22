@@ -46,10 +46,12 @@ export const adquisicionesNav = [
 export const plataformaHubNav = [
   { id: 'hub', label: 'Inicio', path: 'plataforma/index.html' },
   { id: 'bandeja', label: 'Bandeja', path: 'plataforma/shell/02-bandeja.html' },
+  { id: 'chats', label: 'Chats', path: 'plataforma/shell/05-chats.html' },
 ];
 
 export const plataformaSubdereNav = [
   { id: 'hub', label: '← Consolas', path: 'plataforma/index.html' },
+  { id: 'chats', label: 'Chats', path: 'plataforma/shell/05-chats.html' },
   { id: '01-tenants', label: 'Tenants', path: 'plataforma/subdere/01-gestion-tenants.html' },
   { id: '02-normativos', label: 'Parámetros normativos', path: 'plataforma/subdere/02-parametros-normativos.html' },
   { id: '03-m2m', label: 'Clientes M2M', path: 'plataforma/subdere/03-clientes-m2m.html' },
@@ -61,6 +63,7 @@ export const plataformaSubdereNav = [
 
 export const plataformaMunicipalNav = [
   { id: 'hub', label: '← Consolas', path: 'plataforma/index.html' },
+  { id: 'chats', label: 'Chats', path: 'plataforma/shell/05-chats.html' },
   { id: '01-usuarios', label: 'Usuarios', path: 'plataforma/municipal/01-usuarios.html' },
   { id: '02-roles', label: 'Roles y unidades', path: 'plataforma/municipal/02-roles-unidades.html' },
   { id: '03-subrogancias', label: 'Subrogancias', path: 'plataforma/municipal/03-subrogancias.html' },

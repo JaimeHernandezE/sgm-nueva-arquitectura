@@ -8,6 +8,7 @@ Marco arquitectónico: [`arquitectura/especificacion/plataforma-core.md`](../arq
 Modelo de datos: [`modelo-datos/entidades-plataforma.md`](../modelo-datos/entidades-plataforma.md)  
 Contrato API: [`contracts.md`](./contracts.md)  
 Notificaciones (C6): [`notificaciones/overview.md`](./notificaciones/overview.md) · matriz P-06: [`notificaciones/matriz-evento-canal.md`](./notificaciones/matriz-evento-canal.md)  
+Mensajería in-app: [`mensajeria/overview.md`](./mensajeria/overview.md)  
 Catálogo RBAC (borrador P-24, transversal): [`arquitectura/especificacion/catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md)
 
 ## Dos consolas, una API
@@ -56,6 +57,8 @@ Superficie del **propio usuario** (no es consola admin). Presente en todas las c
 | Campanita | [`shell/01-campanita.md`](./wireframes/shell/01-campanita.md) | `listNotifications`; *(inferida)* `markNotificationRead` |
 | Bandeja de entrada | [`shell/02-bandeja.md`](./wireframes/shell/02-bandeja.md) | `listNotifications`, `getNotification`; *(inferidas)* `markNotificationRead`, `markAllNotificationsRead` |
 | Mis datos | [`shell/03-mis-datos.md`](./wireframes/shell/03-mis-datos.md) | `getCurrentUser`; *(inferida)* `requestProfileChange` |
+| Chat contextual (FAB) | [`shell/04-chat-contextual.md`](./wireframes/shell/04-chat-contextual.md) | Mensajería (demo) — [`mensajeria/overview.md`](./mensajeria/overview.md) |
+| Chats (listado) | [`shell/05-chats.md`](./wireframes/shell/05-chats.md) | Listado de conversaciones demo + deep link a vista citada |
 
 Las operaciones *(inferidas)* están listadas en [`contracts.md`](./contracts.md) §2.11 hasta cerrar **P-48**.
 
@@ -66,8 +69,10 @@ Las operaciones *(inferidas)* están listadas en [`contracts.md`](./contracts.md
 
 ## Prototipo HTML
 
-[`sgm-prototipos/plataforma/`](../../sgm-prototipos/plataforma/index.html) — hub de consolas SUBDERE y municipal (véase [`MANIFEST.md`](../../sgm-prototipos/MANIFEST.md) sección Plataforma).
+Entrada pública (GitHub Pages / local): [`sgm-prototipos/index.html`](../../sgm-prototipos/index.html) — landing → simulación ClaveÚnica → `home.html` → bandeja C6.
+
+Hub de consolas: [`sgm-prototipos/plataforma/`](../../sgm-prototipos/plataforma/index.html) (SUBDERE, municipal, bandeja, **Chats**). Detalle de navegación: [`MANIFEST.md`](../../sgm-prototipos/MANIFEST.md).
 
 ## Estado
 
-Wireframes (**P-52**) y prototipos HTML de ambas consolas. Shell: C6 ([`notificaciones/`](./notificaciones/overview.md), bandeja + campanita) y ficha [`shell/03-mis-datos`](./wireframes/shell/03-mis-datos.md) (prototipo [`03-mis-datos.html`](../../sgm-prototipos/plataforma/shell/03-mis-datos.html)); preferencias en municipal/09. Cuerpos HTTP de ops admin e inbox pendientes en **P-48**. Matriz **P-06** en borrador.
+Wireframes (**P-52**) y prototipos HTML de ambas consolas. Shell: C6 ([`notificaciones/`](./notificaciones/overview.md)), [`mis datos`](./wireframes/shell/03-mis-datos.md), mensajería ([`mensajeria/`](./mensajeria/overview.md) — FAB + [`05-chats`](./wireframes/shell/05-chats.md)). Cuerpos HTTP de ops admin e inbox pendientes en **P-48**. Matriz **P-06** en borrador.

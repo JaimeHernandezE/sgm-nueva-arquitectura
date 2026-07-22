@@ -13,13 +13,13 @@ Fuente canónica de **acciones pendientes del actor** (musts §9). El listado de
 | Bandeja de entrada                                       |
 +----------------------------------------------------------+
 | Filtros                                                  |
-| [ kind v ] [ módulo v ] [ leída v ] [ desde ] [ hasta ]  |
+| [ tipo ES v ] [ módulo v ] [ leída v ] [ desde ] [ hasta]|
 | [ Buscar folio / texto ]              [ Marcar todas leídas ]
 +----------------------------------------------------------+
 | | ● | Título                         | Módulo | Tipo | Fecha | |
-| | ● | Firmar CDP ADQ-2026-00045      | Adq.   | action_required | 22-07 09:12 | [ Ir ] |
-| | ○ | OC aceptada — ACME             | Adq.   | info            | 22-07 08:01 | [ Abrir ] |
-| | ● | Confirmar recepción OC-8841    | Adq.   | action_required | 21-07 16:40 | [ Ir ] |
+| | ● | Firmar CDP ADQ-2026-00045      | Adq.   | Acción requerida | 22-07 09:12 | [ Ir ] |
+| | ○ | OC aceptada — ACME             | Adq.   | Informativa      | 22-07 08:01 | [ Abrir ] |
+| | ● | Confirmar recepción OC-8841    | Adq.   | Acción requerida | 21-07 16:40 | [ Ir ] |
 +----------------------------------------------------------+
 | Paginación                                               |
 +----------------------------------------------------------+
@@ -31,7 +31,7 @@ Fuente canónica de **acciones pendientes del actor** (musts §9). El listado de
 +----------------------------------------------------------+
 | Firmar CDP — ADQ-2026-00045                              |
 +----------------------------------------------------------+
-| Tipo        action_required                              |
+| Tipo        Acción requerida (`action_required`)         |
 | Evento      BudgetAvailabilityCertificateIssued (origen) |
 | Expediente  ADQ-2026-00045                               |
 | Cuerpo      Debes firmar el CDP para continuar la SOLPED.|
@@ -46,7 +46,7 @@ Fuente canónica de **acciones pendientes del actor** (musts §9). El listado de
 | Título | `Notification.title` | Sí |
 | Cuerpo | `Notification.body` | No |
 | Módulo | `Notification.module` | Sí |
-| Tipo | `Notification.kind` | Sí |
+| Tipo | `Notification.kind` (UI en español) | Sí |
 | Leída | `Notification.read_at` | No |
 | Fecha | `Notification.created_at` | Sí |
 | Deep link | `Notification.deep_link` | Sí |
@@ -68,6 +68,7 @@ Fuente canónica de **acciones pendientes del actor** (musts §9). El listado de
 - **Vacía:** “No hay notificaciones con estos filtros”.
 - **Solo informativas:** sin CTA de acción; deep link de consulta.
 - **403 / sesión:** redirigir a login.
+- **Demo prototipo:** marcar leída / todas leídas solo en memoria (al refrescar se restaura el seed).
 
 ## Validaciones visibles
 

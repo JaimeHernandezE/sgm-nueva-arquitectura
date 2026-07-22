@@ -85,7 +85,7 @@ export const users = [
     id: 'u-luis',
     run: '9.876.543-2',
     display_name: 'Luis Soto',
-    status: 'suspended',
+    status: 'active',
     last_access: '2026-06-01',
   },
   {
@@ -94,6 +94,20 @@ export const users = [
     display_name: 'María López',
     status: 'active',
     last_access: '2026-07-12',
+  },
+  {
+    id: 'u-pedro',
+    run: '11.222.333-4',
+    display_name: 'Pedro Núñez',
+    status: 'active',
+    last_access: '2026-07-10',
+  },
+  {
+    id: 'u-carmen',
+    run: '16.444.555-6',
+    display_name: 'Carmen Díaz',
+    status: 'active',
+    last_access: '2026-07-11',
   },
 ];
 
@@ -265,6 +279,28 @@ export const roleAssignments = [
     valid_from: '2026-01-01',
     valid_until: '—',
   },
+  {
+    user_id: 'u-pedro',
+    user_name: 'Pedro Núñez',
+    role: 'adq.solicitante',
+    process_area: 'adq.solped',
+    department: 'Tránsito',
+    unit: '(el departamento)',
+    node_label: 'Tránsito',
+    valid_from: '2026-01-01',
+    valid_until: '—',
+  },
+  {
+    user_id: 'u-carmen',
+    user_name: 'Carmen Díaz',
+    role: 'adq.operador_pago',
+    process_area: 'adq.pago',
+    department: 'Finanzas',
+    unit: 'Tesorería',
+    node_label: 'Finanzas › Tesorería',
+    valid_from: '2026-01-01',
+    valid_until: '—',
+  },
 ];
 
 export const delegations = [
@@ -432,6 +468,101 @@ export const tenantNotificationPolicy = {
   mandatory_email_kinds: ['action_required'],
   mandatory_email_event_types: ['PurchaseOrderRejected', 'ProcurementProcessFailed'],
 };
+
+/** Hilos de chat demo (mensajería). `context: null` = pregunta abierta. */
+export const chatThreads = [
+  {
+    id: 'chat-001',
+    subject: 'Duda sobre umbral UTM en SOLPED',
+    participants: ['Ana Pérez', 'María López'],
+    updated_at: '2026-07-22T10:15:00',
+    preview: '¿El umbral se aplica al neto o al bruto?',
+    context: {
+      label: 'Creación SOLPED · ADQ-2026-00045',
+      deep_link:
+        'modulos/adquisiciones/procesos-transversales/11-creacion-solped.html?expediente=ADQ-2026-00045',
+    },
+    messages: [
+      {
+        from: 'Ana Pérez',
+        at: '2026-07-22T10:12:00',
+        text: 'María, en esta SOLPED ¿el umbral UTM se mira sobre el neto o el bruto?',
+      },
+      {
+        from: 'María López',
+        at: '2026-07-22T10:15:00',
+        text: 'Sobre el monto estimado en CLP bruto para la compuerta de modalidad. Revisa la ficha 2.1 si dudas.',
+      },
+    ],
+  },
+  {
+    id: 'chat-002',
+    subject: 'Recepción parcial — coordinación bodega',
+    participants: ['Ana Pérez', 'Luis Soto'],
+    updated_at: '2026-07-21T16:40:00',
+    preview: 'Dejé observación en las líneas 2 y 3.',
+    context: {
+      label: 'Recepción conforme · ADQ-2026-00142',
+      deep_link:
+        'modulos/adquisiciones/procesos-transversales/41-recepcion-conforme.html?expediente=ADQ-2026-00142',
+    },
+    messages: [
+      {
+        from: 'Ana Pérez',
+        at: '2026-07-21T16:30:00',
+        text: 'Luis, ¿puedes confirmar recepción parcial? Llegó solo parte de los ítems.',
+      },
+      {
+        from: 'Luis Soto',
+        at: '2026-07-21T16:40:00',
+        text: 'Dejé observación en las líneas 2 y 3. Abre la vista de recepción del expediente.',
+      },
+    ],
+  },
+  {
+    id: 'chat-003',
+    subject: 'Horario de junta de abastecimiento',
+    participants: ['Ana Pérez', 'María López'],
+    updated_at: '2026-07-20T09:05:00',
+    preview: 'Quedamos el jueves a las 10:00.',
+    context: null,
+    messages: [
+      {
+        from: 'Ana Pérez',
+        at: '2026-07-20T09:00:00',
+        text: '¿Cuándo es la junta de abastecimiento de esta semana?',
+      },
+      {
+        from: 'María López',
+        at: '2026-07-20T09:05:00',
+        text: 'Quedamos el jueves a las 10:00 en la sala DAF.',
+      },
+    ],
+  },
+  {
+    id: 'chat-004',
+    subject: 'Expediente — revisión rápida del estado',
+    participants: ['Ana Pérez', 'María López'],
+    updated_at: '2026-07-19T14:22:00',
+    preview: 'El paso actual está en el shell del expediente.',
+    context: {
+      label: 'Expediente · ADQ-2026-00123',
+      deep_link: 'modulos/adquisiciones/00-expediente/?expediente=ADQ-2026-00123',
+    },
+    messages: [
+      {
+        from: 'María López',
+        at: '2026-07-19T14:20:00',
+        text: 'Ana, ¿en qué paso quedó el expediente de insumos de oficina?',
+      },
+      {
+        from: 'Ana Pérez',
+        at: '2026-07-19T14:22:00',
+        text: 'El paso actual está en el shell del expediente; te dejo el enlace en el contexto.',
+      },
+    ],
+  },
+];
 
 /**
  * Espejo demo de getCurrentUser enriquecido (ficha Mis datos).

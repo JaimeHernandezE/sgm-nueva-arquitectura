@@ -16,15 +16,15 @@
   | Notificaciones                    Ver bandeja|
   +----------------------------------------------+
   | ● Firmar CDP — ADQ-2026-00045                |
-  |   Adquisiciones · action_required · hace 12m |
+  |   Adquisiciones · Acción requerida · hace 12m |
   |   [ Ir a firmar ]                            |
   +----------------------------------------------+
   | ○ OC aceptada — proveedor ACME               |
-  |   Adquisiciones · info · hace 1h             |
+  |   Adquisiciones · Informativa · hace 1h      |
   |   [ Abrir expediente ]                       |
   +----------------------------------------------+
   | ○ Modalidad pendiente de aprobación          |
-  |   Adquisiciones · action_required · ayer     |
+  |   Adquisiciones · Acción requerida · ayer    |
   |   [ Ir a actuar ]                            |
   +----------------------------------------------+
   | (máx. N recientes; resto en bandeja)         |
@@ -38,7 +38,7 @@
 | Badge no leídas | conteo `Notification` con `read_at` nulo del actor | Sí |
 | Título | `Notification.title` | Sí |
 | Módulo | `Notification.module` | Sí |
-| Tipo | `Notification.kind` | Sí |
+| Tipo | `Notification.kind` (UI: etiqueta ES vía `kindLabel`) | Sí |
 | Antigüedad | `Notification.created_at` | Sí |
 | Deep link / CTA | `Notification.deep_link` | Sí |
 | Leída (●/○) | `Notification.read_at` | No |
@@ -56,6 +56,7 @@
 - **Sin no leídas:** badge oculto o `0`; lista puede mostrar recientes leídas.
 - **Fallo de carga:** mensaje breve; reintento.
 - **Scope:** solo notificaciones del usuario autenticado (y las que le correspondan por subrogancia activa).
+- **Demo prototipo:** marcar leída no persiste entre refrescos (solo memoria de página).
 
 ## Validaciones visibles
 

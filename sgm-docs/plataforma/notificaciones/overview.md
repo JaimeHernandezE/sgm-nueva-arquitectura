@@ -23,14 +23,14 @@ Servicio transversal del core: consume eventos de dominio de todos los módulos,
 
 ## 2. Tipos de ítem
 
-| `kind` | Significado | Ejemplo |
-|---|---|---|
-| `action_required` | El destinatario debe actuar para avanzar el flujo | Firmar CDP, aprobar SOLPED, confirmar recepción |
-| `info` | Hecho informativo; no bloquea al receptor | “Tu compra fue confirmada; proveedor X” |
-| `deadline` | Aviso de plazo o recordatorio (timers musts §10.4 / P-33) | Cotización sin respuesta en N días hábiles |
-| `escalation` | Escalamiento por inacción | Plazo vencido → rol superior |
+| `kind` (API) | Etiqueta UI (ES) | Significado | Ejemplo |
+|---|---|---|---|
+| `action_required` | Acción requerida | El destinatario debe actuar para avanzar el flujo | Firmar CDP, aprobar SOLPED, confirmar recepción |
+| `info` | Informativa | Hecho informativo; no bloquea al receptor | “Tu compra fue confirmada; proveedor X” |
+| `deadline` | Plazo | Aviso de plazo o recordatorio (timers musts §10.4 / P-33) | Cotización sin respuesta en N días hábiles |
+| `escalation` | Escalamiento | Escalamiento por inacción | Plazo vencido → rol superior |
 
-Cada ítem lleva `deep_link` estable al expediente/paso (o recurso equivalente), no solo texto.
+Cada ítem lleva `deep_link` estable al expediente/paso (o recurso equivalente), no solo texto. En el prototipo, `kindLabel()` / `KIND_LABELS` en `notifications-ui.js` muestran siempre la etiqueta en español (campanita, bandeja, preferencias).
 
 ---
 
@@ -51,19 +51,21 @@ Cada ítem lleva `deep_link` estable al expediente/paso (o recurso equivalente),
 
 ### Campanita
 
-Icono global (todas las consolas y módulos). Badge de no leídas. Dropdown con las más recientes: título, módulo, `kind`, antigüedad, deep link. CTA “Ver bandeja”.
+Icono global (todas las consolas y módulos). Badge de no leídas. Dropdown con las más recientes: título, módulo, **etiqueta ES del `kind`**, antigüedad, deep link. CTA “Ver bandeja”.
 
 Wireframe: [`../wireframes/shell/01-campanita.md`](../wireframes/shell/01-campanita.md).
 
+**Demo prototipo:** el estado leído vive solo en memoria de la página; al **refrescar** vuelven las no leídas del seed (`notifications-ui.js`).
+
 ### Bandeja de entrada
 
-Pantalla completa: filtros por `kind`, módulo, leída/no leída, rango de fechas; listado con deep link / “Ir a actuar”. Es la fuente canónica de “acciones pendientes del actor”.
+Pantalla completa: filtros por tipo (UI en español; valor API = `kind`), módulo, leída/no leída, rango de fechas; listado con deep link / “Ir a actuar”. Es la fuente canónica de “acciones pendientes del actor”.
 
 Wireframe: [`../wireframes/shell/02-bandeja.md`](../wireframes/shell/02-bandeja.md).
 
 ### Preferencias
 
-El usuario elige, dentro de la política del municipio, qué `info` va a correo vs solo bandeja. Los `action_required` definidos como obligatorios por tenant **no** permiten opt-out de correo.
+El usuario elige, dentro de la política del municipio, qué informativas van a correo vs solo bandeja. Las **acciones requeridas** definidas como obligatorias por tenant **no** permiten opt-out de correo.
 
 Wireframe: [`../wireframes/municipal/09-preferencias-notificacion.md`](../wireframes/municipal/09-preferencias-notificacion.md).
 
@@ -99,18 +101,18 @@ Wireframe: [`../wireframes/municipal/09-preferencias-notificacion.md`](../wirefr
 
 ---
 
-## 6. Fuera de alcance v1 — mensajería in-app
+## 6. Mensajería in-app (producto aparte)
 
-**No forma parte de C6.** Un chat persona-a-persona (p. ej. desde una SOLPED, con contexto de expediente, destinatario elegido y hilo archivado) es un producto distinto:
+**No forma parte de C6.** Spec: [`../mensajeria/overview.md`](../mensajeria/overview.md).
 
 | | Notificación (C6) | Mensajería |
 |---|---|---|
 | Origen | Evento de dominio / sistema | Persona |
 | Destinatario | Reglas rol/unidad | Elegido por el emisor |
 | Efecto de flujo | Puede ser la tarea formal (`action_required`) | No sustituye firma ni aprobación |
-| Archivo | Ítem en bandeja + entregas | Hilo conversacional (diseño futuro) |
+| Archivo | Ítem en bandeja + entregas | Hilo conversacional |
 
-Si se incorpora más adelante: hilos con cita a `ProcurementCase` / entidad de proceso; el envío de mensaje **puede** emitir un evento que C6 entregue como `info` / `action_required` a los participantes. Hasta entonces, comentarios o @menciones en expediente son alternativas más livianas.
+Must de producto en mensajería: conversación inicia **sin** contexto (pregunta abierta); el usuario puede **incluir** el contexto de la vista actual y **quitarlo** después. Spec: [`../mensajeria/overview.md`](../mensajeria/overview.md). El envío de un mensaje puede, en el futuro, emitir un evento que C6 entregue a los participantes.
 
 ---
 

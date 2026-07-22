@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chats — SGM</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page page--chats">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header">
+            <span>Chats</span>
+            <span class="subtitle" style="margin:0;">Mensajería in-app (demo)</span>
+          </div>
+          <div class="form-card__body chats-layout">
+            <section class="form-section chats-list-panel">
+              <h3 class="form-section__title">Conversaciones</h3>
+              <ul class="chats-list" id="chats-list"></ul>
+            </section>
+            <section class="form-section chats-detail-panel" id="chat-detail">
+              <h3 class="form-section__title">Detalle</h3>
+              <p class="subtitle" id="chat-empty">Selecciona una conversación.</p>
+              <div id="chat-detail-body" hidden></div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderAdqBreadcrumb, siteUrl } from '../../shared/app-shell.js';
+    import { chatThreads } from '../../shared/demo-data/plataforma.js';
+
+    initAppShell({ activeModule: 'plataforma', activeNav: 'chats', console: null });
+    document.getElementById('breadcrumb').innerHTML = renderAdqBreadcrumb({
+      items: [
+        { label: 'Plataforma', href: 'plataforma/index.html' },
+        { label: 'Chats' },
+      ],
+    });
+
+    const listEl = document.getElementById('chats-list');
+    const emptyEl = document.getElementById('chat-empty');
+    const bodyEl = document.getElementById('chat-detail-body');
+
+    function formatWhen(iso) {
+      return iso.replace('T', ' ').slice(0, 16);
+    }
+
+    listEl.innerHTML = chatThreads
+      .slice()
+      .sort((a, b) => String(b.updated_at).localeCompare(String(a.updated_at)))
+      .map((c) => {
+        const ctxBadge = c.context
+          ? '<span class="badge badge--awaiting">Con contexto</span>'
+          : '<span class="badge">Abierta</span>';
+        return `<li>
+          <button type="button" class="chats-list__item" data-id="${c.id}">
+            <span class="chats-list__subject">${c.subject}</span>
+            <span class="chats-list__meta">${c.participants.join(', ')} · ${formatWhen(c.updated_at)}</span>
+            <span class="chats-list__preview">${c.preview}</span>
+            <span class="chats-list__badges">${ctxBadge}</span>
+          </button>
+        </li>`;
+      })
+      .join('');
+
+    function showChat(id) {
+      const chat = chatThreads.find((c) => c.id === id);
+      if (!chat) return;
+
+      listEl.querySelectorAll('.chats-list__item').forEach((btn) => {
+        btn.classList.toggle('is-active', btn.getAttribute('data-id') === id);
+      });
+
+      emptyEl.hidden = true;
+      bodyEl.hidden = false;
+
+      const ctxBlock = chat.context
+        ? `<div class="chats-context">
+            <strong>Contexto citado</strong>
+            <p>${chat.context.label}</p>
+            <a class="btn btn--secondary" href="${siteUrl(chat.context.deep_link)}">Ir a la vista citada</a>
+          </div>`
+        : `<div class="chats-context chats-context--open">
+            <strong>Pregunta abierta</strong>
+            <p>Sin contexto de proceso.</p>
+          </div>`;
+
+      const msgs = chat.messages
+        .map(
+          (m) => `<div class="sgm-chat__bubble ${m.from === 'Ana Pérez' ? 'is-mine' : ''}">
+            <strong>${m.from} · ${formatWhen(m.at)}</strong>
+            <p>${m.text}</p>
+          </div>`,
+        )
+        .join('');
+
+      bodyEl.innerHTML = `
+        <h4 class="chats-detail__title">${chat.subject}</h4>
+        <p class="subtitle">Participantes: ${chat.participants.join(', ')}</p>
+        ${ctxBlock}
+        <div class="chats-thread">${msgs}</div>
+      `;
+    }
+
+    listEl.querySelectorAll('[data-id]').forEach((btn) => {
+      btn.addEventListener('click', () => showChat(btn.getAttribute('data-id')));
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    const initial = params.get('chat') || chatThreads[0]?.id;
+    if (initial) showChat(initial);
+  </script>
+</body>
+</html>

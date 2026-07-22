@@ -6,6 +6,7 @@ import {
   plataformaMunicipalNav,
 } from './modules-registry.js';
 import { mountNotificationBell } from './notifications-ui.js';
+import { mountContextualChat } from './chat-contextual-ui.js';
 import { requireAuth } from './auth-demo.js';
 
 let siteBase = null;
@@ -122,6 +123,7 @@ export function initAppShell({
   `;
 
   mountNotificationBell({ siteUrl });
+  mountContextualChat({ siteUrl });
 }
 
 export function renderAdqBreadcrumb({ items }) {

@@ -68,20 +68,21 @@ sgm-prototipos/
 │   ├── auth-demo.js        # Sesión demo (sessionStorage)
 │   ├── landing.css         # Estilos landing / auth
 │   ├── app-shell.js        # Sidebar + siteUrl() + requireAuth
-│   ├── notifications-ui.js # Campanita + menú cuenta
+│   ├── notifications-ui.js # Campanita + menú cuenta; kinds en ES; leído solo en memoria (reset al refrescar)
+│   ├── chat-contextual-ui.js # FAB chat (cerrado por defecto; contexto opt-in; búsqueda persona/depto)
 │   ├── shell.css
-│   ├── modules-registry.js # Adquisiciones + Plataforma (consolas)
+│   ├── modules-registry.js # Adquisiciones + Plataforma (consolas + Chats)
 │   ├── expedientes-demo.js # Perfiles de expediente demo (4 modalidades + caso sin saldo)
-│   ├── demo-data/          # Timeline por expediente + plataforma.js (core)
+│   ├── demo-data/          # Timeline por expediente + plataforma.js (notifications, chatThreads, users)
 │   ├── form-presets.js     # Valores de formulario por expediente
 │   ├── form-bootstrap.js   # Aplica presets al cargar HTML
 │   ├── steps-manifest.json # Pasos transversales del shell
 │   ├── steps-manifest-*.js # Etapa 3 por modalidad (CA, CM, LP, TD)
 ├── plataforma/             # Consolas del core (SUBDERE + municipal)
-│   ├── index.html          # Hub elegir consola
-│   ├── shell/              # Bandeja C6 + Mis datos (cuenta)
+│   ├── index.html          # Hub elegir consola / bandeja / chats
+│   ├── shell/              # 02-bandeja, 03-mis-datos, 05-chats (+ FAB/campanita globales)
 │   ├── subdere/            # 01–07 pantallas admin plataforma
-│   └── municipal/          # 01–09 pantallas admin municipio
+│   └── municipal/          # 01–09 pantallas admin municipio (09 = preferencias notificación)
 └── modulos/
     └── adquisiciones/
         ├── index.html                  # Bienvenida del módulo
@@ -94,7 +95,17 @@ sgm-prototipos/
         └── 4-trato-directo/            # Etapa 3 Trato Directo
 ```
 
-Local: `npx serve sgm-prototipos` → `/` (landing) → login → bandeja.
+Local: `npx serve sgm-prototipos` → `/` (landing) → ClaveÚnica → home → bandeja.
+
+### Shell autenticado (resumen demo)
+
+| Pieza | Comportamiento en prototipo |
+|---|---|
+| Sesión | `auth-demo.js` (sessionStorage); sin sesión → login |
+| Campanita / bandeja | C6; tipos en español; marcar leída **solo en memoria** (al refrescar vuelven las no leídas del seed) |
+| Preferencias | `municipal/09-preferencias-notificacion.html` |
+| FAB Chat | Cerrado por defecto; pregunta abierta; «Incluir contexto»; búsqueda por persona/departamento |
+| Chats | Nav Plataforma → `shell/05-chats.html`; hilos con contexto tienen «Ir a la vista citada» |
 
 Cada fila del listado abre un expediente con **las 5 etapas** parametrizadas por modalidad vía `?expediente=`. La **etapa 3** es específica de cada modalidad y está enlazada desde el shell. Los formularios transversales reutilizan el mismo HTML; los valores visibles vienen de `form-presets.js`.
 

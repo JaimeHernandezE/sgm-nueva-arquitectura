@@ -24,15 +24,18 @@ index.html (landing GitHub Pages)
   → auth/clave-unica.html (simulación ClaveÚnica)
   → home.html → plataforma/shell/02-bandeja.html
 
-Desde bandeja / sidebar:
-  → modulos/adquisiciones/…
+Desde bandeja / sidebar Plataforma:
+  → plataforma/shell/05-chats.html (listado conversaciones)
   → plataforma/subdere/* | municipal/*
+  → modulos/adquisiciones/…
   → campanita global (notifications-ui.js)
+  → chat contextual FAB (chat-contextual-ui.js)
 ```
 
-- **Auth demo:** [`shared/auth-demo.js`](./shared/auth-demo.js) — `sessionStorage`; `initAppShell` exige sesión (salvo pantallas públicas).
-- Sidebar derecho: módulos SGM (`shared/app-shell.js`, `shared/modules-registry.js`) — incluye **Plataforma** (core) y Adquisiciones (nav: Inicio, Expedientes, **Configuraciones**).
-- Topbar C6: campanita + menú de cuenta / cerrar sesión (`shared/notifications-ui.js`); datos en `demo-data/plataforma.js` (`notifications`).
+- **Auth demo:** [`shared/auth-demo.js`](./shared/auth-demo.js) — `sessionStorage`; `initAppShell` exige sesión (salvo pantallas públicas: landing, ClaveÚnica, home).
+- Sidebar derecho: módulos SGM (`shared/app-shell.js`, `shared/modules-registry.js`) — **Plataforma** (Inicio, Bandeja, **Chats**, consolas) y Adquisiciones (Inicio, Expedientes, Configuraciones).
+- Topbar C6: campanita + menú de cuenta / cerrar sesión (`shared/notifications-ui.js`). Tipos UI en español (`KIND_LABELS`). Estado leído **solo en memoria** (al refrescar se restaura el seed). Datos: `demo-data/plataforma.js` (`notifications`).
+- Chat contextual: FAB abajo-derecha (`shared/chat-contextual-ui.js`) — **cerrado por defecto**; contexto **opt-in**; búsqueda destinatarios por persona/departamento; sin persistencia. Listado: `shell/05-chats.html` (`chatThreads`). Spec: [`sgm-docs/plataforma/mensajeria/overview.md`](../sgm-docs/plataforma/mensajeria/overview.md).
 - Perfiles de expediente: [`shared/expedientes-demo.js`](./shared/expedientes-demo.js) — **5** expedientes con detalle completo (4 modalidades + caso sin saldo `ADQ-2026-00142`). La etapa 3 es específica por modalidad.
 - Datos demo por expediente: [`shared/demo-data/`](./shared/demo-data/) (`getStages(expedienteId)`).
 - Datos demo core: [`shared/demo-data/plataforma.js`](./shared/demo-data/plataforma.js).
@@ -196,6 +199,8 @@ Campanita global montada por `initAppShell` → `notifications-ui.js` (todas las
 | Campanita (dropdown) | `shell/01-campanita.md` | (chrome en `shared/notifications-ui.js`) | `listNotifications`, `markNotificationRead` |
 | Bandeja | `shell/02-bandeja.md` | `plataforma/shell/02-bandeja.html` | `listNotifications`, `getNotification`, `markNotificationRead`, `markAllNotificationsRead` |
 | Mis datos | `shell/03-mis-datos.md` | `plataforma/shell/03-mis-datos.html` | `getCurrentUser`, `requestProfileChange` |
+| Chat contextual | `shell/04-chat-contextual.md` | chrome en `shared/chat-contextual-ui.js` | Demo mensajería — [`mensajeria/overview.md`](../sgm-docs/plataforma/mensajeria/overview.md) |
+| Chats (listado) | `shell/05-chats.md` | `plataforma/shell/05-chats.html` | Conversaciones demo; deep link si hay contexto |
 
 ## Configuraciones de módulo (Adquisiciones)
 

@@ -7,7 +7,10 @@ alwaysApply: false
 # Prototipos HTML SGM
 
 - Assets compartidos en `sgm-prototipos/shared/` (CSS, JS, manifiesto).
-- Toda pantalla autenticada usa `initAppShell()` desde `app-shell.js` (exige sesión demo; sidebar + campanita C6). Landing/auth/home son públicos.
+- Toda pantalla autenticada usa `initAppShell()` desde `app-shell.js` (exige sesión demo; sidebar + campanita C6 + FAB chat). Landing / ClaveÚnica / home son públicos.
+- Nav Plataforma: Inicio, Bandeja, **Chats** (`shell/05-chats.html`); también en consolas municipal/SUBDERE. Spec mensajería: `sgm-docs/plataforma/mensajeria/`.
+- Campanita (`notifications-ui.js`): tipos con `KIND_LABELS` en español; leído **sin persistir** entre refrescos (solo memoria).
+- FAB chat (`chat-contextual-ui.js`): **cerrado por defecto**; contexto **opt-in**; destinatarios con búsqueda por persona/departamento; panel oculto respeta `[hidden]` + CSS.
 - Numeración `NN-nombre.html` donde `NN` = etapa×10 + sub-paso (Adquisiciones); en `plataforma/` el `NN` correlaciona con wireframes de consolas (no es flujo de expediente).
 - Consolas del core viven en `sgm-prototipos/plataforma/` (`subdere/`, `municipal/`); `initAppShell({ activeModule: 'plataforma', console: '…' })`.
 - Sin frameworks; vanilla HTML/CSS/JS con `type="module"`.

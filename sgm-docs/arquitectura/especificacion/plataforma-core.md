@@ -219,9 +219,9 @@ Dos consolas, ambas consumidoras sin privilegios del contrato del core (§2). Se
 | Recertificación de accesos | Reporte de cuentas y última actividad (`seguridad.md` §9.4) |
 | Preferencias de notificación | Canales del usuario acotados por `TenantNotificationPolicy` (C6) |
 
-**Shell global (no es consola admin):** campanita y bandeja de notificaciones — [`plataforma/notificaciones/overview.md`](../../plataforma/notificaciones/overview.md); ficha **Mis datos** (identidad + `RoleAssignment` vigentes + solicitud de cambio al admin) — wireframes `plataforma/wireframes/shell/`. Frontera: self-service laboral (vacaciones, liquidaciones, etc.) queda en el módulo RRHH futuro, no en esta ficha.
+**Shell global (no es consola admin):** campanita y bandeja de notificaciones — [`plataforma/notificaciones/overview.md`](../../plataforma/notificaciones/overview.md); ficha **Mis datos** (identidad + `RoleAssignment` vigentes + solicitud de cambio al admin); mensajería in-app (FAB + listado chats) — [`plataforma/mensajeria/overview.md`](../../plataforma/mensajeria/overview.md). Wireframes `plataforma/wireframes/shell/`. Frontera: self-service laboral (vacaciones, liquidaciones, etc.) queda en el módulo RRHH futuro, no en esta ficha.
 
-**P-52:** wireframes de ambas consolas creados (`plataforma/wireframes/`); cuerpos HTTP de ops *(inferidas)* pendientes en **P-48** (§2.11 del contrato). Wireframes shell (C6 + mis datos) y preferencias añadidos; ops inbox y `requestProfileChange` en contracts §2.7 / §2.11.
+**P-52:** wireframes de ambas consolas creados (`plataforma/wireframes/`); cuerpos HTTP de ops *(inferidas)* pendientes en **P-48** (§2.11 del contrato). Wireframes shell (C6 + mis datos + mensajería) y preferencias añadidos; ops inbox y `requestProfileChange` en contracts §2.7 / §2.11.
 
 ## 10. Foliación
 

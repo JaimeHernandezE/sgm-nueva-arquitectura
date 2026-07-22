@@ -16,7 +16,7 @@
 | ☐ (WhatsApp — no disponible en v1)                       |
 +----------------------------------------------------------+
 | Correo — por tipo                                        |
-| Action required (obligatorios del municipio)  [fijo: sí] |
+| Acción requerida (obligatorios del municipio) [fijo: sí] |
 | Informativas                              [ sí / no  v ] |
 | Recordatorios / plazos                    [ sí / no  v ] |
 | Digest diario (agrupado)                  [ sí / no  v ] |

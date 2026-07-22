@@ -2,35 +2,25 @@
  * Campanita + estado leído demo (C6).
  * Spec: sgm-docs/plataforma/notificaciones/overview.md
  *
+ * El estado leído vive solo en memoria: al refrescar la página
+ * vuelven las no leídas del seed (sin sessionStorage).
  * No importa form-shell/app-shell (evitar ciclo de módulos ES).
  */
 import { notifications as seedNotifications } from './demo-data/plataforma.js';
 import { getSession, logoutDemo } from './auth-demo.js';
 
-const STORAGE_KEY = 'sgm-demo-notification-reads';
-
 function demoAction(_operationId) {
   /* stub silencioso — alineado con form-shell.demoAction */
 }
 
-function loadReadOverrides() {
-  try {
-    return JSON.parse(sessionStorage.getItem(STORAGE_KEY) || '{}');
-  } catch {
-    return {};
-  }
-}
+/** @type {Record<string, boolean>} */
+const readOverrides = {};
 
-function saveReadOverrides(map) {
-  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(map));
-}
-
-/** Lista con `read` fusionado contra sessionStorage. */
+/** Lista con `read` fusionado contra overrides en memoria. */
 export function listDemoNotifications() {
-  const overrides = loadReadOverrides();
   return seedNotifications.map((n) => ({
     ...n,
-    read: overrides[n.id] !== undefined ? overrides[n.id] : n.read,
+    read: readOverrides[n.id] !== undefined ? readOverrides[n.id] : n.read,
   }));
 }
 
@@ -39,18 +29,14 @@ export function unreadCount() {
 }
 
 export function markNotificationRead(id) {
-  const map = loadReadOverrides();
-  map[id] = true;
-  saveReadOverrides(map);
+  readOverrides[id] = true;
   demoAction('markNotificationRead');
 }
 
 export function markAllNotificationsRead(ids) {
-  const map = loadReadOverrides();
   ids.forEach((id) => {
-    map[id] = true;
+    readOverrides[id] = true;
   });
-  saveReadOverrides(map);
   demoAction('markAllNotificationsRead');
 }
 
