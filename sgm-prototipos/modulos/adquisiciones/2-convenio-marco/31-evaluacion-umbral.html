@@ -59,7 +59,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, relativeFormHref, renderBreadcrumb, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, relativeFormHref, renderBreadcrumb, demoAction, demoValidation, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -104,12 +104,13 @@
       resultBanner.className = 'banner';
 
       if (simulateUtm.value === 'unavailable') {
+        demoValidation('getUtmValue');
         resultBanner.style.color = '#a33333';
         resultBanner.textContent = 'UTM_VALUE_UNAVAILABLE — fuente UTM no disponible y sin valor cacheado del mes en curso; la evaluación de umbral no puede ejecutarse.';
         return;
       }
 
-      demoAction('getUtmValue');
+      demoValidation('getUtmValue');
       const montoUtm = MONTO / UTM_VALUE;
       const route = montoUtm >= GRAN_COMPRA_LIMIT_UTM ? 'gran_compra' : 'compra_directa';
       demoAction('ProcurementRouteDecided');

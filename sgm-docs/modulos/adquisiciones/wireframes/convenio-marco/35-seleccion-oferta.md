@@ -10,16 +10,17 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Selección de oferta Gran Compra  [Pendiente en MP]|
 +----------------------------------------------------------------+
-| Período cerrado (24-03-2026) · 3 ofertas recibidas                |
-+----------------------------------------------------------------+
+| ## Acción en Mercado Público                                     |
 | [ Comparar y seleccionar oferta en Mercado Público ] (deep link)  |
 +----------------------------------------------------------------+
-| Oferta seleccionada (solo lectura, tras sync):                    |
+| ## Estado de sincronización                                      |
+| Período cerrado (24-03-2026) · 3 ofertas recibidas                |
+| (badge: Sincronizado — o Pendiente en MP hasta la lectura)         |
++----------------------------------------------------------------+
+| ## Oferta seleccionada — solo lectura                            |
 |   Proveedor: Mobiliario Chile Ltda.                                |
 |   Monto: $ 4.650.000                                               |
 |   Sincronizado desde MP: 25-03-2026                                |
-+----------------------------------------------------------------+
-| (badge: Sincronizado — o Pendiente en MP hasta la lectura)         |
 +----------------------------------------------------------------+
 ```
 

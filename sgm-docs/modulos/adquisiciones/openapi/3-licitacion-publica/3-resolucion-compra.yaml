@@ -1,0 +1,283 @@
+openapi: 3.1.0
+info:
+  title: SGM Adquisiciones — fragmento Licitación Pública
+  version: 0.1.0
+  description: |
+    Fragmento de rutas etapa 3 Licitación Pública. Ensamblado en `adquisiciones.openapi.yaml`.
+    Reutilizadas sin redeclarar: `linkMpProcess` (3.5), `syncPurchaseOrderAccepted` (3.14),
+    `registerGuaranteeCustody` (dependencia Tesorería 3.7/3.12).
+paths:
+  /procurement-cases/{id}/tender-bases:
+    post:
+      operationId: createTenderBases
+      tags: [resolucion-compra-lp]
+      summary: Crear o actualizar borrador de bases
+      x-subpasos: ["3.1"]
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "200":
+          description: Bases guardadas.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: string }
+        "401":
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "422":
+          description: Validación de bases.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ValidationErrorResponse
+              examples:
+                criteriaWeights:
+                  value:
+                    error_code: VALIDATION_FAILED
+                    issues:
+                      - error_code: CRITERIA_WEIGHTS_INVALID
+                        field: criteria
+                        rule: La suma de ponderaciones de criterios debe ser 100%.
+                        severity: blocking
+  /tender-bases/{id}/submit-legal-review:
+    post:
+      operationId: submitBasesForLegalReview
+      tags: [resolucion-compra-lp]
+      summary: Enviar bases a revisión jurídica
+      x-subpasos: ["3.1"]
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "200":
+          description: Enviado a revisión.
+        "422":
+          description: Estado inválido.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              example:
+                error_code: INVALID_STATUS
+                field: status
+                rule: Solo se pueden enviar a revisión bases en estado borrador.
+                severity: blocking
+  /tender-bases/{id}/legal-review:
+    post:
+      operationId: recordLegalReview
+      tags: [resolucion-compra-lp]
+      summary: Registrar revisión jurídica de bases
+      x-subpasos: ["3.2"]
+      x-emits: [LegalReviewCompleted]
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "200":
+          description: Revisión registrada.
+  /tender-bases/{id}/approve:
+    post:
+      operationId: approveTenderBases
+      tags: [resolucion-compra-lp]
+      summary: Aprobar bases (acto administrativo)
+      x-subpasos: ["3.3"]
+      x-emits: [AdministrativeActSigned]
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "200":
+          description: Bases aprobadas y firmadas.
+  /administrative-acts/{id}/comptroller-submission:
+    post:
+      operationId: submitToComptroller
+      tags: [resolucion-compra-lp]
+      summary: Registrar envío a Contraloría
+      description: Reutilizado en TD §3.1 (Resolución Fundada).
+      x-subpasos: ["3.4", "3.11", "3.1-td"]
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "200":
+          description: Envío registrado.
+        "422":
+          description: Campo obligatorio faltante.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              example:
+                error_code: MISSING_REQUIRED_FIELD
+                field: submitted_at
+                rule: El campo Fecha de envío es obligatorio.
+                severity: blocking
+  /comptroller-reviews/{id}/outcome:
+    post:
+      operationId: recordComptrollerOutcome
+      tags: [resolucion-compra-lp]
+      summary: Registrar resultado de Contraloría
+      x-subpasos: ["3.4", "3.11", "3.1-td"]
+      x-emits: [ComptrollerReviewRecorded]
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "200":
+          description: Resultado registrado.
+  /procurement-cases/{id}/clarifications:
+    post:
+      operationId: recordClarification
+      tags: [resolucion-compra-lp]
+      summary: Registrar aclaración a las bases
+      x-subpasos: ["3.6"]
+      x-emits: [ClarificationRecorded]
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "200":
+          description: Aclaración registrada.
+  /procurement-cases/{id}/evaluation-committee:
+    post:
+      operationId: designateEvaluationCommittee
+      tags: [resolucion-compra-lp]
+      summary: Designar comisión evaluadora
+      x-subpasos: ["3.9"]
+      x-emits: [EvaluationCommitteeDesignated]
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "200":
+          description: Comisión designada.
+        "422":
+          description: Conflicto / declaración faltante.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              example:
+                error_code: CONFLICT_DECLARATION_REQUIRED
+                field: members[].conflict_declaration_ref
+                rule: Cada integrante debe declarar conflictos de interés.
+                severity: blocking
+  /evaluation-committees/{id}/offers:
+    post:
+      operationId: recordOfferAdmissibility
+      tags: [resolucion-compra-lp]
+      summary: Registrar admisibilidad de ofertas
+      x-subpasos: ["3.9"]
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "200":
+          description: Admisibilidad registrada.
+  /evaluation-committees/{id}/scores:
+    post:
+      operationId: recordEvaluationScores
+      tags: [resolucion-compra-lp]
+      summary: Registrar puntajes de evaluación
+      x-subpasos: ["3.9"]
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "200":
+          description: Puntajes registrados.
+        "422":
+          description: Puntajes inconsistentes.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              example:
+                error_code: SCORES_INCONSISTENT_WITH_CRITERIA
+                field: scores
+                rule: Los puntajes no cuadran con los pesos de los criterios.
+                severity: blocking
+  /evaluation-committees/{id}/report/sign:
+    post:
+      operationId: signEvaluationReport
+      tags: [resolucion-compra-lp]
+      summary: Firmar acta de evaluación
+      x-subpasos: ["3.9"]
+      x-emits: [EvaluationCompleted]
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "200":
+          description: Acta firmada.
+  /procurement-cases/{id}/award-resolution:
+    post:
+      operationId: issueAwardResolution
+      tags: [resolucion-compra-lp]
+      summary: Emitir resolución de adjudicación
+      x-subpasos: ["3.10"]
+      x-emits: [AwardResolutionIssued]
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "200":
+          description: Resolución emitida.
+  /procurement-cases/{id}/contract:
+    post:
+      operationId: draftContract
+      tags: [resolucion-compra-lp]
+      summary: Crear borrador de contrato
+      x-subpasos: ["3.13"]
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "200":
+          description: Borrador creado.
+  /contracts/{id}/sign:
+    post:
+      operationId: signContract
+      tags: [resolucion-compra-lp]
+      summary: Firmar contrato
+      x-subpasos: ["3.13"]
+      x-emits: [ContractSigned]
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      responses:
+        "200":
+          description: Contrato firmado.

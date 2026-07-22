@@ -10,14 +10,14 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Toma de Razón de las bases    [Condicional]      |
 +----------------------------------------------------------------+
+| ## Envío a Contraloría                                           |
 | Umbral de Toma de Razón vigente: $ 150.000.000  (NormativeParameter)|
 | Monto del proceso: $ 185.000.000  → Aplica Toma de Razón          |
-+----------------------------------------------------------------+
 | [ Registrar envío a Contraloría ]                                |
 | N° de oficio de envío: [ __________ ]  Fecha: [ __/__/____ ]      |
-+----------------------------------------------------------------+
 | Estado: En tramitación en CGR… (típicamente semanas)             |
 +----------------------------------------------------------------+
+| ## Resultado de Contraloría                                      |
 | [ Registrar resultado ]                                          |
 | Resultado *  ( ) Toma razón  ( ) Toma razón con alcance  ( ) Representación|
 | Oficio de respuesta (adjunto) *                                  |

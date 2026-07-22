@@ -10,13 +10,12 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Gran Compra desierta          [Camino alternativo]|
 +----------------------------------------------------------------+
+| ## Transición a Compra Directa                                   |
 | Período de competencia cerrado sin ofertas (24-03-2026)            |
-+----------------------------------------------------------------+
 | El expediente cae automáticamente a Compra Directa por Catálogo:  |
 |   Ruta anterior: gran_compra → Ruta nueva: compra_directa          |
 |   ID Intención de Compra anterior: 4021-88-IC26 (invalidado)       |
 |   Mismo folio ADQ-2026-00089 — no se cancela ni se crea uno nuevo  |
-+----------------------------------------------------------------+
 | [ Continuar a Compra Directa por Catálogo (3.2) ]                  |
 +----------------------------------------------------------------+
 | (banner: transición registrada en auditoría con ambos valores      |

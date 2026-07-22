@@ -21,9 +21,12 @@ openapi/
 │   └── 5-pago.yaml
 ├── 1-compra-agil/
 │   └── 3-resolucion-compra.yaml
-├── 2-convenio-marco/              ← pendiente etapa 3
-├── 3-licitacion-publica/          ← pendiente etapa 3
-└── 4-trato-directo/               ← pendiente etapa 3
+├── 2-convenio-marco/
+│   └── 3-resolucion-compra.yaml
+├── 3-licitacion-publica/
+│   └── 3-resolucion-compra.yaml
+└── 4-trato-directo/
+    └── 3-resolucion-compra.yaml   ← docs + examples; rutas reutilizadas
 ```
 
 | Fragmento OpenAPI | Ficha de proceso (`.md`) |
@@ -34,6 +37,9 @@ openapi/
 | `procesos-transversales/4-recepcion-conforme.yaml` | `procesos-transversales/4-recepcion-conforme.md` |
 | `procesos-transversales/5-pago.yaml` | `procesos-transversales/5-pago.md` |
 | `1-compra-agil/3-resolucion-compra.yaml` | `1. compra-agil/3-resolucion-compra.md` |
+| `2-convenio-marco/3-resolucion-compra.yaml` | `2. convenio-marco/3-resolucion-compra-convenio-marco v2.md` |
+| `3-licitacion-publica/3-resolucion-compra.yaml` | `3. licitacion-publica/3-resolucion-compra.md` |
+| `4-trato-directo/3-resolucion-compra.yaml` | `4. trato-directo/3-resolucion-compra.md` |
 
 Nombres de carpeta OpenAPI usan kebab-case (`1-compra-agil`) para evitar espacios en `$ref`; la carpeta de fichas puede seguir con el prefijo numerado con espacio (`1. compra-agil`).
 

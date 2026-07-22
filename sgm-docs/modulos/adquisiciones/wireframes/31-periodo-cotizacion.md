@@ -10,10 +10,10 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Período de cotización              [En curso]    |
 +----------------------------------------------------------------+
-| Contexto MP (solo lectura)                                    |
+| ## Vínculo en Mercado Público                                    |
 | ID de Cotización: 4021-33-COT26 · Vinculado: 27-06-2026          |
 +----------------------------------------------------------------+
-| Plazo de cotización                                           |
+| ## Monitoreo del período de cotización                           |
 | Plazo declarado al vincular (2.3): cierre estimado 30-06-2026    |
 | Timer: 2 d 14 h restantes (sin lectura de estado ni n° de           |
 | cotizaciones; badge Pendiente en MP · detalle vía deep link)       |

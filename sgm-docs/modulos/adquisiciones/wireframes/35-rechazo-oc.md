@@ -10,18 +10,17 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Rechazo de la OC              [Esperando sync MP]|
 +----------------------------------------------------------------+
-| (Pendiente de lectura)                                         |
+| ## Estado de sincronización                                      |
 | [ Gestionar en MP ]  · Badge: Esperando sync MP                 |
 | Sin campos de transcripción del rechazo.                        |
 +----------------------------------------------------------------+
-| Tras sync — contexto OC (solo lectura)                         |
+| ## Contexto del rechazo — solo lectura                           |
 | OC N° 4021-33-SE26 · Proveedor: Comercial Sur SpA                |
 | Motivo (si MP lo trae): …                                        |
 +----------------------------------------------------------------+
-| Tarea de decisión (habilitada solo tras sync)                  |
+| ## Tarea de decisión *                                           |
 | ( ) Emitir OC a la segunda mejor oferta (vuelve a 3.2/3.3)       |
 | ( ) Cancelar y republicar (nueva cotización, re-vinculación 2.3) |
-+----------------------------------------------------------------+
 | [ Continuar con la decisión ]                                    |
 +----------------------------------------------------------------+
 ```

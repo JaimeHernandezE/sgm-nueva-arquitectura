@@ -12,6 +12,7 @@ Tres momentos secuenciales en la misma pantalla, como pasos internos.
 +----------------------------------------------------------------+
 | SOLPED #1234 — Comisión evaluadora        [3.9a Designación]    |
 +----------------------------------------------------------------+
+| ## 3.9a — Designación de integrantes                             |
 | Integrantes de la comisión                    [ + agregar ]     |
 | ------------------------------------------------------------    |
 | Nombre           | Declaración de conflictos       | Estado     |
@@ -29,6 +30,7 @@ Tres momentos secuenciales en la misma pantalla, como pasos internos.
 +----------------------------------------------------------------+
 | SOLPED #1234 — Comisión evaluadora        [3.9b Admisibilidad]  |
 +----------------------------------------------------------------+
+| ## 3.9b — Admisibilidad de ofertas                               |
 | Ofertas recibidas (desde apertura, 3.8): 4                       |
 | ------------------------------------------------------------    |
 | Proveedor            | Monto       | Admisible | Causal          |
@@ -45,6 +47,7 @@ Tres momentos secuenciales en la misma pantalla, como pasos internos.
 +----------------------------------------------------------------+
 | SOLPED #1234 — Comisión evaluadora        [3.9c Evaluación]     |
 +----------------------------------------------------------------+
+| ## 3.9c — Evaluación y acta                                      |
 | Criterios: Precio 40% · Experiencia 30% · Plazo 30% (de 3.1)     |
 | ------------------------------------------------------------    |
 | Oferta              | Precio | Experiencia | Plazo | Total       |
@@ -53,9 +56,7 @@ Tres momentos secuenciales en la misma pantalla, como pasos internos.
 | ------------------------------------------------------------    |
 | ⚠ Puntajes deben cuadrar con las ponderaciones declaradas         |
 | Ranking propuesto: 1° Taller Municipal SpA · 2° Mecánica Diesel Ñuble Ltda. |
-+----------------------------------------------------------------+
 | [ Firmar Acta de Evaluación (integrantes) ]                      |
-+----------------------------------------------------------------+
 | Acta firmada, ranking cerrado — documentos habilitados para      |
 | subir a MP.       [ Subir documentos a MP ] [ Volver al exp. ]  |
 +----------------------------------------------------------------+

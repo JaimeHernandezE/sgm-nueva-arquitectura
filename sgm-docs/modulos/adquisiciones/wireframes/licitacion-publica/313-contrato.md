@@ -10,20 +10,19 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Contrato                     [Adjudicación firme]|
 +----------------------------------------------------------------+
+| ## Datos del contrato                                            |
 | Adjudicatario: Taller Municipal SpA · Monto: $178.500.000            |
 | Garantía de Fiel Cumplimiento: En custodia ✓                     |
-+----------------------------------------------------------------+
 | Fecha de inicio *      [ __/__/____ ]                             |
 | Fecha de término *     [ __/__/____ ]                             |
 | Documento del contrato (adjunto) *  [ subir archivo ]              |
-+----------------------------------------------------------------+
 | [ Redactar contrato ]                                            |
 +----------------------------------------------------------------+
+| ## Firmas                                                        |
 | Firma municipal (FirmaGob): Pendiente…                            |
 | [ Simular firma FirmaGob (demo) ]                                 |
 | Firma del proveedor: mecanismo por definir (P-67)                 |
 | [ Simular firma proveedor (demo) ]                                |
-+----------------------------------------------------------------+
 | [ Confirmar contrato suscrito ]                                   |
 +----------------------------------------------------------------+
 | (banner: contrato suscrito → habilita 3.14, o vencido el plazo   |

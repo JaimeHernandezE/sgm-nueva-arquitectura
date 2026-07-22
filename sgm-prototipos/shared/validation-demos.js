@@ -94,6 +94,12 @@ export const VALIDATION_DEMOS = {
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'comments', rule: 'El campo Comentarios es obligatorio al rechazar.', severity: 'blocking' },
     ],
   },
+  getUtmValue: {
+    title: 'Validaciones — Obtener valor UTM',
+    issues: [
+      { error_code: 'UTM_VALUE_UNAVAILABLE', field: null, rule: 'Fuente UTM no disponible y sin valor cacheado del mes en curso; la evaluación de umbral no puede ejecutarse.', severity: 'blocking' },
+    ],
+  },
   linkMpProcess: {
     title: 'Validaciones — Vincular proceso MP',
     issues: [
@@ -150,6 +156,16 @@ export const VALIDATION_DEMOS = {
     title: 'Validaciones — Sync OC aceptada',
     issues: [
       { error_code: 'BUDGET_UNAVAILABLE', field: 'budget_line_id', rule: 'La línea presupuestaria no tiene saldo disponible para el compromiso.', severity: 'blocking' },
+      { error_code: 'MP_PROCESS_NOT_PUBLISHED', field: null, rule: 'El proceso MP vinculado no figura como Publicado; no se registra Compromiso Cierto.', severity: 'blocking' },
+      { error_code: 'PRE_COMMITMENT_INACTIVE', field: null, rule: 'La preobligación ya no está activa; no se puede registrar el compromiso cierto.', severity: 'blocking' },
+      { error_code: 'MP_PROVIDER_UNAVAILABLE', field: null, rule: 'Mercado Público no está disponible para leer el estado de la OC.', severity: 'blocking' },
+    ],
+  },
+  recordPurchaseOrderRejectionDecision: {
+    title: 'Validaciones — Decisión tras rechazo de OC',
+    issues: [
+      { error_code: 'NO_ALTERNATIVE_PROVIDER_AVAILABLE', field: 'decision', rule: 'No hay proveedor alternativo en catálogo para emitir la siguiente OC.', severity: 'blocking' },
+      { error_code: 'BUDGET_PROVIDER_UNAVAILABLE', field: null, rule: 'El proveedor de presupuesto no está disponible.', severity: 'blocking' },
     ],
   },
   releasePreCommitment: {

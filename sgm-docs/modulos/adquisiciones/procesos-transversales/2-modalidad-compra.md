@@ -177,7 +177,7 @@ Registrado y validado el código — sea la ejecución inmediata o diferida —,
 - API de MP no disponible al validar → `MP_PROVIDER_UNAVAILABLE`; el vínculo no se persiste sin validación — **[PENDIENTE P-32]** resiliencia ante servicios externos.
 - Usuario creó el proceso en MP pero no registró el código en SGM → expediente queda detenido al final de la etapa 2 — **[PENDIENTE P-33]** timer de escalamiento.
 
-> Los cinco edge cases anteriores rigen idénticos para las ejecuciones **diferidas** de este sub-paso (Licitación Pública §3.5, Trato Directo en su subproceso) — no son exclusivos de la ejecución inmediata en CA/CM.
+> Los cinco edge cases anteriores rigen idénticos para las ejecuciones **diferidas** de este sub-paso (Licitación Pública §3.5, Convenio Marco §3.2/3.3, Trato Directo §3.2) — no son exclusivos de la ejecución inmediata en Compra Ágil.
 
 > **[PENDIENTE P-32]** Comportamiento ante `MP_PROVIDER_UNAVAILABLE`: ¿bloqueo total o registro provisional con flag `mp_link_unverified` y validación asíncrona al restablecerse la API? — misma familia del pendiente de caída de API de precios (1.1); candidato a regla transversal de resiliencia ante servicios externos.
 > **[PENDIENTE P-33]** Plazo del timer de escalamiento para vínculo no registrado.

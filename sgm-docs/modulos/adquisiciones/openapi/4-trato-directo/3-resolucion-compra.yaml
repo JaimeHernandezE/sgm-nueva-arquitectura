@@ -1,0 +1,29 @@
+openapi: 3.1.0
+info:
+  title: SGM Adquisiciones — fragmento Trato Directo
+  version: 0.1.0
+  description: |
+    Fragmento etapa 3 Trato Directo. No introduce rutas nuevas: reutiliza
+    - `submitToComptroller` / `recordComptrollerOutcome` (LP §3.4 → TD §3.1)
+    - `linkMpProcess` (transversal → TD §3.2)
+    - `syncPurchaseOrderAccepted` (CA §3.4 → TD §3.3; reglas adicionales
+      `MP_PROCESS_NOT_PUBLISHED`, `PRE_COMMITMENT_INACTIVE`)
+    - `recordPurchaseOrderRejectionDecision` (CM §3.8 → TD §3.4; enum P-69)
+
+    Este archivo documenta el ensamblado y examples de error específicos TD.
+    Las rutas viven en los fragmentos citados; ver `x-subpasos` allí.
+paths: {}
+components:
+  examples:
+    MpProcessNotPublishedError:
+      summary: Doble validación TD — proceso no Publicado
+      value:
+        error_code: MP_PROCESS_NOT_PUBLISHED
+        rule: El proceso MP vinculado no figura como Publicado; no se registra Compromiso Cierto.
+        severity: blocking
+    PreCommitmentInactiveError:
+      summary: Preobligación inactiva al comprometer
+      value:
+        error_code: PRE_COMMITMENT_INACTIVE
+        rule: La preobligación ya no está activa; no se puede registrar el compromiso cierto.
+        severity: blocking

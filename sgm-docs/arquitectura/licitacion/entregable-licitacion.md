@@ -289,9 +289,9 @@ El formato y las reglas del catálogo están normados en [`estandares-api.md`](.
 | Fixture ID | Tenant demo | Estado de negocio | Uso principal |
 |---|---|---|---|
 | `ADQ-2026-00123` | `municipio-demo-norte` | Compra Ágil — post etapa 2, etapa 3 pendiente | Tutorial integrador; GET expediente |
-| `ADQ-2026-00089` | `municipio-demo-norte` | Convenio Marco — ruta por definir en etapa 3 | Variante modalidad |
+| `ADQ-2026-00089` | `municipio-demo-norte` | Convenio Marco — Gran Compra activa en 3.5 | Variante modalidad |
 | `ADQ-2026-00045` | `municipio-demo-sur` | Licitación — demo finalizado transversal | Lectura estado terminal |
-| `ADQ-2026-00012` | `municipio-demo-sur` | Trato Directo — etapa 3 pendiente | Causal y resolución fundada |
+| `ADQ-2026-00012` | `municipio-demo-sur` | Trato Directo — etapa 3 en curso (vinculado; pendiente OC) | Causal, resolución fundada, doble validación |
 
 Escenarios transaccionales adicionales (no solo lectura):
 

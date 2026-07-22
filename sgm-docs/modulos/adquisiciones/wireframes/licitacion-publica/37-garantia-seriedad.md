@@ -10,17 +10,16 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Garantía de Seriedad de la Oferta [Condicional]  |
 +----------------------------------------------------------------+
+| ## Datos de la garantía                                          |
 | Bases exigen Garantía de Seriedad: Sí · Monto mínimo $1.850.000  |
-+----------------------------------------------------------------+
 | Proveedor / oferente *        [ Taller Municipal SpA         ▾ ]    |
 | Tipo de instrumento *          [ Boleta de garantía        ▾ ]   |
 | Monto *                        [ $ 1.850.000               ]    |
 | Fecha de vencimiento *         [ __/__/____ ]                    |
 | Documento del instrumento *    [ subir archivo ]                 |
-+----------------------------------------------------------------+
 | [ Registrar en custodia de Tesorería ]                           |
 +----------------------------------------------------------------+
-| Garantías en custodia (por oferente)                             |
+| ## Garantías registradas                                         |
 | ------------------------------------------------------------    |
 | Proveedor          | Monto      | Vence      | Estado            |
 | Taller Municipal SpA   | $1.850.000 | 15-05-2026 | En custodia       |

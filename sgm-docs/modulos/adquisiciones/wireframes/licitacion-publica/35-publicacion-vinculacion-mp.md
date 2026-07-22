@@ -10,11 +10,14 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Publicación y vinculación MP     [Bases listas]  |
 +----------------------------------------------------------------+
+| ## Contexto                                                      |
 | Bases aprobadas ✓ · Toma de Razón: N/A (bajo umbral)             |
 | Plazo mínimo de publicación (V7, informado desde etapa 2): 20 días|
 +----------------------------------------------------------------+
+| ## Acción en Mercado Público                                     |
 | [ Publicar licitación en Mercado Público ]  (deep link)          |
 +----------------------------------------------------------------+
+| ## Vinculación                                                   |
 | ID de la licitación en MP *                                      |
 | [ 4021-33-LP26                                ]                  |
 | [ Validar y vincular ]                                            |

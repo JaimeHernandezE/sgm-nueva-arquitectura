@@ -10,20 +10,20 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Emisión de la Orden de Compra  [Pendiente en MP] |
 +----------------------------------------------------------------+
-| Contexto de la oferta (solo lectura, tras sync 3.2)           |
+| ## Contexto de la selección                                      |
 | Proveedor: Comercial Sur SpA · Monto ofertado: $ 1.240.000       |
 +----------------------------------------------------------------+
-| Acción en Mercado Público                                      |
+| ## Acción en Mercado Público                                     |
 | [ Gestionar en MP ]  (deep link — emite la OC en el portal)      |
 +----------------------------------------------------------------+
-| Estado de sincronización                                       |
+| ## Estado de sincronización                                      |
 | Esperando lectura: OC enviada o bloqueo por inhabilidad.        |
 | Sin campos de n° OC / monto — solo sync.                        |
 +----------------------------------------------------------------+
-| Tras sync — hábil                                              |
+| ## OC emitida — solo lectura                                     |
 | N° OC: 4021-33-SE26 · Estado: Emitida · Badge: Sincronizado     |
 +----------------------------------------------------------------+
-| Tras sync — inhábil (gestión)                                  |
+| ## Bloqueo por inhabilidad                                       |
 | Banner: proveedor inhábil. Alternativas:                        |
 | [ Seleccionar siguiente oferta (vuelve a 3.2 en MP) ]           |
 | [ Cancelar proceso (3.6) ]                                       |

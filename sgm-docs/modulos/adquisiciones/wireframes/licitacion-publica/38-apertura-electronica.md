@@ -10,9 +10,14 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Apertura electrónica            [En espera]      |
 +----------------------------------------------------------------+
+| ## Contexto                                                      |
 | Cierre de recepción de ofertas: 20-04-2026 10:00                |
 | Apertura electrónica: pendiente…                                 |
 +----------------------------------------------------------------+
+| ## Acción en Mercado Público                                     |
+| (deep link solo lectura — el acto ocurre en MP)                  |
++----------------------------------------------------------------+
+| ## Simulación de lectura MP                                      |
 | [ Simular lectura MP (demo): Apertura realizada — 4 ofertas ▾ ]  |
 | [ Consultar ]                                                    |
 +----------------------------------------------------------------+

@@ -480,7 +480,7 @@ Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validac
 | Campo | Tipo | Notas |
 |---|---|---|
 | `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
-| `act_type` | enum | **Obligatorio**. Valores: `bases_approval`, `committee_designation`, `award`, `desertion`, `revocation` |
+| `act_type` | enum | **Obligatorio**. Valores: `bases_approval`, `committee_designation`, `award`, `desertion`, `revocation`, `founded_resolution` *(Trato Directo — Resolución Fundada sujeta a Toma de Razón en TD §3.1)* |
 | `subject_id` | ref. polimórfica | **Opcional** — entidad sobre la que recae el acto (ej. `TenderBases.id`), según `act_type` |
 | `act_number` | texto | **Obligatorio** (generado por sistema en modo electrónico; ingreso manual en escaneado) |
 | `status` | enum | **Obligatorio**. Valores: `pending_signature`, `signed`, `failed` |

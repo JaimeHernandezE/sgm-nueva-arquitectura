@@ -10,14 +10,16 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Período de competencia          [En curso — MP]  |
 +----------------------------------------------------------------+
+| ## Monitoreo del período de competencia                          |
 | Intención de Compra: ID 4021-88-IC26 · Publicada: 14-03-2026      |
 | Plazo (10 días corridos): vence 24-03-2026                        |
 | Días restantes: 6                                                  |
-+----------------------------------------------------------------+
 | Ofertas recibidas hasta ahora: 2 (lectura deseada — puede no       |
 | reflejar el número real hasta el cierre)                          |
-+----------------------------------------------------------------+
 | [ Ver proceso en Mercado Público ] (deep link, solo lectura)       |
++----------------------------------------------------------------+
+| ## Simulación de lectura MP                                      |
+| (solo demo — cierre con ofertas / desierta)                       |
 +----------------------------------------------------------------+
 | (badge: Pendiente en MP — hasta la lectura de cierre en 3.5/3.6)  |
 +----------------------------------------------------------------+

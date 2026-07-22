@@ -8,7 +8,7 @@ Patrón de secciones y subtítulos en formularios: [`../../../arquitectura/instr
 
 Patrón de anclas en plantillas firmables: [`../../../arquitectura/instrucciones/patron-edicion-anclas-firma.md`](../../../arquitectura/instrucciones/patron-edicion-anclas-firma.md).
 
-**Convención de carpetas:** las etapas 1, 2, 4 y 5 son transversales a las 4 modalidades y viven planas en esta carpeta (un solo archivo por sub-paso, sin prefijo de modalidad). La etapa 3 (Resolución de Compra) es específica por modalidad — sus sub-pasos comparten la misma numeración `3.x` entre modalidades pero con contenido distinto, así que cada modalidad tiene su propia subcarpeta (`licitacion-publica/`, y las que se agreguen para Convenio Marco / Trato Directo) para evitar colisión de nombres de archivo. Los wireframes `31-*`…`36-*` de esta carpeta son específicos de **Compra Ágil**.
+**Convención de carpetas:** las etapas 1, 2, 4 y 5 son transversales a las 4 modalidades y viven planas en esta carpeta (un solo archivo por sub-paso, sin prefijo de modalidad). La etapa 3 (Resolución de Compra) es específica por modalidad — subcarpetas `convenio-marco/`, `licitacion-publica/`, `trato-directo/`. Los wireframes `31-*`…`36-*` de esta carpeta raíz son específicos de **Compra Ágil**.
 
 ## Transversales (etapas 1, 2, 4, 5)
 
@@ -63,6 +63,30 @@ Vinculación MP diferida a 3.5 (reutiliza `linkMpProcess` de 2.3) — ver `2-mod
 | [licitacion-publica/312-garantia-fiel-cumplimiento.md](./licitacion-publica/312-garantia-fiel-cumplimiento.md) | 3.12 *(condicional)* | `registerGuaranteeCustody` *(reutiliza 3.7)* |
 | [licitacion-publica/313-contrato.md](./licitacion-publica/313-contrato.md) | 3.13 *(condicional)* | `draftContract`, `signContract` |
 | [licitacion-publica/314-aceptacion-oc.md](./licitacion-publica/314-aceptacion-oc.md) | 3.14 *(hito contable)* | `syncPurchaseOrderAccepted` *(misma operación que CA 3.4)* |
+
+## Etapa 3 — Convenio Marco
+
+| Archivo | Sub-paso | Operación principal |
+|---|---|---|
+| [convenio-marco/31-evaluacion-umbral.md](./convenio-marco/31-evaluacion-umbral.md) | 3.1 | `getUtmValue` (compuerta) |
+| [convenio-marco/32-compra-directa-catalogo.md](./convenio-marco/32-compra-directa-catalogo.md) | 3.2 | `linkMpProcess` |
+| [convenio-marco/33-intencion-gran-compra.md](./convenio-marco/33-intencion-gran-compra.md) | 3.3 | `linkMpProcess` |
+| [convenio-marco/34-periodo-competencia.md](./convenio-marco/34-periodo-competencia.md) | 3.4 | — (sync MP) |
+| [convenio-marco/35-seleccion-oferta.md](./convenio-marco/35-seleccion-oferta.md) | 3.5 | — (sync MP) |
+| [convenio-marco/36-gran-compra-desierta.md](./convenio-marco/36-gran-compra-desierta.md) | 3.6 | — (transición) |
+| [convenio-marco/37-aceptacion-oc.md](./convenio-marco/37-aceptacion-oc.md) | 3.7 | `syncPurchaseOrderAccepted` |
+| [convenio-marco/38-rechazo-oc.md](./convenio-marco/38-rechazo-oc.md) | 3.8 | `recordPurchaseOrderRejectionDecision` |
+
+## Etapa 3 — Trato Directo
+
+Vinculación MP diferida a 3.2 — ver `2-modalidad-compra.md` §2.3 ↔ `4. trato-directo/3-resolucion-compra.md`.
+
+| Archivo | Sub-paso | Operación principal |
+|---|---|---|
+| [trato-directo/31-toma-razon.md](./trato-directo/31-toma-razon.md) | 3.1 *(condicional)* | `submitToComptroller`, `recordComptrollerOutcome` |
+| [trato-directo/32-publicacion-vinculacion-mp.md](./trato-directo/32-publicacion-vinculacion-mp.md) | 3.2 | `linkMpProcess` *(reutiliza 2.3)* |
+| [trato-directo/33-emision-aceptacion-oc.md](./trato-directo/33-emision-aceptacion-oc.md) | 3.3 *(hito contable)* | `syncPurchaseOrderAccepted` |
+| [trato-directo/34-rechazo-oc.md](./trato-directo/34-rechazo-oc.md) | 3.4 *(excluyente)* | `recordPurchaseOrderRejectionDecision` |
 
 Contrato: [`../contracts.md`](../contracts.md)
 Catálogo documentos firmables: [`../catalogo-documentos-firmables.md`](../catalogo-documentos-firmables.md)

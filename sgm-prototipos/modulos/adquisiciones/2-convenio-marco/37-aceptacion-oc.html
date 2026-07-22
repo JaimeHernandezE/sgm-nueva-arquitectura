@@ -69,7 +69,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, relativeFormHref, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, relativeFormHref, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -104,7 +104,7 @@
       resultBanner.style.color = '';
 
       if (scenario === 'accepted_ok') {
-        demoAction('syncPurchaseOrderAccepted');
+        demoValidation('syncPurchaseOrderAccepted');
         resultBanner.classList.add('banner--info');
         resultBanner.textContent = 'OC Aceptada (confirmada) · commitBudget OK · Compromiso Cierto registrado por el monto real.';
         document.getElementById('header-badge').textContent = 'Aceptada';
@@ -114,12 +114,12 @@
         simulateSelect.disabled = true;
         nextStepPanel.classList.remove('hidden');
       } else if (scenario === 'accepted_budget_unavailable') {
-        demoAction('syncPurchaseOrderAccepted (commitBudget: BUDGET_UNAVAILABLE)');
+        demoValidation('syncPurchaseOrderAccepted');
         resultBanner.style.color = '#a33333';
         resultBanner.textContent = 'BUDGET_UNAVAILABLE — situación anómala grave: la OC ya está aceptada (vínculo legal existe) pero el compromiso contable no puede registrarse. Tarea urgente a DAF Finanzas (PENDIENTE P-40).';
         document.getElementById('header-badge').textContent = 'Aceptada — compromiso pendiente';
       } else if (scenario === 'accepted_provider_down') {
-        demoAction('syncPurchaseOrderAccepted (Presupuestos no disponible)');
+        demoValidation('syncPurchaseOrderAccepted');
         resultBanner.classList.add('banner--info');
         resultBanner.textContent = 'Presupuestos no disponible — reintento con retroceso exponencial. Estado intermedio "aceptada, compromiso pendiente". Idempotencia por purchase_order_ref.';
         document.getElementById('header-badge').textContent = 'Aceptada — compromiso pendiente';

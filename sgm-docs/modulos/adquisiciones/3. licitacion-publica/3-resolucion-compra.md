@@ -106,7 +106,7 @@
 
 **Entidades:** `ComptrollerReview` *(nueva, transversal — **reutilizable en Trato Directo**, que tiene el mismo trámite para su Resolución Fundada)* — `administrative_act_id`, `submitted_at`, `outcome` (`approved`/`approved_with_remarks`/`rejected`), `outcome_at`, ref. oficio.
 
-**Borde:** Sistema externo CGR — **sin integración API asumida**: registro manual del envío y del resultado, con documento de respaldo. ⚠ Pendiente: explorar si existe canal de consulta de estado de trámites CGR integrable; no asumirlo.
+**Borde:** Sistema externo CGR — **sin integración API asumida**: registro manual del envío y del resultado, con documento de respaldo. **[PENDIENTE P-64]** explorar si existe canal de consulta de estado de trámites CGR integrable; no asumirlo.
 
 **Validaciones:**
 
@@ -167,7 +167,7 @@
 |---|---|---|---|---|---|
 | Registrar aclaración | `recordClarification` | `MISSING_REQUIRED_FIELD` | `clarification_document_ref` | El documento de aclaración a las bases es obligatorio. | blocking |
 
-**Edge cases:** aclaración que modifica sustantivamente las bases → puede requerir acto administrativo complementario y extensión de plazo. ⚠ Pendiente con jurídica: criterio de cuándo una aclaración exige acto formal.
+**Edge cases:** aclaración que modifica sustantivamente las bases → puede requerir acto administrativo complementario y extensión de plazo. **[PENDIENTE P-65]** criterio jurídico de cuándo una aclaración exige acto formal.
 
 ---
 
@@ -230,7 +230,7 @@
 
 **Entidades:** `EvaluationCommittee` *(nueva)* + `CommitteeMember` (con `conflict_declaration_ref`, obligatoria); `OfferRecord` *(nueva)* — espejo mínimo de cada oferta (proveedor, monto, admisibilidad, causal); `EvaluationScore` — `offer_id`, `criterion_id`, `score`, `rationale`; `EvaluationReport` — acta, ranking, firmas.
 
-**Regla SoD:** los integrantes de la comisión no pueden ser el requirente de la SOLPED ni quien elaboró las bases técnicas ⚠ **propuesta — validar con jurídica el alcance exacto de las inhabilidades**.
+**Regla SoD:** los integrantes de la comisión no pueden ser el requirente de la SOLPED ni quien elaboró las bases técnicas — **[PENDIENTE P-66]** validar con jurídica el alcance exacto de las inhabilidades.
 
 **Borde:** Dependencia condicional Core (FirmaGob) (firmas del acta); evento `EvaluationCompleted`.
 
@@ -334,7 +334,7 @@
 | Plataforma | SGM |
 | Obligatoriedad | **Condicional** — obligatorio sobre umbral o cuando las bases lo establecen; bajo él, las bases pueden disponer que la OC formaliza el contrato |
 
-**Detalle:** Redacción sobre bases + oferta adjudicada, firma de ambas partes (FirmaGob por el municipio; firma del proveedor según canal definido ⚠ pendiente: mecanismo de firma del contratista — FEA propia, firma en papel digitalizada, plataforma). El contrato queda en el expediente con su acto aprobatorio.
+**Detalle:** Redacción sobre bases + oferta adjudicada, firma de ambas partes (FirmaGob por el municipio; firma del proveedor según canal definido — **[PENDIENTE P-67]** mecanismo de firma del contratista: FEA propia, firma en papel digitalizada, o plataforma). El contrato queda en el expediente con su acto aprobatorio.
 
 **Entidades:** `Contract` *(nueva)* — `procurement_case_id`, `awarded_offer_ref`, `amount`, `start_date`/`end_date`, refs. documento y acto, `status`.
 
@@ -387,14 +387,14 @@
 | `EvaluationCommittee` / `CommitteeMember` / `OfferRecord` / `EvaluationScore` / `EvaluationReport` | — | Núcleo de la evaluación; declaración de conflictos bloqueante |
 | `Contract` | 1:1 con `ProcurementCase` | Condicional según umbral/bases |
 
-> Nota de reconciliación: estas entidades aún no están incorporadas a `modelo-datos/entidades-core.md` — esta pasada solo cubrió la concordancia de la vinculación MP (etapa 2 §2.3 ↔ etapa 3 §3.5). Su incorporación al modelo canónico queda como trabajo pendiente separado.
+> Nota de reconciliación: las entidades de esta etapa **ya están incorporadas** a [`modelo-datos/entidades-core.md`](../../../modelo-datos/entidades-core.md) y formalizadas en `contracts.md` §2.4 / OpenAPI `3-licitacion-publica/3-resolucion-compra.yaml`.
 
 ## Resumen de bordes — Etapa 3 (LP)
 
 | Sub-paso | Contrato / Evento | Contraparte | Nota |
 |---|---|---|---|
 | 3.3, 3.9, 3.10, 3.13 | `requestSignature` / `confirmSignature` | Core (FirmaGob) | Síncrona bloqueante |
-| 3.4, 3.11 | — (registro manual + documento) | Contraloría | Sin API asumida; ⚠ explorar canal |
+| 3.4, 3.11 | — (registro manual + documento) | Contraloría | Sin API asumida; **[PENDIENTE P-64]** |
 | 3.5 | `readMpProcess`, `linkMpProcess`, `MpProcessLinked` | Core (Mercado Público) | Vinculación diferida de 2.3 |
 | 3.6, 3.8, 3.10 | `readMpProcess` (foro, apertura, adjudicación) | Core (Mercado Público) | Lecturas **deseadas** |
 | 3.7, 3.12, 3.13 | `registerGuaranteeCustody`, ejecución de garantía | Tesorería | Nueva dependencia de módulo |
@@ -403,4 +403,4 @@
 
 **Etapa anterior:** [2. Modalidad de Compra](../procesos-transversales/2-modalidad-compra.md) · **Siguiente etapa:** [4. Recepción Conforme](../procesos-transversales/4-recepcion-conforme.md) *(transversal; en LP con servicios continuos, recepción recurrente)*
 
-> ⚠ **Pendientes de la etapa (a registro central):** umbrales de Toma de Razón, comisión obligatoria, garantías y contrato como `NormativeParameter` con carga verificada; canal de consulta de estado CGR; criterio jurídico de aclaración que exige acto formal; inhabilidades exactas de integrantes de comisión; mecanismo de firma del contratista. *(El ajuste de vinculación diferida por modalidad, antes pendiente aquí, ya fue propagado a `2-modalidad-compra.md` §2.3 y se da por cerrado en esta pasada.)*
+> **Pendientes registrados (abiertos, decisión humana):** **[P-37]** umbrales como `NormativeParameter`; **[P-64]** canal CGR; **[P-65]** aclaración → acto formal; **[P-66]** inhabilidades comisión; **[P-67]** firma del contratista.

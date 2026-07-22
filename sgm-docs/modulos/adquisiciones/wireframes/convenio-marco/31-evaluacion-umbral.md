@@ -10,11 +10,11 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Evaluación de umbral            [Ruta: —]        |
 +----------------------------------------------------------------+
+| ## Determinación de ruta                                         |
 | Monto estimado (de la SOLPED / preobligación): $ 4.800.000       |
 | Valor UTM del mes en curso (cacheado, fuente SII): $ 65.084      |
 | Equivalente en UTM: 73,77 UTM                                    |
 | Umbral Gran Compra (NormativeParameter): 1.000 UTM                |
-+----------------------------------------------------------------+
 | Ruta determinada: Compra Directa por Catálogo (< 1.000 UTM)      |
 | (o bien: Gran Compra, si monto ≥ 1.000 UTM — borde exacto:        |
 |  igual a 1.000 UTM enruta a Gran Compra, Art. 90 D.S. 661/2024)   |

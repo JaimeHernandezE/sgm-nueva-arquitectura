@@ -17,6 +17,12 @@ tags:
     description: Ratificación de modalidad y vinculación con Mercado Público.
   - name: resolucion-compra-ca
     description: Resolución de compra — Compra Ágil.
+  - name: resolucion-compra-cm
+    description: Resolución de compra — Convenio Marco.
+  - name: resolucion-compra-lp
+    description: Resolución de compra — Licitación Pública.
+  - name: resolucion-compra-td
+    description: Resolución de compra — Trato Directo (rutas reutilizadas; ver fragmento 4-trato-directo).
   - name: recepcion-conforme
     description: Recepción conforme de bienes y servicios.
   - name: pago
@@ -62,6 +68,36 @@ paths:
     $ref: ./1-compra-agil/3-resolucion-compra.yaml#/paths/~1purchase-orders~1{id}~1sync-accepted
   /procurement-cases/{id}/release-pre-commitment:
     $ref: ./1-compra-agil/3-resolucion-compra.yaml#/paths/~1procurement-cases~1{id}~1release-pre-commitment
+  /procurement-cases/{id}/oc-rejection-decision:
+    $ref: ./2-convenio-marco/3-resolucion-compra.yaml#/paths/~1procurement-cases~1{id}~1oc-rejection-decision
+  /procurement-cases/{id}/tender-bases:
+    $ref: ./3-licitacion-publica/3-resolucion-compra.yaml#/paths/~1procurement-cases~1{id}~1tender-bases
+  /tender-bases/{id}/submit-legal-review:
+    $ref: ./3-licitacion-publica/3-resolucion-compra.yaml#/paths/~1tender-bases~1{id}~1submit-legal-review
+  /tender-bases/{id}/legal-review:
+    $ref: ./3-licitacion-publica/3-resolucion-compra.yaml#/paths/~1tender-bases~1{id}~1legal-review
+  /tender-bases/{id}/approve:
+    $ref: ./3-licitacion-publica/3-resolucion-compra.yaml#/paths/~1tender-bases~1{id}~1approve
+  /administrative-acts/{id}/comptroller-submission:
+    $ref: ./3-licitacion-publica/3-resolucion-compra.yaml#/paths/~1administrative-acts~1{id}~1comptroller-submission
+  /comptroller-reviews/{id}/outcome:
+    $ref: ./3-licitacion-publica/3-resolucion-compra.yaml#/paths/~1comptroller-reviews~1{id}~1outcome
+  /procurement-cases/{id}/clarifications:
+    $ref: ./3-licitacion-publica/3-resolucion-compra.yaml#/paths/~1procurement-cases~1{id}~1clarifications
+  /procurement-cases/{id}/evaluation-committee:
+    $ref: ./3-licitacion-publica/3-resolucion-compra.yaml#/paths/~1procurement-cases~1{id}~1evaluation-committee
+  /evaluation-committees/{id}/offers:
+    $ref: ./3-licitacion-publica/3-resolucion-compra.yaml#/paths/~1evaluation-committees~1{id}~1offers
+  /evaluation-committees/{id}/scores:
+    $ref: ./3-licitacion-publica/3-resolucion-compra.yaml#/paths/~1evaluation-committees~1{id}~1scores
+  /evaluation-committees/{id}/report/sign:
+    $ref: ./3-licitacion-publica/3-resolucion-compra.yaml#/paths/~1evaluation-committees~1{id}~1report~1sign
+  /procurement-cases/{id}/award-resolution:
+    $ref: ./3-licitacion-publica/3-resolucion-compra.yaml#/paths/~1procurement-cases~1{id}~1award-resolution
+  /procurement-cases/{id}/contract:
+    $ref: ./3-licitacion-publica/3-resolucion-compra.yaml#/paths/~1procurement-cases~1{id}~1contract
+  /contracts/{id}/sign:
+    $ref: ./3-licitacion-publica/3-resolucion-compra.yaml#/paths/~1contracts~1{id}~1sign
   /purchase-orders/{id}/goods-receipts:
     $ref: ./procesos-transversales/4-recepcion-conforme.yaml#/paths/~1purchase-orders~1{id}~1goods-receipts
   /goods-receipts/{id}/confirm:

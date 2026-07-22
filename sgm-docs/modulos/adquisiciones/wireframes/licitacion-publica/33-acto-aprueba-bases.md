@@ -10,12 +10,13 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Acto que aprueba las bases      [VB jurídico OK] |
 +----------------------------------------------------------------+
-| [Bases aprobadas jurídicamente — solo lectura]                  |
+| ## Acto administrativo                                           |
+| Bases aprobadas jurídicamente — solo lectura                     |
 | Bases técnicas + administrativas · Revisión jurídica: VB         |
-+----------------------------------------------------------------+
 | Tipo de acto: Decreto / Resolución que aprueba bases (fijo)      |
 | [ Generar acto y solicitar firma ]                               |
 +----------------------------------------------------------------+
+| ## Firma electrónica                                             |
 | Estado de firma: Pendiente de firma electrónica…                 |
 | [ Simular respuesta FirmaGob (demo): Firmado ▾ ]                 |
 | [ Ejecutar ]                                                     |

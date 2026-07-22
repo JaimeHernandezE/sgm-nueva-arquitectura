@@ -1,0 +1,76 @@
+openapi: 3.1.0
+info:
+  title: SGM Adquisiciones — fragmento Convenio Marco
+  version: 0.1.0
+  description: |
+    Fragmento de rutas etapa 3 Convenio Marco. Ensamblado en `adquisiciones.openapi.yaml`.
+    Operaciones reutilizadas sin redeclarar: `linkMpProcess` (3.2/3.3, transversal),
+    `syncPurchaseOrderAccepted` (3.7, fragmento CA), `getUtmValue` (compuerta 3.1, dependencia).
+paths:
+  /procurement-cases/{id}/oc-rejection-decision:
+    post:
+      operationId: recordPurchaseOrderRejectionDecision
+      tags:
+        - resolucion-compra-cm
+      summary: Registrar decisión tras rechazo de OC
+      description: >
+        Decisión del gestor tras lectura de OC rechazada (CM §3.8; también TD §3.4 con enum distinto — P-69).
+        Emite `PurchaseOrderRejected` al recibir la lectura; la decisión no emite evento nuevo.
+      x-subpasos:
+        - "3.8"
+        - "3.4-td"
+      x-emits:
+        - PurchaseOrderRejected
+      security:
+        - bearerPersonas: []
+        - bearerM2M: []
+      parameters:
+        - $ref: ../adquisiciones.openapi.yaml#/components/parameters/ResourceId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [decision]
+              properties:
+                decision:
+                  type: string
+                  enum: [next_provider, republish, restart_modality, cancel]
+                  description: CM usa next_provider|republish; TD propuesto restart_modality|cancel (P-69)
+            examples:
+              cmNext:
+                value: { decision: next_provider }
+              tdCancel:
+                value: { decision: cancel }
+      responses:
+        "200":
+          description: Decisión registrada.
+          content:
+            application/json:
+              schema:
+                $ref: ../adquisiciones.openapi.yaml#/components/schemas/ProcurementCase
+        "401":
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../adquisiciones.openapi.yaml#/components/responses/ProcurementCaseNotFound
+        "422":
+          description: Regla de negocio violada.
+          content:
+            application/json:
+              schema:
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
+              examples:
+                noAlternative:
+                  value:
+                    error_code: NO_ALTERNATIVE_PROVIDER_AVAILABLE
+                    field: decision
+                    rule: No hay proveedor alternativo en catálogo para emitir la siguiente OC.
+                    severity: blocking
+                budgetProvider:
+                  value:
+                    error_code: BUDGET_PROVIDER_UNAVAILABLE
+                    rule: El proveedor de presupuesto no está disponible.
+                    severity: blocking

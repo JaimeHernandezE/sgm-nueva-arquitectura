@@ -10,12 +10,14 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Emisión y aceptación de la OC     [En espera]     |
 +----------------------------------------------------------------+
-| Contexto: OC de catálogo / de Gran Compra emitida en MP           |
+| ## Contexto de la OC                                             |
+| OC de catálogo / de Gran Compra emitida en MP                     |
 | Proveedor: Mobiliario Chile Ltda. · Monto ofertado: $ 4.650.000    |
 +----------------------------------------------------------------+
+| ## Acción en Mercado Público                                     |
 | [ Gestionar en MP ] (deep link, solo lectura)                     |
 +----------------------------------------------------------------+
-| Simulación de lectura MP (solo demo)                               |
+| ## Simulación de lectura MP                                      |
 | [ OC Aceptada — compromiso OK ▾ ]                                  |
 | [ Ejecutar ]                                                        |
 +----------------------------------------------------------------+

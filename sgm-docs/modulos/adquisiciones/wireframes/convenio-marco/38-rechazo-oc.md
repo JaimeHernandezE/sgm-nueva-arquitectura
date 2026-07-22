@@ -10,15 +10,16 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Rechazo de la OC              [Camino alternativo]|
 +----------------------------------------------------------------+
+| ## Contexto del rechazo                                          |
 | El proveedor rechazó la OC en Mercado Público.                    |
 | Causal (si la lectura la trae): inconsistencia de valores/         |
 | cantidades / dirección de despacho inválida                       |
 | No hay vínculo legal — la preobligación se mantiene intacta.       |
 +----------------------------------------------------------------+
+| ## Decisión                                                       |
 | Decisión *                                                         |
 | ( ) Emitir OC al siguiente proveedor del catálogo / oferente       |
 | ( ) Republicar (nuevo proceso MP, mismo folio)                     |
-+----------------------------------------------------------------+
 | [ Confirmar decisión ]                                             |
 +----------------------------------------------------------------+
 | (banner: decisión registrada — reejecuta 3.7 con nuevo proveedor,  |

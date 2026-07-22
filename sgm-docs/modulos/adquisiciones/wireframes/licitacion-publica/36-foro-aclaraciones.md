@@ -10,15 +10,17 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Foro de aclaraciones          [Período abierto]  |
 +----------------------------------------------------------------+
+| ## Acción en Mercado Público                                     |
 | [ Simular lectura MP (demo): 3 preguntas recibidas ▾ ]           |
 | [ Consultar ]                                                    |
 +----------------------------------------------------------------+
+| ## Preguntas del foro                                            |
 | Preguntas recibidas en MP: 3  (gestionadas en el portal)         |
 +----------------------------------------------------------------+
+| ## Aclaración a las bases                                        |
 | Documento de Aclaración a las Bases (adjunto) *                  |
 | [ subir archivo ]                                                |
 | ¿La aclaración modifica sustantivamente las bases?  ( ) Sí ( ) No|
-+----------------------------------------------------------------+
 | [ Registrar aclaración ]                                        |
 +----------------------------------------------------------------+
 | (si modifica: advertencia — puede requerir acto complementario   |

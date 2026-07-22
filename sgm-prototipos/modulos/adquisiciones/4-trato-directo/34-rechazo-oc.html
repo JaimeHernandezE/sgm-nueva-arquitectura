@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3.4 — Rechazo de la OC</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
+
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>ADQ-2026-00012 — Rechazo de la OC</span>
+        <span class="badge badge--active" id="header-badge">Camino alternativo</span>
+      </div>
+      <div class="form-card__body">
+        <section class="form-section">
+          <h3 class="form-section__title">Contexto del rechazo</h3>
+          <div class="info-panel">
+            El proveedor rechazó la OC (o no respondió en plazo).<br />
+            No hay vínculo legal — la preobligación se mantiene. En TD suele haber un solo proveedor.<br />
+            <strong>P-69</strong> — camino exacto pendiente de validación con división de municipalidades.
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h3 class="form-section__title">Decisión</h3>
+          <div class="form-row">
+            <label>Decisión <span class="required">*</span></label>
+            <select id="decision">
+              <option value="restart_modality" selected>Reiniciar desde modalidad (nueva Resolución Fundada)</option>
+              <option value="cancel">Cancelar expediente (liberar preobligación)</option>
+            </select>
+          </div>
+        </section>
+
+        <div class="banner hidden" id="result-banner"></div>
+      </div>
+      <div class="form-actions">
+        <a class="btn btn--secondary" id="back-accept" href="#">Volver a 3.3</a>
+        <button class="btn btn--primary" type="button" id="confirm">Confirmar decisión</button>
+      </div>
+    </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+
+  <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+    const expedienteId = getExpedienteId();
+
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 3 · Resolución de Compra (TD)',
+      stepName: 'Rechazo de la OC',
+      stepId: '3.4',
+    });
+    initStepSimulation({ stepId: '3.4' });
+    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
+      kind: 'external',
+      label: 'Mercado Público',
+      mode: 'solo lectura',
+    });
+
+    document.getElementById('back-accept').href = relativeFormHref('33-emision-aceptacion-oc.html');
+    const resultBanner = document.getElementById('result-banner');
+
+    document.getElementById('confirm').addEventListener('click', () => {
+      const decision = document.getElementById('decision').value;
+      demoValidation('recordPurchaseOrderRejectionDecision');
+      resultBanner.classList.remove('hidden');
+      resultBanner.className = 'banner banner--info';
+      if (decision === 'cancel') {
+        resultBanner.textContent = 'Decisión cancel — releasePreCommitment (si Presupuestos disponible). PurchaseOrderRejected. P-69 abierto.';
+      } else {
+        resultBanner.textContent = 'Decisión restart_modality — retorna a etapa 2 con nueva justificación. PurchaseOrderRejected. P-69 abierto.';
+      }
+      document.getElementById('header-badge').textContent = 'Decidido';
+    });
+  </script>
+</body>
+</html>

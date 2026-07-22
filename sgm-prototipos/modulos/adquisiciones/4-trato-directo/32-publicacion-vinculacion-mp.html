@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3.2 — Publicación en Mercado Público y vinculación</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
+
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>ADQ-2026-00012 — Publicación y vinculación MP</span>
+        <span class="badge badge--active" id="header-badge">Pendiente</span>
+      </div>
+      <div class="form-card__body">
+        <section class="form-section">
+          <h3 class="form-section__title">Contexto</h3>
+          <div class="info-panel">
+            Resolución Fundada firmada ✓ · Toma de Razón: N/A (bajo umbral)<br />
+            Plazo legal de publicidad: 24 h desde total tramitación — <strong>P-71</strong>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h3 class="form-section__title">Acción en Mercado Público</h3>
+          <p class="form-section__hint">La publicación ocurre en MP. SGM registra solo el ID del proceso publicado.</p>
+          <a class="btn btn--primary" href="https://www.mercadopublico.cl" target="_blank" rel="noopener">Publicar Trato Directo en MP</a>
+        </section>
+
+        <section class="form-section">
+          <h3 class="form-section__title">Vinculación</h3>
+          <div class="form-row">
+            <label>ID del proceso publicado en MP <span class="required">*</span></label>
+            <input type="text" id="mp-id" value="4021-05-TD26" />
+          </div>
+          <div class="form-row">
+            <label>Simular resultado de vinculación <em>(solo demo)</em></label>
+            <select id="simulate-result">
+              <option value="ok" selected>Vinculación exitosa</option>
+              <option value="not_found">MP_PROCESS_NOT_FOUND</option>
+              <option value="organism_mismatch">MP_PROCESS_ORGANISM_MISMATCH</option>
+              <option value="type_mismatch">MP_PROCESS_TYPE_MISMATCH</option>
+              <option value="already_linked">MP_PROCESS_ALREADY_LINKED</option>
+            </select>
+          </div>
+        </section>
+
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          Vinculado — SGM inicia sync. <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Continuar a 3.3</a>
+        </div>
+      </div>
+      <div class="form-actions">
+        <span></span>
+        <button class="btn btn--primary" type="button" id="validate">Validar y vincular</button>
+      </div>
+    </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+
+  <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+    const expedienteId = getExpedienteId();
+
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 3 · Resolución de Compra (TD)',
+      stepName: 'Publicación en Mercado Público y vinculación',
+      stepId: '3.2',
+    });
+    initStepSimulation({ stepId: '3.2' });
+    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
+      kind: 'external',
+      label: 'Mercado Público',
+      mode: 'solo lectura',
+    });
+
+    const resultBanner = document.getElementById('result-banner');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    document.getElementById('next-step-link').href = relativeFormHref('33-emision-aceptacion-oc.html');
+
+    const errorMessages = {
+      not_found: 'MP_PROCESS_NOT_FOUND — no existe un proceso con ese ID en Mercado Público.',
+      organism_mismatch: 'MP_PROCESS_ORGANISM_MISMATCH — el organismo comprador no coincide con el tenant.',
+      type_mismatch: 'MP_PROCESS_TYPE_MISMATCH — el tipo de proceso MP no es Trato Directo.',
+      already_linked: 'MP_PROCESS_ALREADY_LINKED — este código MP ya está vinculado a otro expediente.',
+    };
+
+    document.getElementById('validate').addEventListener('click', () => {
+      const mpId = document.getElementById('mp-id').value.trim();
+      if (!mpId) {
+        demoValidation('linkMpProcess');
+        return;
+      }
+      const scenario = document.getElementById('simulate-result').value;
+      resultBanner.classList.remove('hidden');
+
+      if (scenario === 'ok') {
+        demoValidation('linkMpProcess');
+        resultBanner.className = 'banner banner--info';
+        resultBanner.style.color = '';
+        resultBanner.textContent = `Vinculado — ProcurementCase.mp_process_id = ${mpId}. Evento MpProcessLinked.`;
+        document.getElementById('header-badge').textContent = 'Vinculado';
+        document.getElementById('validate').disabled = true;
+        nextStepPanel.classList.remove('hidden');
+      } else {
+        resultBanner.className = 'banner';
+        resultBanner.style.color = '#a33333';
+        resultBanner.textContent = errorMessages[scenario];
+        document.getElementById('header-badge').textContent = 'Bloqueada';
+      }
+    });
+  </script>
+</body>
+</html>

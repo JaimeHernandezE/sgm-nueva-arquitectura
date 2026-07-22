@@ -11,16 +11,16 @@
 | SOLPED #1234 — Intención de Compra / Gran Compra [Ruta: Gran      |
 |                                                    Compra]        |
 +----------------------------------------------------------------+
+| ## Contexto Gran Compra                                          |
 | Monto estimado: $ 4.800.000 (73,77 UTM ≥ 1.000 UTM)               |
 | Convenio Marco: Mobiliario de oficina — todos los proveedores     |
 | adjudicados del rubro serán alertados                            |
-+----------------------------------------------------------------+
 | [ Publicar Intención de Compra en Mercado Público ] (deep link)   |
 +----------------------------------------------------------------+
+| ## Vinculación de la Intención de Compra                         |
 | ID de la Intención de Compra *                                   |
 | [                                              ]                 |
 | [ Validar y vincular ]                                            |
-+----------------------------------------------------------------+
 | Fecha publicación: (autogenerada al vincular)                     |
 | Fecha límite (10 días corridos): (calculada automáticamente)       |
 +----------------------------------------------------------------+

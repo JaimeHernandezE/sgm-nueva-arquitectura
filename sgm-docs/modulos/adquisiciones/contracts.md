@@ -8,7 +8,7 @@
 > OpenAPI: [`openapi/adquisiciones.openapi.yaml`](./openapi/adquisiciones.openapi.yaml) — estructura: [`openapi/README.md`](./openapi/README.md)
 > Fixtures sandbox: [`fixtures/catalogo.md`](./fixtures/catalogo.md)
 
-**Alcance:** las etapas transversales (1, 2, 4) y la etapa 3 de Compra Ágil, Licitación Pública y Convenio Marco están cubiertas en profundidad (§2.7). Trato Directo se extenderá tras validar el piloto — ver `brechas-etapa3-modalidades.md` para el diagnóstico de esa modalidad restante.
+**Alcance:** las etapas transversales (1, 2, 4) y la etapa 3 de Compra Ágil (§2.3), Licitación Pública (§2.4), Convenio Marco (§2.7) y Trato Directo (§2.8) están cubiertas. Pendientes humanos de TD: P-69 (rechazo OC), P-70 (polling/webhook), P-71 (plazo 24 h).
 
 ---
 
@@ -32,8 +32,8 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | `ModalityDecision` | Expuesta | `id`, `procurement_case_id`, `selected_modality`, `ratified`, `requires_jefatura_approval`, `decided_by`, `decided_at` | 2.1 |
 | `ModalityDecisionApproval` | Expuesta | `id`, `modality_decision_id`, `approver_id`, `decision`, `decision_date` | 2.2 — existencia condicionada a **[PENDIENTE P-38]** |
 | `QuotationResult` | Expuesta | `id`, `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `recorded_at` | 3.2 *(CA)* / 3.5 *(CM, ruta `gran_compra`)* |
-| `PurchaseOrder` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `mp_oc_id`, `supplier_rut`, `total_amount`, `selection_justification`, `status`, `acceptance_date`, `fulfillment_status` | 3.3, 3.4, 3.5 *(CA)* / 3.5, 3.14 *(LP)* / 3.2, 3.3, 3.7, 3.8 *(CM)*, 4.1 |
-| `BudgetCommitment` | Expuesta | `id`, `purchase_order_id`, `budget_pre_commitment_id`, `committed_amount`, `commitment_date`, `source` | 3.4 *(CA)* / 3.14 *(LP)* / 3.7 *(CM)* |
+| `PurchaseOrder` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `mp_oc_id`, `supplier_rut`, `total_amount`, `selection_justification`, `status`, `acceptance_date`, `fulfillment_status` | 3.3, 3.4, 3.5 *(CA)* / 3.5, 3.14 *(LP)* / 3.2, 3.3, 3.7, 3.8 *(CM)* / 3.3, 3.4 *(TD)*, 4.1 |
+| `BudgetCommitment` | Expuesta | `id`, `purchase_order_id`, `budget_pre_commitment_id`, `committed_amount`, `commitment_date`, `source` | 3.4 *(CA)* / 3.14 *(LP)* / 3.7 *(CM)* / 3.3 *(TD)* |
 | `GoodsReceipt` | Expuesta | `id`, `purchase_order_id`, `received_by`, `received_date`, `receipt_type`, `receiving_unit`, `status`, `observations` | 4.1, 4.2 |
 | `ReceiptRejectionCase` | Expuesta | `id`, `goods_receipt_id`, `resolution_type`, `resolution_deadline`, `resolved_at`, `outcome` | 4.5 |
 | `ThreeWayMatch` | Expuesta | `id`, `purchase_order_id`, `goods_receipt_id`, `invoice_id`, `match_status`, `match_date` | 5.1 |
@@ -43,8 +43,8 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | `TenderBases` | Expuesta | `id`, `procurement_case_id`, `status`, `technical_bases_ref`, `administrative_bases_ref`, `requires_bid_bond`, `requires_performance_bond`, `version` | 3.1 *(LP)* |
 | `EvaluationCriterion` | Expuesta | `id`, `tender_bases_id`, `name`, `weight_percent`, `scoring_rule` | 3.1 *(LP)* |
 | `LegalReview` | Expuesta | `id`, `subject_type`, `subject_id`, `reviewer_id`, `outcome`, `observations`, `reviewed_at` | 3.2, 3.10 *(LP)* — polimórfica, transversal |
-| `AdministrativeAct` | Expuesta | `id`, `procurement_case_id`, `act_type`, `subject_id`, `act_number`, `status`, `signed_by`, `signed_at` | 3.3, 3.9, 3.10 *(LP)* — polimórfica, transversal <!-- REVISAR: candidata a absorber `PaymentDecree`, ver entidades-core.md --> |
-| `ComptrollerReview` | Expuesta | `id`, `administrative_act_id`, `submitted_at`, `outcome`, `outcome_at` | 3.4, 3.11 *(LP)* — transversal, reutilizable en Trato Directo |
+| `AdministrativeAct` | Expuesta | `id`, `procurement_case_id`, `act_type`, `subject_id`, `act_number`, `status`, `signed_by`, `signed_at` | 3.3, 3.9, 3.10 *(LP)* / 3.1 *(TD, `founded_resolution`)* — polimórfica, transversal <!-- REVISAR: candidata a absorber `PaymentDecree`, ver entidades-core.md --> |
+| `ComptrollerReview` | Expuesta | `id`, `administrative_act_id`, `submitted_at`, `outcome`, `outcome_at` | 3.4, 3.11 *(LP)* / 3.1 *(TD)* — transversal |
 | `Guarantee` | Expuesta | `id`, `procurement_case_id`, `guarantee_type`, `provider_rut`, `instrument_type`, `amount`, `expiry_date`, `status` | 3.7, 3.12 *(LP)* — transversal |
 | `EvaluationCommittee` | Expuesta | `id`, `procurement_case_id`, `designation_act_id`, `status` | 3.9 *(LP)* |
 | `OfferRecord` | Expuesta | `id`, `procurement_case_id`, `provider_rut`, `provider_name`, `offered_amount`, `admissibility_status`, `entry_mode` | 3.9 *(LP)* |
@@ -285,7 +285,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 - **Dependencias:** `requestSignature`/`confirmSignature` (Core (FirmaGob), condicional)
 
 #### `POST /procurement-cases/{id}/mp-link` — `linkMpProcess`
-- **Sub-pasos:** 2.3 (ejecución inmediata, Compra Ágil), 3.2/3.3 *(CM, ejecución diferida según ruta)*, 3.5 *(LP, ejecución diferida)*, subproceso de publicación *(Trato Directo, ejecución diferida)*
+- **Sub-pasos:** 2.3 (ejecución inmediata, Compra Ágil), 3.2/3.3 *(CM, ejecución diferida según ruta)*, 3.5 *(LP, ejecución diferida)*, 3.2 *(TD, ejecución diferida — publicación)*
 - **Entrada:** `mp_process_id`
 - **Errores de validación:** ante varias reglas fallidas → `422` `ValidationErrorResponse` (`issues[]`).
 - **Reglas:**
@@ -317,11 +317,14 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 - **UI:** deep link «Gestionar en MP»; sin registro manual de n° OC / montos
 
 #### `POST /purchase-orders/{id}/sync-accepted` — `syncPurchaseOrderAccepted`
-- **Sub-pasos:** 3.4 *(CA)* / 3.14 *(LP)* / 3.7 *(CM)*
+- **Sub-pasos:** 3.4 *(CA)* / 3.14 *(LP)* / 3.7 *(CM)* / 3.3 *(TD)*
 - **Reglas:**
   | Regla | Severidad | QA | Error |
   |---|---|---|---|
   | Saldo presupuestario al comprometer | blocking | 11 P0 | `BUDGET_UNAVAILABLE` |
+  | Proceso MP vinculado figura como Publicado *(solo TD — doble validación)* | blocking | — | `MP_PROCESS_NOT_PUBLISHED` |
+  | Preobligación activa | blocking | — | `PRE_COMMITMENT_INACTIVE` |
+  | API MP disponible | blocking | — | `MP_PROVIDER_UNAVAILABLE` |
 - **Dependencias:** `readMpProcess` — OC Aceptada, **confirmada** (MP), `commitBudget` (Presupuestos, síncrona bloqueante; reemplaza el par anterior `convertPreCommitmentToCommitment`+`registerBudgetCommitment` — simplificación aplicada en esta reconciliación)
 - **Eventos:** `PurchaseOrderAccepted`, `BudgetCommitmentCreated`
 
@@ -561,17 +564,46 @@ Vinculación con Mercado Público diferida al sub-paso 3.5 — reutiliza íntegr
 - **Dependencias:** `readMpProcess` — proceso desierto (deseada)
 - **Evento emitido:** `GranCompraDesierta` — actualiza `procurement_route` de `gran_compra` a `compra_directa`; invalida `mp_process_id` de la Intención de Compra; el flujo retoma desde 3.2 con nuevo `linkMpProcess`
 
-*(Emisión y aceptación de la OC reutiliza `syncPurchaseOrderAccepted` — ver declaración en §2.6.)*
+*(Emisión y aceptación de la OC reutiliza `syncPurchaseOrderAccepted` — ver declaración en §2.3.)*
 
 #### `POST /procurement-cases/{id}/oc-rejection-decision` — `recordPurchaseOrderRejectionDecision`
-- **Sub-pasos:** 3.8 *(condicional — excluyente con 3.7, solo si el proveedor rechaza la OC)*
-- **Entrada:** `decision` (enum: `next_provider` | `republish`)
+- **Sub-pasos:** 3.8 *(CM, condicional — excluyente con 3.7)* / 3.4 *(TD, condicional — excluyente con 3.3; enum de decisión distinto — **[PENDIENTE P-69]**)*
+- **Entrada:** `decision` (enum: `next_provider` \| `republish` *(CM)*; `restart_modality` \| `cancel` *(TD, propuesto)*)
 - **Reglas:**
   | Regla | Severidad | Error |
   |---|---|---|
-  | Existe proveedor alternativo en catálogo si `decision = next_provider` | blocking | `NO_ALTERNATIVE_PROVIDER_AVAILABLE` |
-- **Dependencias:** `readMpProcess` — OC Rechazada (deseada), previa a habilitar esta decisión
-- **Evento emitido:** `PurchaseOrderRejected` (al recibir la lectura); la decisión en sí no emite evento nuevo — `next_provider` reejecuta `syncPurchaseOrderAccepted` (3.7) con nuevo proveedor, `republish` reejecuta `linkMpProcess` (3.2/3.3) con nuevo `mp_process_id`, mismo folio
+  | Existe proveedor alternativo en catálogo si `decision = next_provider` *(CM)* | blocking | `NO_ALTERNATIVE_PROVIDER_AVAILABLE` |
+- **Dependencias:** `readMpProcess` — OC Rechazada (deseada), previa a habilitar esta decisión; `releasePreCommitment` si `decision = cancel` *(TD)*
+- **Evento emitido:** `PurchaseOrderRejected` (al recibir la lectura); la decisión en sí no emite evento nuevo — CM: `next_provider` reejecuta `syncPurchaseOrderAccepted` (3.7) / `republish` reejecuta `linkMpProcess` (3.2/3.3); TD: `restart_modality` retorna a etapa 2 / `cancel` libera preobligación (**[PENDIENTE P-69]**)
+
+### 2.8 Resolución de Compra — Trato Directo
+
+*Fuente: ficha `4. trato-directo/3-resolucion-compra.md`. Reutiliza operaciones ya declaradas en §2.2 (`linkMpProcess`), §2.3 (`syncPurchaseOrderAccepted`), §2.4 (`submitToComptroller` / `recordComptrollerOutcome`) y §2.7 (`recordPurchaseOrderRejectionDecision`).*
+
+#### *(reutiliza `submitToComptroller` / `recordComptrollerOutcome` de §2.4)* 3.1 Toma de Razón de la Resolución Fundada
+- **Sub-pasos:** 3.1 *(condicional — monto > umbral Toma de Razón)*
+- **Entidad:** `AdministrativeAct` (`act_type = founded_resolution`) + `ComptrollerReview`
+- **Dependencias:** Contraloría (registro manual) — **[PENDIENTE P-64]**
+- **Evento emitido:** `ComptrollerReviewRecorded`
+
+#### *(reutiliza `linkMpProcess` de §2.2)* 3.2 Publicación en MP y vinculación
+- **Sub-pasos:** 3.2 *(ejecución diferida de 2.3)*
+- **Dependencias:** `readMpProcess` (síncrona bloqueante solo en la vinculación)
+- **Evento emitido:** `MpProcessLinked`
+- **Nota:** plazo legal de publicidad 24 h — **[PENDIENTE P-71]**
+
+#### *(reutiliza `syncPurchaseOrderAccepted` de §2.3)* 3.3 Emisión de OC y aceptación *(hito contable)*
+- **Sub-pasos:** 3.3 *(excluyente con 3.4)*
+- **Reglas adicionales TD:** `MP_PROCESS_NOT_PUBLISHED`, `PRE_COMMITMENT_INACTIVE` (ver §2.3)
+- **Dependencias:** `readMpProcess` — OC Aceptada (**confirmada**) + estado Publicado (deseada); `commitBudget` (Presupuestos)
+- **Eventos:** `PurchaseOrderAccepted`, `BudgetCommitmentCreated`
+- **Clasificación borde:** asíncrona, agnóstica push/polling — **[PENDIENTE P-70]**
+
+#### *(reutiliza `recordPurchaseOrderRejectionDecision` de §2.7)* 3.4 Rechazo de la OC
+- **Sub-pasos:** 3.4 *(condicional — excluyente con 3.3)*
+- **Entrada:** `decision` (`restart_modality` \| `cancel`) — **[PENDIENTE P-69]**
+- **Dependencias:** `readMpProcess` — OC Rechazada (deseada); `releasePreCommitment` si cancelación
+- **Evento emitido:** `PurchaseOrderRejected`
 
 ---
 
@@ -588,7 +620,7 @@ Contrato del core: [`plataforma/contracts.md`](../../plataforma/contracts.md) §
 | `checkBudgetAvailability` | 1.3, 1.5, 1.6 | Síncrona bloqueante | Error `BUDGET_PROVIDER_UNAVAILABLE`; operación no procede |
 | `previewBudgetAvailability` | 1.1, 1.2 | Cacheada / informativa | Error en panel de autoconsulta; no bloquea creación ni aprobación |
 | `createBudgetPreCommitment` | 1.6 | Síncrona bloqueante | Rechazo → `BUDGET_UNAVAILABLE`; sin efecto parcial |
-| `commitBudget` | 3.4 *(CA)*, 3.14 *(LP)* | Síncrona bloqueante | Rechazo → `BUDGET_UNAVAILABLE`; OC queda `commitment_pending` — regularización pendiente (**[PENDIENTE P-40]**). Reemplaza el par anterior `convertPreCommitmentToCommitment`+`registerBudgetCommitment`. |
+| `commitBudget` | 3.4 *(CA)*, 3.14 *(LP)*, 3.7 *(CM)*, 3.3 *(TD)* | Síncrona bloqueante | Rechazo → `BUDGET_UNAVAILABLE`; OC queda `commitment_pending` — regularización pendiente (**[PENDIENTE P-40]**). Reemplaza el par anterior `convertPreCommitmentToCommitment`+`registerBudgetCommitment`. |
 | `releasePreCommitment` | 3.6 | Síncrona bloqueante | Error `BUDGET_PROVIDER_UNAVAILABLE`; cancelación no se persiste sin liberación confirmada |
 | `adjustPreCommitment` | 3.10 *(LP)* | Síncrona bloqueante | Ajuste de la preobligación al monto adjudicado, antes del Compromiso Cierto (3.14) |
 
@@ -619,12 +651,12 @@ Consolidado en torno a `readMpProcess`, operación única de lectura que atiende
 
 | Operación | Sub-pasos | Lectura MP (§5.3) | Clasificación | Comportamiento ante falla |
 |---|---|---|---|---|
-| `readMpProcess` — vinculación | 2.3, 3.5 *(LP, diferida)*, 3.2/3.3 *(CM, diferida)* | — | Síncrona bloqueante (solo en la vinculación) | `MP_PROCESS_NOT_FOUND` / `MP_PROCESS_ORGANISM_MISMATCH` / `MP_PROCESS_TYPE_MISMATCH` / `MP_PROCESS_ALREADY_LINKED`; `MP_PROVIDER_UNAVAILABLE` → **[PENDIENTE P-32]** |
+| `readMpProcess` — vinculación | 2.3, 3.5 *(LP, diferida)*, 3.2/3.3 *(CM, diferida)*, 3.2 *(TD, diferida)* | — | Síncrona bloqueante (solo en la vinculación) | `MP_PROCESS_NOT_FOUND` / `MP_PROCESS_ORGANISM_MISMATCH` / `MP_PROCESS_TYPE_MISMATCH` / `MP_PROCESS_ALREADY_LINKED`; `MP_PROVIDER_UNAVAILABLE` → **[PENDIENTE P-32]** |
 | `readMpProcess` — período de cotización | 3.1 *(CA)* / 3.4 *(CM, período de competencia Gran Compra)* | Deseada | Asíncrona | Sin efecto de gestión (informativo); retroceso exponencial |
 | `readMpProcess` — cierre y selección | 3.2 *(CA)* / 3.5 *(CM)* | Deseada | Asíncrona | Modo degradado: pendiente en expediente + deep link; avance solo con lectura |
 | `readMpProcess` — OC enviada / bloqueo | 3.3 | Deseada | Asíncrona | Modo degradado: pendiente + deep link; espejo solo con lectura |
-| `readMpProcess` — OC Aceptada | 3.4 *(CA)*, 3.14 *(LP)*, 3.7 *(CM)* | **Confirmada** | Asíncrona | Reintento con backoff; `PurchaseOrder` en `pending_mp_sync` |
-| `readMpProcess` — OC Rechazada | 3.5 *(CA)* / 3.8 *(CM)* | Deseada | Asíncrona | Modo degradado: esperando sync; tarea de decisión solo tras lectura |
+| `readMpProcess` — OC Aceptada | 3.4 *(CA)*, 3.14 *(LP)*, 3.7 *(CM)*, 3.3 *(TD)* | **Confirmada** | Asíncrona | Reintento con backoff; `PurchaseOrder` en `pending_mp_sync` |
+| `readMpProcess` — OC Rechazada | 3.5 *(CA)* / 3.8 *(CM)* / 3.4 *(TD)* | Deseada | Asíncrona | Modo degradado: esperando sync; tarea de decisión solo tras lectura |
 | `readMpProcess` — desierto | 3.6 *(CA)* / 3.6 *(CM, Gran Compra desierta)* | Deseada | Asíncrona | Pendiente / posible desierto hasta lectura; sin confirmación por transcripción |
 | `readMpProcess` — foro/apertura/adjudicación *(LP)* | 3.6, 3.8, 3.10 | Deseada | Asíncrona | Modo degradado: pendiente en expediente hasta lectura (LP: 0 deep links) |
 | `checkCatalogAvailability` | 1.0 *(si sync ChileCompra)*, 2.1 | — | Cacheada (frescura diaria) | Advertencia `CATALOG_STALE`; en 1.0 la banda CM se omite si no hay integración |
@@ -644,8 +676,8 @@ Registro manual del envío y del resultado, con documento de respaldo — no hay
 
 | Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
 |---|---|---|---|
-| `submitToComptroller` | 3.4, 3.11 *(LP)* | Registro manual | N/A — no hay llamada a proveedor externo |
-| `recordComptrollerOutcome` | 3.4, 3.11 *(LP)* | Registro manual | N/A |
+| `submitToComptroller` | 3.4, 3.11 *(LP)* / 3.1 *(TD)* | Registro manual | N/A — no hay llamada a proveedor externo |
+| `recordComptrollerOutcome` | 3.4, 3.11 *(LP)* / 3.1 *(TD)* | Registro manual | N/A |
 
 #### SII y referencias (C9)
 
@@ -687,23 +719,23 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 | `BudgetAvailabilityCertificateIssued` | 1.5 | `certificate_id`, `purchase_request_id`, `certificate_number`, `signed_at` |
 | `BudgetPreCommitmentCreated` | 1.6 | `budget_pre_commitment_id`, `purchase_request_id`, `estimated_amount` |
 | `PurchaseOrderIssued` | 3.3 *(antes 2.4 — renumerado tras la reconciliación)* | `purchase_order_id`, `mp_oc_id`, `total_amount`, `supplier_rut` |
-| `PurchaseOrderAccepted` | 3.4 *(CA)* / 3.14 *(LP)* / 3.7 *(CM)* | `purchase_order_id`, `acceptance_date`, `total_amount` |
-| `BudgetCommitmentCreated` | 3.4 *(CA)* / 3.14 *(LP)* / 3.7 *(CM)* | `budget_commitment_id`, `committed_amount`, `commitment_date` |
+| `PurchaseOrderAccepted` | 3.4 *(CA)* / 3.14 *(LP)* / 3.7 *(CM)* / 3.3 *(TD)* | `purchase_order_id`, `acceptance_date`, `total_amount` |
+| `BudgetCommitmentCreated` | 3.4 *(CA)* / 3.14 *(LP)* / 3.7 *(CM)* / 3.3 *(TD)* | `budget_commitment_id`, `committed_amount`, `commitment_date` |
 | `ProcurementModalityConfirmed` | 2.1 | `modality_decision_id`, `procurement_case_id`, `procurement_type` |
 | `ProcurementModalityApproved` | 2.2 | `modality_decision_approval_id`, `procurement_case_id` — **[PENDIENTE P-38]** |
 | `NormativeParameterChanged` | 2.1 (gobernanza) | `parameter_code`, `value`, `valid_from`, `approved_by` |
-| `MpProcessLinked` | 2.3, 3.5 *(LP)*, 3.2/3.3 *(CM)* | `procurement_case_id`, `mp_process_id`, `procurement_type` |
+| `MpProcessLinked` | 2.3, 3.5 *(LP)*, 3.2/3.3 *(CM)*, 3.2 *(TD)* | `procurement_case_id`, `mp_process_id`, `procurement_type` |
 | `MpStateChanged` | 3.1 *(CA)* / 3.4 *(CM)* | `mp_process_snapshot_ref` |
 | `QuotationClosed` | 3.2 *(CA)* / 3.5 *(CM)* | `quotation_result_id`, `procurement_case_id` |
 | `ProviderIneligibleBlocked` | 3.3 | `purchase_order_id`, `provider_rut` |
-| `PurchaseOrderRejected` | 3.5 *(CA)* / 3.8 *(CM)* | `purchase_order_id`, `rejection_reason` |
+| `PurchaseOrderRejected` | 3.5 *(CA)* / 3.8 *(CM)* / 3.4 *(TD)* | `purchase_order_id`, `rejection_reason` |
 | `ProcurementProcessFailed` | 3.6 *(CA)* | `procurement_case_id`, causa (`deserted`/`all_rejected`), decisión |
 | `ProcurementRouteDecided` | 3.1 *(CM)* | `procurement_case_id`, `procurement_route`, `route_decided_at` |
 | `GranCompraDesierta` | 3.6 *(CM)* | `procurement_case_id`, `previous_mp_process_id`, `procurement_route` (nuevo valor `compra_directa`) |
 | `LegalReviewCompleted` | 3.2 *(LP)* | `legal_review_id`, `subject_type`, `subject_id`, `outcome` |
 | `AdministrativeActSigned` | 3.3 *(LP)* | `administrative_act_id`, `act_type`, `signed_at` |
 | `GuaranteeRegistered` | 3.7, 3.12 *(LP)* | `guarantee_id`, `guarantee_type`, `amount`, `expiry_date` |
-| `ComptrollerReviewRecorded` | 3.4, 3.11 *(LP)* | `comptroller_review_id`, `administrative_act_id`, `outcome` |
+| `ComptrollerReviewRecorded` | 3.4, 3.11 *(LP)* / 3.1 *(TD)* | `comptroller_review_id`, `administrative_act_id`, `outcome` |
 | `ClarificationRecorded` | 3.6 *(LP)* | `procurement_case_id`, `clarification_document_ref`, `modifies_bases` |
 | `BidOpeningRecorded` | 3.8 *(LP)* | `procurement_case_id`, `offers_count` |
 | `EvaluationCommitteeDesignated` | 3.9 *(LP)* | `evaluation_committee_id`, `member_ids` |
@@ -739,7 +771,7 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 | 32 | P1 | Recepción sin adjuntos | `confirmReceipt` | `MISSING_REQUIRED_ATTACHMENTS` |
 | 53 | P0 | Cantidad cero | `createPurchaseRequest` | `INVALID_QUANTITY` |
 
-La ficha QA original solo cubrió el piloto Compra Ágil. Las operaciones de Licitación Pública (§2.4) ya están formalizadas en este contrato, pero no existe todavía una ficha QA dedicada a LP que audite Comisión Evaluadora, Toma de Razón, garantías y Contrato con la misma profundidad P0/P1 — levantarla queda pendiente de una pasada dedicada a esa modalidad.
+La ficha QA original solo cubrió el piloto Compra Ágil. Las operaciones de Licitación Pública (§2.4), Convenio Marco (§2.7) y Trato Directo (§2.8) ya están formalizadas en este contrato, pero no existe todavía una ficha QA dedicada a CM/LP/TD con la misma profundidad P0/P1 — levantarla queda pendiente de una pasada dedicada.
 
 ---
 
@@ -788,6 +820,10 @@ La ficha QA original solo cubrió el piloto Compra Ágil. Las operaciones de Lic
 | 3.6 *(CM)* | — *(transición automática)* | `readMpProcess` | `GranCompraDesierta` |
 | 3.7 *(CM)* | `syncPurchaseOrderAccepted` *(reutiliza CA 3.4)* | MP, `commitBudget` (Presupuestos) | `PurchaseOrderAccepted`, `BudgetCommitmentCreated` |
 | 3.8 *(CM)* | `recordPurchaseOrderRejectionDecision` | `readMpProcess` | `PurchaseOrderRejected` |
+| 3.1 *(TD)* | `submitToComptroller`, `recordComptrollerOutcome` *(reutiliza LP)* | Contraloría (sin integración asumida) | `ComptrollerReviewRecorded` |
+| 3.2 *(TD)* | `linkMpProcess` *(reutiliza 2.2, vinculación diferida)* | `readMpProcess` | `MpProcessLinked` |
+| 3.3 *(TD)* | `syncPurchaseOrderAccepted` *(reutiliza CA 3.4)* | MP, `commitBudget` (Presupuestos) | `PurchaseOrderAccepted`, `BudgetCommitmentCreated` |
+| 3.4 *(TD)* | `recordPurchaseOrderRejectionDecision` *(enum TD — P-69)* | `readMpProcess`, `releasePreCommitment` (si cancel) | `PurchaseOrderRejected` |
 | 4.1 | `registerReceipt` | — | — |
 | 4.2 | `confirmReceipt` *(inferido)* | `requestSignature` (condicional) | `GoodsReceiptConfirmed` |
 | 4.3 | — | `registerInventoryEntry` (proveedor de inventario) | — |

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3.1 — Toma de Razón (Resolución Fundada)</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
+
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>ADQ-2026-00012 — Toma de Razón (Resolución Fundada)</span>
+        <span class="badge badge--active" id="header-badge">Condicional</span>
+      </div>
+      <div class="form-card__body">
+        <section class="form-section">
+          <h3 class="form-section__title">Umbral</h3>
+          <div class="info-panel">
+            Umbral Toma de Razón: 8.000 UTM · Monto demo $ 2.400.000 (bajo umbral — en producción este paso se omite).<br />
+            Simular escenario &gt; umbral con el selector de abajo.
+          </div>
+          <div class="form-row">
+            <label>Simular umbral <em>(solo demo)</em></label>
+            <select id="simulate-threshold">
+              <option value="below" selected>Bajo umbral — omitir (ir a 3.2)</option>
+              <option value="above">Sobre umbral — tramitar CGR</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="form-section" id="cgr-section">
+          <h3 class="form-section__title">Envío a Contraloría</h3>
+          <div class="form-row">
+            <label>Fecha de envío <span class="required">*</span></label>
+            <input type="date" id="submitted-at" value="2026-05-06" />
+          </div>
+          <button class="btn btn--secondary" type="button" id="submit-cgr">Registrar envío a Contraloría</button>
+        </section>
+
+        <section class="form-section" id="outcome-section">
+          <h3 class="form-section__title">Resultado CGR</h3>
+          <div class="form-row">
+            <label>Resultado <span class="required">*</span></label>
+            <select id="outcome">
+              <option value="approved" selected>Toma de razón</option>
+              <option value="approved_with_remarks">Toma de razón con alcance</option>
+              <option value="rejected">Representación / reparo</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Oficio de respuesta <span class="required">*</span></label>
+            <input type="text" id="official-doc" value="Oficio-CGR-2026-881.pdf" />
+          </div>
+          <button class="btn btn--primary" type="button" id="record-outcome">Registrar resultado</button>
+        </section>
+
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          Continuar. <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Ir a 3.2</a>
+        </div>
+      </div>
+    </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+
+  <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+    const expedienteId = getExpedienteId();
+
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 3 · Resolución de Compra (TD)',
+      stepName: 'Toma de Razón de la Resolución Fundada',
+      stepId: '3.1',
+    });
+    initStepSimulation({ stepId: '3.1' });
+    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
+      kind: 'module',
+      label: 'Contraloría',
+      mode: 'registro manual',
+    });
+
+    const resultBanner = document.getElementById('result-banner');
+    const nextPanel = document.getElementById('next-step-panel');
+    document.getElementById('next-step-link').href = relativeFormHref('32-publicacion-vinculacion-mp.html');
+
+    const cgrSection = document.getElementById('cgr-section');
+    const outcomeSection = document.getElementById('outcome-section');
+
+    function applyThreshold() {
+      const above = document.getElementById('simulate-threshold').value === 'above';
+      cgrSection.classList.toggle('hidden', !above);
+      outcomeSection.classList.toggle('hidden', !above);
+      if (!above) {
+        resultBanner.className = 'banner banner--info';
+        resultBanner.classList.remove('hidden');
+        resultBanner.textContent = 'Bajo umbral — sub-paso omitido. Continuar a publicación MP.';
+        nextPanel.classList.remove('hidden');
+        document.getElementById('header-badge').textContent = 'Omitido';
+      } else {
+        resultBanner.classList.add('hidden');
+        nextPanel.classList.add('hidden');
+        document.getElementById('header-badge').textContent = 'En CGR';
+      }
+    }
+    document.getElementById('simulate-threshold').addEventListener('change', applyThreshold);
+    applyThreshold();
+
+    document.getElementById('submit-cgr').addEventListener('click', () => {
+      if (!document.getElementById('submitted-at').value) {
+        demoValidation('submitToComptroller');
+        return;
+      }
+      demoValidation('submitToComptroller');
+      resultBanner.className = 'banner banner--info';
+      resultBanner.classList.remove('hidden');
+      resultBanner.textContent = 'Envío registrado — ComptrollerReview.submitted_at.';
+    });
+
+    document.getElementById('record-outcome').addEventListener('click', () => {
+      if (!document.getElementById('official-doc').value.trim()) {
+        demoValidation('recordComptrollerOutcome');
+        return;
+      }
+      const outcome = document.getElementById('outcome').value;
+      demoValidation('recordComptrollerOutcome');
+      resultBanner.classList.remove('hidden');
+      if (outcome === 'rejected') {
+        resultBanner.className = 'banner';
+        resultBanner.style.color = '#a33333';
+        resultBanner.textContent = 'Representación — proceso se cae; obligación de licitar. No avanza a 3.2.';
+        nextPanel.classList.add('hidden');
+        document.getElementById('header-badge').textContent = 'Reparado';
+      } else {
+        resultBanner.className = 'banner banner--info';
+        resultBanner.style.color = '';
+        resultBanner.textContent = 'Toma de razón registrada — ComptrollerReviewRecorded. Continuar a 3.2.';
+        nextPanel.classList.remove('hidden');
+        document.getElementById('header-badge').textContent = 'Tomada de razón';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -10,17 +10,17 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Cierre y selección de oferta   [Pendiente en MP] |
 +----------------------------------------------------------------+
-| Contexto del período (solo lectura)                           |
+| ## Contexto del período                                          |
 | Cerrado: 30-06-2026 · 4 cotizaciones recibidas (demo sync)      |
 +----------------------------------------------------------------+
-| Acción en Mercado Público                                      |
+| ## Acción en Mercado Público                                     |
 | [ Gestionar en MP ]  (deep link — selecciona la oferta en MP)    |
 +----------------------------------------------------------------+
-| Estado de sincronización                                       |
+| ## Estado de sincronización                                      |
 | Esperando lectura MP de cierre + oferta seleccionada.           |
 | Sin campos editables — los datos llegan solo por sync.          |
 +----------------------------------------------------------------+
-| Tras sync (detalle solo lectura, si hay datos)                 |
+| ## Oferta seleccionada — solo lectura                            |
 | Proveedor: Comercial Sur SpA · RUT 76.123.456-7                 |
 | Monto ofertado: $ 1.240.000 · Menor precio: Sí                  |
 | Badge: Sincronizado → Continuar a 3.3 (automático)              |

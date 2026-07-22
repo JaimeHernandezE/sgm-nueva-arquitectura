@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3.3 — Emisión de OC y aceptación</title>
+  <link rel="stylesheet" href="../../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../../shared/layout.css" />
+  <link rel="stylesheet" href="../../../shared/shell.css" />
+  <link rel="stylesheet" href="../../../shared/origin.css" />
+  <link rel="stylesheet" href="../../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+    <div id="breadcrumb"></div>
+    <div id="origin-banner"></div>
+
+    <div class="form-card">
+      <div class="form-card__header">
+        <span>ADQ-2026-00012 — OC aceptada → Compromiso Cierto</span>
+        <span class="badge badge--active" id="header-badge">Hito contable</span>
+      </div>
+      <div class="form-card__body">
+        <section class="form-section">
+          <h3 class="form-section__title">Contexto de la OC</h3>
+          <div class="info-panel">
+            Proceso MP: 4021-05-TD26 · Publicado ✓<br />
+            OC N° 4021-05-TD26-OC · Repuestos Industriales SpA · $ 2.400.000
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h3 class="form-section__title">Sincronización</h3>
+          <p class="form-section__hint">Doble validación: Publicado + OC Aceptada → commitBudget. Sin captura manual de n° OC ni montos.</p>
+          <div class="form-row">
+            <label>Simular lectura MP <em>(solo demo)</em></label>
+            <select id="simulate-result">
+              <option value="ok" selected>OC Aceptada + Publicado → compromiso OK</option>
+              <option value="not_published">MP_PROCESS_NOT_PUBLISHED</option>
+              <option value="budget">BUDGET_UNAVAILABLE</option>
+              <option value="pre_inactive">PRE_COMMITMENT_INACTIVE</option>
+              <option value="mp_down">MP_PROVIDER_UNAVAILABLE</option>
+            </select>
+          </div>
+        </section>
+
+        <div class="banner hidden" id="result-banner"></div>
+        <div class="info-panel hidden" id="next-step-panel">
+          Compromiso cierto registrado. <a class="btn btn--primary" id="next-step-link" href="#" style="margin-left:8px;">Ir a recepción conforme</a>
+        </div>
+      </div>
+      <div class="form-actions">
+        <a class="btn btn--secondary" id="reject-branch" href="#">Simular rechazo → 3.4</a>
+        <button class="btn btn--primary" type="button" id="sync">Sincronizar OC aceptada</button>
+      </div>
+    </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+
+  <script type="module">
+    import { initAppShell } from '../../../shared/app-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+
+    initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
+    const expedienteId = getExpedienteId();
+
+    document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
+      expedienteId,
+      stageName: 'Etapa 3 · Resolución de Compra (TD)',
+      stepName: 'Emisión de OC y aceptación del proveedor',
+      stepId: '3.3',
+    });
+    initStepSimulation({ stepId: '3.3' });
+    document.getElementById('origin-banner').innerHTML = renderOriginBanner({
+      kind: 'external',
+      label: 'Mercado Público',
+      mode: 'solo lectura',
+    });
+
+    const resultBanner = document.getElementById('result-banner');
+    const nextStepPanel = document.getElementById('next-step-panel');
+    document.getElementById('next-step-link').href = relativeFormHref('../00-expediente/index.html');
+    document.getElementById('reject-branch').href = relativeFormHref('34-rechazo-oc.html');
+
+    const errors = {
+      not_published: 'MP_PROCESS_NOT_PUBLISHED — el proceso MP vinculado no figura como Publicado.',
+      budget: 'BUDGET_UNAVAILABLE — sin saldo para el monto real de la OC.',
+      pre_inactive: 'PRE_COMMITMENT_INACTIVE — la preobligación ya no está activa.',
+      mp_down: 'MP_PROVIDER_UNAVAILABLE — Mercado Público no está disponible.',
+    };
+
+    document.getElementById('sync').addEventListener('click', () => {
+      const scenario = document.getElementById('simulate-result').value;
+      resultBanner.classList.remove('hidden');
+      if (scenario === 'ok') {
+        demoValidation('syncPurchaseOrderAccepted');
+        resultBanner.className = 'banner banner--info';
+        resultBanner.style.color = '';
+        resultBanner.textContent = 'PurchaseOrderAccepted + BudgetCommitmentCreated ($ 2.400.000).';
+        document.getElementById('header-badge').textContent = 'Comprometido';
+        nextStepPanel.classList.remove('hidden');
+      } else {
+        demoValidation('syncPurchaseOrderAccepted');
+        resultBanner.className = 'banner';
+        resultBanner.style.color = '#a33333';
+        resultBanner.textContent = errors[scenario];
+        document.getElementById('header-badge').textContent = 'Bloqueado';
+        nextStepPanel.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>

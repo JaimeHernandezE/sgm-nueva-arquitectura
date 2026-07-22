@@ -11,11 +11,12 @@
 | SOLPED #1234 — Compra Directa por Catálogo      [Ruta: Compra    |
 |                                                   Directa]       |
 +----------------------------------------------------------------+
-| Ítem de catálogo (de la SOLPED, 1.1): Silla ergonómica CM-8842   |
+| ## Ítem de catálogo                                              |
+| Ítem (de la SOLPED, 1.1): Silla ergonómica CM-8842               |
 | Precio catálogo: $ 4.800.000 · Proveedor adjudicado del Convenio |
-+----------------------------------------------------------------+
 | [ Ir al catálogo Convenio Marco en Mercado Público ] (deep link) |
 +----------------------------------------------------------------+
+| ## Vinculación de la OC de catálogo                              |
 | ID de la OC de catálogo *                                        |
 | [                                              ]                 |
 | [ Validar y vincular ]                                            |

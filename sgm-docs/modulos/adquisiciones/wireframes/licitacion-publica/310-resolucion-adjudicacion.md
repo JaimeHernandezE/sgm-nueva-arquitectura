@@ -10,17 +10,16 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Resolución de adjudicación      [Acta firmada]   |
 +----------------------------------------------------------------+
-| [Acta de Evaluación — solo lectura]                              |
+| ## Acta de Evaluación                                            |
 | Ranking: 1° Taller Municipal SpA (91,0) · 2° Mecánica Diesel Ñuble Ltda.    |
 +----------------------------------------------------------------+
+| ## Resolución de adjudicación                                    |
 | Tipo de resolución *                                             |
 | ( ) Adjudicar   ( ) Declarar desierta   ( ) Revocar               |
-|                                                                   |
 | Si Adjudicar:                                                    |
 |   Oferta a adjudicar *  [ 1° Taller Municipal SpA ($178.500.000) ▾]  |
 |   Fundamentación (obligatoria si ≠ 1° del ranking)                |
 |   [                                                    ]         |
-+----------------------------------------------------------------+
 | [ Revisión jurídica previa: VB obtenido ✓ ]                      |
 | [ Generar acto y solicitar firma ]                                |
 +----------------------------------------------------------------+

@@ -10,18 +10,19 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Emisión y aceptación de la OC     [En espera]    |
 +----------------------------------------------------------------+
-| [Contrato suscrito — solo lectura]                               |
+| ## Contexto del contrato                                         |
 | Contrato N° ___ · Taller Municipal SpA · $ 178.500.000               |
 +----------------------------------------------------------------+
+| ## Acción en Mercado Público                                     |
 | [ Emitir OC en Mercado Público ]  (deep link, referida a la      |
 |   adjudicación)                                                  |
 +----------------------------------------------------------------+
+| ## Simulación de lectura MP                                      |
 | [ Simular lectura MP (demo): OC Aceptada ▾ ]                     |
 | [ Ejecutar ]                                                     |
 +----------------------------------------------------------------+
 | (banner de resultado: aceptada + Compromiso Cierto, o error de   |
 |  disponibilidad presupuestaria)                                  |
-+----------------------------------------------------------------+
 | Tras aceptación + compromiso → Continuar a 4.1 Recepción Conforme|
 +----------------------------------------------------------------+
 ```

@@ -88,7 +88,7 @@ Enlazada desde el shell del expediente vía manifiestos de modalidad (`form-shel
 | Compra Ágil | [`1. compra-agil/3-resolucion-compra.md`](../sgm-docs/modulos/adquisiciones/1.%20compra-agil/3-resolucion-compra.md) | `steps-manifest-compra-agil.js` | `1-compra-agil/` (6 sub-pasos) |
 | Convenio Marco | [`2. convenio-marco/3-resolucion-compra-convenio-marco v2.md`](../sgm-docs/modulos/adquisiciones/2.%20convenio-marco/3-resolucion-compra-convenio-marco%20v2.md) | `steps-manifest-convenio-marco.js` | `2-convenio-marco/` (8 sub-pasos) |
 | Licitación Pública | [`3. licitacion-publica/3-resolucion-compra.md`](../sgm-docs/modulos/adquisiciones/3.%20licitacion-publica/3-resolucion-compra.md) | `steps-manifest-licitacion-publica.js` | `3-licitacion-publica/` (14 sub-pasos) |
-| Trato Directo | [`4. trato-directo/3-resolucion-compra.md`](../sgm-docs/modulos/adquisiciones/4.%20trato-directo/3-resolucion-compra.md) | `steps-manifest-trato-directo.js` | `4-trato-directo/` (2 sub-pasos) |
+| Trato Directo | [`4. trato-directo/3-resolucion-compra.md`](../sgm-docs/modulos/adquisiciones/4.%20trato-directo/3-resolucion-compra.md) | `steps-manifest-trato-directo.js` | `4-trato-directo/` (4 sub-pasos) |
 
 ### Compra Ágil
 
@@ -126,7 +126,7 @@ Navegación condicional: camino feliz 3.1→3.2→3.3→(3.4 si sobre umbral)→
 
 ### Convenio Marco / Trato Directo
 
-Prototipos HTML generados desde las fichas de etapa 3 (wireframes `.md` específicos pendientes — ver `brechas-etapa3-modalidades.md`). Ver tablas de `processFicha` / `prototypeHtml` en los respectivos `steps-manifest-*.js`.
+Prototipos HTML + wireframes `.md` en `wireframes/convenio-marco/` (8/8) y `wireframes/trato-directo/` (4/4). Ver `processFicha` / `wireframeMd` / `prototypeHtml` en los respectivos `steps-manifest-*.js`.
 
 Etapa 4 (Recepción Conforme, transversal) tiene prototipo HTML para 4.1; el flujo post-aceptación de OC enlaza al expediente o a 4.1 según estado demo.
 

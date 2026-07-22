@@ -278,33 +278,55 @@ export function buildStage3LicitacionPublica() {
   };
 }
 
-/** TD: 2 sub-pasos documentados. */
+/** TD: 4 sub-pasos (Toma de Razón condicional, publicación/vinculación, OC aceptada, rechazo). */
 export function buildStage3TratoDirecto() {
   return {
     id: 3,
     name: 'Resolución de Compra',
-    status: 'Finalizada',
-    summary: '2 sub-pasos · OC aceptada en MP → compromiso cierto automático',
+    status: 'En curso',
+    summary: '4 sub-pasos · Publicación MP vinculada · pendiente aceptación OC (hito contable)',
     expanded: true,
-    state: 'done',
-    totalTime: 'Total etapa: 1 d 2 h (07-05 → 08-05)',
-    note: 'En TD emisión y aceptación se modelan en un solo nodo (3.1); el compromiso cierto es automático (3.2).',
+    state: 'active',
+    totalTime: 'Total etapa: en curso (publicación 07-05)',
+    note: 'Vinculación diferida en 3.2; doble validación Publicado + OC Aceptada en 3.3. 3.1 omitido (bajo umbral).',
     steps: [
-      doneStep({
+      {
         id: '3.1',
-        name: 'Emisión de OC y aceptación del proveedor',
-        responsible: { unit: '—', role: 'N/A', name: '(en MP)' },
-        secondaryLine: 'OC N° 4021-05-TD26-OC · Repuestos Industriales SpA · Aceptada en MP',
-        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
-      }),
+        name: 'Toma de Razón de la Resolución Fundada',
+        status: 'Omitido',
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: '—' },
+        secondaryLine: 'Monto bajo umbral 8.000 UTM — sub-paso no aplica',
+        origin: { kind: 'module', label: 'Contraloría', mode: 'registro manual' },
+        borderModules: ['Contraloría'],
+        state: 'omitted',
+      },
       doneStep({
         id: '3.2',
-        name: 'Registrar Compromiso Cierto',
-        responsible: { unit: 'DAF Finanzas', role: 'N/A', name: '(automático)' },
-        secondaryLine: 'Gatillado por lectura API OC Aceptada · $ 2.400.000 · Sin intervención humana',
-        origin: { kind: 'module', label: 'Presupuestos', mode: 'dependencia' },
-        borderModules: ['Presupuestos'],
+        name: 'Publicación en Mercado Público y vinculación',
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
+        secondaryLine: 'mp_process_id 4021-05-TD26 · Publicado · MpProcessLinked',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
       }),
+      {
+        id: '3.3',
+        name: 'Emisión de OC y aceptación del proveedor',
+        status: 'En curso',
+        responsible: { unit: '—', role: 'N/A', name: '(en MP)' },
+        secondaryLine: 'Esperando OC Aceptada · Compromiso Cierto pendiente',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+        borderModules: ['Presupuestos'],
+        state: 'active',
+        action: { label: 'Ver en formulario', form: true },
+      },
+      {
+        id: '3.4',
+        name: 'Rechazo de la OC',
+        status: 'No iniciado',
+        responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: 'Rodrigo Muñoz' },
+        secondaryLine: 'Camino alternativo — solo si el proveedor rechaza (P-69)',
+        origin: { kind: 'external', label: 'Mercado Público', mode: 'solo lectura' },
+        state: 'pending',
+      },
     ],
   };
 }

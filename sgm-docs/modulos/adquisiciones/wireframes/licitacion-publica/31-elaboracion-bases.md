@@ -10,6 +10,7 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Elaboración de bases                 [Borrador] |
 +----------------------------------------------------------------+
+| ## Datos de las bases                                            |
 | Bases técnicas (adjunto) *          [ subir archivo ]           |
 | Bases administrativas (adjunto) *   [ subir archivo ]           |
 | ¿Exige Garantía de Seriedad?  ( ) Sí  ( ) No                    |
@@ -17,6 +18,7 @@
 | ¿Exige Garantía de Fiel Cumplimiento?  ( ) Sí  ( ) No            |
 |   Monto mínimo: [ $__________ ]                                 |
 +----------------------------------------------------------------+
+| ## Criterios de evaluación (EvaluationCriterion)                 |
 | Criterios de evaluación                    [ + agregar criterio]|
 | ------------------------------------------------------------    |
 | Nombre               | Ponderación % | Regla de puntuación      |

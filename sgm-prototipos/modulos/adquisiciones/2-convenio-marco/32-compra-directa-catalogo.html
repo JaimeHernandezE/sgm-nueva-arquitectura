@@ -69,7 +69,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, relativeFormHref, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, relativeFormHref, renderBreadcrumb, renderOriginBanner, demoValidation, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -110,8 +110,10 @@
     linkBtn.addEventListener('click', () => {
       resultBanner.classList.remove('hidden');
       resultBanner.className = 'banner';
+      resultBanner.style.color = '';
 
       if (!mpId.value.trim()) {
+        demoValidation('linkMpProcess');
         resultBanner.style.color = '#a33333';
         resultBanner.textContent = 'Ingrese el ID de la OC de catálogo antes de validar.';
         return;
@@ -119,12 +121,13 @@
 
       const scenario = simulateResult.value;
       if (scenario !== 'ok') {
+        demoValidation('linkMpProcess');
         resultBanner.style.color = '#a33333';
         resultBanner.textContent = ERRORS[scenario];
         return;
       }
 
-      demoAction('linkMpProcess');
+      demoValidation('linkMpProcess');
       resultBanner.classList.add('banner--info');
       resultBanner.textContent = 'Vinculado — MpProcessLinked emitido. Expediente en "OC emitida, esperando aceptación".';
       document.getElementById('header-badge').textContent = 'Vinculado';

@@ -10,16 +10,16 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Revisión jurídica de bases      [En revisión]    |
 +----------------------------------------------------------------+
-| [Bases — solo lectura]                                          |
+| ## Bases enviadas a revisión                                     |
 | Bases técnicas: bases-tecnicas-v1.pdf   [ver]                   |
 | Bases administrativas: bases-admin-v1.pdf   [ver]                |
 | Criterios de evaluación: Precio 40% · Experiencia 30% · Plazo 30%|
 | Garantías: Seriedad $1.850.000 · Fiel cumplimiento $9.250.000    |
 +----------------------------------------------------------------+
+| ## Resultado de la revisión                                      |
 | Resultado *  ( ) Visto bueno   ( ) Con observaciones             |
 | Observaciones (obligatorio si "Con observaciones")               |
 | [                                                    ]           |
-+----------------------------------------------------------------+
 | [ Registrar resultado ]                                         |
 +----------------------------------------------------------------+
 | (banner: VB → continúa a 3.3, u observaciones → vuelve a 3.1)   |

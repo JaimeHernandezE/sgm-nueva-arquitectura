@@ -10,18 +10,16 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Proceso desierto o fallido          [Pendiente]  |
 +----------------------------------------------------------------+
-| Motivo del fallo (solo lectura)                               |
+| ## Motivo del fallo                                              |
 | Causa: ( ) Desierto (nadie cotizó)  ( ) Todas las ofertas         |
 |          rechazadas/inhábiles                                    |
 +----------------------------------------------------------------+
-| Decisión                                                       |
+| ## Decisión *                                                     |
 | ( ) Republicar (nueva cotización en MP, re-vinculación 2.3)      |
 | ( ) Reevaluar (reversión formal a etapa 2 — nueva ModalityDecision)|
 | ( ) Cancelar expediente (libera preobligación completa)          |
-+----------------------------------------------------------------+
 | [ Confirmar decisión ]                                            |
 +----------------------------------------------------------------+
-| Resultado                                                        |
 | (banner según decisión)                                          |
 +----------------------------------------------------------------+
 ```

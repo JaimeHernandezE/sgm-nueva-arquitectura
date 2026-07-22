@@ -1,16 +1,20 @@
 fixture: ADQ-2026-00012
 tenant: municipio-demo-sur
 module: adquisiciones
-title: Trato Directo — post etapa 2, etapa 3 pendiente
+title: Trato Directo — etapa 3 en curso (vinculado, pendiente OC aceptada)
 business_state: >
-  Expediente TD con resolución fundada y modalidad confirmada; etapa 3-TD
-  (publicación / registro) pendiente.
+  Expediente TD con resolución fundada y modalidad confirmada. Toma de Razón
+  omitida (monto bajo umbral). Publicación/vinculación MP completada en 3.2
+  (mp_process_id 4021-05-TD26). Etapa 3.3 pendiente de lectura OC Aceptada
+  (hito contable / doble validación Publicado + OC Aceptada).
 seeds:
   - entity: ProcurementCase
     id: ADQ-2026-00012
     key_fields:
       procurement_type: direct_procurement
       status: in_progress
+      mp_process_id: "4021-05-TD26"
+      mp_process_type: direct_procurement
   - entity: PurchaseRequest
     id: PR-2026-0012
     key_fields:
@@ -24,12 +28,29 @@ operations:
     response:
       status: 200
       example_ref: adquisiciones.openapi.yaml#/components/examples/ProcurementCaseAgile
+  - operationId: linkMpProcess
+    request:
+      method: POST
+      path: /procurement-cases/ADQ-2026-00012/mp-link
+      body:
+        mp_process_id: "4021-05-TD26"
+    response:
+      status: 200
+      note: Vinculación ya aplicada en seeds; operación idempotente o historial de 3.2
+  - operationId: syncPurchaseOrderAccepted
+    request:
+      method: POST
+      path: /purchase-orders/{id}/sync-accepted
+    response:
+      status: 422
+      error_code: MP_PROCESS_NOT_PUBLISHED
+      note: Escenario de error de doble validación TD (proceso no Publicado)
   - operationId: confirmProcurementModality
     request:
       method: POST
       path: /procurement-cases/ADQ-2026-00012/modality
       body:
-        selected_modality: agile_purchase
+        selected_modality: direct_procurement
     response:
       status: 422
       error_code: MODALITY_ALREADY_CONFIRMED

@@ -10,18 +10,16 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Aceptación de la OC              [En espera]     |
 +----------------------------------------------------------------+
-| Contexto de la OC (solo lectura)                              |
+| ## Estado de la OC                                               |
 | OC N° 4021-33-SE26 · Proveedor: Comercial Sur SpA · $ 1.240.000  |
 | Esperando aceptación del proveedor en MP…                        |
 +----------------------------------------------------------------+
-| Sincronización (demo)                                          |
+| ## Simulación de lectura MP                                      |
 | [ Simular lectura MP (demo): OC Aceptada ▾ ]                     |
 | [ Ejecutar ]                                                     |
 +----------------------------------------------------------------+
-| Resultado                                                      |
 | (banner de resultado: aceptada + compromiso, o error de          |
 |  disponibilidad presupuestaria)                                  |
-+----------------------------------------------------------------+
 | Tras aceptación + compromiso → Continuar (vuelve al expediente o a 4.1 Recepción conforme) |
 +----------------------------------------------------------------+
 ```

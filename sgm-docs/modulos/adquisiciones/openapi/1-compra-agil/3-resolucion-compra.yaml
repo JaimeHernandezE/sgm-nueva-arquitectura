@@ -18,6 +18,9 @@ paths:
         `BudgetCommitmentCreated`.
       x-subpasos:
         - "3.4"
+        - "3.14"
+        - "3.7"
+        - "3.3"
       security:
         - bearerPersonas: []
         - bearerM2M: []

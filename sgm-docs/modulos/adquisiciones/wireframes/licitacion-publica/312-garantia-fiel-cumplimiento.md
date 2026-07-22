@@ -10,14 +10,13 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Garantía de Fiel Cumplimiento     [Condicional]  |
 +----------------------------------------------------------------+
+| ## Datos de la garantía                                          |
 | Adjudicatario: Taller Municipal SpA · Monto adjudicado: $178.500.000|
 | Bases exigen Garantía de Fiel Cumplimiento: Sí · Mínimo $9.025.000|
-+----------------------------------------------------------------+
 | Tipo de instrumento *          [ Póliza de seguro          ▾ ]   |
 | Monto *                        [ $ 9.250.000                ]   |
 | Fecha de vencimiento *         [ __/__/____ ]  (cubre contrato + margen)|
 | Documento del instrumento *    [ subir archivo ]                 |
-+----------------------------------------------------------------+
 | [ Registrar en custodia de Tesorería ]                           |
 +----------------------------------------------------------------+
 | (banner: en custodia — habilita 3.13; sin ella, tratamiento como |
