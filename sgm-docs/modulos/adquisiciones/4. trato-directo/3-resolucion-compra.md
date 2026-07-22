@@ -30,6 +30,9 @@ Mercado Público emite la Orden de Compra (OC) al proveedor sobre la base del Tr
 | **Tipo** | Sin cruce |
 | **Nota** | Este nodo ocurre íntegramente dentro de Mercado Público; el cruce hacia el SGM se produce en 3.2 vía lectura de API. |
 
+### Validaciones
+Sin validaciones de formulario — ocurre íntegramente en Mercado Público; sin captura de campos en SGM.
+
 ### Edge cases
 - Proveedor rechaza la OC → el diagrama no muestra camino de retorno para este flujo (a diferencia de otros macroprocesos donde el rechazo reinicia la selección de proveedor). **[⚠ ver Pendientes]**.
 - Plazo de aceptación vencido sin respuesta del proveedor → no representado en el diagrama.
@@ -64,9 +67,18 @@ El SGM registra automáticamente el compromiso presupuestario cierto (obligació
 | **Clasificación** | ⚠ no definida — el diagrama no distingue si es polling síncrono o webhook asíncrono |
 | **Payload** | `PurchaseOrder` (`mp_order_id`, `status`, `accepted_at`) |
 
+### Validaciones
+
+Sin captura de formulario — sync automático; códigos de dependencia:
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| — (automático) | `syncPurchaseOrderAccepted` / `commitBudget` | `BUDGET_UNAVAILABLE` | — | No hay saldo presupuestario para registrar el compromiso cierto. | blocking |
+| — (automático) | `syncPurchaseOrderAccepted` | `MP_PROVIDER_UNAVAILABLE` | — | Mercado Público no está disponible para leer el estado de la OC. | blocking |
+
 ### Edge cases
 - Mercado Público no disponible o la lectura de API falla → el compromiso cierto no se registra; SOLPED queda bloqueada en un estado intermedio. **Obligatorio documentar por tratarse de sub-paso con borde de módulo — comportamiento exacto no definido en el diagrama.**
-- OC aceptada en Mercado Público pero la preobligación (1.3) ya no está activa (p. ej. fue revertida) → **[⚠ ver Pendientes]**.
+- OC aceptada en Mercado Público pero la preobligación (1.3) ya no está activa (p. ej. fue revertida) → **[⚠ ver Pendientes]** (sin código formalizado aún en contrato).
 
 ### Pendientes de definir
 > ⚠ **Pendiente de definir:** si "Lectura API: OC Aceptada" es un mecanismo de polling periódico o un webhook que Mercado Público dispara hacia el SGM. Determina la clasificación (síncrona bloqueante vs. asíncrona) requerida en `contracts.md`.

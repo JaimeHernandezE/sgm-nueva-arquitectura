@@ -31,6 +31,18 @@
 |---|---|---|---|---|---|
 | 1 | Operación | `registerReceipt` | — (Adquisiciones) | — | `GoodsReceipt` + `GoodsReceiptLine[]` |
 
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Registrar recepción | `registerReceipt` | `MISSING_REQUIRED_FIELD` | `purchase_order_id` | Debe existir una OC aceptada asociada. | blocking |
+| Registrar recepción | `registerReceipt` | `MISSING_REQUIRED_FIELD` | `received_date` | El campo Fecha de recepción es obligatorio. | blocking |
+| Registrar recepción | `registerReceipt` | `MISSING_REQUIRED_FIELD` | `lines` | Debe registrarse al menos una línea de recepción. | blocking |
+| Registrar recepción | `registerReceipt` | `MISSING_REQUIRED_FIELD` | `lines[].quantity_received` | El campo Cantidad recibida es obligatorio. | blocking |
+| Registrar recepción | `registerReceipt` | `RECEIPT_EXCEEDS_ORDER` | `lines[].quantity_received` | La cantidad recibida supera la cantidad pendiente de la línea de OC. | blocking |
+| Registrar recepción | `registerReceipt` | `MISSING_REQUIRED_FIELD` | `supporting_document_ref` | El documento de respaldo es obligatorio para recepción de servicios. | blocking |
+| Registrar recepción | `registerReceipt` | `INVALID_STATUS` | — | La OC debe estar aceptada antes de confirmar la recepción. | blocking |
+
 **Edge cases:**
 - Entrega sin OC asociada localizable → no se puede registrar recepción; el flujo correcto es regularizar la compra primero (control anti compra-de-hecho).
 - Cantidad recibida > cantidad pendiente de la línea → `RECEIPT_EXCEEDS_ORDER` (`severity: blocking`); las sobre-entregas no se recepcionan silenciosamente.
@@ -64,6 +76,15 @@
 |---|---|---|---|---|---|
 | 1 | Evento | `GoodsReceiptConfirmed` | — (consumidores: expediente, Contabilidad, notificaciones, terceros vía webhook con scope) | Asíncrona | `GoodsReceipt`, `GoodsReceiptLine[]` (aceptadas) |
 
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Confirmar conformidad | `confirmReceipt` | `SEGREGATION_OF_DUTIES_VIOLATION` | `confirmed_by` | Quien confirma no puede ser quien aprobó la compra. | blocking |
+| Confirmar conformidad | `confirmReceipt` | `MISSING_REQUIRED_FIELD` | `conformity` | El campo Resultado de conformidad es obligatorio. | blocking |
+| Confirmar conformidad | `confirmReceipt` | `MISSING_REQUIRED_FIELD` | `lines[].rejection_reason` | El motivo de rechazo es obligatorio si hay cantidad rechazada. | blocking |
+| Confirmar conformidad | `confirmReceipt` | `MISSING_REQUIRED_FIELD` | `observations` | Las observaciones son obligatorias si la recepción no es conforme. | blocking |
+
 **Edge cases:**
 - Unidad requirente no valida en plazo (bien retenido en Bodega) → timer de escalamiento — **[PENDIENTE P-33]**.
 - Conformidad otorgada y luego se detecta vicio oculto → procedimiento de reversión de conformidad con efectos sobre devengado/pago según el estado del ciclo — **[PENDIENTE P-43]**, caso real y delicado, no dejar como supuesto.
@@ -91,6 +112,8 @@
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
 | 1 | Dependencia | `registerInventoryEntry` (incluye indicador de activo fijo según umbral) | Proveedor de inventario (módulo futuro SGM o sistema municipal) | Asíncrona | Líneas aceptadas: ítem, cantidad, valor unitario, flag activo fijo, referencia OC/recepción |
+
+**Validaciones:** Sin validaciones de formulario — paso condicional/automático vía dependencia asíncrona; falla del proveedor no bloquea recepción ni devengado.
 
 **Edge cases:**
 - Municipio sin proveedor de inventario configurado → el paso se omite registrando la omisión (el alta queda como gestión externa al sistema); visible en reportería como brecha de trazabilidad.
@@ -128,6 +151,8 @@
 | 1 | Dependencia | `recordAccrual` (devengado por valor aceptado, contra `BudgetCommitment`) | Proveedor contable (Contabilidad SGM o sistema municipal) | Asíncrona *(la conformidad procede; el devengado confirma o revierte — clasificación canónica de `musts-arquitectura.md` §5)* | `goods_receipt_id`, `budget_commitment_ref`, monto aceptado, líneas |
 | 2 | Evento | `AccrualRecorded` | — (consumidores: expediente, Tesorería, reportería) | Asíncrona | `Accrual.ref`, `ProcurementCase.id` |
 
+**Validaciones:** Sin validaciones de formulario — efecto automático de la conformidad; errores del proveedor contable (`ACCRUAL_EXCEEDS_COMMITMENT`) se tratan como edge cases de dependencia.
+
 **Edge cases:**
 - Proveedor contable rechaza el devengado (ej. compromiso insuficiente por devengados parciales previos mal calculados) → estado intermedio visible ("conforme, devengado pendiente") + tarea urgente a Contabilidad/Finanzas; idempotencia por `goods_receipt_id` (nunca doble devengado por reintento).
 - Suma de devengados parciales excedería el compromiso → `ACCRUAL_EXCEEDS_COMMITMENT` (`severity: blocking` en el proveedor contable); consistente con `RECEIPT_EXCEEDS_ORDER` aguas arriba.
@@ -154,6 +179,13 @@
 |---|---|---|---|---|---|
 | 1 | Evento | `ReceiptRejected` | — (consumidores: expediente, notificaciones, reportería de proveedores) | Asíncrona | `ReceiptRejectionCase`, `GoodsReceiptLine[]` (rechazadas) |
 | 2 | Sistema externo (deep link) | — (reclamo en ChileCompra, cuando aplique) | Mercado Público | — | — (navegación; la persona actúa en MP) |
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Registrar gestión de rechazo | `registerReceiptRejection` | `MISSING_REQUIRED_FIELD` | `resolution_type` | El campo Tipo de resolución es obligatorio. | blocking |
+| Registrar gestión de rechazo | `registerReceiptRejection` | `MISSING_REQUIRED_FIELD` | `resolution_deadline` | El campo Plazo de resolución es obligatorio. | blocking |
 
 **Edge cases:**
 - Reposición recibida → nueva recepción (4.1) referenciando el `ReceiptRejectionCase` — el ciclo se reutiliza, no se duplica.

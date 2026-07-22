@@ -68,7 +68,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -91,7 +91,7 @@
     const signatureSelect = document.getElementById('simulate-signature');
 
     document.getElementById('generate').addEventListener('click', () => {
-      demoAction('approveTenderBases');
+      demoValidation('approveTenderBases');
       resultBanner.classList.remove('hidden');
 
       if (signatureSelect.value === 'signed') {

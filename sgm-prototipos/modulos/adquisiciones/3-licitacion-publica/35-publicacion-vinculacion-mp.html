@@ -72,7 +72,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -112,7 +112,7 @@
       resultBanner.classList.remove('hidden');
 
       if (scenario === 'ok') {
-        demoAction('linkMpProcess');
+        demoValidation('linkMpProcess');
         resultBanner.className = 'banner banner--info';
         resultBanner.textContent = `Vinculado — ProcurementCase.mp_process_id = ${mpId}. Evento MpProcessLinked.`;
         document.getElementById('header-badge').textContent = 'Vinculada';

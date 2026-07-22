@@ -34,6 +34,8 @@
 | 1 | Dependencia *(propuesta, QA ítem 4 / P-44)* | `checkStockAvailability` | Inventario (interno o externo vía adaptador) | Síncrona *(asesora)* | Entrada: texto / `item_code`, `quantity` (opcional) — Respuesta: `available_quantity`, `warehouse_label`, `suggested_action` (`use_stock` \| `continue_purchase`) |
 | 2 | Dependencia *(condicional a integración catálogo ChileCompra)* | `checkCatalogAvailability` | Catálogo CM espejado (Core / MP) | Cacheada (frescura diaria) | Entrada: descripción / `item_code`, `region` — Respuesta: `available`, `catalog_price`, `provider_count`, `agreement_id` / etiqueta convenio |
 
+**Validaciones:** Sin validaciones de formulario — solo consultas asesoras (`checkStockAvailability`, `checkCatalogAvailability`); no hay operación de escritura que avance el expediente.
+
 **Edge cases:**
 - Sin Inventario ni catálogo CM → sub-paso omitido; no hay pantalla 1.0.
 - Hit en stock → CTA principal hacia solicitud a bodega (proceso TBD); continuar compra es vía secundaria asesora y auditable.
@@ -78,6 +80,43 @@
 
 > La verificación de stock / catálogo CM se anticipa en el sub-paso **1.0** (optativo). En 1.1 solo se refleja el contexto si el usuario llegó desde 1.0 con hallazgo CM (advertencia no bloqueante en modalidad).
 
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `requesting_unit` | El campo Unidad solicitante es obligatorio. | blocking |
+| Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `description` | El campo Descripción es obligatorio. | blocking |
+| Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `justification` | El campo Justificación es obligatorio. | blocking |
+| Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `requested_date` | El campo Fecha de necesidad es obligatorio. | blocking |
+| Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines` | Debe existir al menos una línea de bien o servicio. | blocking |
+| Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines[].item_description` | El campo Descripción del ítem es obligatorio. | blocking |
+| Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines[].quantity` | El campo Cantidad es obligatorio. | blocking |
+| Guardar borrador | `createPurchaseRequest` | `INVALID_QUANTITY` | `lines[].quantity` | La cantidad debe ser mayor a cero. | blocking |
+| Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines[].unit_of_measure` | El campo Unidad de medida es obligatorio. | blocking |
+| Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines[].unit_price` | El campo Precio unitario neto es obligatorio. | blocking |
+| Guardar borrador | `createPurchaseRequest` | `PRICE_REFERENCE_UNAVAILABLE` | `lines[].price_source` | No hay referencia de precio disponible para la línea. | blocking |
+| Guardar borrador | `createPurchaseRequest` | `PRICE_DEVIATION_EXCEEDED` | `lines[].unit_price` | La desviación de precio excede la tolerancia permitida. | blocking |
+| Guardar borrador | `createPurchaseRequest` | `FOUNDED_RESOLUTION_REQUIRED` | `founded_resolution_attachment` | Trato directo requiere resolución fundada adjunta. | blocking |
+| Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `attachments[].attachment_type` | El tipo de documento de respaldo es obligatorio. | blocking |
+| Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `attachments[].description` | La descripción del documento de respaldo es obligatoria. | blocking |
+| Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `attachments[].document_ref` | El archivo del documento de respaldo es obligatorio. | blocking |
+| Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `requesting_unit` | El campo Unidad solicitante es obligatorio. | blocking |
+| Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `description` | El campo Descripción es obligatorio. | blocking |
+| Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `justification` | El campo Justificación es obligatorio. | blocking |
+| Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `requested_date` | El campo Fecha de necesidad es obligatorio. | blocking |
+| Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines` | Debe existir al menos una línea de bien o servicio. | blocking |
+| Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines[].item_description` | El campo Descripción del ítem es obligatorio. | blocking |
+| Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines[].quantity` | El campo Cantidad es obligatorio. | blocking |
+| Enviar a aprobación | `submitPurchaseRequest` | `INVALID_QUANTITY` | `lines[].quantity` | La cantidad debe ser mayor a cero. | blocking |
+| Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines[].unit_of_measure` | El campo Unidad de medida es obligatorio. | blocking |
+| Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines[].unit_price` | El campo Precio unitario neto es obligatorio. | blocking |
+| Enviar a aprobación | `submitPurchaseRequest` | `PRICE_REFERENCE_UNAVAILABLE` | `lines[].price_source` | No hay referencia de precio disponible para la línea. | blocking |
+| Enviar a aprobación | `submitPurchaseRequest` | `FOUNDED_RESOLUTION_REQUIRED` | `founded_resolution_attachment` | Trato directo requiere resolución fundada adjunta. | blocking |
+| Enviar a aprobación | `submitPurchaseRequest` | `INVALID_STATUS` | `status` | Solo una SOLPED en borrador puede enviarse a aprobación. | blocking |
+| — (contexto 1.0) | — | `CATALOG_CM_SUGGESTED` | `purchase_modality` | El ítem aparece en catálogo de Convenio Marco; se sugiere esa modalidad. | advisory |
+
+> Ante varias reglas `blocking`, `createPurchaseRequest` / `submitPurchaseRequest` responden `422` con `ValidationErrorResponse` (`issues[]`). El prototipo de 1.1 ilustra el modal al pulsar **Enviar a aprobación**.
+
 **Edge cases:**
 - SOLPED incompleta o sin justificación → sistema no permite avanzar a V°B° (`status` no transiciona a `pending_approval` sin campos obligatorios completos).
 - Modalidad Trato Directo sin Resolución Fundada adjunta → `submitPurchaseRequest` rechazado con `FOUNDED_RESOLUTION_REQUIRED` (`severity: blocking`).
@@ -108,8 +147,9 @@
 **Detalle:** Jefatura de la unidad revisa y aprueba la SOLPED antes de que pase a Finanzas. La aprobación requiere firma electrónica avanzada conforme a normativa (QA ítems 5, 7). Dispone del mismo **enlace informativo de autoconsulta de saldo** que en 1.1 (`previewBudgetAvailability`): si la SOLPED trae `proposed_budget_line_id`, el panel se prellena; el aprobador puede consultar saldo antes de firmar sin que ello constituya verificación formal (eso ocurre en 1.3, a cargo de DAF Finanzas).
 
 **Entidad(es) y campos:**
-- `PurchaseRequestApproval` — `purchase_request_id` (ref., **obligatorio**), `approver_id` (ref. `User`, **obligatorio**), `decision` (enum, **obligatorio**: `approved`, `rejected`), `decision_date` (fecha, **obligatorio**), `comments` (texto, **obligatorio si** `decision = rejected`)
-- `PurchaseRequest.status` (enum, **obligatorio** — transiciona a `pending_finance` si `approved`, o `draft` si `rejected`)
+- `PurchaseRequestApproval` — `purchase_request_id` (ref., **obligatorio**), `approver_id` (ref. `User`, **obligatorio**), `decision` (enum, **obligatorio**: `approved`, `rejected`), `disposition` (enum, **obligatorio si** `decision = rejected`: `return_to_draft` \| `cancel`), `decision_date` (fecha, **obligatorio**), `comments` (texto, **obligatorio si** `decision = rejected`)
+- `PurchaseRequest.status` (enum, **obligatorio** — transiciona a `pending_finance` si `approved`, o `draft` si `rejected` + `disposition = return_to_draft`)
+- `ProcurementCase.status` — transiciona a `cancelled` si `rejected` + `disposition = cancel`
 
 **Borde de módulo:**
 
@@ -120,8 +160,21 @@
 | 3 | Dependencia | `previewBudgetAvailability` | Presupuestos | Cacheada / informativa | Misma entrada y respuesta que en 1.1 — consulta opcional desde pantalla de aprobación |
 | 4 | Evento | `PurchaseRequestApproved` | — (consumidores: Presupuestos, auditoría) | Asíncrona | `PurchaseRequest` (`id`, `requesting_unit`, `status`), `PurchaseRequestApproval` |
 
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Aprobar | `approvePurchaseRequest` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida. | blocking |
+| Aprobar | `approvePurchaseRequest` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible; no se puede completar la aprobación. | blocking |
+| Aprobar | `approvePurchaseRequest` | `SIGNATURE_REJECTED` | — | La firma fue rechazada por el proveedor de firma. | blocking |
+| Aprobar | `approvePurchaseRequest` | `UNAUTHORIZED_APPROVER` | `approver_id` | Solo el aprobador de jefatura de la unidad solicitante puede aprobar. | blocking |
+| Aprobar | `approvePurchaseRequest` | `INVALID_STATUS` | `status` | La SOLPED debe estar en pendiente de aprobación. | blocking |
+| Rechazar | `rejectPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `comments` | El campo Comentarios es obligatorio al rechazar. | blocking |
+| Rechazar | `rejectPurchaseRequest` | `INVALID_STATUS` | `status` | La SOLPED debe estar en pendiente de aprobación. | blocking |
+
 **Edge cases:**
-- Rechazo de jefatura → `PurchaseRequest.status` vuelve a `draft`; sin loop automático de reintento definido en la fuente.
+- Rechazo con `disposition = return_to_draft` → `PurchaseRequest.status` vuelve a `draft`; el solicitante puede editar el paso 1.1 y reenviar a aprobación.
+- Rechazo con `disposition = cancel` → `ProcurementCase.status = cancelled`; el expediente se cierra sin chance de corrección.
 - FirmaGob no disponible o rechaza firma → `approvePurchaseRequest` no procede; retorna `SIGNATURE_PROVIDER_UNAVAILABLE` o `SIGNATURE_REJECTED` (`severity: blocking`). SOLPED permanece en `pending_approval`.
 - Firma pendiente (usuario no completó en FirmaGob) → estado intermedio `pending_signature`; reintento vía `confirmSignature`.
 
@@ -151,6 +204,18 @@
 |---|---|---|---|---|---|
 | 1 | Dependencia | `checkBudgetAvailability` | Presupuestos | Síncrona bloqueante | Entrada: `budget_line_id`, `amount`, `fiscal_year` — Respuesta: `available_balance`, `committed_by_others`, `projected_balance` |
 | 2 | Operación | `verifyBudgetAvailability` | — (Adquisiciones) | — | Entrada: `decision` (`confirmed` \| `rejected`), `comments` si rechazo |
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Confirmar verificación | `verifyBudgetAvailability` | `MISSING_REQUIRED_FIELD` | `budget_line_id` | El campo Línea presupuestaria es obligatorio. | blocking |
+| Confirmar verificación | `verifyBudgetAvailability` | `MISSING_REQUIRED_FIELD` | `amount` | El campo Monto es obligatorio. | blocking |
+| Confirmar verificación | `verifyBudgetAvailability` | `MISSING_REQUIRED_FIELD` | `fiscal_year` | El campo Año fiscal es obligatorio. | blocking |
+| Confirmar verificación | `verifyBudgetAvailability` | `BUDGET_UNAVAILABLE` | `budget_line_id` | La línea presupuestaria no tiene saldo disponible para el monto solicitado. | blocking |
+| Confirmar verificación | `verifyBudgetAvailability` | `BUDGET_PROVIDER_UNAVAILABLE` | — | El proveedor de Presupuestos no está disponible. | blocking |
+| Confirmar verificación | `verifyBudgetAvailability` | `INVALID_STATUS` | `status` | La SOLPED debe estar en pendiente de Finanzas. | blocking |
+| Rechazar verificación | `verifyBudgetAvailability` | `MISSING_REQUIRED_FIELD` | `comments` | El campo Comentarios es obligatorio al rechazar. | blocking |
 
 **Edge cases:**
 - Sin disponibilidad presupuestaria → verificación rechazada; camino a 1.4 (solicitar financiamiento) o devolución al solicitante con justificación.
@@ -182,6 +247,13 @@
 |---|---|---|---|---|---|
 | 1 | Operación | `requestBudgetFinancing` | — (Adquisiciones) | — | Entrada: `justification` (texto) — sin avance de estado principal del ciclo de compra |
 | 2 | Evento | `BudgetFinancingRequested` | — (consumidores: Presupuestos, reportería) | Asíncrona | `purchase_request_id`, `requested_at`, `justification` |
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Solicitar financiamiento | `requestBudgetFinancing` | `MISSING_REQUIRED_FIELD` | `justification` | El campo Justificación es obligatorio. | blocking |
+| Solicitar financiamiento | `requestBudgetFinancing` | `INVALID_STATUS` | `status` | La SOLPED debe estar en un estado que permita solicitar financiamiento. | blocking |
 
 **Edge cases:**
 - Financiamiento aprobado externamente → SOLPED retoma en 1.3 para nueva verificación.
@@ -222,6 +294,22 @@ En ambos caminos se ejecuta `checkBudgetAvailability` antes de cerrar el paso. E
 | 4 | Operación | `registerScannedBudgetAvailabilityCertificate` | — (Adquisiciones) | — | Entrada: mismos metadatos + `scanned_certificate_attachment`; sin FirmaGob |
 | 5 | Evento | `BudgetAvailabilityCertificateIssued` | — (consumidores: auditoría, Contabilidad) | Asíncrona | `BudgetAvailabilityCertificate` (incl. `signature_mode`), `PurchaseRequest.id` |
 
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `VERIFICATION_REQUIRED` | — | Debe existir verificación presupuestaria confirmada en 1.3. | blocking |
+| Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `SEGREGATION_OF_DUTIES_VIOLATION` | `signed_by` | El firmante CDP no puede ser la misma persona que verificó en 1.3. | blocking |
+| Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `BUDGET_UNAVAILABLE` | `budget_line_id` | La línea presupuestaria no tiene saldo disponible al revalidar. | blocking |
+| Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida. | blocking |
+| Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `MISSING_REQUIRED_FIELD` | `certified_amount` | El campo Monto certificado es obligatorio. | blocking |
+| Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `MISSING_REQUIRED_FIELD` | `fiscal_year` | El campo Año fiscal es obligatorio. | blocking |
+| Registrar CDP escaneado | `registerScannedBudgetAvailabilityCertificate` | `VERIFICATION_REQUIRED` | — | Debe existir verificación presupuestaria confirmada en 1.3. | blocking |
+| Registrar CDP escaneado | `registerScannedBudgetAvailabilityCertificate` | `SEGREGATION_OF_DUTIES_VIOLATION` | `signed_by` | El firmante CDP no puede ser la misma persona que verificó en 1.3. | blocking |
+| Registrar CDP escaneado | `registerScannedBudgetAvailabilityCertificate` | `BUDGET_UNAVAILABLE` | `budget_line_id` | La línea presupuestaria no tiene saldo disponible al revalidar. | blocking |
+| Registrar CDP escaneado | `registerScannedBudgetAvailabilityCertificate` | `SCANNED_CDP_INVALID` | `scanned_certificate_attachment` | El adjunto del CDP escaneado es inválido o inconsistente. | blocking |
+| Registrar CDP escaneado | `registerScannedBudgetAvailabilityCertificate` | `MISSING_REQUIRED_FIELD` | `scanned_certificate_attachment` | El campo Adjunto del CDP escaneado es obligatorio. | blocking |
+
 **Edge cases:**
 - Verificador y firmante son la misma persona → `SEGREGATION_OF_DUTIES_VIOLATION` (QA ítem 9 P1).
 - Saldo insuficiente al revalidar → `BUDGET_UNAVAILABLE`; no se emite CDP; camino a 1.4.
@@ -255,6 +343,17 @@ En ambos caminos se ejecuta `checkBudgetAvailability` antes de cerrar el paso. E
 | 2 | Dependencia | `registerPreObligation` | Contabilidad | Síncrona bloqueante | Entrada: `BudgetPreCommitment` — Respuesta: `accounting_entry_ref` |
 | 3 | Operación | `createBudgetPreCommitment` | — (Adquisiciones) | — | Requiere CDP vigente (`budget_availability_certificate_id`) |
 | 4 | Evento | `BudgetPreCommitmentCreated` | — (consumidores: Contabilidad, reportería) | Asíncrona | `BudgetPreCommitment`, `PurchaseRequest.id` |
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Generar preobligación | `createBudgetPreCommitment` | `CDP_REQUIRED` | `budget_availability_certificate_id` | Se requiere un CDP vigente para generar la preobligación. | blocking |
+| Generar preobligación | `createBudgetPreCommitment` | `BUDGET_UNAVAILABLE` | `budget_line_id` | La línea presupuestaria no tiene saldo disponible para el monto estimado. | blocking |
+| Generar preobligación | `createBudgetPreCommitment` | `ACCOUNTING_PROVIDER_UNAVAILABLE` | — | El proveedor de Contabilidad no está disponible. | blocking |
+| Generar preobligación | `createBudgetPreCommitment` | `INVALID_STATUS` | `status` | La SOLPED debe estar en pendiente de Finanzas. | blocking |
+| Generar preobligación | `createBudgetPreCommitment` | `MISSING_REQUIRED_FIELD` | `estimated_amount` | El campo Monto estimado es obligatorio. | blocking |
+| Generar preobligación | `createBudgetPreCommitment` | `MISSING_REQUIRED_FIELD` | `fiscal_year` | El campo Año fiscal es obligatorio. | blocking |
 
 **Edge cases:**
 - Preobligación sin saldo contrastado → `BUDGET_UNAVAILABLE` (`severity: blocking`, QA ítem 11 P0).

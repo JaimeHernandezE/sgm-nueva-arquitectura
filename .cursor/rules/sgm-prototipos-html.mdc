@@ -16,7 +16,7 @@ alwaysApply: false
 - Breadcrumb Adquisiciones: `form-shell.js` → Adquisiciones › Expedientes › expediente; breadcrumb core: `renderPlataformaBreadcrumb`.
 - Nav Adquisiciones (`adquisicionesNav`): Inicio, Expedientes, **Configuraciones** (`configuraciones/` — plantillas firmables / anclas; no son sub-pasos de expediente).
 - Perfiles demo en `expedientes-demo.js`; query `?expediente=` para contexto de compras.
-- Acciones demo: `demoAction('nombreOperacion')` — stub silencioso (sin `alert`); sin backend.
+- Acciones demo: `demoAction('nombreOperacion')` — stub silencioso (sin `alert`); sin backend. CTAs de escritura con validación: `demoValidation(operationId)` (llama a `demoAction` y abre modal desde el catálogo [`shared/validation-demos.js`](sgm-prototipos/shared/validation-demos.js)). Modal manual: `showValidationIssues({ operationId, issues })` con `ValidationErrorResponse`.
 - Etiquetas de campo: obligatorio → `<span class="required">*</span>`; opcional → `(opcional)` en label; condicional → `(obligatorio si …)` — alineado con wireframe y modelo de datos.
 - Secciones de formulario: agrupar campos en `<section class="form-section">` con `<h3 class="form-section__title">` (y `.form-section__hint` si aplica). No usar `h3` con `style=` inline. Norma: `sgm-docs/arquitectura/instrucciones/patron-formularios-secciones.md`.
 - Editor de anclas de firma (config): layout `.anchor-editor` + `.signature-anchor`; norma: `sgm-docs/arquitectura/instrucciones/patron-edicion-anclas-firma.md`.

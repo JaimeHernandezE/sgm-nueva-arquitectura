@@ -599,6 +599,15 @@ components:
             - rejected
         comments:
           type: string
+        disposition:
+          type: string
+          description: >
+            Solo aplica a rechazo de SOLPED (1.2). `return_to_draft` (default) permite
+            corregir en 1.1; `cancel` cierra el expediente sin corrección.
+          enum:
+            - return_to_draft
+            - cancel
+          default: return_to_draft
     BudgetAvailabilityPreview:
       type: object
       required:

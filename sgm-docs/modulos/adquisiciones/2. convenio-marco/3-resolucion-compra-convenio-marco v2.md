@@ -40,6 +40,8 @@
 | 1 | Sistema externo | `getUtmValue` | Core (SII) | Cacheada (frescura mensual) | `UtmValue` (`month`, `year`, `value_clp`) |
 | 2 | Evento | `ProcurementRouteDecided` | — (consumidores: expediente, `CaseStep` instanciador) | Asíncrona | `ProcurementCase` (`id`, `procurement_route`, `route_decided_at`) |
 
+**Validaciones:** Sin validaciones de formulario — decisión automática del sistema; `UTM_VALUE_UNAVAILABLE` se trata como edge case de dependencia (`getUtmValue`).
+
 **Edge cases:**
 - Fuente UTM no disponible y sin valor cacheado del mes en curso → `UTM_VALUE_UNAVAILABLE` (`severity: blocking`); la evaluación de umbral no puede ejecutarse. Mismo edge case que 2.1 — candidato a regla transversal de resiliencia.
 - UTM varía y la ruta cambia respecto de la declarada en la SOLPED → el sistema actualiza `procurement_route`, notifica al usuario y ajusta los `CaseStep` instanciados.
@@ -74,6 +76,17 @@
 | 2 | Sistema externo (lectura) | `readMpProcess` | Core (Mercado Público) | Síncrona bloqueante (solo en la vinculación) | Entrada: `mp_process_id` — Respuesta: existencia, tipo, organismo, estado actual |
 | 3 | Operación | `linkMpProcess` | — (Adquisiciones) | — | Entrada: `mp_process_id` — valida contra `readMpProcess` antes de persistir |
 | 4 | Evento | `MpProcessLinked` | — (consumidores: expediente, servicio de sincronización) | Asíncrona | `ProcurementCase` (`id`, `mp_process_id`, `procurement_type`) |
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Vincular OC de catálogo | `linkMpProcess` | `MISSING_REQUIRED_FIELD` | `mp_process_id` | El campo Código / ID de proceso MP es obligatorio. | blocking |
+| Vincular OC de catálogo | `linkMpProcess` | `MP_PROCESS_NOT_FOUND` | `mp_process_id` | El proceso MP no existe o el código es inválido. | blocking |
+| Vincular OC de catálogo | `linkMpProcess` | `MP_PROCESS_ORGANISM_MISMATCH` | `mp_process_id` | El organismo comprador del proceso MP no coincide con el municipio. | blocking |
+| Vincular OC de catálogo | `linkMpProcess` | `MP_PROCESS_TYPE_MISMATCH` | `mp_process_id` | El tipo de proceso MP no coincide con la modalidad confirmada. | blocking |
+| Vincular OC de catálogo | `linkMpProcess` | `MP_PROCESS_ALREADY_LINKED` | `mp_process_id` | El código MP ya está vinculado a otro expediente. | blocking |
+| Vincular OC de catálogo | `linkMpProcess` | `MP_PROVIDER_UNAVAILABLE` | — | Mercado Público no está disponible para validar el vínculo. | blocking |
 
 **Edge cases:**
 - Los cuatro bloqueos estándar de vinculación aplican idénticos a 2.3: `MP_PROCESS_NOT_FOUND`, `MP_PROCESS_ORGANISM_MISMATCH`, `MP_PROCESS_TYPE_MISMATCH`, `MP_PROCESS_ALREADY_LINKED` (`severity: blocking` en todos).
@@ -111,6 +124,17 @@
 | 3 | Operación | `linkMpProcess` | — (Adquisiciones) | — | Entrada: `mp_process_id` |
 | 4 | Evento | `MpProcessLinked` | — (consumidores: expediente, sincronización, timer de plazo) | Asíncrona | `ProcurementCase` (`id`, `mp_process_id`, `purchase_intent_deadline`) |
 
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Vincular Intención de Compra | `linkMpProcess` | `MISSING_REQUIRED_FIELD` | `mp_process_id` | El campo Código / ID de proceso MP es obligatorio. | blocking |
+| Vincular Intención de Compra | `linkMpProcess` | `MP_PROCESS_NOT_FOUND` | `mp_process_id` | El proceso MP no existe o el código es inválido. | blocking |
+| Vincular Intención de Compra | `linkMpProcess` | `MP_PROCESS_ORGANISM_MISMATCH` | `mp_process_id` | El organismo comprador del proceso MP no coincide con el municipio. | blocking |
+| Vincular Intención de Compra | `linkMpProcess` | `MP_PROCESS_TYPE_MISMATCH` | `mp_process_id` | El tipo de proceso MP no coincide con la modalidad confirmada. | blocking |
+| Vincular Intención de Compra | `linkMpProcess` | `MP_PROCESS_ALREADY_LINKED` | `mp_process_id` | El código MP ya está vinculado a otro expediente. | blocking |
+| Vincular Intención de Compra | `linkMpProcess` | `MP_PROVIDER_UNAVAILABLE` | — | Mercado Público no está disponible para validar el vínculo. | blocking |
+
 **Edge cases:**
 - Mismos cuatro bloqueos de vinculación que 3.2.
 - Usuario no publica la Intención de Compra dentro de un plazo razonable tras la evaluación de umbral → timer de escalamiento. ⚠ Plazo pendiente.
@@ -143,6 +167,8 @@
 | 1 | Sistema externo (lectura, deseada) | `readMpProcess` (vía servicio de sincronización) | Core (Mercado Público) | Asíncrona | Estado del proceso, n° ofertas |
 | 2 | Evento | `MpStateChanged` (interno, agnóstico de push/polling) | — (consumidores: expediente, notificaciones) | Asíncrona | `MpProcessSnapshot` |
 
+**Validaciones:** Sin validaciones de formulario — monitoreo MP (lectura deseada); sin operación de escritura en SGM.
+
 **Edge cases:**
 - MP no disponible durante el período → sin efecto de gestión (paso informativo); la sincronización se retoma con retroceso exponencial.
 - Timer vence sin lectura de estado MP → SGM muestra **Pendiente en MP** / posible cierre y deep link; sin tarea de transcripción (plantilla §5.3).
@@ -173,6 +199,8 @@
 |---|---|---|---|---|---|
 | 1 | Sistema externo (lectura, deseada) | `readMpProcess` | Core (Mercado Público) | Asíncrona | Cierre + selección |
 | 2 | Evento | `QuotationClosed` | — (consumidores: expediente, notificaciones) | Asíncrona | `QuotationResult` |
+
+**Validaciones:** Sin validaciones de formulario — selección ocurre en MP; `QuotationResult` solo por sync (sin transcripción ni escritura de usuario en SGM).
 
 **Edge cases:**
 - Usuario no gestiona la selección en MP dentro de un plazo razonable → timer de escalamiento sobre el `CaseStep`. ⚠ Plazo pendiente.
@@ -210,6 +238,8 @@
 | 1 | Sistema externo (lectura, deseada) | `readMpProcess` — proceso desierto | Core (Mercado Público) | Asíncrona | Estado terminal del proceso |
 | 2 | Evento | `GranCompraDesierta` | — (consumidores: expediente, notificaciones, reportería) | Asíncrona | `ProcurementCase` (`id`, `mp_process_id` anterior, nueva `procurement_route`) |
 
+**Validaciones:** Sin validaciones de formulario — transición automática a Compra Directa tras lectura de desierto; sin captura de usuario en SGM.
+
 **Edge cases:**
 - Desierto reiterado (Gran Compra desierta → Compra Directa → rechazo de OC → ¿nuevo intento?): ⚠ pendiente de definir límite de reintentos y acción de escalamiento. Candidato a métrica de reportería (procesos desiertos por Convenio Marco/unidad).
 
@@ -241,6 +271,12 @@
 | 1 | Sistema externo (lectura, **confirmada**) | `readMpProcess` — OC Aceptada | Core (Mercado Público) | Asíncrona | N° OC, RUT proveedor, monto real, fecha de aceptación |
 | 2 | Dependencia | `commitBudget` (compromiso por monto real; incluye ajuste contra preobligación) | Proveedor de disponibilidad presupuestaria (Presupuestos SGM o sistema municipal) | **Síncrona bloqueante** | Entrada: `pre_commitment_id`, `real_amount`, `purchase_order_ref` — Respuesta: `BudgetCommitment` o error estructurado |
 | 3 | Evento | `PurchaseOrderAccepted` | — (consumidores: expediente, recepción, Contabilidad, notificaciones, terceros vía webhook con scope) | Asíncrona | `PurchaseOrder`, `BudgetCommitment.id` |
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `BUDGET_UNAVAILABLE` | — | La línea presupuestaria no tiene saldo disponible para el monto real de la OC. | blocking |
 
 **Edge cases:**
 - **Monto real > preobligación y la línea no tiene saldo para la diferencia** → `commitBudget` responde `BUDGET_UNAVAILABLE` (`severity: blocking`). Situación anómala grave (la OC ya está aceptada legalmente pero el compromiso contable no puede registrarse): tarea urgente a DAF Finanzas para regularización presupuestaria. ⚠ Procedimiento de regularización pendiente con DM/Finanzas — mismo tratamiento que CA 3.4.
@@ -275,6 +311,8 @@
 |---|---|---|---|---|---|
 | 1 | Sistema externo (lectura, deseada) | `readMpProcess` — OC Rechazada | Core (Mercado Público) | Asíncrona | Estado, motivo si disponible |
 | 2 | Evento | `PurchaseOrderRejected` | — (consumidores: expediente, notificaciones) | Asíncrona | `PurchaseOrder` |
+
+**Validaciones:** Sin validaciones de formulario — decisión de navegación tras sync MP; sin operación de escritura en contrato (la obligatoriedad de la decisión es de UI local).
 
 **Edge cases:**
 - No existe proveedor alternativo en catálogo → única vía: republicar o reevaluar modalidad (reversión a etapa 2 con nueva `ModalityDecision`, según procedimiento de reversión pendiente en 2.1).

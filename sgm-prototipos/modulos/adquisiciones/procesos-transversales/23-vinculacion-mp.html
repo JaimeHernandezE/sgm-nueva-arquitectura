@@ -80,7 +80,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, initStepSimulation } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
@@ -137,7 +137,7 @@
       resultBanner.classList.add('banner--info');
 
       if (scenario === 'ok') {
-        demoAction('linkMpProcess');
+        demoValidation('linkMpProcess');
         resultBanner.textContent = `Vínculo validado: código ${mpCodeInput.value} — existencia, organismo y tipo de proceso verificados en MP.`;
         document.getElementById('header-badge').textContent = 'Vinculado';
         [mpCodeInput, simulateSelect, validateBtn, deepLinkBtn].forEach((el) => { el.disabled = true; });

@@ -42,27 +42,45 @@ paths:
                 rule: La orden de compra no existe
                 severity: blocking
         "422":
-          description: Regla de negocio violada.
+          description: Regla(s) de negocio violada(s). Una sola regla → ErrorResponse; varias → ValidationErrorResponse.
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                oneOf:
+                  - $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                  - $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ValidationErrorResponse
               examples:
                 goodsReceiptRequired:
                   value:
                     error_code: GOODS_RECEIPT_REQUIRED
-                    rule: Se requiere recepción conforme aprobada
+                    field: goods_receipt_id
+                    rule: Se requiere recepción conforme para el cruce de 3 vías.
                     severity: blocking
                 invoiceUnavailable:
                   value:
                     error_code: INVOICE_PROVIDER_UNAVAILABLE
-                    rule: La factura SII no está disponible para cruce
+                    rule: El proveedor de facturas / SII no está disponible.
                     severity: blocking
                 matchDiscrepancy:
                   value:
                     error_code: MATCH_DISCREPANCY
-                    rule: Los montos de OC, recepción y factura no concuerdan
+                    rule: Hay discrepancia entre OC, recepción y factura.
                     severity: blocking
+                matchMultiple:
+                  summary: Varias reglas del cruce (ValidationErrorResponse)
+                  value:
+                    error_code: VALIDATION_FAILED
+                    rule: La solicitud no cumple una o más reglas de validación
+                    severity: blocking
+                    issues:
+                      - error_code: MISSING_REQUIRED_FIELD
+                        field: invoice_number
+                        rule: El campo Número de factura es obligatorio.
+                        severity: blocking
+                      - error_code: GOODS_RECEIPT_REQUIRED
+                        field: goods_receipt_id
+                        rule: Se requiere recepción conforme para el cruce de 3 vías.
+                        severity: blocking
   /three-way-matches/{id}/accrual:
     post:
       operationId: registerAccrual

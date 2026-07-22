@@ -13,8 +13,9 @@
 ```
 +------------------------------------------------------------------+
 | Expedientes de compra                    [ Nuevo expediente ]    |
-| (demo) Ver como: [ Usuario DAF v | Unidad solicitante ]          |
-| (demo) [ ] Omitir paso 1.0 (sin Inventario ni catálogo CM)       |
+| Ver como: [ Usuario DAF v | Unidad solicitante ]                 |
+| [ ] Omitir paso 1.0 (sin Inventario ni catálogo CM)              |
+| (panel fondo advertencia)                    [ Solo para demo ]  |
 +------------------------------------------------------------------+
 | Buscar (opcional) [ folio / glosa / modalidad ________ ]         |
 |                                                                  |
@@ -79,9 +80,9 @@
 2. **Alcance RBAC (servidor):** con `adq.solicitante` / `adq.aprobador_unidad` el scope de `requesting_unit_id` de la asignación se aplica **siempre**. Intentos de ampliar con `requesting_department_id` / `requesting_unit_id` ajenos se ignoran o rechazan.
 3. **Proceso activo:** en UI es un checkbox que fija `status=in_progress`. Otros valores de `status` siguen disponibles vía API.
 4. **Por firmar / aprobar:** bandeja del actor autenticado (`awaiting_my_action`); el significado concreto depende del rol (p. ej. aprobación de unidad vs firma CDP).
-5. **Prototipo “Ver como”:** control solo de demo — *Unidad solicitante* vs *Usuario DAF* — para ilustrar el contraste de alcance; no sustituye autenticación real.
+5. **Prototipo “Ver como”:** control solo de demo — *Unidad solicitante* vs *Usuario DAF* — para ilustrar el contraste de alcance; no sustituye autenticación real. El panel lleva badge «Solo para demo» y fondo de advertencia (igual que los paneles de simulación rol/paso).
 6. **Filas stub:** expedientes de prueba sin timeline; badge “Solo listado · sin contenido”; no navegan al expediente.
-7. **Nuevo expediente:** destino según capacidades del tenant — sub-paso 1.0 ([`10-verificacion-previa.md`](./10-verificacion-previa.md)) u omisión directa a 1.1. Toggle demo “Omitir paso 1.0” ilustra el caso borde.
+7. **Nuevo expediente:** destino según capacidades del tenant — sub-paso 1.0 ([`10-verificacion-previa.md`](./10-verificacion-previa.md)) u omisión directa a 1.1. Toggle demo “Omitir paso 1.0” ilustra el caso borde (mismo panel con badge «Solo para demo»).
 
 ## Pendientes UI
 

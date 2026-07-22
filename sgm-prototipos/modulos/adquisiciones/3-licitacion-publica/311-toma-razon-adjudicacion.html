@@ -67,7 +67,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -106,7 +106,7 @@
         alert('N° de oficio de envío obligatorio (demo).');
         return;
       }
-      demoAction('submitToComptroller');
+      demoValidation('submitToComptroller');
       document.getElementById('submit-panel').querySelectorAll('input').forEach((el) => { el.disabled = true; });
       document.getElementById('submit-btn').classList.add('hidden');
       document.getElementById('skip').classList.add('hidden');
@@ -120,7 +120,7 @@
         alert('Oficio de respuesta obligatorio (demo).');
         return;
       }
-      demoAction('recordComptrollerOutcome');
+      demoValidation('recordComptrollerOutcome');
       resultBanner.classList.remove('hidden');
       const outcome = document.getElementById('outcome').value;
 

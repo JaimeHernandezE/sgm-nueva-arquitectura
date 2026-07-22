@@ -27,6 +27,17 @@
 | 2 | Sistema externo | `readMpProcess` | Core (Mercado Público) | Cacheada | Entrada: `mp_oc_id` — Respuesta: `total_amount` para cruce |
 | 3 | Evento | `ThreeWayMatchCompleted` | — | Asíncrona | `ThreeWayMatch` (`id`, `match_status`, `match_date`) |
 
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Ejecutar cruce 3 vías | `performThreeWayMatch` | `MISSING_REQUIRED_FIELD` | `invoice_number` | El campo Número de factura es obligatorio. | blocking |
+| Ejecutar cruce 3 vías | `performThreeWayMatch` | `MISSING_REQUIRED_FIELD` | `goods_receipt_id` | Debe existir una recepción conforme asociada. | blocking |
+| Ejecutar cruce 3 vías | `performThreeWayMatch` | `GOODS_RECEIPT_REQUIRED` | `goods_receipt_id` | Se requiere recepción conforme para el cruce de 3 vías. | blocking |
+| Ejecutar cruce 3 vías | `performThreeWayMatch` | `MATCH_DISCREPANCY` | — | Hay discrepancia entre OC, recepción y factura. | blocking |
+| Ejecutar cruce 3 vías | `performThreeWayMatch` | `INVOICE_PROVIDER_UNAVAILABLE` | — | El proveedor de facturas / SII no está disponible. | blocking |
+| Ejecutar cruce 3 vías | `performThreeWayMatch` | `STALE_OC_AMOUNT` | — | El monto de OC sincronizado puede estar desactualizado. | advisory |
+
 **Edge cases:**
 - Discrepancia entre las 3 fuentes (ej. monto factura ≠ monto OC) → `match_status = discrepancy`; `performThreeWayMatch` retorna `MATCH_DISCREPANCY` (`severity: blocking`, QA P1). Sin regla de tolerancia ni flujo de resolución definido.
 - SII / proveedor de facturas no disponible → `performThreeWayMatch` retorna `INVOICE_PROVIDER_UNAVAILABLE` (`severity: blocking`). No se habilita devengado.
@@ -58,6 +69,14 @@
 | 1 | Dependencia | `registerAccrual` | Contabilidad | Síncrona bloqueante | Entrada: `Accrual`, `BudgetCommitment.id` — Respuesta: `accounting_entry_ref` |
 | 2 | Evento | `AccrualRegistered` | — | Asíncrona | `Accrual` (`id`, `accrual_amount`, `accrual_date`) |
 
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Registrar devengado | `registerAccrual` | `THREE_WAY_MATCH_REQUIRED` | `three_way_match_id` | El cruce de 3 vías debe estar en estado matched. | blocking |
+| Registrar devengado | `registerAccrual` | `ACCOUNTING_PROVIDER_UNAVAILABLE` | — | Contabilidad no está disponible. | blocking |
+| Registrar devengado | `registerAccrual` | `MISSING_REQUIRED_FIELD` | `accrual_amount` | El campo Monto del devengado es obligatorio. | blocking |
+
 **Edge cases:**
 - Match no validado (`match_status ≠ matched`) → `registerAccrual` rechazado con `THREE_WAY_MATCH_REQUIRED` (`severity: blocking`).
 - Contabilidad no disponible → retorna `ACCOUNTING_PROVIDER_UNAVAILABLE` (`severity: blocking`). `Accrual` no se persiste.
@@ -85,6 +104,14 @@
 | 1 | Dependencia | `requestSignature` | Core (FirmaGob) | Síncrona bloqueante | Entrada: `document_id` (decreto), `signer_id` |
 | 2 | Evento | `PaymentDecreeIssued` | — | Asíncrona | `PaymentDecree` (`id`, `decree_number`, `decree_date`) |
 
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Emitir decreto de pago | `issuePaymentDecree` | `ACCRUAL_NOT_REGISTERED` | `accrual_id` | Se requiere un devengado registrado en Contabilidad. | blocking |
+| Emitir decreto de pago | `issuePaymentDecree` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida. | blocking |
+| Emitir decreto de pago | `issuePaymentDecree` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking |
+
 **Edge cases:**
 - FirmaGob no disponible → `issuePaymentDecree` no procede; retorna `SIGNATURE_PROVIDER_UNAVAILABLE`.
 - Devengado no registrado en Contabilidad → `issuePaymentDecree` rechazado con `ACCRUAL_NOT_REGISTERED`.
@@ -111,6 +138,14 @@
 |---|---|---|---|---|---|
 | 1 | Dependencia | `executePayment` | Tesorería | Síncrona bloqueante | Entrada: `PaymentDecree.id`, `supplier_rut`, `amount`, `payment_method` — Respuesta: `payment_ref`, `payment_status` |
 | 2 | Evento | `PaymentCompleted` | — | Asíncrona | `Payment` (`id`, `payment_date`, `payment_status`) |
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Ejecutar pago | `executePayment` | `MISSING_REQUIRED_FIELD` | `payment_method` | El campo Medio de pago es obligatorio. | blocking |
+| Ejecutar pago | `executePayment` | `PAYMENT_REJECTED` | — | Tesorería rechazó la ejecución del pago. | blocking |
+| Ejecutar pago | `executePayment` | `TREASURY_PROVIDER_UNAVAILABLE` | — | Tesorería no está disponible. | blocking |
 
 **Edge cases:**
 - Plazo máximo de 30 días corridos desde factura para pagar — sin campo de alerta/vencimiento definido en la fuente.

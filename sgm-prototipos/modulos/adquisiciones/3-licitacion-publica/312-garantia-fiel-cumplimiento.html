@@ -61,7 +61,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -90,7 +90,7 @@
         alert('Documento del instrumento obligatorio (demo).');
         return;
       }
-      demoAction('registerGuaranteeCustody');
+      demoValidation('registerGuaranteeCustody');
       resultBanner.classList.remove('hidden');
       resultBanner.className = 'banner banner--info';
       resultBanner.textContent = 'Garantía de Fiel Cumplimiento en custodia de Tesorería. Evento GuaranteeRegistered.';

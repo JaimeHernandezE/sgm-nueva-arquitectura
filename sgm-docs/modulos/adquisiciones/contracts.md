@@ -121,14 +121,21 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 - **Sub-pasos:** 1.1
 - **Entrada:** `PurchaseRequest` + `PurchaseRequestLine[]` (`currency` a nivel de documento; `unit_price` **neto** en esa moneda; `tax_code` por línea)
 - **Respuesta:** `PurchaseRequest` con `status = draft`
+- **Errores de validación:** ante varias reglas fallidas → `422` `ValidationErrorResponse` (`error_code: VALIDATION_FAILED`, `issues[]`). Norma: [`estandares-api.md`](../../arquitectura/especificacion/estandares-api.md) §3.2.
 - **Reglas:**
-  | Regla | Severidad | QA | Error |
-  |---|---|---|---|
-  | Campos obligatorios completos | blocking | 53 | `MISSING_REQUIRED_FIELDS` |
-  | `quantity > 0` en cada línea | blocking | 53 P0 | `INVALID_QUANTITY` |
-  | `unit_price` con referencia válida | blocking | — | `PRICE_REFERENCE_UNAVAILABLE` |
-  | Desviación precio vs referencia dentro de tolerancia | blocking ⚠ | — | `PRICE_DEVIATION_EXCEEDED` |
-  | Si `purchase_modality = direct_procurement`, `founded_resolution_attachment` presente | blocking | — | `FOUNDED_RESOLUTION_REQUIRED` |
+  | Regla | Severidad | Campo | QA | Error |
+  |---|---|---|---|---|
+  | `requesting_unit` presente | blocking | `requesting_unit` | 53 | `MISSING_REQUIRED_FIELD` |
+  | `description` presente | blocking | `description` | 53 | `MISSING_REQUIRED_FIELD` |
+  | `justification` presente | blocking | `justification` | 53 | `MISSING_REQUIRED_FIELD` |
+  | `requested_date` presente | blocking | `requested_date` | 53 | `MISSING_REQUIRED_FIELD` |
+  | Al menos una línea | blocking | `lines` | 53 | `MISSING_REQUIRED_FIELD` |
+  | Campos obligatorios de cada línea | blocking | `lines[].*` | 53 | `MISSING_REQUIRED_FIELD` |
+  | `quantity > 0` en cada línea | blocking | `lines[].quantity` | 53 P0 | `INVALID_QUANTITY` |
+  | `unit_price` con referencia válida | blocking | `lines[].price_source` | — | `PRICE_REFERENCE_UNAVAILABLE` |
+  | Desviación precio vs referencia dentro de tolerancia | blocking ⚠ | `lines[].unit_price` | — | `PRICE_DEVIATION_EXCEEDED` |
+  | Si `purchase_modality = direct_procurement`, `founded_resolution_attachment` presente | blocking | `founded_resolution_attachment` | — | `FOUNDED_RESOLUTION_REQUIRED` |
+  | Si se agrega adjunto, tipo / descripción / archivo presentes | blocking | `attachments[].*` | — | `MISSING_REQUIRED_FIELD` |
 - **Dependencias invocadas:** `getPriceReference`, `previewBudgetAvailability` *(informativa, bajo demanda desde enlace UI)*. Verificación de stock/catálogo CM: sub-paso **1.0** (optativo).
 - **Notas:**
   - Precio siempre neto (convención de plataforma); no se captura «neto/bruto» como elección del usuario.
@@ -146,7 +153,20 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 
 #### `POST /purchase-requests/{id}/submit` — `submitPurchaseRequest`
 - **Sub-pasos:** 1.1
-- **Reglas:** SOLPED completa → `status = pending_approval`; si `purchase_modality = direct_procurement`, exige `founded_resolution_attachment` (`FOUNDED_RESOLUTION_REQUIRED`)
+- **Respuesta:** `PurchaseRequest` con `status = pending_approval`
+- **Errores de validación:** ante varias reglas fallidas → `422` `ValidationErrorResponse` (`issues[]`). Catálogo completo en ficha 1.1 § Validaciones.
+- **Reglas:**
+  | Regla | Severidad | Campo | QA | Error |
+  |---|---|---|---|---|
+  | `requesting_unit` presente | blocking | `requesting_unit` | 53 | `MISSING_REQUIRED_FIELD` |
+  | `description` presente | blocking | `description` | 53 | `MISSING_REQUIRED_FIELD` |
+  | `justification` presente | blocking | `justification` | 53 | `MISSING_REQUIRED_FIELD` |
+  | `requested_date` presente | blocking | `requested_date` | 53 | `MISSING_REQUIRED_FIELD` |
+  | Al menos una línea con campos obligatorios | blocking | `lines` / `lines[].*` | 53 | `MISSING_REQUIRED_FIELD` |
+  | `quantity > 0` en cada línea | blocking | `lines[].quantity` | 53 P0 | `INVALID_QUANTITY` |
+  | `unit_price` con referencia válida | blocking | `lines[].price_source` | — | `PRICE_REFERENCE_UNAVAILABLE` |
+  | Si `purchase_modality = direct_procurement`, `founded_resolution_attachment` presente | blocking | `founded_resolution_attachment` | — | `FOUNDED_RESOLUTION_REQUIRED` |
+  | `status = draft` | blocking | `status` | — | `INVALID_STATUS` |
 
 #### `POST /purchase-requests/{id}/approve` — `approvePurchaseRequest`
 - **Sub-pasos:** 1.2
@@ -161,7 +181,13 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 
 #### `POST /purchase-requests/{id}/reject` — `rejectPurchaseRequest`
 - **Sub-pasos:** 1.2
-- **Reglas:** `comments` obligatorio si rechazo → `status = draft`
+- **Entrada:** `comments` (obligatorio), `disposition` (`return_to_draft` \| `cancel`)
+- **Reglas:**
+  | Regla | Severidad | Error |
+  |---|---|---|
+  | `comments` presente | blocking | `MISSING_REQUIRED_FIELD` |
+  | `disposition = return_to_draft` → `PurchaseRequest.status = draft` | — | — |
+  | `disposition = cancel` → `ProcurementCase.status = cancelled` (sin corrección) | — | — |
 
 #### `POST /purchase-requests/{id}/budget-verification` — `verifyBudgetAvailability`
 - **Sub-pasos:** 1.3
@@ -218,15 +244,20 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 - **Sub-pasos:** 2.1
 - **Entrada:** `selected_modality`, justificaciones condicionales (`catalog_bypass_justification`, `direct_procurement_cause`)
 - **Respuesta:** `ModalityDecision`, `CaseStep[]` instanciados
+- **Errores de validación:** ante varias reglas fallidas → `422` `ValidationErrorResponse` (`issues[]`). Catálogo en ficha 2.1 § Validaciones.
 - **Reglas:**
-  | Regla | Severidad | Error |
-  |---|---|---|
-  | V1 Monto ≤ 100 UTM para Compra Ágil | blocking | `MODALITY_AMOUNT_EXCEEDED` |
-  | V2 Catálogo CM es primera opción sin justificación | blocking | `FRAMEWORK_AGREEMENT_FIRST_OPTION` |
-  | V3 Trato Directo requiere causal + Resolución Fundada | blocking | `DIRECT_PROCUREMENT_CAUSE_REQUIRED` |
-  | Modalidad ya confirmada | blocking | `MODALITY_ALREADY_CONFIRMED` |
-  | V4/V5/V7/V8 sugerencias LP, Toma de Razón, tramo, garantías | advisory | `PUBLIC_TENDER_SUGGESTED`, `COMPTROLLER_REVIEW_REQUIRED`, `TENDER_TIER_INFO`, `TENDER_GUARANTEES_REQUIRED` |
-  | V6 *(propuesta)* fraccionamiento sospechado | advisory | `SPLITTING_SUSPECTED` |
+  | Regla | Severidad | Campo | Error |
+  |---|---|---|---|
+  | `selected_modality` presente | blocking | `selected_modality` | `MISSING_REQUIRED_FIELD` |
+  | V1 Monto ≤ umbral UTM para Compra Ágil | blocking | `selected_modality` | `MODALITY_AMOUNT_EXCEEDED` |
+  | V2 Catálogo CM es primera opción sin justificación | blocking | `catalog_bypass_justification` | `FRAMEWORK_AGREEMENT_FIRST_OPTION` |
+  | V3 Trato Directo requiere causal + Resolución Fundada | blocking | `direct_procurement_cause` | `DIRECT_PROCUREMENT_CAUSE_REQUIRED` |
+  | Valor UTM vigente disponible | blocking | — | `UTM_VALUE_UNAVAILABLE` |
+  | Modalidad ya confirmada | blocking | — | `MODALITY_ALREADY_CONFIRMED` |
+  | V4/V5/V7/V8 sugerencias LP, Toma de Razón, tramo, garantías | advisory | `selected_modality` | `PUBLIC_TENDER_SUGGESTED`, `COMPTROLLER_REVIEW_REQUIRED`, `TENDER_TIER_INFO`, `TENDER_GUARANTEES_REQUIRED` |
+  | V6 *(propuesta)* fraccionamiento sospechado | advisory | — | `SPLITTING_SUSPECTED` |
+  | Catálogo CM fuera de frescura | advisory | — | `CATALOG_STALE` |
+  | LP con Compra Ágil aún disponible | advisory | `selected_modality` | `AGILE_PURCHASE_AVAILABLE` |
 - **Dependencias:** `getUtmValue` (SII), `checkCatalogAvailability` (catálogo CM espejado)
 - **Evento emitido:** `ProcurementModalityConfirmed`
 
@@ -234,25 +265,38 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 - **Sub-pasos:** 2.2 — existencia y alcance pendientes de ratificar con la DM (**[PENDIENTE P-38]**); ejecución condicionada a `ModalityDecision.requires_jefatura_approval`
 - **Entrada:** `comments` (opcional)
 - **Respuesta:** `ModalityDecisionApproval`
+- **Reglas:**
+  | Regla | Severidad | Campo | Error |
+  |---|---|---|---|
+  | Firma electrónica válida si DM la exige | blocking | — | `SIGNATURE_REQUIRED` |
+  | FirmaGob disponible | blocking | — | `SIGNATURE_PROVIDER_UNAVAILABLE` |
+  | Aprobador ≠ decisor de 2.1 *(propuesta SoD)* | blocking | `approver_id` | `SEGREGATION_OF_DUTIES_VIOLATION` |
 - **Dependencias:** `requestSignature`/`confirmSignature` (Core (FirmaGob), condicional)
 - **Evento emitido:** `ProcurementModalityApproved`
 
 #### `POST /modality-decisions/{id}/reject` — `rejectModalityDecision`
 - **Sub-pasos:** 2.2
 - **Entrada:** `comments` (obligatorio)
-- **Reglas:** rechazo → `ModalityDecision` sin efecto, `CaseStep[]` de 2.1 anulados con auditoría, retorna a 2.1
+- **Reglas:**
+  | Regla | Severidad | Campo | Error |
+  |---|---|---|---|
+  | `comments` presente | blocking | `comments` | `MISSING_REQUIRED_FIELD` |
+- **Efecto:** rechazo → `ModalityDecision` sin efecto, `CaseStep[]` de 2.1 anulados con auditoría, retorna a 2.1
 - **Dependencias:** `requestSignature`/`confirmSignature` (Core (FirmaGob), condicional)
 
 #### `POST /procurement-cases/{id}/mp-link` — `linkMpProcess`
 - **Sub-pasos:** 2.3 (ejecución inmediata, Compra Ágil/Convenio Marco), 3.5 *(LP, ejecución diferida)*, subproceso de publicación *(Trato Directo, ejecución diferida)*
 - **Entrada:** `mp_process_id`
+- **Errores de validación:** ante varias reglas fallidas → `422` `ValidationErrorResponse` (`issues[]`).
 - **Reglas:**
-  | Regla | Severidad | Error |
-  |---|---|---|
-  | Proceso MP existe | blocking | `MP_PROCESS_NOT_FOUND` |
-  | Organismo comprador coincide con el tenant | blocking | `MP_PROCESS_ORGANISM_MISMATCH` |
-  | Tipo de proceso MP coincide con la modalidad confirmada | blocking | `MP_PROCESS_TYPE_MISMATCH` |
-  | Código MP no vinculado previamente a otro expediente | blocking | `MP_PROCESS_ALREADY_LINKED` |
+  | Regla | Severidad | Campo | Error |
+  |---|---|---|---|
+  | `mp_process_id` presente | blocking | `mp_process_id` | `MISSING_REQUIRED_FIELD` |
+  | Proceso MP existe | blocking | `mp_process_id` | `MP_PROCESS_NOT_FOUND` |
+  | Organismo comprador coincide con el tenant | blocking | `mp_process_id` | `MP_PROCESS_ORGANISM_MISMATCH` |
+  | Tipo de proceso MP coincide con la modalidad confirmada | blocking | `mp_process_id` | `MP_PROCESS_TYPE_MISMATCH` |
+  | Código MP no vinculado previamente a otro expediente | blocking | `mp_process_id` | `MP_PROCESS_ALREADY_LINKED` |
+  | API MP disponible al validar | blocking | — | `MP_PROVIDER_UNAVAILABLE` |
 - **Dependencias:** `readMpProcess` (Mercado Público, síncrona bloqueante solo en la vinculación)
 - **Evento emitido:** `MpProcessLinked`
 
@@ -412,21 +456,28 @@ Vinculación con Mercado Público diferida al sub-paso 3.5 — reutiliza íntegr
 #### `POST /purchase-orders/{id}/goods-receipts` — `registerReceipt`
 - **Sub-pasos:** 4.1
 - **Entrada:** `GoodsReceipt` + `GoodsReceiptLine[]`
+- **Errores de validación:** ante varias reglas fallidas → `422` `ValidationErrorResponse` (`issues[]`).
 - **Reglas:**
-  | Regla | Severidad | Error |
-  |---|---|---|
-  | Cantidad recibida ≤ pendiente de la línea | blocking | `RECEIPT_EXCEEDS_ORDER` |
+  | Regla | Severidad | Campo | Error |
+  |---|---|---|---|
+  | OC aceptada asociada | blocking | `purchase_order_id` | `MISSING_REQUIRED_FIELD` / `INVALID_STATUS` |
+  | `received_date` presente | blocking | `received_date` | `MISSING_REQUIRED_FIELD` |
+  | Al menos una línea | blocking | `lines` | `MISSING_REQUIRED_FIELD` |
+  | Cantidad recibida ≤ pendiente de la línea | blocking | `lines[].quantity_received` | `RECEIPT_EXCEEDS_ORDER` |
+  | Documento de respaldo si `receipt_type = service` | blocking | `supporting_document_ref` | `MISSING_REQUIRED_FIELD` |
 
 #### `POST /goods-receipts/{id}/confirm` — `confirmReceipt`
 - **Sub-pasos:** 4.2
 - **Entrada:** `decision` (`confirmed` \| `rejected`), `comments`, `signature_mode` (condicional)
 - **Respuesta:** `GoodsReceipt`
 - **Reglas:**
-  | Regla | Severidad | QA | Error |
-  |---|---|---|---|
-  | Segregación: confirmante ≠ aprobador de la compra | blocking | 9 P1 | `SEGREGATION_OF_DUTIES_VIOLATION` |
-  | Adjuntos obligatorios (factura, guía despacho) | blocking | 32 P1 | `MISSING_REQUIRED_ATTACHMENTS` |
-  | Firma electrónica válida si aplica | blocking | 7 P1 | `SIGNATURE_REQUIRED` |
+  | Regla | Severidad | Campo | QA | Error |
+  |---|---|---|---|---|
+  | Segregación: confirmante ≠ aprobador de la compra | blocking | `confirmed_by` | 9 P1 | `SEGREGATION_OF_DUTIES_VIOLATION` |
+  | Resultado de conformidad presente | blocking | `conformity` | — | `MISSING_REQUIRED_FIELD` |
+  | Motivo si cantidad rechazada | blocking | `lines[].rejection_reason` | — | `MISSING_REQUIRED_FIELD` |
+  | Adjuntos obligatorios (factura, guía despacho) | blocking | `attachments` | 32 P1 | `MISSING_REQUIRED_ATTACHMENTS` |
+  | Firma electrónica válida si aplica | blocking | — | 7 P1 | `SIGNATURE_REQUIRED` |
 - **Dependencias:** `requestSignature` (condicional)
 - **Evento emitido:** `GoodsReceiptConfirmed`, `ReceiptRejected` (si rechazo parcial)
 
@@ -446,11 +497,15 @@ Vinculación con Mercado Público diferida al sub-paso 3.5 — reutiliza íntegr
 
 #### `POST /purchase-orders/{id}/three-way-match` — `performThreeWayMatch`
 - **Sub-pasos:** 5.1
+- **Errores de validación:** ante varias reglas fallidas → `422` `ValidationErrorResponse` (`issues[]`).
 - **Reglas:**
-  | Regla | Severidad | QA | Error |
-  |---|---|---|---|
-  | Recepción conforme aprobada | blocking | 31 P0 | `GOODS_RECEIPT_REQUIRED` |
-  | Factura SII disponible y cruzable | blocking | 31 P0 | `INVOICE_PROVIDER_UNAVAILABLE` |
+  | Regla | Severidad | Campo | QA | Error |
+  |---|---|---|---|---|
+  | Número de factura presente | blocking | `invoice_number` | — | `MISSING_REQUIRED_FIELD` |
+  | Recepción conforme aprobada | blocking | `goods_receipt_id` | 31 P0 | `GOODS_RECEIPT_REQUIRED` |
+  | Factura SII disponible y cruzable | blocking | — | 31 P0 | `INVOICE_PROVIDER_UNAVAILABLE` |
+  | Montos/cantidades coherentes entre OC, recepción y factura | blocking | — | P1 | `MATCH_DISCREPANCY` |
+  | Monto OC sincronizado reciente | advisory | — | — | `STALE_OC_AMOUNT` |
   | Montos concordantes (tolerancia ⚠) | blocking | P1 | `MATCH_DISCREPANCY` |
 - **Dependencias:** `getInvoiceForMatch`, `readMpProcess`
 - **Evento emitido:** `ThreeWayMatchCompleted`

@@ -39,39 +39,63 @@ paths:
         "403":
           $ref: ../adquisiciones.openapi.yaml#/components/responses/Forbidden
         "422":
-          description: Regla de negocio violada.
+          description: Regla(s) de negocio violada(s). Una sola regla → ErrorResponse; varias → ValidationErrorResponse.
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                oneOf:
+                  - $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
+                  - $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ValidationErrorResponse
               examples:
                 missingFields:
                   value:
-                    error_code: MISSING_REQUIRED_FIELDS
-                    rule: Faltan campos obligatorios de la SOLPED
+                    error_code: MISSING_REQUIRED_FIELD
+                    field: description
+                    rule: El campo Descripción es obligatorio.
                     severity: blocking
                 invalidQuantity:
                   value:
                     error_code: INVALID_QUANTITY
                     field: lines[0].quantity
-                    rule: La cantidad debe ser mayor a cero
+                    rule: La cantidad debe ser mayor a cero.
                     severity: blocking
                 priceReference:
                   value:
                     error_code: PRICE_REFERENCE_UNAVAILABLE
-                    rule: No hay referencia de precio disponible para la línea
+                    field: lines[0].price_source
+                    rule: No hay referencia de precio disponible para la línea.
                     severity: blocking
                 priceDeviation:
                   value:
                     error_code: PRICE_DEVIATION_EXCEEDED
-                    rule: La desviación de precio excede la tolerancia permitida
+                    field: lines[0].unit_price
+                    rule: La desviación de precio excede la tolerancia permitida.
                     severity: blocking
                 foundedResolution:
                   value:
                     error_code: FOUNDED_RESOLUTION_REQUIRED
                     field: founded_resolution_attachment
-                    rule: Trato directo requiere resolución fundada adjunta
+                    rule: Trato directo requiere resolución fundada adjunta.
                     severity: blocking
+                multipleRequired:
+                  summary: Varias reglas bloqueantes (ValidationErrorResponse)
+                  value:
+                    error_code: VALIDATION_FAILED
+                    rule: La solicitud no cumple una o más reglas de validación
+                    severity: blocking
+                    issues:
+                      - error_code: MISSING_REQUIRED_FIELD
+                        field: requesting_unit
+                        rule: El campo Unidad solicitante es obligatorio.
+                        severity: blocking
+                      - error_code: MISSING_REQUIRED_FIELD
+                        field: description
+                        rule: El campo Descripción es obligatorio.
+                        severity: blocking
+                      - error_code: MISSING_REQUIRED_FIELD
+                        field: justification
+                        rule: El campo Justificación es obligatorio.
+                        severity: blocking
   /purchase-requests/{id}/submit:
     post:
       operationId: submitPurchaseRequest
@@ -79,8 +103,8 @@ paths:
         - solped
       summary: Enviar SOLPED a aprobación
       description: >
-        Transiciona SOLPED completa a `pending_approval`. Exige resolución fundada si `purchase_modality =
-        direct_procurement`.
+        Transiciona SOLPED completa a `pending_approval`. Exige campos obligatorios y resolución fundada si
+        `purchase_modality = direct_procurement`. Ante varias reglas fallidas responde ValidationErrorResponse.
       x-subpasos:
         - "1.1"
       security:
@@ -102,16 +126,46 @@ paths:
         "404":
           $ref: ../adquisiciones.openapi.yaml#/components/responses/PurchaseRequestNotFound
         "422":
-          description: Regla de negocio violada.
+          description: Una o más reglas de validación bloqueantes.
           content:
             application/json:
               schema:
-                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ErrorResponse
-              example:
-                error_code: FOUNDED_RESOLUTION_REQUIRED
-                field: founded_resolution_attachment
-                rule: Trato directo requiere resolución fundada adjunta
-                severity: blocking
+                $ref: ../../../../arquitectura/especificacion/openapi/comunes.yaml#/components/schemas/ValidationErrorResponse
+              examples:
+                submitMultipleRequired:
+                  summary: Campos obligatorios faltantes al enviar a aprobación
+                  value:
+                    error_code: VALIDATION_FAILED
+                    rule: La solicitud no cumple una o más reglas de validación
+                    severity: blocking
+                    issues:
+                      - error_code: MISSING_REQUIRED_FIELD
+                        field: requesting_unit
+                        rule: El campo Unidad solicitante es obligatorio.
+                        severity: blocking
+                      - error_code: MISSING_REQUIRED_FIELD
+                        field: description
+                        rule: El campo Descripción es obligatorio.
+                        severity: blocking
+                      - error_code: MISSING_REQUIRED_FIELD
+                        field: justification
+                        rule: El campo Justificación es obligatorio.
+                        severity: blocking
+                      - error_code: MISSING_REQUIRED_FIELD
+                        field: requested_date
+                        rule: El campo Fecha de necesidad es obligatorio.
+                        severity: blocking
+                foundedResolution:
+                  summary: Trato directo sin resolución fundada
+                  value:
+                    error_code: VALIDATION_FAILED
+                    rule: La solicitud no cumple una o más reglas de validación
+                    severity: blocking
+                    issues:
+                      - error_code: FOUNDED_RESOLUTION_REQUIRED
+                        field: founded_resolution_attachment
+                        rule: Trato directo requiere resolución fundada adjunta.
+                        severity: blocking
   /purchase-requests/{id}/approve:
     post:
       operationId: approvePurchaseRequest
@@ -169,7 +223,10 @@ paths:
       tags:
         - solped
       summary: Rechazar SOLPED
-      description: Rechaza la SOLPED; `comments` obligatorio. Retorna a `draft`.
+      description: >
+        Rechaza la SOLPED; `comments` obligatorio. Con `disposition = return_to_draft`
+        (default) retorna a `draft` (editable en 1.1). Con `disposition = cancel`
+        cierra el expediente (`ProcurementCase.status = cancelled`) sin corrección.
       x-subpasos:
         - "1.2"
       security:
@@ -185,7 +242,9 @@ paths:
               $ref: ../adquisiciones.openapi.yaml#/components/schemas/RejectionDecisionRequest
       responses:
         "200":
-          description: SOLPED rechazada y devuelta a borrador.
+          description: >
+            SOLPED rechazada. Si `disposition = return_to_draft`, estado `draft`;
+            si `disposition = cancel`, expediente cancelado.
           content:
             application/json:
               schema:

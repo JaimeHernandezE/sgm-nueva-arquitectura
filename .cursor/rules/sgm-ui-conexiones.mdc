@@ -21,6 +21,7 @@ Antes de cambiar un sub-paso, pantalla o fila del expediente:
 - Ningún botón sin operación publicada en contrato.
 - Ningún campo sin entidad.campo en el modelo.
 - Toda obligatoriedad explícita en modelo, wireframe (columna Obligatorio) y prototipo (`*`, `(opcional)`, `(obligatorio si …)`).
+- Validaciones por acción UI: ficha §3.6 (`plantilla-maestra-sgm.md`) + `contracts.md` + OpenAPI; prototipo refleja con `showValidationIssues` (no inventa códigos).
 - Formularios con subtítulos de sección (`.form-section` / `.form-section__title`); sin campos huérfanos entre bloques temáticos.
 - Cambio en wireframe `.md` → actualizar prototipo HTML enlazado (y viceversa).
 - Cambio en fila del expediente → actualizar `demo-data.js` y `steps-manifest.json` + `.js`.

@@ -23,7 +23,19 @@
 
 **Entidades:** `TenderBases` *(nueva)* — `procurement_case_id`, refs. `DocumentRef` (bases vía C10), `status` (`draft`/`legal_review`/`approved`), flags de garantías exigidas y montos. `EvaluationCriterion` *(nueva)* — `tender_bases_id`, `name`, `weight_percent` (la suma debe ser 100 — validación bloqueante `CRITERIA_WEIGHTS_INVALID`), `scoring_rule` (texto).
 
-**Borde:** Sin cruce (interno). **Edge cases:** modificación de bases después de enviadas a revisión → vuelve a `draft` con versionamiento del documento.
+**Borde:** Sin cruce (interno).
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Guardar borrador | `createTenderBases` | `MISSING_REQUIRED_FIELDS` | `technical_bases_ref` | Los documentos de bases técnicas y administrativas son obligatorios. | blocking |
+| Guardar borrador | `createTenderBases` | `MISSING_REQUIRED_FIELDS` | `administrative_bases_ref` | Los documentos de bases técnicas y administrativas son obligatorios. | blocking |
+| Guardar borrador | `createTenderBases` | `CRITERIA_WEIGHTS_INVALID` | `criteria[].weight_percent` | La suma de las ponderaciones de los criterios debe ser 100 %. | blocking |
+| Enviar a revisión jurídica | `submitBasesForLegalReview` | `INVALID_STATUS` | `status` | Solo se pueden enviar a revisión bases en estado borrador. | blocking |
+| Enviar a revisión jurídica | `submitBasesForLegalReview` | `CRITERIA_WEIGHTS_INVALID` | `criteria[].weight_percent` | La suma de las ponderaciones de los criterios debe ser 100 %. | blocking |
+
+**Edge cases:** modificación de bases después de enviadas a revisión → vuelve a `draft` con versionamiento del documento.
 
 ---
 
@@ -40,7 +52,17 @@
 
 **Entidades:** `LegalReview` *(nueva)* — `subject_type`/`subject_id` (polimórfica: sirve también para 3.10 y para la Resolución Fundada de TD — **candidata a entidad transversal**), `reviewer_id`, `outcome` (`approved`/`observations`), `observations`, `reviewed_at`.
 
-**Borde:** Evento `LegalReviewCompleted` (asíncrona). **Edge cases:** observaciones reiteradas (3+ ciclos) → visible en reportería de tiempos por etapa.
+**Borde:** Evento `LegalReviewCompleted` (asíncrona).
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Registrar revisión jurídica | `recordLegalReview` | `INVALID_STATUS` | `status` | Las bases deben estar en revisión jurídica. | blocking |
+| Registrar revisión jurídica | `recordLegalReview` | `MISSING_REQUIRED_FIELD` | `outcome` | El campo Resultado de la revisión es obligatorio. | blocking |
+| Registrar revisión jurídica | `recordLegalReview` | `MISSING_REQUIRED_FIELD` | `observations` | Las observaciones son obligatorias si el resultado es con observaciones. | blocking |
+
+**Edge cases:** observaciones reiteradas (3+ ciclos) → visible en reportería de tiempos por etapa.
 
 ---
 
@@ -57,7 +79,17 @@
 
 **Entidades:** `AdministrativeAct` *(nueva, transversal)* — `act_type` (`bases_approval`/`award`/`desertion`/`revocation`/...), `subject_id`, `act_number`, `signed_by`, `signed_at`, ref. documento. Generaliza el patrón de `PaymentDecree`; **candidata a absorberlo a futuro** — marcar `REVISAR`, no fusionar ahora.
 
-**Borde:** Dependencia `requestSignature`/`confirmSignature` → Core (FirmaGob) (**síncrona bloqueante**; estándar "campo presente ≠ integración funcional": el contrato define el flujo completo de firma). Evento `AdministrativeActSigned`. **Edge cases:** falla de FirmaGob → acto no perfeccionado, reintento; nunca "firmado" sin confirmación del servicio.
+**Borde:** Dependencia `requestSignature`/`confirmSignature` → Core (FirmaGob) (**síncrona bloqueante**; estándar "campo presente ≠ integración funcional": el contrato define el flujo completo de firma). Evento `AdministrativeActSigned`.
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Aprobar bases (firmar acto) | `approveTenderBases` | `LEGAL_REVIEW_REQUIRED` | — | Se requiere visto bueno jurídico de las bases antes de aprobarlas. | blocking |
+| Aprobar bases (firmar acto) | `approveTenderBases` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida. | blocking |
+| Aprobar bases (firmar acto) | `approveTenderBases` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking |
+
+**Edge cases:** falla de FirmaGob → acto no perfeccionado, reintento; nunca "firmado" sin confirmación del servicio.
 
 ---
 
@@ -74,7 +106,17 @@
 
 **Entidades:** `ComptrollerReview` *(nueva, transversal — **reutilizable en Trato Directo**, que tiene el mismo trámite para su Resolución Fundada)* — `administrative_act_id`, `submitted_at`, `outcome` (`approved`/`approved_with_remarks`/`rejected`), `outcome_at`, ref. oficio.
 
-**Borde:** Sistema externo CGR — **sin integración API asumida**: registro manual del envío y del resultado, con documento de respaldo. ⚠ Pendiente: explorar si existe canal de consulta de estado de trámites CGR integrable; no asumirlo. **Edge cases:** representación → reversión trazada a 3.1; los `CaseStep` reflejan el reintento sin perder historia.
+**Borde:** Sistema externo CGR — **sin integración API asumida**: registro manual del envío y del resultado, con documento de respaldo. ⚠ Pendiente: explorar si existe canal de consulta de estado de trámites CGR integrable; no asumirlo.
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Registrar envío a Contraloría | `submitToComptroller` | `MISSING_REQUIRED_FIELD` | `submitted_at` | El campo Fecha de envío es obligatorio. | blocking |
+| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `outcome` | El campo Resultado de Contraloría es obligatorio. | blocking |
+| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `official_document_ref` | El oficio o documento de respaldo es obligatorio. | blocking |
+
+**Edge cases:** representación → reversión trazada a 3.1; los `CaseStep` reflejan el reintento sin perder historia.
 
 ---
 
@@ -89,6 +131,17 @@
 | Interacción MP | **Gestión** (registro del ID); luego informativo |
 
 **Detalle:** Con bases aprobadas (y tomadas de razón si aplicó), el usuario crea y publica la licitación **en MP** (SGM en modo monitor desde la publicación: cero deep links per `integracion-mercado-publico.md`). Registra en SGM el **ID de la licitación**, ejecutando aquí la vinculación de 2.3 (diferida para LP): validación `readMpProcess` (existencia, organismo, tipo), `mp_process_id` en `ProcurementCase`, evento `MpProcessLinked`, inicio de sincronización. El plazo mínimo de publicación quedó informado desde el gateway (V7, etapa 2).
+
+**Validaciones:** *(reutiliza íntegramente 2.3)*
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Vincular proceso MP | `linkMpProcess` | `MISSING_REQUIRED_FIELD` | `mp_process_id` | El campo Código / ID de proceso MP es obligatorio. | blocking |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_NOT_FOUND` | `mp_process_id` | El proceso MP no existe o el código es inválido. | blocking |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_ORGANISM_MISMATCH` | `mp_process_id` | El organismo comprador del proceso MP no coincide con el municipio. | blocking |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_TYPE_MISMATCH` | `mp_process_id` | El tipo de proceso MP no coincide con la modalidad confirmada. | blocking |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_ALREADY_LINKED` | `mp_process_id` | El código MP ya está vinculado a otro expediente. | blocking |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROVIDER_UNAVAILABLE` | — | Mercado Público no está disponible para validar el vínculo. | blocking |
 
 **Edge cases:** los cuatro bloqueos de 2.3 aplican idénticos (no encontrado, organismo distinto, tipo incoherente, ya vinculado).
 
@@ -106,7 +159,15 @@
 
 **Detalle:** Los proveedores preguntan por el foro de MP; el comprador responde a todas simultáneamente mediante documento oficial de **Aclaración a las Bases**, sin identificar preguntantes, dentro del plazo de las bases. La respuesta se gestiona en MP; SGM registra el hito y el documento de aclaración en el expediente.
 
-**Lecturas MP:** preguntas recibidas / aclaración publicada — **deseadas**; degradado: paso **Pendiente en MP** / **Esperando sync MP** hasta la lectura (sin transcribir el hito ni el documento desde MP; si el municipio adjunta en SGM un respaldo propio fuera de MP, es documento interno, no sustituto de la lectura). **Edge cases:** aclaración que modifica sustantivamente las bases → puede requerir acto administrativo complementario y extensión de plazo. ⚠ Pendiente con jurídica: criterio de cuándo una aclaración exige acto formal.
+**Lecturas MP:** preguntas recibidas / aclaración publicada — **deseadas**; degradado: paso **Pendiente en MP** / **Esperando sync MP** hasta la lectura (sin transcribir el hito ni el documento desde MP; si el municipio adjunta en SGM un respaldo propio fuera de MP, es documento interno, no sustituto de la lectura).
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Registrar aclaración | `recordClarification` | `MISSING_REQUIRED_FIELD` | `clarification_document_ref` | El documento de aclaración a las bases es obligatorio. | blocking |
+
+**Edge cases:** aclaración que modifica sustantivamente las bases → puede requerir acto administrativo complementario y extensión de plazo. ⚠ Pendiente con jurídica: criterio de cuándo una aclaración exige acto formal.
 
 ---
 
@@ -123,7 +184,18 @@
 
 **Entidades:** `Guarantee` *(nueva, transversal — sirve también para 3.12)* — `guarantee_type` (`bid_bond`/`performance_bond`), `procurement_case_id`, `provider_rut`, `instrument_type`, `amount`, `expiry_date`, `status` (`in_custody`/`returned`/`executed`), ref. documento.
 
-**Borde:** Dependencia `registerGuaranteeCustody` → Tesorería (asíncrona); evento `GuaranteeRegistered`. **Edge cases:** garantía vencida o por monto insuficiente → oferta inadmisible (insumo de 3.9); devolución a oferentes no adjudicados tras la adjudicación (tarea con timer — plata de terceros retenida sin razón es hallazgo de auditoría).
+**Borde:** Dependencia `registerGuaranteeCustody` → Tesorería (asíncrona); evento `GuaranteeRegistered`.
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `provider_rut` | El campo Proveedor es obligatorio. | blocking |
+| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `instrument_type` | El campo Tipo de instrumento es obligatorio. | blocking |
+| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `amount` | El campo Monto es obligatorio. | blocking |
+| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `expiry_date` | El campo Fecha de vencimiento es obligatorio. | blocking |
+
+**Edge cases:** garantía vencida o por monto insuficiente → oferta inadmisible (insumo de 3.9); devolución a oferentes no adjudicados tras la adjudicación (tarea con timer — plata de terceros retenida sin razón es hallazgo de auditoría).
 
 ---
 
@@ -140,6 +212,8 @@
 **Detalle:** Cierre de recepción de ofertas y apertura electrónica en MP. SGM refleja el hito y el número de ofertas; el detalle de las ofertas se gestiona en MP.
 
 **Lecturas MP:** cierre y apertura, n° de ofertas — **deseadas**; degradado: badge **Esperando sync MP** hasta la lectura (sin registro manual del hito); 3.9 se habilita cuando llega el evento.
+
+**Validaciones:** Sin validaciones de formulario — solo lectura MP deseada (`readMpProcess`); sin captura de campos en SGM.
 
 ---
 
@@ -158,7 +232,22 @@
 
 **Regla SoD:** los integrantes de la comisión no pueden ser el requirente de la SOLPED ni quien elaboró las bases técnicas ⚠ **propuesta — validar con jurídica el alcance exacto de las inhabilidades**.
 
-**Borde:** Dependencia condicional Core (FirmaGob) (firmas del acta); evento `EvaluationCompleted`. **Edge cases:** integrante con conflicto sobreviniente → reemplazo por acto modificatorio, trazado; empate en ranking → criterio de desempate debe estar en las bases (validación en 3.1: bases sin criterio de desempate generan advertencia).
+**Borde:** Dependencia condicional Core (FirmaGob) (firmas del acta); evento `EvaluationCompleted`.
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Designar comisión | `designateEvaluationCommittee` | `CONFLICT_DECLARATION_REQUIRED` | `members[].conflict_declaration_ref` | Cada integrante debe declarar ausencia de conflictos de interés. | blocking |
+| Designar comisión | `designateEvaluationCommittee` | `COMMITTEE_MEMBER_CONFLICT` | `members[].user_id` | El integrante no puede ser el requirente de la SOLPED ni quien elaboró las bases técnicas. | blocking |
+| Designar comisión | `designateEvaluationCommittee` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida del acto de designación. | blocking |
+| Registrar admisibilidad | `recordOfferAdmissibility` | `MISSING_REQUIRED_FIELD` | `offers[].inadmissibility_cause` | La causal de inadmisibilidad es obligatoria si la oferta es inadmisible. | blocking |
+| Registrar puntajes | `recordEvaluationScores` | `SCORES_INCONSISTENT_WITH_CRITERIA` | `scores` | Los puntajes no cuadran con las ponderaciones de los criterios de las bases. | blocking |
+| Firmar acta de evaluación | `signEvaluationReport` | `SCORES_INCONSISTENT_WITH_CRITERIA` | — | No se puede firmar el acta mientras los puntajes sean inconsistentes con los criterios. | blocking |
+| Firmar acta de evaluación | `signEvaluationReport` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida de los integrantes. | blocking |
+| Firmar acta de evaluación | `signEvaluationReport` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking |
+
+**Edge cases:** integrante con conflicto sobreviniente → reemplazo por acto modificatorio, trazado; empate en ranking → criterio de desempate debe estar en las bases (validación en 3.1: bases sin criterio de desempate generan advertencia).
 
 ---
 
@@ -174,7 +263,20 @@
 
 **Detalle:** Sobre el acta, la autoridad dicta el acto terminal: **adjudicación** al ranking (o distinta del ranking, con fundamentación reforzada), **deserción** (sin oferentes o todos inadmisibles/inconvenientes) o **revocación** por interés público. Reutiliza `LegalReview` (revisión jurídica previa) y `AdministrativeAct` (firma). El acto se publica **en MP** por el usuario. La lectura de la **Resolución de Adjudicación publicada** trae monto real y RUT del adjudicatario y gatilla el **ajuste de la preobligación al monto adjudicado** (`adjustPreCommitment` → Presupuestos) — el compromiso cierto espera a la OC aceptada (3.14).
 
-**Lecturas MP:** Resolución de Adjudicación publicada — **deseada**; degradado: el acto se dicta y firma en SGM (fuera de MP); la publicación ocurre en MP y el ajuste presupuestario espera la lectura — **sin** transcribir monto/RUT desde MP en formulario. **Edge cases:** deserción → decisión posterior: relicitar (nuevo proceso MP, mismo expediente) o Trato Directo por causal de licitación desierta (reversión a etapa 2 con la causal precargada — ver `procesos-transversales/2-modalidad-compra.md` §2.1); adjudicación distinta del ranking → fundamentación obligatoria y visible en auditoría.
+**Lecturas MP:** Resolución de Adjudicación publicada — **deseada**; degradado: el acto se dicta y firma en SGM (fuera de MP); la publicación ocurre en MP y el ajuste presupuestario espera la lectura — **sin** transcribir monto/RUT desde MP en formulario.
+
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Dictar resolución | `issueAwardResolution` | `LEGAL_REVIEW_REQUIRED` | — | Se requiere revisión jurídica previa registrada. | blocking |
+| Dictar resolución | `issueAwardResolution` | `MISSING_REQUIRED_FIELD` | `resolution_type` | El campo Tipo de resolución es obligatorio. | blocking |
+| Dictar resolución | `issueAwardResolution` | `MISSING_REQUIRED_FIELD` | `awarded_offer_id` | La oferta adjudicada es obligatoria si el tipo es adjudicación. | blocking |
+| Dictar resolución | `issueAwardResolution` | `AWARD_JUSTIFICATION_REQUIRED` | `justification` | La fundamentación es obligatoria si se adjudica a una oferta distinta del primero del ranking. | blocking |
+| Dictar resolución | `issueAwardResolution` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida. | blocking |
+| Dictar resolución | `issueAwardResolution` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking |
+
+**Edge cases:** deserción → decisión posterior: relicitar (nuevo proceso MP, mismo expediente) o Trato Directo por causal de licitación desierta (reversión a etapa 2 con la causal precargada — ver `procesos-transversales/2-modalidad-compra.md` §2.1); adjudicación distinta del ranking → fundamentación obligatoria y visible en auditoría.
 
 ---
 
@@ -189,6 +291,14 @@
 
 **Detalle:** Mismo mecanismo y entidad que 3.4 (`ComptrollerReview` sobre el acto de adjudicación). Representación → la adjudicación se cae: corregir y repetir 3.10, o deserción.
 
+**Validaciones:** *(reutiliza 3.4)*
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Registrar envío a Contraloría | `submitToComptroller` | `MISSING_REQUIRED_FIELD` | `submitted_at` | El campo Fecha de envío es obligatorio. | blocking |
+| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `outcome` | El campo Resultado de Contraloría es obligatorio. | blocking |
+| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `official_document_ref` | El oficio o documento de respaldo es obligatorio. | blocking |
+
 ---
 
 ## 3.12 — Garantía de Fiel Cumplimiento
@@ -201,6 +311,15 @@
 | Obligatoriedad | **Condicional** — obligatoria sobre umbral (`NormativeParameter`); las bases pueden exigirla bajo él |
 
 **Detalle:** El adjudicatario entrega la garantía de fiel cumplimiento **antes de la suscripción del contrato / emisión de OC**, según las bases. Reutiliza `Guarantee` (`performance_bond`) y el borde a Tesorería de 3.7. Su vigencia debe cubrir el contrato más el margen que fijen las bases; timer sobre `expiry_date` para renovaciones en contratos largos.
+
+**Validaciones:** *(reutiliza 3.7 — `registerGuaranteeCustody`)*
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `provider_rut` | El campo Proveedor es obligatorio. | blocking |
+| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `instrument_type` | El campo Tipo de instrumento es obligatorio. | blocking |
+| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `amount` | El campo Monto es obligatorio. | blocking |
+| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `expiry_date` | El campo Fecha de vencimiento es obligatorio. | blocking |
 
 **Edge cases:** adjudicatario no entrega garantía en plazo → tratamiento como no suscripción (ver 3.13).
 
@@ -219,6 +338,17 @@
 
 **Entidades:** `Contract` *(nueva)* — `procurement_case_id`, `awarded_offer_ref`, `amount`, `start_date`/`end_date`, refs. documento y acto, `status`.
 
+**Validaciones:**
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| Guardar borrador de contrato | `draftContract` | `MISSING_REQUIRED_FIELD` | `awarded_offer_ref` | La referencia a la oferta adjudicada es obligatoria. | blocking |
+| Guardar borrador de contrato | `draftContract` | `MISSING_REQUIRED_FIELD` | `amount` | El campo Monto del contrato es obligatorio. | blocking |
+| Guardar borrador de contrato | `draftContract` | `MISSING_REQUIRED_FIELD` | `start_date` | El campo Fecha de inicio es obligatorio. | blocking |
+| Guardar borrador de contrato | `draftContract` | `MISSING_REQUIRED_FIELD` | `end_date` | El campo Fecha de término es obligatorio. | blocking |
+| Firmar contrato | `signContract` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida del municipio. | blocking |
+| Firmar contrato | `signContract` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking |
+
 **Edge cases (crítico):** **adjudicatario no suscribe en plazo** → cobro/ejecución de la Garantía de Seriedad (3.7, `status = executed`, borde a Tesorería) y facultad de **readjudicar al siguiente del ranking** (reejecuta 3.10 con el acta vigente) o declarar desierta. Camino de primera clase, no nota al pie.
 
 ---
@@ -234,6 +364,12 @@
 | Interacción MP | **Gestión — hito contable de la etapa** |
 
 **Detalle:** Emisión de la OC en MP referida a la adjudicación; la **aceptación del proveedor** (lectura **confirmada**, la única) gatilla — igual que CA 3.4 — el **Compromiso Cierto** vía `commitBudget` por el monto adjudicado (la preobligación ya fue ajustada en 3.10, así que la diferencia esperable es cero; si no lo es, mismo tratamiento de ajuste/regularización), el avance a Recepción Conforme (etapa 4 transversal) y las notificaciones. Idempotencia por `purchase_order_ref`.
+
+**Validaciones:** Sin captura de formulario — sync automático; códigos de dependencia:
+
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
+|---|---|---|---|---|---|
+| — (automático) | `syncPurchaseOrderAccepted` / `commitBudget` | `BUDGET_UNAVAILABLE` | — | No hay saldo presupuestario para registrar el compromiso cierto. | blocking |
 
 **Edge cases:** rechazo de OC post-contrato → anomalía grave (hay contrato suscrito): tarea a jurídica, no auto-resolución; comparte mecánica con CA 3.5 solo si no hay contrato.
 

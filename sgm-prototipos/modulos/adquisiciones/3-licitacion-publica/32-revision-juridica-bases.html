@@ -65,7 +65,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -99,7 +99,7 @@
         alert('Observaciones obligatorias si el resultado es "Con observaciones" (demo).');
         return;
       }
-      demoAction('recordLegalReview');
+      demoValidation('recordLegalReview');
       resultBanner.classList.remove('hidden');
 
       if (outcome === 'approved') {

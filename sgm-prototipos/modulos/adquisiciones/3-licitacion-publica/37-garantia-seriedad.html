@@ -72,7 +72,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -103,7 +103,7 @@
         alert('Documento del instrumento obligatorio (demo).');
         return;
       }
-      demoAction('registerGuaranteeCustody');
+      demoValidation('registerGuaranteeCustody');
       const providerLabel = document.getElementById('provider').selectedOptions[0].textContent;
       const tr = document.createElement('tr');
       tr.innerHTML = `<td>${providerLabel}</td><td>$ ${document.getElementById('amount').value}</td><td>${document.getElementById('expiry').value}</td><td>En custodia</td>`;

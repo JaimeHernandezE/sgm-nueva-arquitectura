@@ -105,7 +105,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -133,7 +133,7 @@
         bannerA.textContent = 'CONFLICT_DECLARATION_REQUIRED — todos los integrantes deben tener declaración de ausencia de conflictos antes de habilitarse a evaluar.';
         return;
       }
-      demoAction('designateEvaluationCommittee');
+      demoValidation('designateEvaluationCommittee');
       bannerA.className = 'banner banner--info';
       bannerA.textContent = 'Comisión designada — acto firmado. Evento EvaluationCommitteeDesignated.';
       headerBadge.textContent = '3.9b Admisibilidad';
@@ -144,7 +144,7 @@
 
     // 3.9b
     document.getElementById('admissibility-btn').addEventListener('click', () => {
-      demoAction('recordOfferAdmissibility');
+      demoValidation('recordOfferAdmissibility');
       const rows = [...document.querySelectorAll('#panel-b tbody tr')];
       rows.forEach((row) => {
         const admissible = row.querySelector('.admissible').value === 'yes';
@@ -179,9 +179,9 @@
     recalcScores();
 
     document.getElementById('sign-btn').addEventListener('click', () => {
-      demoAction('recordEvaluationScores');
+      demoValidation('recordEvaluationScores');
       recalcScores();
-      demoAction('signEvaluationReport');
+      demoValidation('signEvaluationReport');
       const bannerC = document.getElementById('banner-c');
       bannerC.classList.remove('hidden');
       bannerC.className = 'banner banner--info';

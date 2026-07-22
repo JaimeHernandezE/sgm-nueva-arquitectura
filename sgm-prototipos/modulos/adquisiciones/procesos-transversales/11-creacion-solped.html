@@ -237,7 +237,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, demoAction, initBalancePanel, initModalityToggle, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, demoAction, demoValidation, initBalancePanel, initModalityToggle, initStepSimulation } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
     import { getFormPreset } from '../../../shared/form-presets.js';
 
@@ -464,8 +464,10 @@
       document.getElementById('balance-modal').classList.remove('is-open');
     });
 
-    document.getElementById('save-draft').addEventListener('click', () => demoAction('createPurchaseRequest'));
-    document.getElementById('submit').addEventListener('click', () => demoAction('submitPurchaseRequest'));
+    document.getElementById('save-draft').addEventListener('click', () => demoValidation('createPurchaseRequest'));
+    document.getElementById('submit').addEventListener('click', () => {
+      demoValidation('submitPurchaseRequest');
+    });
 
     // Contexto desde 1.0 (verificación previa / catálogo CM)
     const params = new URLSearchParams(window.location.search);

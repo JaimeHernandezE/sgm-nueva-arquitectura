@@ -101,7 +101,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, demoAction, demoValidation, initStepSimulation } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
@@ -126,25 +126,15 @@
       });
     });
 
-    const nextStepPanel = document.getElementById('next-step-panel');
-    const nextStepText = document.getElementById('next-step-text');
-    const nextStepLink = document.getElementById('next-step-link');
-
-    document.getElementById('draft').addEventListener('click', () => demoAction('createGoodsReceipt'));
+    document.getElementById('draft').addEventListener('click', () => demoValidation('registerReceipt'));
     document.getElementById('confirm').addEventListener('click', () => {
       const noConforme = document.querySelector('input[name="conformity"]:checked').value === 'no_conforme';
       if (noConforme && !document.getElementById('observations').value.trim()) {
         alert('Observaciones obligatorias si no conforme (demo).');
         return;
       }
-      demoAction('confirmGoodsReceipt');
-      nextStepText.textContent = noConforme
-        ? 'Recepción no conforme registrada — observaciones adjuntas.'
-        : 'Recepción conforme registrada.';
-      nextStepLink.href = getExpedienteUrl(expedienteId);
-      nextStepPanel.classList.remove('hidden');
-      document.getElementById('confirm').disabled = true;
-      document.getElementById('draft').disabled = true;
+      demoValidation('confirmReceipt');
+      setTimeout(() => { window.location.href = getExpedienteUrl(expedienteId); }, 800);
     });
   </script>
 </body>

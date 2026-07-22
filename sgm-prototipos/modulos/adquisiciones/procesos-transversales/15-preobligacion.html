@@ -64,7 +64,7 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, getExpedienteUrl, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, initStepSimulation } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
@@ -84,7 +84,7 @@
     });
     document.getElementById('cancel-link').href = getExpedienteUrl(expedienteId);
     bootstrapFormPage('preobligacion');
-    document.getElementById('submit').addEventListener('click', () => demoAction('createBudgetPreCommitment'));
+    document.getElementById('submit').addEventListener('click', () => demoValidation('createBudgetPreCommitment'));
   </script>
 </body>
 </html>

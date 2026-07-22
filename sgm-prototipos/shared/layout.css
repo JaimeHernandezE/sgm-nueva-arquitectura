@@ -15,14 +15,15 @@ h1 {
 }
 
 .demo-panel {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
   align-items: center;
-  padding: 12px 16px;
+  padding: 12px 16px 28px;
   margin-bottom: 20px;
-  background: var(--surface);
-  border: 1px solid var(--border-light);
+  background: var(--warning-bg);
+  border: 1px solid var(--warning-border);
   border-radius: 8px;
   font-size: 13px;
 }
@@ -32,6 +33,18 @@ h1 {
 .demo-panel select {
   padding: 4px 8px;
   font-size: 13px;
+}
+
+.badge.badge--demo {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  margin: 0;
+  background: #e67e22;
+  border-color: #d35400;
+  color: #fff;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .breadcrumb {
