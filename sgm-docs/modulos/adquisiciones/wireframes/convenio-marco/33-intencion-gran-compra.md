@@ -50,8 +50,8 @@
 
 - **Camino feliz:** `mp_process_id` y `purchase_intent_deadline` registrados; evento `MpProcessLinked`; expediente pasa a "Gran Compra en curso" con timer sobre el plazo — continúa a 3.4.
 - **Bloqueo — proceso no encontrado / organismo distinto / tipo incoherente / ya vinculado:** los cuatro bloqueos estándar de vinculación, idénticos a 3.2.
-- **API de MP no disponible al validar:** `MP_PROVIDER_UNAVAILABLE` (**[PENDIENTE P-32]**).
-- **Usuario no publica dentro de un plazo razonable tras la evaluación de umbral:** candidato a timer de escalamiento (**[PENDIENTE P-33]**).
+- **API de MP no disponible al validar:** `MP_PROVIDER_UNAVAILABLE` (**[PENDIENTE X-32]**).
+- **Usuario no publica dentro de un plazo razonable tras la evaluación de umbral:** candidato a timer de escalamiento (**[PENDIENTE X-33]**).
 - **Reingreso tras Gran Compra desierta (3.6):** este sub-paso no se reejecuta — la caída automática pasa a 3.2 (Compra Directa) con nuevo `mp_process_id`, no a una nueva Intención de Compra.
 
 ## Validaciones visibles

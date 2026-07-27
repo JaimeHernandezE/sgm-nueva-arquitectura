@@ -2,7 +2,7 @@
 
 **Sub-paso:** 3.4 — Rechazo de la OC *(Trato Directo, condicional — excluyente con 3.3)*
 **Rol:** Gestor de compra (`adq.gestor_compra`) — catálogo [`catalogo-roles.md`](../../../../arquitectura/especificacion/catalogo-roles.md)
-**Operación:** `recordPurchaseOrderRejectionDecision` · Dependencia: `readMpProcess` (OC Rechazada, deseada) · Evento: `PurchaseOrderRejected` · **[PENDIENTE P-69]**
+**Operación:** `recordPurchaseOrderRejectionDecision` · Dependencia: `readMpProcess` (OC Rechazada, deseada) · Evento: `PurchaseOrderRejected` · **[PENDIENTE X-69]**
 
 ## Layout
 
@@ -20,7 +20,7 @@
 | ( ) Cancelar expediente (liberar preobligación)                  |
 | [ Confirmar decisión ]                                           |
 +----------------------------------------------------------------+
-| (banner: decisión registrada — P-69 pendiente de validación DM)  |
+| (banner: decisión registrada — X-69 pendiente de validación DM)  |
 +----------------------------------------------------------------+
 ```
 
@@ -42,7 +42,7 @@
 
 - **Reiniciar modalidad:** retorna a etapa 2 (propuesto).
 - **Cancelar:** libera preobligación.
-- Enum y camino exacto — **[PENDIENTE P-69]**.
+- Enum y camino exacto — **[PENDIENTE X-69]**.
 
 ## Validaciones visibles
 

@@ -1,4 +1,4 @@
-# Catálogo de roles (borrador P-24)
+# Catálogo de roles (borrador X-24)
 
 > **Estado:** borrador para discusión interna con el equipo / DM.  
 > **Documento transversal** de arquitectura: una sola fuente para todos los módulos (no duplicar catálogos por módulo).  
@@ -94,7 +94,7 @@ plat.subdere
 | Formulador DAF / verificación | `adq.formulador_presupuesto` | `adq.solped` | Finanzas › Presupuestos | [`1-solped.md`](../../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.3 |
 | Firmante CDP | `adq.firmante_cdp` | `adq.solped` | Finanzas › Presupuestos | [`1-solped.md`](../../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.5, §1.6 |
 | Gestor de compra | `adq.gestor_compra` | `adq.modalidad`, `adq.resolucion` | Finanzas › Abastecimiento | [`2-modalidad-compra.md`](../../modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md) §2.1, §2.3; resoluciones CA/CM/LP/TD (etapa 3); [`4-recepcion-conforme.md`](../../modulos/adquisiciones/procesos-transversales/4-recepcion-conforme.md) §4.5 |
-| Aprobador de modalidad | `adq.aprobador_modalidad` | `adq.modalidad` | Abastecimiento / jefatura DAF | [`2-modalidad-compra.md`](../../modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md) §2.2 (P-38); LP acto bases / adjudicación / comisión (v1) |
+| Aprobador de modalidad | `adq.aprobador_modalidad` | `adq.modalidad` | Abastecimiento / jefatura DAF | [`2-modalidad-compra.md`](../../modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md) §2.2 (X-38); LP acto bases / adjudicación / comisión (v1) |
 | Recepcionista | `adq.recepcionista` | `adq.recepcion` | Unidad receptora | [`4-recepcion-conforme.md`](../../modulos/adquisiciones/procesos-transversales/4-recepcion-conforme.md) §4.1, §4.3 |
 | Confirmante de recepción | `adq.confirmante_recepcion` | `adq.recepcion` | Unidad receptora / control | [`4-recepcion-conforme.md`](../../modulos/adquisiciones/procesos-transversales/4-recepcion-conforme.md) §4.2 |
 | Operador de pago | `adq.operador_pago` | `adq.pago` | Finanzas › Tesorería | [`5-pago.md`](../../modulos/adquisiciones/procesos-transversales/5-pago.md) §5.1–§5.4 |
@@ -118,10 +118,10 @@ La columna usa **código (sistema)**; el nombre de usuario está en §3.
 | `adq.gestor_compra` | (+ lector) `confirmProcurementModality`, `linkMpProcess`, `syncPurchaseOrderAccepted`, `releasePreCommitment` |
 | `adq.aprobador_modalidad` | (+ lector) `approveModalityDecision`, `rejectModalityDecision` |
 | `adq.recepcionista` | (+ lector) `registerReceipt` |
-| `adq.confirmante_recepcion` | (+ lector) `confirmReceipt`, `recordAccrual` *(según P-46)* |
+| `adq.confirmante_recepcion` | (+ lector) `confirmReceipt`, `recordAccrual` *(según X-46)* |
 | `adq.operador_pago` | (+ lector) `performThreeWayMatch`, `registerAccrual`, `issuePaymentDecree`, `executePayment` |
 
-`registerInventoryEntry` queda fuera hasta **P-44**.
+`registerInventoryEntry` queda fuera hasta **X-44**.
 
 ---
 
@@ -177,9 +177,9 @@ No es fuente de autorización. Sirve al prototipo y a QA de pantallas.
 
 ---
 
-## 7. SoD borrador (anticipación P-25)
+## 7. SoD borrador (anticipación X-25)
 
-Incompatibilidades **bloqueantes** ya exigidas en fichas/QA. Régimen de excepciones: ver consola `04-excepciones-sod` y **P-25**.
+Incompatibilidades **bloqueantes** ya exigidas en fichas/QA. Régimen de excepciones: ver consola `04-excepciones-sod` y **X-25**.
 
 | # | Código A | Código B (mismo usuario, contexto aplicable) | Base |
 |---|---|---|---|
@@ -187,7 +187,7 @@ Incompatibilidades **bloqueantes** ya exigidas en fichas/QA. Régimen de excepci
 | S2 | `adq.formulador_presupuesto` | `adq.firmante_cdp` | QA 9 P1 — verificador ≠ firmante CDP |
 | S3 | `adq.aprobador_unidad` o `adq.aprobador_modalidad` | `adq.confirmante_recepcion` | Quien aprueba la compra ≠ quien confirma recepción |
 | S4 | `plat.proponente_normativo` | `plat.aprobador_normativo` | Doble control parámetros normativos |
-| S5 | `adq.gestor_compra` (decisor 2.1) | `adq.aprobador_modalidad` | **P-38** — pendiente confirmar alcance con DM |
+| S5 | `adq.gestor_compra` (decisor 2.1) | `adq.aprobador_modalidad` | **X-38** — pendiente confirmar alcance con DM |
 
 Los intentos que violen SoD se rechazan y se auditan (`SEGREGATION_OF_DUTIES_VIOLATION`). La consola municipal muestra el **nombre (usuarios)** homólogo (§3 / §5); el motor evalúa por **código**.
 
@@ -200,7 +200,7 @@ Los intentos que violen SoD se rechazan y se auditan (`SEGREGATION_OF_DUTIES_VIO
 3. ¿`previewBudgetAvailability` limita líneas a la unidad del solicitante?
 4. ¿Asignación masiva desde un nodo del árbol (mismo rol a N usuarios) en v1 de la consola?
 5. ¿Partir `plat.admin_municipal` en roles más finos (accesos vs. integraciones vs. parámetros)?
-6. ¿Roles de solo lectura distintos por departamento, o basta `adq.lector` + scope de unidad en runtime (**P-51**)?
+6. ¿Roles de solo lectura distintos por departamento, o basta `adq.lector` + scope de unidad en runtime (**X-51**)?
 
 ---
 
@@ -209,4 +209,4 @@ Los intentos que violen SoD se rechazan y se auditan (`SEGREGATION_OF_DUTIES_VIO
 - Contrato Adquisiciones: [`modulos/adquisiciones/contracts.md`](../../modulos/adquisiciones/contracts.md)
 - Contrato plataforma: [`plataforma/contracts.md`](../../plataforma/contracts.md)
 - Fichas: `procesos-transversales/1-solped.md`, `4-recepcion-conforme.md`, `5-pago.md`; etapas 2–3 por modalidad
-- Pendiente: **P-24** (este documento), **P-25** (SoD completo), **P-38**, **P-51**
+- Pendiente: **X-24** (este documento), **X-25** (SoD completo), **X-38**, **X-51**

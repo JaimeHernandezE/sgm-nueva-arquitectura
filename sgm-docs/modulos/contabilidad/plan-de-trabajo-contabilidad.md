@@ -2,11 +2,15 @@
 
 **Proyecto:** SGM — Sistema de Gestión Municipal
 **Módulo:** Contabilidad
-**Versión:** 0.5 (borrador para revisión interna)
+**Versión:** 0.6 (borrador para revisión interna)
 **Fecha:** julio 2026
 **Estado:** propuesta de plan, no validada con DM
 
-**Cambios v0.5:** decisión de frontera **D-5 — DocDigital** (SGM origina decretos; DocDigital tramita y enumera). Referencia canónica: [`arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md`](../../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). Inventario de actos del módulo (baja, donación, cesión, decreto de pago) en [`integracion-docdigital.md`](../../arquitectura/especificacion/integracion-docdigital.md) §3. Reclasificación de la FEA: para actos administrativos es **cableado a DocDigital (C11)**, no construcción de FirmaGob; EEFF siguen sujetos a P-74 (¿DocDigital o C9?). Pendientes C-16…C-18. Estado `pending_signature` obligatorio en máquinas que dependen del acto firmado.
+**Gobierno del corpus:** [`../../plan-general.md`](../../plan-general.md). Criterios de calidad: plan general §7. **C-1** = ancla del ADR [`2026-07-atomicidad-efectos-borde.md`](../../arquitectura/decisiones/2026-07-atomicidad-efectos-borde.md). Categoría «expediente sin efecto de dominio»: [`2026-07-patrones-transversales-corpus.md`](../../arquitectura/decisiones/2026-07-patrones-transversales-corpus.md) §1.
+
+**Cambios v0.6 (B0 plan general):** dos conciliaciones bancarias (auxiliar diaria Tesorería vs contable mensual Contabilidad — hallazgo Tesorería). Remisión a **R-7** (ciclo subsidios COMPIN/Isapre ausente). Nota D-2 vs **X-44**. Prefijo transversal **X-nn**. Criterios de calidad remiten al plan general.
+
+**Cambios v0.5:** decisión de frontera **D-5 — DocDigital** (SGM origina decretos; DocDigital tramita y enumera). Referencia canónica: [`arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md`](../../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). Inventario de actos del módulo (baja, donación, cesión, decreto de pago) en [`integracion-docdigital.md`](../../arquitectura/especificacion/integracion-docdigital.md) §3. Reclasificación de la FEA: para actos administrativos es **cableado a DocDigital (C11)**, no construcción de FirmaGob; EEFF siguen sujetos a X-74 (¿DocDigital o C9?). Pendientes C-16…C-18. Estado `pending_signature` obligatorio en máquinas que dependen del acto firmado.
 
 **Cambios v0.4:** tres consecuencias derivadas del diagnóstico corregido en v0.3. Se introduce la categoría de brecha **“expediente sin efecto de dominio”** (§3.2.1), se declara la dependencia **EEFF ← snapshot de cierre** (§3.2.2), y se reclasifica la brecha de firma electrónica avanzada como **cableado y no construcción** (§3.2.3).
 
@@ -14,7 +18,7 @@
 
 **Cambios v0.2:** se incorpora **factoring y cesión de facturas** (proceso 32) al alcance del módulo, como macroproceso propio MC-7. Aporta el tercer punto del sistema donde un plazo legal dispara consecuencias, y un requisito de modelo no detectado antes: **el beneficiario del pago puede no ser el acreedor de la obligación**.
 
-**Convención de pendientes:** este módulo usa el prefijo **C-nn**, para no colisionar con la serie **P-nn** de Presupuestos. Las referencias cruzadas a Presupuestos conservan su prefijo original.
+**Convención de pendientes:** este módulo usa el prefijo **C-nn**, para no colisionar con la serie **P-nn** de Presupuestos. Arquitectura transversal usa **X-nn**. Las referencias cruzadas a Presupuestos conservan su prefijo original.
 
 ---
 
@@ -31,10 +35,10 @@ Este documento **no** es la especificación. Es el plan que la produce.
 | # | Decisión | Contenido |
 |---|----------|-----------|
 | D-1 | **Devengo dual** | Un mismo hecho económico produce **dos efectos con dueños distintos**: el **efecto presupuestario** (consume disponibilidad, afecta la ejecución) pertenece a Presupuestos; el **efecto patrimonial** (asiento de partida doble bajo NICSP-CGR) pertenece a Contabilidad. Ver §2.1 |
-| D-2 | **Alcance del módulo** | Incluye inventario y activo fijo (proceso 28), **factoring y cesión de facturas (proceso 32)**, conciliación bancaria (proceso 37) y reportes externos a CGR y SINIM (procesos 33, 35, 36) |
+| D-2 | **Alcance del módulo** | Incluye inventario y activo fijo (proceso 28), **factoring y cesión de facturas (proceso 32)**, **conciliación bancaria contable mensual** (proceso 37; distinta de la auxiliar diaria de Tesorería) y reportes externos a CGR y SINIM (procesos 33, 35, 36). **Nota B0:** el alcance de Inventario/AF en *licitación* está abierto en **X-44** (contradicción aparente con «cinco módulos»; ver plan general §8). |
 | D-3 | **Profundidad** | Módulo completo, con el **núcleo no diferible marcado explícitamente** dentro. Coherente con la regla de no recortar el modelo de datos aunque la implementación sea parcial |
 | D-4 | **Método** | Réplica del método de Adquisiciones y Presupuestos: fichas de proceso por etapa → modelo de entidades en naming técnico inglés → contratos de API → wireframes → especificaciones transversales |
-| D-5 | **Tramitación de decretos (DocDigital)** | Decretos de baja, donación, cesión de factura y decreto de pago (procesos 28 y 32) se originan en SGM y se tramitan en DocDigital. Folio oficial externo; correlativo interno solo trazabilidad. Decisión canónica transversal. El decreto de pago queda bajo **P-74 / C-16** por frecuencia operativa. Condicionado a **P-72**. |
+| D-5 | **Tramitación de decretos (DocDigital)** | Decretos de baja, donación, cesión de factura y decreto de pago (procesos 28 y 32) se originan en SGM y se tramitan en DocDigital. Folio oficial externo; correlativo interno solo trazabilidad. Decisión canónica transversal. El decreto de pago queda bajo **X-74 / C-16** por frecuencia operativa. Condicionado a **X-72**. |
 
 ### 2.1 Devengo dual: qué resuelve y qué problema abre
 
@@ -53,7 +57,7 @@ Los dos efectos **no pueden existir por separado**. Un devengo presupuestario si
 
 Esto choca de frente con el principio de independencia modular con contratos versionados. No es un detalle de implementación: es probablemente **el requisito técnico más duro de toda la arquitectura SGM**, y hay que resolverlo en la especificación, no dejarlo al adjudicatario.
 
-> **PENDIENTE C-1 (estructural):** Definir el mecanismo que garantiza la atomicidad del devengo dual entre Presupuestos y Contabilidad. Candidatos: transacción distribuida con compensación explícita (patrón saga con reversa contable), o un único punto de commit con el otro módulo como suscriptor obligatorio y reconciliación forzada. Requiere decisión arquitectónica, no solo de modelado. **Bloquea F4 de ambos módulos.**
+> **PENDIENTE C-1 (estructural):** Definir el mecanismo que garantiza la atomicidad del devengo dual entre Presupuestos y Contabilidad. Candidatos: transacción distribuida con compensación explícita (patrón saga con reversa contable), o un único punto de commit con el otro módulo como suscriptor obligatorio y reconciliación forzada. Es el ancla operativa del ADR [`2026-07-atomicidad-efectos-borde.md`](../../arquitectura/decisiones/2026-07-atomicidad-efectos-borde.md) (tres manifestaciones). Requiere decisión arquitectónica, no solo de modelado. **Bloquea F4 de ambos módulos.**
 
 ---
 
@@ -88,6 +92,8 @@ A diferencia de Presupuestos, que tenía dos procesos, Contabilidad tiene **diez
 Son dos ciclos de vida diferentes para la misma entidad. Odoo lo refleja con `status` y `received_status` separados en `account.gov.entry.order`.
 
 **3. El cierre mensual está condicionado por la conciliación bancaria.** El proceso 33 exige verificar que los saldos coincidan con el *Certificado de Saldos Bancarios* que genera el Tesorero Municipal con la conciliación. **Contabilidad no puede cerrar el mes sin un insumo que produce Tesorería.** Es una dependencia dura entre módulos, con efecto de bloqueo.
+
+**Precisión B0 (plan Tesorería, hallazgo 1):** hay **dos** conciliaciones, no una. Tesorería realiza la **conciliación bancaria auxiliar diaria**; Contabilidad realiza la **conciliación contable mensual** (proceso 37), que verifica contra las auxiliares remesas. El certificado de saldos es artefacto de Tesorería (T-5 / C-10). Ver [`2026-07-patrones-transversales-corpus.md`](../../arquitectura/decisiones/2026-07-patrones-transversales-corpus.md) §4.
 
 **4. El cierre anual (34) es la contraparte de la apertura del ejercicio de Presupuestos (26.2.8).** Traspaso de cuentas de deudores y acreedores presupuestarios, cierre de ingresos y gastos, contabilización de patrimonio. Cierre y apertura son un mismo mecanismo visto desde dos módulos, y hoy están descritos en documentos distintos sin referencia mutua. Ver C-2 y P-6 de Presupuestos.
 
@@ -175,9 +181,9 @@ Dos consecuencias:
 
 FirmaGob ya opera en la plataforma: los decretos TUPA del factoring lo usan. Lo que falta es conectarlo al flujo de reportes, no incorporarlo.
 
-**Reclasificación v0.5 (DocDigital):** para los **actos administrativos** del módulo (decretos de baja, donación, cesión, decreto de pago), la FEA llega **incluida en DocDigital** (C11). La brecha no es construir FirmaGob ni siquiera cablear C9 acto a acto: es **cablear la tramitación DocDigital** y verificar extremo a extremo (P-72). C9 permanece para documentos que no sean esos actos.
+**Reclasificación v0.5 (DocDigital):** para los **actos administrativos** del módulo (decretos de baja, donación, cesión, decreto de pago), la FEA llega **incluida en DocDigital** (C11). La brecha no es construir FirmaGob ni siquiera cablear C9 acto a acto: es **cablear la tramitación DocDigital** y verificar extremo a extremo (X-72). C9 permanece para documentos que no sean esos actos.
 
-Los **Estados Financieros (proceso 35)** quedan abiertos: ¿tramitación DocDigital o firma directa C9? — **C-16 / P-74**. Hasta cerrarlo, se mantiene la exigencia de verificación funcional de extremo a extremo antes de dar la FEA por disponible — el propio antecedente de FirmaGob enseña que configuración presente no equivale a integración funcional.
+Los **Estados Financieros (proceso 35)** quedan abiertos: ¿tramitación DocDigital o firma directa C9? — **C-16 / X-74**. Hasta cerrarlo, se mantiene la exigencia de verificación funcional de extremo a extremo antes de dar la FEA por disponible — el propio antecedente de FirmaGob enseña que configuración presente no equivale a integración funcional.
 
 Reclasificar esta brecha cambia su estimación de esfuerzo de forma relevante y evita sobredimensionar MC-6 / MC-7 en la licitación.
 
@@ -283,12 +289,13 @@ Naming técnico en inglés, consistente con Adquisiciones y Presupuestos. Lista 
 | **Presupuestos** | Presupuestos ↔ Contabilidad | **Devengo dual**: efecto presupuestario y patrimonial del mismo hecho, con garantía de atomicidad | **Crítica — ver C-1** |
 | **Presupuestos** | Contabilidad → Presupuestos | Cierre anual: saldos de deudores y acreedores presupuestarios que alimentan la apertura del ejercicio siguiente | **Alta** |
 | **Adquisiciones** | Adq → Contabilidad | Recepción conforme y factura asociada; marca de bien inventariable que dispara el alta de activo | **Alta** |
-| **Tesorería** | Tes → Contabilidad | **Certificado de Saldos Bancarios** — condición de cierre mensual; pago que genera el egreso pagado; percepción de ingresos | **Alta y bloqueante** |
-| **Tesorería** | Contabilidad → Tes | Egresos devengados disponibles para decreto de pago | Alta |
+| **Tesorería** | Tes → Contabilidad | **Certificado de Saldos Bancarios** — condición de cierre mensual; **conciliación auxiliar diaria** remesa para verificación; pago que genera el egreso pagado; percepción de ingresos | **Alta y bloqueante** |
+| **Tesorería** | Contabilidad → Tes | Egresos devengados disponibles para decreto de pago; **conciliación contable mensual** (proceso 37) que verifica contra auxiliares | Alta |
 | **Tesorería** | Contabilidad → Tes | **Orden de suspensión de pago** por cesión detectada, sobre un decreto en curso; y beneficiario efectivo distinto del acreedor | **Alta y con efecto de interrupción** |
 | **SII** | SII → Contabilidad | Registro Público Electrónico de Transferencias de Créditos: cesiones que afectan facturas del municipio | Alta (externa) |
 | **Tesorería / unidades generadoras** | → Contabilidad | Constitución de roles y su certificación, para el devengo de ingresos | Media |
 | **RRHH** | RRHH → Contabilidad | Nómina y honorarios: mapeo de reglas salariales por calidad jurídica a cuentas de débito y crédito | Alta |
+| **RRHH / Tesorería** | RRHH → Cont/Tes | **Ciclo de ingresos por subsidios COMPIN/Isapre** (licencias médicas) — no modelado; ver **R-7**. No se cierra aquí. | Media (brecha) |
 | **Unidad de Control** | Contabilidad → Control | Datos del informe trimestral del art. 29 d) LOCM | Media |
 | **CGR** | Contabilidad → externo | Archivo plano mensual; Estados Financieros con firma electrónica avanzada | Alta (obligación legal) |
 | **SINIM** | Contabilidad → externo | BEP trimestral, FCM, Ley 20.237, incluyendo Educación y Salud | Alta (obligación legal) |
@@ -384,9 +391,9 @@ Duraciones preliminares. F0 no puede saltarse: C-1 condiciona el modelo de dos m
 | **C-9** | Catastro de bienes inmuebles: alcance y relación con activo fijo | F2 | DM |
 | **C-10** | Comportamiento del cierre mensual si Tesorería no emite el Certificado de Saldos Bancarios en plazo | F3 | Equipo + DM |
 | **C-11** | Propiedad del informe del art. 29 d): Contabilidad provee, Control emite. Definir el corte | F2 | DM + Control |
-| **C-16** | Alcance DocDigital en el módulo: ¿EEFF y decreto de pago van por C11 o quedan en C9 / circuito interno? Alineado a P-74 | F2 / MC-6–MC-7 | Equipo + DM |
-| **C-17** | Vía alternativa de decretos contables sin DocDigital (P-73); efecto en suspensión de pago y factoring | F3 | Equipo + Jurídica |
-| **C-18** | Folios históricos de decretos Odoo (`tesoreria_gov_cl` / TUPA factoring) vs. `ExternalFolio` (P-75) | F4 | Equipo interno |
+| **C-16** | Alcance DocDigital en el módulo: ¿EEFF y decreto de pago van por C11 o quedan en C9 / circuito interno? Alineado a X-74 | F2 / MC-6–MC-7 | Equipo + DM |
+| **C-17** | Vía alternativa de decretos contables sin DocDigital (X-73); efecto en suspensión de pago y factoring | F3 | Equipo + Jurídica |
+| **C-18** | Folios históricos de decretos Odoo (`tesoreria_gov_cl` / TUPA factoring) vs. `ExternalFolio` (X-75) | F4 | Equipo interno |
 
 ---
 

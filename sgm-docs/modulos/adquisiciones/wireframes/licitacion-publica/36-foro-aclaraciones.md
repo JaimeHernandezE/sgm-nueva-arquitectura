@@ -46,7 +46,7 @@
 
 - **Sin preguntas:** el período transcurre sin gestión — el sub-paso se marca completado sin acción del usuario al vencer el plazo de preguntas de las bases.
 - **Con preguntas (camino feliz):** el comprador responde en MP a todas simultáneamente mediante el documento oficial, sin identificar preguntantes; SGM registra el hito y el documento en el expediente. Evento `ClarificationRecorded`.
-- **Aclaración que modifica sustantivamente:** advertencia visible — puede requerir `AdministrativeAct` complementario y extensión de plazo; criterio exacto de cuándo exige acto formal **[PENDIENTE P-65]**, no resuelto automáticamente por el sistema.
+- **Aclaración que modifica sustantivamente:** advertencia visible — puede requerir `AdministrativeAct` complementario y extensión de plazo; criterio exacto de cuándo exige acto formal **[PENDIENTE X-65]**, no resuelto automáticamente por el sistema.
 - **Modo degradado:** sin lecturas MP, registro manual del documento de aclaración únicamente.
 
 ## Validaciones visibles

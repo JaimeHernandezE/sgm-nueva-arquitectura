@@ -4,7 +4,7 @@
 
 *Toda la etapa se rige por el estándar MP ↔ SGM de [`plantilla-maestra-sgm.md`](../../../arquitectura/instrucciones/plantilla-maestra-sgm.md) §5: integración solo lectura, clasificación Informativo/Gestión, lecturas confirmadas vs. deseadas y modo degradado. Lectura confirmada disponible hoy: **OC Aceptada**. La lectura de proceso **Publicado** es **deseada** y forma parte de la doble validación previa al compromiso.*
 
-*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24).*
+*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (X-24).*
 
 **Fuente base:** diagrama BPMN de carriles `Adquisiciones: Trato Directo (SGM Integrado)` + overview de la modalidad + tabla de vinculación en [`2-modalidad-compra.md`](../procesos-transversales/2-modalidad-compra.md) §2.3.
 
@@ -42,7 +42,7 @@
 | Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `official_document_ref` | El oficio o documento de respaldo es obligatorio. | blocking | integridad:campo_requerido |
 **Edge cases:**
 - Representación/reparo → proceso se cae; obligación de licitar (overview TD). El expediente no avanza a 3.2; se abre tarea de reversión a etapa 2.
-- Canal de consulta de estado CGR — **[PENDIENTE P-64]** (mismo que LP; no asumir API).
+- Canal de consulta de estado CGR — **[PENDIENTE X-64]** (mismo que LP; no asumir API).
 
 ---
 
@@ -86,8 +86,8 @@
 | Vincular proceso MP | `linkMpProcess` | `MP_PROVIDER_UNAVAILABLE` | — | Mercado Público no está disponible para validar el vínculo. | blocking | integridad:estado_expediente |
 **Edge cases:**
 - Los cuatro bloqueos de 2.3 aplican idénticos.
-- Publicación fuera del plazo de 24 h → riesgo administrativo; SGM no bloquea por reloj legal (fuera de alcance de control automático) pero el expediente deja trazabilidad de `mp_linked_at` vs. fecha de firma del acto — **[PENDIENTE P-71]** si se exige control bloqueante de plazo.
-- API MP no disponible — **[PENDIENTE P-32]**.
+- Publicación fuera del plazo de 24 h → riesgo administrativo; SGM no bloquea por reloj legal (fuera de alcance de control automático) pero el expediente deja trazabilidad de `mp_linked_at` vs. fecha de firma del acto — **[PENDIENTE X-71]** si se exige control bloqueante de plazo.
+- API MP no disponible — **[PENDIENTE X-32]**.
 
 ---
 
@@ -120,7 +120,7 @@
 | 3 | Operación | `syncPurchaseOrderAccepted` | — (Adquisiciones) | Asíncrona (gatillada por lectura) | `PurchaseOrder` + `BudgetCommitment` |
 | 4 | Evento | `PurchaseOrderAccepted` / `BudgetCommitmentCreated` | — | Asíncrona | Hito contable |
 
-> **Clasificación del borde de lectura:** asíncrona, agnóstica de push vs. polling (mismo patrón CA/CM/LP vía `MpProcessSnapshot.source`). El mecanismo exacto de entrega (webhook vs. polling) queda abierto — **[PENDIENTE P-70]**.
+> **Clasificación del borde de lectura:** asíncrona, agnóstica de push vs. polling (mismo patrón CA/CM/LP vía `MpProcessSnapshot.source`). El mecanismo exacto de entrega (webhook vs. polling) queda abierto — **[PENDIENTE X-70]**.
 
 **Validaciones:**
 
@@ -131,7 +131,7 @@
 | Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `MP_PROVIDER_UNAVAILABLE` | — | Mercado Público no está disponible para leer el estado de la OC. | blocking | integridad:estado_expediente |
 | Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `PRE_COMMITMENT_INACTIVE` | — | La preobligación ya no está activa; no se puede registrar el compromiso cierto. | blocking | integridad:estado_expediente |
 **Edge cases:**
-- Monto real ≠ preobligación → mismo ajuste que CA §3.4 (**[PENDIENTE P-40]** si falta saldo).
+- Monto real ≠ preobligación → mismo ajuste que CA §3.4 (**[PENDIENTE X-40]** si falta saldo).
 - Preobligación revertida — código `PRE_COMMITMENT_INACTIVE`.
 - Proveedor de presupuesto caído → reintento; expediente en "aceptada, compromiso pendiente".
 
@@ -170,7 +170,7 @@
 |---|---|---|---|---|---|---|
 | Confirmar decisión (cancelar) | `releasePreCommitment` | `BUDGET_PROVIDER_UNAVAILABLE` | — | El proveedor de presupuesto no está disponible. | blocking | integridad:estado_expediente |
 **Edge cases:**
-- Camino exacto post-rechazo (¿reinicio desde 2.1 con nueva Resolución Fundada? ¿cancelación total?) — **[PENDIENTE P-69]** validar con unidad de negocio / división de municipalidades. Mientras tanto el prototipo expone las dos opciones propuestas sin cerrar la regla de negocio.
+- Camino exacto post-rechazo (¿reinicio desde 2.1 con nueva Resolución Fundada? ¿cancelación total?) — **[PENDIENTE X-69]** validar con unidad de negocio / división de municipalidades. Mientras tanto el prototipo expone las dos opciones propuestas sin cerrar la regla de negocio.
 
 ---
 

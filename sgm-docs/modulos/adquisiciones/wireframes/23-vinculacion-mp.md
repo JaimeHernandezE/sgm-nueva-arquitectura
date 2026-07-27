@@ -56,7 +56,7 @@ Este wireframe cubre la **ejecución inmediata** (Compra Ágil / Convenio Marco,
 - **Normal:** código prellenado (si viene de deep link) o vacío para ingreso manual.
 - **Vinculado:** pantalla pasa a solo lectura; SOLPED bloqueada "En proceso de cotización" (u estado equivalente de la modalidad).
 - **Error de validación:** banner con el `error_code` correspondiente, vínculo no se persiste.
-- **MP no disponible:** banner `MP_PROVIDER_UNAVAILABLE` — **[PENDIENTE P-32]** (resiliencia ante servicios externos), sin registro provisional definido.
+- **MP no disponible:** banner `MP_PROVIDER_UNAVAILABLE` — **[PENDIENTE X-32]** (resiliencia ante servicios externos), sin registro provisional definido.
 
 ## Validaciones visibles
 
@@ -69,10 +69,10 @@ Este wireframe cubre la **ejecución inmediata** (Compra Ágil / Convenio Marco,
 | Organismo comprador coincide con el tenant | `MP_PROCESS_ORGANISM_MISMATCH` | blocking |
 | Tipo de proceso MP coincide con la modalidad confirmada | `MP_PROCESS_TYPE_MISMATCH` | blocking |
 | Código no vinculado previamente a otro expediente | `MP_PROCESS_ALREADY_LINKED` | blocking |
-| API de MP disponible al validar | `MP_PROVIDER_UNAVAILABLE` | blocking — **[PENDIENTE P-32]** |
+| API de MP disponible al validar | `MP_PROVIDER_UNAVAILABLE` | blocking — **[PENDIENTE X-32]** |
 
 ## Notas
 
 - El botón "Simular resultado" y el selector de escenario son artefactos del prototipo (validación UX), no aparecen en la ficha ni en `contracts.md` — permiten mostrar los cinco edge cases sin backend real.
-- **[PENDIENTE P-33]** Timer de escalamiento si el usuario crea el proceso en MP pero no registra el código en SGM.
+- **[PENDIENTE X-33]** Timer de escalamiento si el usuario crea el proceso en MP pero no registra el código en SGM.
 - La etapa 3 (Resolución de Compra, específica de Compra Ágil) no tiene prototipo HTML todavía — el enlace de continuación vuelve al expediente.

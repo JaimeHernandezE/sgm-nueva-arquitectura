@@ -60,7 +60,7 @@ Metadatos del sub-paso: quién del municipio actúa, con qué rol, en qué siste
 | Materia | Valor |
 |---|---|
 | **Unidad municipal** | Departamento u oficina del municipio que ejecuta o es titular del paso. Valores típicos: Unidad Solicitante / DAF Finanzas / DAF Abastecimiento / Contabilidad / Tesorería / `—` (sin unidad municipal: paso automático o actor externo). |
-| **Rol** | Rol funcional del actor humano según el catálogo RBAC transversal ([`catalogo-roles.md`](../especificacion/catalogo-roles.md) — **[PENDIENTE P-24]**; [`seguridad.md`](../especificacion/seguridad.md) §3). Formato: **nombre (usuarios)** + **código (sistema)** enlazado — ej. `Solicitante ([adq.solicitante](../especificacion/catalogo-roles.md))`. El `name` es la etiqueta legible; el `code` ancla RBAC. Valor `N/A` si el paso es automático o el actor es externo. Legado en fichas no migradas: Usuario / Aprobador. |
+| **Rol** | Rol funcional del actor humano según el catálogo RBAC transversal ([`catalogo-roles.md`](../especificacion/catalogo-roles.md) — **[PENDIENTE X-24]**; [`seguridad.md`](../especificacion/seguridad.md) §3). Formato: **nombre (usuarios)** + **código (sistema)** enlazado — ej. `Solicitante ([adq.solicitante](../especificacion/catalogo-roles.md))`. El `name` es la etiqueta legible; el `code` ancla RBAC. Valor `N/A` si el paso es automático o el actor es externo. Legado en fichas no migradas: Usuario / Aprobador. |
 | **Plataforma** | Sistema donde se realiza la acción principal de este sub-paso (no todos los sistemas tocados; las integraciones adicionales van en §3.5). Valores: SGM / Mercado Público / Otra (especificar) / secuencia explícita (ej. `SGM → MP (deep link)`). |
 | **Optativo** | `Verdadero` si el sub-paso puede omitirse en el flujo sin invalidar el proceso; `Falso` si es obligatorio para continuar. Si la omisión es condicional, documentar la condición en §3.3. |
 | **Interacción MP** *(solo si aplica)* | Obligatoria en todo sub-paso con Plataforma = Mercado Público o cuyo avance dependa de una lectura MP. Valores: Informativo / Gestión / Gestión condicional, según el estándar de §5.1. |
@@ -106,7 +106,7 @@ Formato (tabla; una fila por regla; agrupar por acción de UI):
 | Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
 |---|---|---|---|---|---|---|
 | Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `requesting_unit` | El campo Unidad solicitante es obligatorio. | blocking | `integridad:campo_requerido` |
-| Enviar a aprobación | `submitPurchaseRequest` | `FOUNDED_RESOLUTION_REQUIRED` | `founded_resolution_attachment` | Trato directo requiere resolución fundada adjunta. | blocking | `Ley 19.886 — causal de trato directo; ⚠ P-36` |
+| Enviar a aprobación | `submitPurchaseRequest` | `FOUNDED_RESOLUTION_REQUIRED` | `founded_resolution_attachment` | Trato directo requiere resolución fundada adjunta. | blocking | `Ley 19.886 — causal de trato directo; ⚠ X-36` |
 
 | Columna | Contenido |
 |---|---|

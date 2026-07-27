@@ -56,4 +56,4 @@
 ## Notas
 
 - Mismo mecanismo y misma entidad `ComptrollerReview` que 3.4 — el `administrative_act_id` referenciado aquí es el de la adjudicación (3.10), no el de las bases (3.3).
-- Canal de consulta de estado integrable **[PENDIENTE P-64]**.
+- Canal de consulta de estado integrable **[PENDIENTE X-64]**.

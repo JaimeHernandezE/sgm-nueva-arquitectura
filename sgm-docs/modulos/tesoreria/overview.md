@@ -11,7 +11,7 @@
 
 El **decreto de pago** (proceso 38; también etapa 5 de Adquisiciones y factoring en Contabilidad) se originará en SGM y se tramitará en **DocDigital** (visación, FEA, enumeración). Folio oficial = externo; correlativo interno = trazabilidad. Decisión canónica: [`arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md`](../../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). Inventario y brechas: [`integracion-docdigital.md`](../../arquitectura/especificacion/integracion-docdigital.md).
 
-Detalle en el plan: **D-6**, pendiente **T-11** (alineado a P-74). Mecanismo de integración — **[PENDIENTE P-72]** (bloqueante).
+Detalle en el plan: **D-6**, pendiente **T-11** (alineado a X-74). Mecanismo de integración — **[PENDIENTE X-72]** (bloqueante).
 
 ## Referencias
 

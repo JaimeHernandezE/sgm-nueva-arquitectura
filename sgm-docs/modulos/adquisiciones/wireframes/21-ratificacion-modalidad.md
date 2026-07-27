@@ -94,7 +94,7 @@
 ## Notas
 
 - El gateway completo (V1–V8) y sus umbrales configurables (`NormativeParameter`) están descritos en `procesos-transversales/2-modalidad-compra.md` §2.1.
-- **[PENDIENTE P-34]** Este formulario no expone edición de una `ModalityDecision` ya confirmada — la reversión post-confirmación requiere flujo aparte, aún sin definir.
-- **[PENDIENTE P-37]** Los valores exactos de `NormativeParameter` (tramos LP, umbrales de garantía) mostrados aquí son ilustrativos — pendientes de carga inicial verificada contra norma vigente.
+- **[PENDIENTE X-34]** Este formulario no expone edición de una `ModalityDecision` ya confirmada — la reversión post-confirmación requiere flujo aparte, aún sin definir.
+- **[PENDIENTE X-37]** Los valores exactos de `NormativeParameter` (tramos LP, umbrales de garantía) mostrados aquí son ilustrativos — pendientes de carga inicial verificada contra norma vigente.
 - Al confirmar, el sistema instancia dinámicamente los `CaseStep` del subproceso de la modalidad seleccionada (visible en el expediente, no en este formulario).
-- La casilla "¿Solicitar aprobación de jefatura?" operacionaliza como decisión por expediente el sub-paso 2.2, mientras su existencia formal no se ratifique con la DM (**[PENDIENTE P-38]**) — no reemplaza esa ratificación, solo permite ejercitar ambos caminos del flujo hoy.
+- La casilla "¿Solicitar aprobación de jefatura?" operacionaliza como decisión por expediente el sub-paso 2.2, mientras su existencia formal no se ratifique con la DM (**[PENDIENTE X-38]**) — no reemplaza esa ratificación, solo permite ejercitar ambos caminos del flujo hoy.

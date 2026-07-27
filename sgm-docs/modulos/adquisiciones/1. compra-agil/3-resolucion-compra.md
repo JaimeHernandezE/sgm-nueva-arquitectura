@@ -4,7 +4,7 @@
 
 *Toda la etapa se rige por el estándar MP ↔ SGM de `plantilla-maestra-sgm.md` §5: integración solo lectura, clasificación Informativo/Gestión, lecturas confirmadas vs. deseadas y modo degradado. Lectura confirmada disponible hoy: **OC Aceptada**. Las demás lecturas de esta etapa son **deseadas** (dependen de la negociación con ChileCompra) y cada sub-paso documenta su modo degradado.*
 
-*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24).*
+*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (X-24).*
 
 ---
 
@@ -70,10 +70,10 @@
 **Validaciones:** Sin validaciones de formulario — selección ocurre en MP; `QuotationResult` solo por sync (sin transcripción ni escritura de usuario en SGM).
 
 **Edge cases:**
-- Usuario no gestiona la selección en MP dentro de un plazo razonable → timer de escalamiento sobre el `CaseStep` (propiedad de flujos, `musts-arquitectura.md` §10.4) — **[PENDIENTE P-33]** timers de escalamiento configurables.
+- Usuario no gestiona la selección en MP dentro de un plazo razonable → timer de escalamiento sobre el `CaseStep` (propiedad de flujos, `musts-arquitectura.md` §10.4) — **[PENDIENTE X-33]** timers de escalamiento configurables.
 - Sin lectura disponible → el expediente permanece en `Pendiente en MP`; no hay transcripción de proveedor/monto en SGM (plantilla §5.3).
 
-> **[PENDIENTE P-39]** Visto bueno interno pre-OC como control configurable por municipio (con DM) — la ley no lo exige en Compra Ágil, pero municipios con control interno más estricto podrían quererlo. Si se confirma, este sub-paso pasa a Gestión condicional con un aprobador DAF y aplicaría segregación respecto de quien creó la SOLPED. Decisión suggest vs. enforce que debe resolverse explícitamente.
+> **[PENDIENTE X-39]** Visto bueno interno pre-OC como control configurable por municipio (con DM) — la ley no lo exige en Compra Ágil, pero municipios con control interno más estricto podrían quererlo. Si se confirma, este sub-paso pasa a Gestión condicional con un aprobador DAF y aplicaría segregación respecto de quien creó la SOLPED. Decisión suggest vs. enforce que debe resolverse explícitamente.
 
 ---
 
@@ -145,7 +145,7 @@
 |---|---|---|---|---|---|---|
 | Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `BUDGET_UNAVAILABLE` | — | La línea presupuestaria no tiene saldo disponible para el monto real de la OC. | blocking | DL 1.263 — fase de compromiso presupuestario |
 **Edge cases:**
-- **Monto real > preobligación y la línea no tiene saldo para la diferencia** → `commitBudget` responde `BUDGET_UNAVAILABLE` (`severity: blocking`). Situación anómala grave (la OC ya está aceptada, el vínculo legal existe, pero el compromiso contable no puede registrarse): tarea urgente a DAF Finanzas para regularización presupuestaria (modificación/suplemento) — **[PENDIENTE P-40]** el procedimiento de regularización no puede resolverlo el sistema solo, pero debe impedir que pase silenciosamente.
+- **Monto real > preobligación y la línea no tiene saldo para la diferencia** → `commitBudget` responde `BUDGET_UNAVAILABLE` (`severity: blocking`). Situación anómala grave (la OC ya está aceptada, el vínculo legal existe, pero el compromiso contable no puede registrarse): tarea urgente a DAF Finanzas para regularización presupuestaria (modificación/suplemento) — **[PENDIENTE X-40]** el procedimiento de regularización no puede resolverlo el sistema solo, pero debe impedir que pase silenciosamente.
 - Monto real < preobligación → compromiso por el real y **liberación automática del excedente** de la preobligación (regla estándar, sin intervención).
 - Proveedor de presupuesto no disponible al recibir la lectura → reintento con retroceso; el expediente queda en estado intermedio visible ("aceptada, compromiso pendiente") — nunca se pierde el hito ni se duplica el compromiso (idempotencia por `purchase_order_ref`).
 
@@ -195,7 +195,7 @@
 | Optativo | Verdadero *(solo ocurre si el proceso fracasa)* |
 | Interacción MP | **Gestión** |
 
-**Detalle:** Nadie cotizó tras ambas rondas (desierto), o el proceso quedó sin ofertas viables (fallido, por acumulación de 3.3/3.5). Tarea de decisión: **(a) republicar** — nueva cotización en MP, típicamente con condiciones ajustadas; nuevo ID de proceso; re-vinculación conforme a 2.3 sobre el mismo expediente; **(b) reevaluar** — el monto, las condiciones o la modalidad no eran adecuados: reversión formal a la etapa 2 (nueva `ModalityDecision`, según el procedimiento de reversión pendiente allí — **[PENDIENTE P-34]**) o cancelación del expediente con liberación total de la preobligación y notificación a la unidad solicitante.
+**Detalle:** Nadie cotizó tras ambas rondas (desierto), o el proceso quedó sin ofertas viables (fallido, por acumulación de 3.3/3.5). Tarea de decisión: **(a) republicar** — nueva cotización en MP, típicamente con condiciones ajustadas; nuevo ID de proceso; re-vinculación conforme a 2.3 sobre el mismo expediente; **(b) reevaluar** — el monto, las condiciones o la modalidad no eran adecuados: reversión formal a la etapa 2 (nueva `ModalityDecision`, según el procedimiento de reversión pendiente allí — **[PENDIENTE X-34]**) o cancelación del expediente con liberación total de la preobligación y notificación a la unidad solicitante.
 
 **Lecturas MP:** proceso desierto — **deseada**.
 **Modo degradado:** vencido el plazo de cotización sin lectura de selección (3.2), SGM muestra el paso pendiente / posible desierto y deep link; la tarea de decisión (republicar / reevaluar / cancelar) se habilita cuando llega la lectura de desierto o el usuario actúa tras sync — **sin** transcribir en SGM el estado MP.
@@ -221,7 +221,7 @@
 | Confirmar decisión (cancelar) | `releasePreCommitment` | `BUDGET_PROVIDER_UNAVAILABLE` | — | El proveedor de presupuesto no está disponible. | blocking | integridad:estado_expediente |
 **Edge cases:**
 - Republicación reiterada sin resultado (2+ intentos) → advertencia asesora sugiriendo reevaluar condiciones o modalidad; candidato a métrica de reportería (procesos desiertos por unidad/rubro).
-- Cancelación con preobligación ya vencida de saldo anual → coordinar con regla de cierre presupuestario — **[PENDIENTE P-41]** con Finanzas.
+- Cancelación con preobligación ya vencida de saldo anual → coordinar con regla de cierre presupuestario — **[PENDIENTE X-41]** con Finanzas.
 
 ---
 

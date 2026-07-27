@@ -45,7 +45,7 @@ Sin botón de confirmación en SGM: la selección ocurre íntegramente en MP: el
 - **Pendiente en MP (default):** sin campos editables; badge `Pendiente en MP` + deep link.
 - **Sincronizado (camino feliz):** `QuotationResult` creado por sync; el `CaseStep` avanza a 3.7 (Emisión y aceptación de la OC).
 - **Sin lectura:** el expediente permanece en `Pendiente en MP`; no hay transcripción manual de proveedor/monto en SGM (plantilla §5.3).
-- **Usuario no gestiona la selección en MP dentro de un plazo razonable:** candidato a timer de escalamiento (**[PENDIENTE P-33]**).
+- **Usuario no gestiona la selección en MP dentro de un plazo razonable:** candidato a timer de escalamiento (**[PENDIENTE X-33]**).
 - **Inhabilitación sobreviniente del proveedor seleccionado:** edge case a tratar — no cubierto por el camino feliz de este wireframe.
 
 ## Validaciones visibles
@@ -54,5 +54,5 @@ Ninguna regla bloqueante propia — el paso es informativo; el `CaseStep` avanza
 
 ## Notas
 
-- Interacción MP: **Informativo** — candidato a **Gestión** optativa (**[PENDIENTE P-39]**: VB interno pre-OC configurable por municipio, igual que CA 3.2).
+- Interacción MP: **Informativo** — candidato a **Gestión** optativa (**[PENDIENTE X-39]**: VB interno pre-OC configurable por municipio, igual que CA 3.2).
 - `QuotationResult` es la misma entidad que usa Compra Ágil en su 3.2 (patrón compartido, sin transcripción manual — ver `entidades-core.md`).

@@ -19,7 +19,7 @@ Mapeo entre el término técnico usado en las entidades (`modelo-datos/entidades
 | `Payment` | Pago / Ejecución de pago | |
 | `AgileQuoteProcess` | Proceso de cotización (Compra Ágil) | Puente de trazabilidad SGM↔MP |
 | `ModalityDecision` | Decisión de Modalidad | Ratificación/selección de modalidad de compra vía gateway de validación (V1–V8) |
-| `ModalityDecisionApproval` | Aprobación de Decisión de Modalidad | Aprobación de jefatura, existencia pendiente de ratificar — **[PENDIENTE P-38]** |
+| `ModalityDecisionApproval` | Aprobación de Decisión de Modalidad | Aprobación de jefatura, existencia pendiente de ratificar — **[PENDIENTE X-38]** |
 | `NormativeParameter` | Parámetro Normativo | Umbral legal configurable (monto Compra Ágil, Toma de Razón, tramos LP, garantías); administra SUBDERE a nivel plataforma |
 | `UtmValue` | Valor UTM | Valor mensual de la Unidad Tributaria Mensual, usado para conversión CLP↔UTM |
 | `QuotationResult` | Resultado de Cotización | Selección de oferta al cierre del período de cotización |

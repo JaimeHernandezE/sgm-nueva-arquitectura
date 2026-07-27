@@ -103,5 +103,5 @@ Tres momentos secuenciales en la misma pantalla, como pasos internos.
 
 ## Notas
 
-- Regla SoD propuesta: integrantes ≠ requirente de la SOLPED ni elaborador de bases técnicas — alcance exacto de las inhabilidades **[PENDIENTE P-66]**, validar con jurídica.
-- Comisión formal obligatoria sobre umbral `NormativeParameter` — carga verificada **[PENDIENTE P-37]**.
+- Regla SoD propuesta: integrantes ≠ requirente de la SOLPED ni elaborador de bases técnicas — alcance exacto de las inhabilidades **[PENDIENTE X-66]**, validar con jurídica.
+- Comisión formal obligatoria sobre umbral `NormativeParameter` — carga verificada **[PENDIENTE X-37]**.

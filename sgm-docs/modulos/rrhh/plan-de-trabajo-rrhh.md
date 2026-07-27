@@ -2,13 +2,17 @@
 
 **Proyecto:** SGM — Sistema de Gestión Municipal
 **Módulo:** RRHH / Remuneraciones
-**Versión:** 0.2 (borrador para revisión interna)
+**Versión:** 0.3 (borrador para revisión interna)
 **Fecha:** julio 2026
 **Estado:** propuesta de plan, no validada con DM
 
+**Gobierno del corpus:** [`../../plan-general.md`](../../plan-general.md). Criterios de calidad: plan general §7. Ventana de mutabilidad y patrones: ADRs en `arquitectura/decisiones/`.
+
+**Cambios v0.3 (B0 plan general):** R-1 reflejado en Presupuestos v0.11 (contrato bidireccional). Remisión Cont/Tes a **R-7** (ciclo subsidios). Prefijo transversal **X-nn**; alcance mínimo P-20 → **X-80** reservado. Criterios de calidad remiten al plan general.
+
 **Cambios v0.2:** contraste del diagnóstico §3.2–3.3 contra el ORM del stack RRHH. Se corrige permisos ≠ `hr.holiday.request` (traslado de feriado; permisos = `hr.leave`); se matiza HE (resolución + checklist, sin hard-stop en liquidación); se reclasifican informe de honorarios, retenciones judiciales, Previred y viáticos con la lente de *expediente sin efecto de dominio*; se añaden PMG, portal/autoservicio y modelos de reporte (`report.transparency`, `report.ine`); conteo de addons alineado al inventario (13). Nueva §3.2.1. Sin renumerar R-1…R-14.
 
-**Convención de pendientes:** este módulo usa el prefijo **R-nn**. Las referencias a Presupuestos (**P-nn**), Contabilidad (**C-nn**), Tesorería (**T-nn**) y arquitectura transversal conservan su prefijo original.
+**Convención de pendientes:** este módulo usa el prefijo **R-nn**. Las referencias a Presupuestos (**P-nn**), Contabilidad (**C-nn**), Tesorería (**T-nn**) y arquitectura transversal (**X-nn**) conservan su prefijo.
 
 ---
 
@@ -26,7 +30,7 @@ Este documento **no** es la especificación. Es el plan que la produce.
 
 | # | Decisión | Contenido |
 |---|----------|-----------|
-| D-1 | **Motor de liquidación incluido** | SGM **calcula** las remuneraciones de planta, contrata, honorarios y Código del Trabajo. Cierra P-20 del documento de alcance mínimo. Ver §2.1 |
+| D-1 | **Motor de liquidación incluido** | SGM **calcula** las remuneraciones de planta, contrata, honorarios y Código del Trabajo. Cierra **X-80** del documento de alcance mínimo (ex P-20 de ese doc; reservado en plan general). Ver §2.1 |
 | D-2 | **SIAPER como integración** | Los actos de personal se originan en SGM y se registran en SIAPER, con el mismo tratamiento de frontera que DocDigital. Condicionado a verificación de interfaz máquina a máquina. Ver §2.2 y R-2 |
 | D-3 | **Alcance de gestión de personas** | Además del ciclo contractual y la nómina: **evaluación del desempeño** (6), **capacitación y plan anual** (11), **asistencia, horas extras y permisos** (8, 10), **viáticos, cometidos y comisiones** (3) |
 | D-4 | **Tramitación documental** | Los decretos y resoluciones de personal se tramitan en DocDigital, conforme a la decisión transversal. Es el módulo con mayor variedad de actos administrativos del corpus |
@@ -49,7 +53,7 @@ SIAPER aparece como paso de registro obligatorio en al menos seis procesos: come
 
 Tratarlo como integración implica lo mismo que DocDigital: **el acto de personal no está completo hasta que el registro externo lo confirma**, y la máquina de estados debe incorporar ese estado de espera.
 
-> **PENDIENTE R-2 (bloqueante):** Verificar si SIAPER expone interfaz máquina a máquina para el registro de actos de personal, o si el registro es necesariamente por carga manual en el portal de Contraloría. **Toda la especificación de MR-6 queda condicionada.** Es el análogo exacto de P-72 para DocDigital.
+> **PENDIENTE R-2 (bloqueante):** Verificar si SIAPER expone interfaz máquina a máquina para el registro de actos de personal, o si el registro es necesariamente por carga manual en el portal de Contraloría. **Toda la especificación de MR-6 queda condicionada.** Es el análogo exacto de X-72 para DocDigital.
 
 ---
 
@@ -378,7 +382,7 @@ Es el módulo con más etapas del corpus.
 
 | ID | Pendiente | Bloquea | Responsable |
 |---|---|---|---|
-| **R-1** | Contratos con Presupuestos: consulta de disponibilidad bloqueante en contratación y CDP para gasto en personal. **Obliga a abrir el plan de Presupuestos** | **F0 / F4** | Equipo + DM |
+| **R-1** | Contratos con Presupuestos: consulta de disponibilidad bloqueante en contratación y CDP para gasto en personal. **Plan de Presupuestos actualizado en v0.11** (contrato bidireccional); especificación de API sigue abierta | **F0 / F4** | Equipo + DM |
 | **R-2** | Verificar interfaz máquina a máquina de SIAPER | **F0 / MR-6** | Equipo + CGR |
 | **R-3** | Verificar estatuto, periodo de calificación y dictamen del proceso 6 | F1 / MR-3 | Equipo interno |
 | **R-4** | Unificar la doble vía de calidad jurídica del as-is | F0 / F4 | Equipo interno |
@@ -390,7 +394,7 @@ Es el módulo con más etapas del corpus.
 | **R-10** | Composición y funcionamiento de la Junta Calificadora en municipios con planta reducida | F3 | DM |
 | **R-11** | Integración con el Registro Nacional de Deudores de Pensiones de Alimentos: mecanismo y efecto de la consulta | F1 | Equipo + DM |
 | **R-12** | Control de cupo de dotación: fuente de la dotación autorizada y su relación con el presupuesto | F2 | DM |
-| **R-13** | Momento de evaluación de los límites del 42% y del 20%: solo formulación, o también al contratar. Espejo de P-10 | F3 | DM + Presupuestos |
+| **R-13** | Momento de evaluación de los límites del 42% y del 20%: solo formulación, o también al contratar. Espejo de **P-10** (Presupuestos) | F3 | DM + Presupuestos |
 | **R-14** | Tratamiento de los cuatro regímenes en el modelo: ¿una entidad con variantes o cuatro subtipos? | F4 | Equipo interno |
 
 ---
@@ -400,7 +404,7 @@ Es el módulo con más etapas del corpus.
 | Riesgo | Impacto | Mitigación |
 |---|---|---|
 | **Los controles de admisibilidad no se especifican** | **Alto — es la brecha central del módulo: el as-is calcula bien pero no valida si el municipio puede contratar** | R-1, R-12 y R-13 resueltos antes de F3 |
-| **El plan de Presupuestos no contempla el contrato con RRHH** | **Alto — hay que reabrirlo** | R-1 en F0; actualizar §6 del plan de Presupuestos |
+| **El plan de Presupuestos no contemplaba el contrato con RRHH** | **Mitigado en B0** — contrato declarado en Presupuestos v0.11; falta especificar API | R-1 en F0; API en F4 |
 | SIAPER sin interfaz verificada | Alto — seis procesos quedan incompletos | R-2 en F0; vía alternativa de registro asistido |
 | Cuatro estatutos concurrentes tratados como variantes menores | Alto — cada uno tiene componentes y reglas propias | F1 extendida a tres semanas; catálogo por régimen |
 | Citas normativas del levantamiento tomadas sin verificar | Medio-alto — dos errores confirmados en el proceso 6 | R-3 en F1; criterio metodológico ya adoptado |

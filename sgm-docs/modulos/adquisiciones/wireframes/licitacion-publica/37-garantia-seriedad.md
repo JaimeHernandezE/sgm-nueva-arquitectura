@@ -60,4 +60,4 @@
 
 - `Guarantee` es transversal — la misma entidad, distinguida por `guarantee_type`, sirve también para 3.12 (Garantía de Fiel Cumplimiento).
 - La custodia física es de Tesorería: borde de módulo explícito.
-- Obligatoria sobre el umbral `NormativeParameter`; facultativa bajo él — carga verificada **[PENDIENTE P-37]**.
+- Obligatoria sobre el umbral `NormativeParameter`; facultativa bajo él — carga verificada **[PENDIENTE X-37]**.

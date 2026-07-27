@@ -18,7 +18,7 @@
 | Inventario / bodegas municipales                                 |
 | +--------------------------------------------------------------+ |
 | | Resma papel carta · Bodega Central · disp. 120 Un            | |
-| | → [ Solicitud a bodega ]  (proceso por definir — P-44)       | |
+| | → [ Solicitud a bodega ]  (proceso por definir — X-44)       | |
 | |    Continuar con expediente de compra de todos modos         | |
 | +--------------------------------------------------------------+ |
 | (o) Sin stock para esta búsqueda                                 |

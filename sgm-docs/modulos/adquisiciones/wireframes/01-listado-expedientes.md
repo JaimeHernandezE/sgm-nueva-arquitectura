@@ -96,4 +96,4 @@
 
 ## Pendientes UI
 
-- Confirmación con DM del grano exacto de “Departamento” vs unidad en municipios sin desglose (**P-49** / **P-51**).
+- Confirmación con DM del grano exacto de “Departamento” vs unidad en municipios sin desglose (**X-49** / **X-51**).

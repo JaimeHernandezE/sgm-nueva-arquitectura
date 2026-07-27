@@ -1,7 +1,7 @@
 # Sandbox de desarrolladores SGM
 
 > Documento operativo — arquitectura / ecosistema
-> Estado: borrador (julio 2026). Cierra el detalle de **[P-16]**.
+> Estado: borrador (julio 2026). Cierra el detalle de **[X-16]**.
 > Marco estratégico: [`entregable-licitacion.md`](./entregable-licitacion.md) §5.
 > Formato de fixtures: [`estandares-api.md`](../especificacion/estandares-api.md) Parte II §14.
 
@@ -24,7 +24,7 @@ El sandbox es el **entorno público de integración** del SGM. Permite a municip
 | Disponibilidad objetivo | ≥ 95% mensual (menor que producción; publicado en portal) |
 | Ventana de mantenimiento | Domingos 02:00–06:00 CLT, anunciada con 48 h |
 
-**[P-03]** Hasta resolver multitenancy, el tenant demo viaja en el token JWT (`tenant_id` claim).
+**[X-03]** Hasta resolver multitenancy, el tenant demo viaja en el token JWT (`tenant_id` claim).
 
 ---
 
@@ -44,7 +44,7 @@ El sandbox es el **entorno público de integración** del SGM. Permite a municip
 
 ### 3.3 Puente a producción
 
-Procedimiento formal documentado en convenio tipo (**[P-15]**): solicitud, revisión de scopes, emisión de credenciales productivas. El sandbox no es un atajo a producción.
+Procedimiento formal documentado en convenio tipo (**[X-15]**): solicitud, revisión de scopes, emisión de credenciales productivas. El sandbox no es un atajo a producción.
 
 ---
 
@@ -110,7 +110,7 @@ Piloto Adquisiciones: cuatro expedientes demo + `escenarios-transaccionales.yaml
 | Entorno | Relación con sandbox |
 |---|---|
 | **Staging** | No público; recepción SUBDERE; datos alta fidelidad; sin reset nightly |
-| **Producción** | Credenciales vía convenio P-15; datos reales |
+| **Producción** | Credenciales vía convenio X-15; datos reales |
 
 ---
 

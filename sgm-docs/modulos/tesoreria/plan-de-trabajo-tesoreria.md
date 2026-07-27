@@ -2,13 +2,17 @@
 
 **Proyecto:** SGM — Sistema de Gestión Municipal
 **Módulo:** Tesorería
-**Versión:** 0.2 (borrador para revisión interna)
+**Versión:** 0.3 (borrador para revisión interna)
 **Fecha:** julio 2026
 **Estado:** propuesta de plan, no validada con DM
 
+**Gobierno del corpus:** [`../../plan-general.md`](../../plan-general.md). Criterios de calidad: plan general §7. Ventana de mutabilidad: [`2026-07-ventana-mutabilidad.md`](../../arquitectura/decisiones/2026-07-ventana-mutabilidad.md).
+
+**Cambios v0.3 (B0 plan general):** elevación de ventana de mutabilidad **cumplida** (ADR); T-3 residual = solo doble raíz local. Remisión a **R-7** (subsidios). Prefijo transversal **X-nn**. Criterios de calidad remiten al plan general.
+
 **Cambios v0.2:** contraste del diagnóstico §3.2–3.3 contra el ORM real de `tesoreria_gov_cl` / `portal_tesoreria_gov_cl`. Se reclasifican **pago a terceros** y **garantías/vigencia** con la lente de *expediente sin efecto de dominio*; se distingue **anulación misma jornada** (42.2.12) del **descargo contable** de OI en Contabilidad; SEM aporta API HTTP + `sem.entry.config` como ancla de T-1; se aclara frontera de `partner.bank.transfer.file` (vive en Contabilidad); decisión **D-6 DocDigital** para decreto de pago; pendientes T-11…T-13. Nueva §3.2.1.
 
-**Convención de pendientes:** este módulo usa el prefijo **T-nn**. Las referencias a Presupuestos (**P-nn**), Contabilidad (**C-nn**) y arquitectura transversal (**P-72…P-76**) conservan su prefijo original.
+**Convención de pendientes:** este módulo usa el prefijo **T-nn**. Las referencias a Presupuestos (**P-nn**), Contabilidad (**C-nn**) y arquitectura transversal (**X-nn**) conservan su prefijo.
 
 ---
 
@@ -29,7 +33,7 @@ Este documento **no** es la especificación. Es el plan que la produce.
 | D-3 | **Giradores fuera de alcance** | SGM **no incluye los sistemas de recaudación por tributo** —patentes municipales, permisos de circulación, derechos, Juzgado de Policía Local—. Consume las órdenes de ingreso que estos generan, mediante contrato de entrada especificado |
 | D-4 | **Proprofundidad** | Módulo completo, con el núcleo no diferible marcado explícitamente dentro |
 | D-5 | **Método** | Réplica del método de Adquisiciones, Presupuestos y Contabilidad |
-| D-6 | **Tramitación del decreto de pago (DocDigital)** | El decreto de pago (proceso 38; también etapa 5 de Adquisiciones y factoring) se **origina en SGM** y se **tramita en DocDigital** (visación, FEA, enumeración). Folio oficial = `ExternalFolio`; `code` / correlativo interno = solo trazabilidad. Decisión canónica: [`arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md`](../../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). Condicionado a **P-72** (bloqueante). Alcance operativo por frecuencia — **P-74 / T-11** |
+| D-6 | **Tramitación del decreto de pago (DocDigital)** | El decreto de pago (proceso 38; también etapa 5 de Adquisiciones y factoring) se **origina en SGM** y se **tramita en DocDigital** (visación, FEA, enumeración). Folio oficial = `ExternalFolio`; `code` / correlativo interno = solo trazabilidad. Decisión canónica: [`arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md`](../../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). Condicionado a **X-72** (bloqueante). Alcance operativo por frecuencia — **X-74 / T-11** |
 
 ### 2.1 Consecuencia de D-3: el contrato de entrada de la OI es el punto crítico
 
@@ -47,7 +51,7 @@ Eso impone dos modos de entrada muy distintos: **carga masiva anticipada** y **c
 
 1. **Cambio vs as-is:** `payment.decree.code` (secuencia `payment.decree`) **deja de ser el identificador oficial** del acto. Se conserva como trazabilidad interna.
 2. **Estado de espera:** la máquina del decreto incorpora `pending_signature` hasta el retorno DocDigital (`AdministrativeActSigned` / `DocumentProcedureCompleted`).
-3. **Alta frecuencia:** el decreto de pago es el acto DocDigital de mayor volumen operativo; su alcance exacto (¿todos los decretos o un subconjunto?) queda abierto en T-11 / P-74.
+3. **Alta frecuencia:** el decreto de pago es el acto DocDigital de mayor volumen operativo; su alcance exacto (¿todos los decretos o un subconjunto?) queda abierto en T-11 / X-74.
 
 ---
 
@@ -184,7 +188,7 @@ Se adopta la categoría del plan de Contabilidad §3.2.1. Casos ya verificados e
 | **Cuadratura y depósito** (42.2.6) | Depósito de efectivo y cheques en el banco **al día hábil siguiente** | Plazo operativo con control de cumplimiento |
 | **Anulación de orden de ingreso** (42.2.12) | Solo el **mismo día de la transacción**, con formulario firmado que indica orden anulada y de reemplazo | Ventana temporal anclada al cierre de caja, no a 24 horas. Distinto del descargo contable (T-13) |
 | **Custodia de garantías** (41) | Firma de Tesorera, Jefe de Contabilidad y Director de Finanzas; documento contable de ingreso; custodia física | Cadena de firma de tres roles (`SignatureChain`); el documento físico existe y su custodia debe registrarse |
-| **DocDigital / FEA en decretos** | Actos administrativos tramitados en plataforma estatal (cobertura ~80 % municipios) | D-6; vía alternativa P-73 / T-11 |
+| **DocDigital / FEA en decretos** | Actos administrativos tramitados en plataforma estatal (cobertura ~80 % municipios) | D-6; vía alternativa X-73 / T-11 |
 
 > **PENDIENTE T-2:** Verificar en fuente primaria los tres porcentajes y plazos citados por el levantamiento —62,5% FCM, 40% Ley de Alcoholes, 5° día hábil— antes de convertirlos en validadores. El corpus ya tiene un caso documentado de cita errónea heredada del levantamiento. El 62,5% está confirmado en fuente secundaria; los otros dos, no.
 
@@ -212,9 +216,9 @@ Dos raíces, y aparece un patrón que ya se repite en los tres módulos escritos
 1. **`CashierSession`** — la jornada de caja. Gobierna **qué se puede registrar y hasta cuándo**: define medios habilitados, saldos iniciales, y su cierre marca el fin de la ventana de anulación. No es un contenedor de pagos: es la entidad que decide su mutabilidad.
 2. **`PaymentDecree`** — la raíz del egreso. Ciclo propio, agrupa egresos devengados y produce el egreso pagado. Con D-6: estado `pending_signature` y folio oficial externo.
 
-**Patrón transversal emergente.** En los tres módulos especificados hasta ahora existe una entidad cuya única función es gobernar la ventana de mutabilidad de los hechos: `BudgetExercise` en Presupuestos, `AccountingPeriod` en Contabilidad, `CashierSession` en Tesorería. Conviene tratarlo como patrón declarado del corpus y no como coincidencia: mismo comportamiento esperado de apertura, cierre, reapertura auditada con motivo, y bloqueo de escritura fuera de ventana.
+**Patrón transversal (declarado).** La ventana de mutabilidad es decisión canónica: [`2026-07-ventana-mutabilidad.md`](../../arquitectura/decisiones/2026-07-ventana-mutabilidad.md). `CashierSession` es la instancia de Tesorería; el comportamiento común no se reitera aquí.
 
-> **PENDIENTE T-3:** Validar el patrón de doble raíz y elevar el patrón de «ventana de mutabilidad» a decisión transversal de arquitectura, con comportamiento común en los tres módulos.
+> **PENDIENTE T-3 (residual):** Validar el patrón de doble raíz local de Tesorería. La elevación de «ventana de mutabilidad» a decisión transversal **está cumplida** (B0).
 
 ### Entidades preliminares candidatas
 
@@ -250,7 +254,8 @@ Dos raíces, y aparece un patrón que ya se repite en los tres módulos escritos
 | **Adquisiciones** | Adq → Tes | Bases de licitación asociadas a garantías; evento de pago que cierra el expediente de compra | Media-alta |
 | **Adquisiciones** | Tes → Adq | Estado de la garantía: recibida, vigente, devuelta o cobrada | Media |
 | **RRHH** | RRHH → Tes | Decretos de pago de nómina y honorarios | Alta |
-| **Core (DocDigital)** | Tes → C11 | Tramitación del decreto de pago; retorno con folio (D-6) | **Alta — P-72, T-11** |
+| **RRHH** | RRHH → Tes/Cont | **Ciclo de ingresos por subsidios COMPIN/Isapre** — no modelado; ver **R-7**. No se cierra aquí. | Media (brecha) |
+| **Core (DocDigital)** | Tes → C11 | Tramitación del decreto de pago; retorno con folio (D-6) | **Alta — X-72, T-11** |
 | **Giradores externos** | Externo → Tes/Cont | Órdenes de ingreso, en modo masivo anticipado y sincrónico (D-3, T-1, T-12) | **Crítica** |
 | **Portal proveedores** | Tes → externo (lectura) | Consulta de estado de decretos por el partner (as-is `portal_tesoreria_gov_cl`) | Media |
 | **TGR** | Tes → externo | Formulario 10: aporte FCM y multas Ley de Alcoholes | Alta (obligación legal) |
@@ -272,7 +277,7 @@ Dos raíces, y aparece un patrón que ya se repite en los tres módulos escritos
 | Frontera con Contabilidad | Confirmación de D-1; propiedad del certificado de saldos, de las dos conciliaciones, de `Check` / `BankTransferFile` |
 | Granularidad del traspaso diario | T-4, con impacto de volumetría estimado |
 | Patrón de ventana de mutabilidad | T-3, elevado a decisión transversal |
-| **Alcance DocDigital del decreto de pago** | T-11 / P-74 |
+| **Alcance DocDigital del decreto de pago** | T-11 / X-74 |
 
 ### F1 — Levantamiento normativo · 1–2 semanas
 
@@ -323,7 +328,7 @@ Dos raíces, y aparece un patrón que ya se repite en los tres módulos escritos
 | Entregable | Detalle |
 |---|---|
 | Especificación de seguridad | SoD de caja: cajero registra, Tesorero recibe y deposita; cadena de firma de garantías con tres roles; el arqueo lo valida quien no recaudó |
-| Especificación de escalabilidad | Caja es el punto de mayor concurrencia con usuarios finales; la volumetría del traspaso diario depende de T-4; latencia DocDigital en decretos (P-76) |
+| Especificación de escalabilidad | Caja es el punto de mayor concurrencia con usuarios finales; la volumetría del traspaso diario depende de T-4; latencia DocDigital en decretos (X-76) |
 | Marcado del núcleo no diferible | Percepción, pago y certificado de saldos son núcleo; garantías, caja chica y especies valoradas admiten diferimiento con condición de salida |
 | Wireframes SVG | Pantalla de caja, arqueo, estado diario, expediente de garantía |
 
@@ -335,7 +340,7 @@ Dos raíces, y aparece un patrón que ya se repite en los tres módulos escritos
 |---|---|---|---|
 | **T-1** | Contrato de entrada de órdenes de ingreso: dos modos e inventario de giradores | **F3** | Equipo + DM |
 | **T-2** | Verificación en fuente primaria de porcentajes y plazos del proceso 39 | F1 | Equipo interno |
-| **T-3** | Patrón de doble raíz y elevación de «ventana de mutabilidad» a decisión transversal | F3, F4 | Equipo interno |
+| **T-3** | Doble raíz local Tesorería (residual). Elevación de ventana de mutabilidad: **cumplida** (ADR 2026-07) | F3, F4 | Equipo interno |
 | **T-4** | Granularidad del traspaso diario a Contabilidad (piso: `method.summary`) | F0 / F4 | Equipo + Contabilidad |
 | **T-5** | Propiedad y formato del Certificado de Saldos Bancarios; comportamiento si no se emite en plazo (espejo de C-10) | F2 | Equipo + DM |
 | **T-6** | Régimen de especies valoradas: control de existencias, responsabilidad y arqueo | F1 | DM |
@@ -343,7 +348,7 @@ Dos raíces, y aparece un patrón que ya se repite en los tres módulos escritos
 | **T-8** | Custodia física de garantías: registro de ubicación, entrega y devolución del documento físico | F3 | DM |
 | **T-9** | Contrato con el Registro Civil para RMTNP: mecanismo, periodicidad y manejo de errores | F1 | DM |
 | **T-10** | Efecto contable de la garantía: qué asiento genera el ingreso en custodia y cuál su devolución o cobro | F3 | Equipo + Contabilidad |
-| **T-11** | Alcance DocDigital del decreto de pago (alta frecuencia): ¿todos, umbral, o vía alternativa por tenant? Alineado a P-74; folios históricos `payment.decree.code` (P-75) | F0 / MT-3 | Equipo + DM |
+| **T-11** | Alcance DocDigital del decreto de pago (alta frecuencia): ¿todos, umbral, o vía alternativa por tenant? Alineado a X-74; folios históricos `payment.decree.code` (X-75) | F0 / MT-3 | Equipo + DM |
 | **T-12** | Contrato de feed externo a partir de SEM (`sem.data.reception` + `sem.entry.config` + API): semántica estable sin heredar protocolo ni `auth='none'` | F0 / T-1 | Equipo + plataforma |
 | **T-13** | Separar en modelo y fichas la **anulación misma jornada** (42.2.12) del **descargo contable** de OI (Contabilidad); quién es dueño de cada una | F2 | Equipo + Contabilidad |
 | **T-14** | Revisar TUPA del módulo con la lente de expediente sin efecto de dominio (§3.2.1); espejo de C-15 | F2 / F3 | Equipo interno |
@@ -360,7 +365,7 @@ Dos raíces, y aparece un patrón que ya se repite en los tres módulos escritos
 | Porcentajes y plazos del proceso 39 tomados sin verificar | Medio-alto — se convierten en validadores con efecto de incumplimiento legal | T-2 en F1 |
 | La granularidad del traspaso diario se define tarde | Medio — afecta volumetría, conciliación y modelo | T-4 en F0 |
 | Caja es el punto de contacto con el ciudadano | Medio-alto — una caída es visible y no admite diferimiento | Clasificación de exposición según §5.1 del plan de Presupuestos |
-| **Decreto de pago atado a DocDigital sin API verificada** | **Alto — paraliza egresos si P-72 falla o latencia es alta** | T-11 + vía alternativa P-73; no consumar pago sin retorno o registro asistido |
+| **Decreto de pago atado a DocDigital sin API verificada** | **Alto — paraliza egresos si X-72 falla o latencia es alta** | T-11 + vía alternativa X-73; no consumar pago sin retorno o registro asistido |
 
 ---
 
@@ -385,4 +390,4 @@ Dos raíces, y aparece un patrón que ya se repite en los tres módulos escritos
 3. **La frontera con los giradores es una propuesta de alcance, no un hallazgo.** D-3 es económicamente conveniente y coherente con la realidad municipal, pero no está validada con municipios. Si resultara que los giradores relevantes no tienen sistema propio, D-3 debe revisarse y el alcance del módulo crece de forma significativa.
 4. **El efecto contable de las garantías no está resuelto en ninguna fuente.** El levantamiento dice que genera «un documento contable de ingreso» sin precisar cuál; Odoo no lo implementa. T-10 debe resolverlo con Contabilidad antes de F3.
 5. **La API SEM del as-is no es el contrato to-be.** Existe y opera (`auth='none'`); T-12 debe extraer la semántica y descartar el mecanismo inseguro.
-6. **DocDigital no está verificado como API M2M (P-72).** Toda especificación de MT-3 queda condicionada a esa verificación.
+6. **DocDigital no está verificado como API M2M (X-72).** Toda especificación de MT-3 queda condicionada a esa verificación.

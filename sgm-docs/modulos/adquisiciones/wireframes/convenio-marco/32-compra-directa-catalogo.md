@@ -48,8 +48,8 @@
 - **Bloqueo — organismo distinto:** `MP_PROCESS_ORGANISM_MISMATCH`.
 - **Bloqueo — tipo incoherente:** `MP_PROCESS_TYPE_MISMATCH` (el proceso MP no es una OC de catálogo Convenio Marco).
 - **Bloqueo — ya vinculado:** `MP_PROCESS_ALREADY_LINKED`.
-- **API de MP no disponible al validar:** `MP_PROVIDER_UNAVAILABLE` — el vínculo no se persiste sin validación (**[PENDIENTE P-32]**).
-- **Usuario no registra el ID tras navegar a MP:** expediente queda detenido — candidato a timer de escalamiento (**[PENDIENTE P-33]**).
+- **API de MP no disponible al validar:** `MP_PROVIDER_UNAVAILABLE` — el vínculo no se persiste sin validación (**[PENDIENTE X-32]**).
+- **Usuario no registra el ID tras navegar a MP:** expediente queda detenido — candidato a timer de escalamiento (**[PENDIENTE X-33]**).
 - **Ruta alternativa (no aplica en el camino feliz de este expediente):** si la ruta determinada en 3.1 fue `gran_compra`, este sub-paso se muestra como camino alternativo/no ejecutado (ver 3.3).
 
 ## Validaciones visibles

@@ -88,11 +88,11 @@ Catálogo **base de plataforma** que el sistema ofrece al aprovisionar un tenant
 | `parent_template_id` | ref. `OrgStructureTemplate` | **Obligatorio si** `kind = unit` |
 | `active` | booleano | **Obligatorio** — ítem incluido en nuevos aprovisionamientos |
 
-⚠ Contenido concreto del catálogo base (lista definitiva de departamentos/unidades típicos) se cierra con pilotos/DM — **[P-49]**. El **modelo** (dos niveles + plantilla clonable) queda fijado aquí.
+⚠ Contenido concreto del catálogo base (lista definitiva de departamentos/unidades típicos) se cierra con pilotos/DM — **[X-49]**. El **modelo** (dos niveles + plantilla clonable) queda fijado aquí.
 
 ### `Role` / `Permission`
 
-Catálogo transversal (única fuente): [`arquitectura/especificacion/catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) (**P-24**).
+Catálogo transversal (única fuente): [`arquitectura/especificacion/catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) (**X-24**).
 
 #### `Role`
 **Visibilidad:** expuesta (lectura; administración de definiciones = plataforma / SUBDERE)
@@ -177,7 +177,7 @@ Visión: [`plataforma/notificaciones/overview.md`](../plataforma/notificaciones/
 ### `EventSubscription`
 **Visibilidad:** expuesta (administración)
 
-Suscripción de un consumidor M2M (webhook) a tipos de evento. Mecanismo de entrega: **[P-05]**.
+Suscripción de un consumidor M2M (webhook) a tipos de evento. Mecanismo de entrega: **[X-05]**.
 
 | Campo | Tipo | Notas |
 |---|---|---|
@@ -391,7 +391,7 @@ En payloads de módulo, los campos `founded_resolution_attachment`, `scanned_cer
 
 ## Tramitación de actos (C11 — DocDigital)
 
-Decisión: [`arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md`](../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). Contrato funcional: [`integracion-docdigital.md`](../arquitectura/especificacion/integracion-docdigital.md). Condicionado a **[PENDIENTE P-72]**.
+Decisión: [`arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md`](../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). Contrato funcional: [`integracion-docdigital.md`](../arquitectura/especificacion/integracion-docdigital.md). Condicionado a **[PENDIENTE X-72]**.
 
 ### `SignatureChain`
 **Visibilidad:** expuesta (administración municipal)
@@ -419,7 +419,7 @@ Tramitación de un acto en DocDigital (o vía asistida).
 | `subject_type` | texto | **Obligatorio** — p. ej. `AdministrativeAct`, `PaymentDecree` |
 | `subject_id` | UUID | **Obligatorio** |
 | `signature_chain_id` | ref. `SignatureChain` | **Opcional** |
-| `mode` | enum | **Obligatorio**. `m2m` \| `assisted` — según P-72 / P-73 |
+| `mode` | enum | **Obligatorio**. `m2m` \| `assisted` — según X-72 / X-73 |
 | `status` | enum | **Obligatorio**. `draft`, `submitted`, `in_visation`, `pending_signature`, `completed`, `rejected`, `failed` |
 | `external_folio` | texto | **Obligatorio si** `status = completed` — folio oficial DocDigital (o interno en vía alternativa) |
 | `source_document_ref` | ref. `DocumentRef` | **Obligatorio** — contenido originado en SGM |

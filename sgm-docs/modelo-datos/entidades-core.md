@@ -294,7 +294,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 
 > Origen: la ficha `4-recepcion-conforme.md` §4.4 referencia esta entidad como `AccrualRecord` — normalizado aquí al nombre canónico `Accrual`.
 >
-> <!-- REVISAR: momento del devengado — el flujo canónico encadena `ThreeWayMatch` (OC + Recepción + Factura) → `Accrual` 1:1 (ver `procesos-transversales/5-pago.md` §5.1-5.2); la ficha `4-recepcion-conforme.md` §4.4 gatilla el devengado desde la conformidad de recepción (devengados parciales por valor aceptado, vía `recordAccrual`), dejando el circuito de factura en la frontera con Tesorería. Son dos definiciones distintas del momento contable del devengado — **[PENDIENTE P-46]**, prioridad alta, definir con Contabilidad/DM. No resuelto aquí. -->
+> <!-- REVISAR: momento del devengado — el flujo canónico encadena `ThreeWayMatch` (OC + Recepción + Factura) → `Accrual` 1:1 (ver `procesos-transversales/5-pago.md` §5.1-5.2); la ficha `4-recepcion-conforme.md` §4.4 gatilla el devengado desde la conformidad de recepción (devengados parciales por valor aceptado, vía `recordAccrual`), dejando el circuito de factura en la frontera con Tesorería. Son dos definiciones distintas del momento contable del devengado — **[PENDIENTE X-46]**, prioridad alta, definir con Contabilidad/DM. No resuelto aquí. -->
 
 | Campo | Tipo | Notas |
 |---|---|---|
@@ -307,7 +307,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 ### `PaymentDecree` (Decreto de Pago)
 **Visibilidad:** expuesta — campos en contrato: `id`, `accrual_id`, `decree_number`, `external_folio`, `decree_date`, `approver_id`, `status`
 
-1:1 con `Accrual`. **Tramitación DocDigital (C11)** — decisión [`2026-07-docdigital-tramitacion-documental.md`](../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). Alcance operativo del decreto de pago abierto — **[PENDIENTE P-74]**.
+1:1 con `Accrual`. **Tramitación DocDigital (C11)** — decisión [`2026-07-docdigital-tramitacion-documental.md`](../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). Alcance operativo del decreto de pago abierto — **[PENDIENTE X-74]**.
 
 | Campo | Tipo | Notas |
 |---|---|---|
@@ -345,16 +345,16 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `selected_modality` | enum | **Obligatorio** |
 | `ratified` | booleano | **Obligatorio** |
 | `catalog_bypass_justification` | texto | **Obligatorio si** aplica regla V2 y se elige otra modalidad |
-| `direct_procurement_cause` | ref. catálogo de causales | **Obligatorio si** `selected_modality = direct_procurement` — **[PENDIENTE P-36]** |
+| `direct_procurement_cause` | ref. catálogo de causales | **Obligatorio si** `selected_modality = direct_procurement` — **[PENDIENTE X-36]** |
 | `validation_results` | JSON | **Obligatorio** (generado por sistema al confirmar) |
-| `requires_jefatura_approval` | booleano | **Opcional** — decisión operativa en 2.1; **[PENDIENTE P-38]** |
+| `requires_jefatura_approval` | booleano | **Opcional** — decisión operativa en 2.1; **[PENDIENTE X-38]** |
 | `decided_by` | ref. `User` | **Obligatorio** |
 | `decided_at` | fecha | **Obligatorio** (generado por sistema al confirmar) |
 
 ### `ModalityDecisionApproval` *(sugerida, no confirmada en fuente)*
 **Visibilidad:** expuesta — campos en contrato: `id`, `modality_decision_id`, `approver_id`, `decision`, `decision_date`
 
-1:1 con `ModalityDecision`. Aprobación de jefatura sobre la decisión de modalidad, previa a la vinculación con Mercado Público. **Existencia, alcance y exigencia de firma pendientes de ratificar con la DM** — **[PENDIENTE P-38]**. Origen: ficha `2-modalidad-compra.md` §2.2.
+1:1 con `ModalityDecision`. Aprobación de jefatura sobre la decisión de modalidad, previa a la vinculación con Mercado Público. **Existencia, alcance y exigencia de firma pendientes de ratificar con la DM** — **[PENDIENTE X-38]**. Origen: ficha `2-modalidad-compra.md` §2.2.
 
 | Campo | Tipo | Notas |
 |---|---|---|
@@ -367,7 +367,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 ### `NormativeParameter`
 **Visibilidad:** expuesta — entidad de plataforma; definición canónica en [`entidades-plataforma.md`](entidades-plataforma.md). No administrada por Adquisiciones.
 
-Umbrales legales configurables usados por el gateway de validación de modalidad (V1–V8). Lectura vía core `getNormativeParameter`. Carga inicial **[PENDIENTE P-37]**. Origen: ficha `2-modalidad-compra.md` §2.1.
+Umbrales legales configurables usados por el gateway de validación de modalidad (V1–V8). Lectura vía core `getNormativeParameter`. Carga inicial **[PENDIENTE X-37]**. Origen: ficha `2-modalidad-compra.md` §2.1.
 
 | Campo | Tipo | Notas |
 |---|---|---|
@@ -487,7 +487,7 @@ Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validac
 | `act_type` | enum | **Obligatorio**. Valores actuales Adq.: `bases_approval`, `committee_designation`, `award`, `desertion`, `revocation`, `founded_resolution`. Extensibles a decretos presupuestarios/contables según inventario DocDigital |
 | `subject_id` | ref. polimórfica | **Opcional** — entidad sobre la que recae el acto (ej. `TenderBases.id`), según `act_type` |
 | `act_number` | texto | **Obligatorio** — identificador **interno de trazabilidad** (no es el folio oficial del acto) |
-| `external_folio` | texto | **Obligatorio si** tramitado en DocDigital y `status = signed` — folio oficial asignado por la plataforma externa. En vía alternativa sin DocDigital, ver **[PENDIENTE P-73]** |
+| `external_folio` | texto | **Obligatorio si** tramitado en DocDigital y `status = signed` — folio oficial asignado por la plataforma externa. En vía alternativa sin DocDigital, ver **[PENDIENTE X-73]** |
 | `document_procedure_id` | ref. `DocumentProcedure` | **Obligatorio si** enviado a tramitación — ver entidades de plataforma |
 | `signature_chain_id` | ref. `SignatureChain` | **Opcional** — cadena de firmantes configurada por el municipio (proceso 25) |
 | `status` | enum | **Obligatorio**. Valores: `pending_signature`, `signed`, `failed`. Salida de `pending_signature` solo con retorno del acto firmado (evento `AdministrativeActSigned`) |
@@ -500,7 +500,7 @@ Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validac
 
 **Transversal — reutilizable en Trato Directo** (mismo trámite para su Resolución Fundada). Sin integración API asumida con Contraloría: registro manual del envío y del resultado. Origen: ficha LP §3.4 (reutilizada en §3.11).
 
-> ⚠ Pendiente: explorar si existe canal de consulta de estado de trámites CGR integrable; no asumir su existencia — **[PENDIENTE P-64]**.
+> ⚠ Pendiente: explorar si existe canal de consulta de estado de trámites CGR integrable; no asumir su existencia — **[PENDIENTE X-64]**.
 
 | Campo | Tipo | Notas |
 |---|---|---|
@@ -543,7 +543,7 @@ Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validac
 
 1:N con `EvaluationCommittee`. La declaración de ausencia de conflictos de interés es **bloqueante**: sin ella el integrante no está habilitado a evaluar. Origen: ficha LP §3.9.
 
-> Regla SoD propuesta: los integrantes no pueden ser el requirente de la SOLPED ni quien elaboró las bases técnicas — alcance exacto de las inhabilidades **[PENDIENTE P-66]**, validar con jurídica.
+> Regla SoD propuesta: los integrantes no pueden ser el requirente de la SOLPED ni quien elaboró las bases técnicas — alcance exacto de las inhabilidades **[PENDIENTE X-66]**, validar con jurídica.
 
 | Campo | Tipo | Notas |
 |---|---|---|
@@ -608,7 +608,7 @@ Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validac
 | `start_date` | fecha | **Obligatorio** |
 | `end_date` | fecha | **Obligatorio** |
 | `document_ref` | ref. `DocumentRef` | **Obligatorio** — vía C10 |
-| `contractor_signature_mode` | enum | **Obligatorio**. Mecanismo de firma del contratista **[PENDIENTE P-67]** — valores candidatos: `fea_propia`, `firma_papel_digitalizada`, `plataforma_externa` |
+| `contractor_signature_mode` | enum | **Obligatorio**. Mecanismo de firma del contratista **[PENDIENTE X-67]** — valores candidatos: `fea_propia`, `firma_papel_digitalizada`, `plataforma_externa` |
 | `status` | enum | **Obligatorio**. Valores: `draft`, `signed`, `not_subscribed` |
 
 ---
@@ -622,7 +622,7 @@ Estos puntos aparecen repetidos en más de una entidad/subproceso y son candidat
 - **Hito que congela el tipo de cambio para compromiso presupuestario** — cuando `PurchaseRequest.currency` ≠ `CLP`, el presupuesto y la contabilidad operan en CLP. Falta definir en qué hito se fija la tasa auditable (fecha de resolución, de OC, de preobligación/CDP, u otro) y si la diferencia de cambio posterior es asiento de Contabilidad. Candidato a corregirse al documentar la generación de obligación/compromiso. La tasa mostrada en 1.1 es solo referencial.
 - **Umbrales de modalidad: neto vs bruto** — el gateway de modalidad compara montos contra umbrales en UTM (`NormativeParameter`). ¿Se compara el total neto o el total bruto (impuestos incluidos)? Definición normativa, no de diseño. Práctica usual en Mercado Público: impuestos incluidos — verificar. Impacta etapa 2 y el total que viaja desde la SOLPED.
 - **Catálogo de `tax_code`** — hoy `iva_19` / `exempt` / `other`; faltan retenciones y tasas especiales si el levantamiento lo requiere.
-- **Manejo de fallas de sincronización/disponibilidad de API externa** — relevante para `AgileQuoteProcess` (deep link sin completar) y `BudgetCommitment` (falla de notificación desde MP). Consolidado con la misma familia de resiliencia ante servicios externos de las etapas 2-4 — **[PENDIENTE P-32]**.
+- **Manejo de fallas de sincronización/disponibilidad de API externa** — relevante para `AgileQuoteProcess` (deep link sin completar) y `BudgetCommitment` (falla de notificación desde MP). Consolidado con la misma familia de resiliencia ante servicios externos de las etapas 2-4 — **[PENDIENTE X-32]**.
 
 ## Módulos aún no documentados
 

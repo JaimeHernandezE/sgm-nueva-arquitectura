@@ -27,8 +27,8 @@
 +----------------------------------------------------------+
 | [ Guardar ]  [ Probar conexión ]  [ Cancelar ]           |
 +----------------------------------------------------------+
-| ⚠ MIME/tamaños/retención: P-58. Primer DMS certificado:  |
-|   P-59. Módulos solo ven DocumentRef.                    |
+| ⚠ MIME/tamaños/retención: X-58. Primer DMS certificado:  |
+|   X-59. Módulos solo ven DocumentRef.                    |
 +----------------------------------------------------------+
 ```
 
@@ -58,4 +58,4 @@
 ## Validaciones visibles
 
 - Campos del backend elegido obligatorios según tabla.
-- Cambio de backend exige confirmación (migración ⚠ P-58).
+- Cambio de backend exige confirmación (migración ⚠ X-58).

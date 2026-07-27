@@ -2,7 +2,7 @@
 
 *Proceso transversal — documentado en el piloto [Compra Ágil](../1.%20compra-agil/overview.md). Etapa anterior: [4. Recepción Conforme](./4-recepcion-conforme.md)*
 
-*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24).*
+*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (X-24).*
 
 ## 5.1 — Cruce de 3 vías (Match)
 
@@ -90,7 +90,7 @@
 | Plataforma | SGM |
 | Optativo | Falso |
 
-**Detalle:** Se genera el Decreto de Pago sobre el Devengado registrado. **SGM origina el contenido; DocDigital lo tramita** (visación, FEA, enumeración) — decisión canónica DocDigital. `decree_number` es trazabilidad interna; el folio oficial es `external_folio`. Alcance operativo (alta frecuencia) — **[PENDIENTE P-74]**.
+**Detalle:** Se genera el Decreto de Pago sobre el Devengado registrado. **SGM origina el contenido; DocDigital lo tramita** (visación, FEA, enumeración) — decisión canónica DocDigital. `decree_number` es trazabilidad interna; el folio oficial es `external_folio`. Alcance operativo (alta frecuencia) — **[PENDIENTE X-74]**.
 
 **Entidad(es) y campos:**
 - `PaymentDecree` — `accrual_id` (ref. `Accrual`), `decree_number` (texto, trazabilidad interna), `external_folio` (texto, folio oficial DocDigital), `document_procedure_id`, `decree_date` (fecha), `approver_id` (ref. `User`), `status` (`pending_signature` → `signed`)
@@ -110,9 +110,9 @@
 | Emitir decreto de pago | `issuePaymentDecree` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida del acto tramitado. | blocking | Ley 19.799 — firma electrónica avanzada |
 | Emitir decreto de pago | `issuePaymentDecree` | `DOCDIGITAL_PROVIDER_UNAVAILABLE` | — | DocDigital no está disponible para tramitar el acto. | blocking | integridad:estado_expediente |
 **Edge cases:**
-- DocDigital no disponible → decreto queda `pending_signature`; reintento o vía alternativa (**P-73**); no avanza a ejecución de pago sin retorno firmado.
+- DocDigital no disponible → decreto queda `pending_signature`; reintento o vía alternativa (**X-73**); no avanza a ejecución de pago sin retorno firmado.
 - Devengado no registrado en Contabilidad → `issuePaymentDecree` rechazado con `ACCRUAL_NOT_REGISTERED`.
-- Mecanismo M2M vs. asistido — **[PENDIENTE P-72]**.
+- Mecanismo M2M vs. asistido — **[PENDIENTE X-72]**.
 ---
 
 ## 5.4 — Ejecución del pago

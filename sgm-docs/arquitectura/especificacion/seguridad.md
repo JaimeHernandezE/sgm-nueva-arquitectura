@@ -19,21 +19,21 @@
 | **DS N°12/2023 (NTI / PISEE)** | Interoperabilidad OAE↔OAE vía nodo, Catálogo y Portal PISEE; traza PISEE distinta de auditoría interna. Diagnóstico y propuestas en [`brechas-estandarizacion-ntdee-pisee.md`](../decisiones/brechas-estandarizacion-ntdee-pisee.md). |
 | **Ley 19.799** | Firma electrónica (FirmaGob/FEA en actos administrativos). |
 
-**[PENDIENTE P-21]** Mapeo detallado de obligaciones DS N°7/2023 → controles exigibles en bases (candidato a asesoría jurídico-técnica).
+**[PENDIENTE X-21]** Mapeo detallado de obligaciones DS N°7/2023 → controles exigibles en bases (candidato a asesoría jurídico-técnica).
 
 ## 2. Identidad y autenticación
 
 Dos planos, ya definidos en `estandares-api.md` §8; aquí se agregan las exigencias de seguridad:
 
 ### 2.1 Plano personas (Clave Única)
-1. La sesión emitida tras el login con Clave Única viaja a la API como token firmado, de vida corta, con renovación explícita. **[PENDIENTE P-22]** Duración de sesión y política de renovación (referencia: prácticas de otros servicios del Estado).
+1. La sesión emitida tras el login con Clave Única viaja a la API como token firmado, de vida corta, con renovación explícita. **[PENDIENTE X-22]** Duración de sesión y política de renovación (referencia: prácticas de otros servicios del Estado).
 2. Cierre de sesión efectivo del lado del servidor (revocación, no solo borrado del token en el cliente).
 
 ### 2.2 Plano sistemas (M2M)
 1. OAuth2 client credentials (o equivalente) con **scopes por módulo y por municipio**; principio de mínimo privilegio por defecto — un consumidor de reportería obtiene lectura de los módulos pertinentes, nunca acceso total.
 2. Credenciales de cliente con rotación exigible y revocación inmediata disponible.
 3. **Ninguna superficie de API sin autenticación.** Todo endpoint, sin excepción, exige credencial válida en alguno de los dos planos. **No se admite la ausencia de autenticación como facilidad de integración**, ni siquiera para feeds internos, cargas masivas o integraciones con sistemas municipales considerados de confianza. La regla aplica con especial fuerza a los endpoints de escritura que crean registros con efecto patrimonial o presupuestario. Fundamento empírico: **hallazgo H-2 del Anexo A** — el sistema anterior expone un endpoint HTTP sin autenticación que crea órdenes de ingreso y pagos.
-4. **Identidad del funcionario originante en escrituras M2M (regla de trazabilidad administrativa):** cuando un sistema municipal escribe vía API, el contrato exige que el payload incluya la identidad del funcionario que originó la acción (RUN o identificador institucional). La autenticación es de máquina; la responsabilidad administrativa del acto es de una persona, y debe quedar registrada para efectos de auditoría y Contraloría. **[PENDIENTE P-23]** Formato exacto del campo y mecanismo de verificación (¿se valida contra nómina del municipio o se registra declarativamente?).
+4. **Identidad del funcionario originante en escrituras M2M (regla de trazabilidad administrativa):** cuando un sistema municipal escribe vía API, el contrato exige que el payload incluya la identidad del funcionario que originó la acción (RUN o identificador institucional). La autenticación es de máquina; la responsabilidad administrativa del acto es de una persona, y debe quedar registrada para efectos de auditoría y Contraloría. **[PENDIENTE X-23]** Formato exacto del campo y mecanismo de verificación (¿se valida contra nómina del municipio o se registra declarativamente?).
 
 ## 3. Autorización: modelo de roles y permisos (RBAC)
 
@@ -42,14 +42,14 @@ Hoy las fichas de proceso usan Rol = Usuario / Aprobador, pero no existe un mode
 1. **Modelo RBAC explícito y documentado:** roles definidos por módulo, permisos como operaciones del contrato (la unidad de permiso es la operación de API, no la pantalla — consecuencia directa del API-first).
 2. **Asignación por municipio y unidad:** un rol se otorga en el contexto de un tenant y una unidad municipal; ninguna asignación es global salvo los roles de administración de plataforma (SUBDERE).
 3. **Administración delegada:** cada municipio administra los roles de sus funcionarios dentro de su tenant; SUBDERE administra la plataforma. Las acciones de administración de roles son a su vez operaciones auditadas del contrato.
-4. **[PENDIENTE P-24]** Catálogo inicial de roles por módulo, derivable de las columnas Unidad municipal/Rol de las fichas de flujo — mismo método que el mapa de bordes. Borrador transversal (única fuente, no duplicar por módulo): [`catalogo-roles.md`](./catalogo-roles.md).
+4. **[PENDIENTE X-24]** Catálogo inicial de roles por módulo, derivable de las columnas Unidad municipal/Rol de las fichas de flujo — mismo método que el mapa de bordes. Borrador transversal (única fuente, no duplicar por módulo): [`catalogo-roles.md`](./catalogo-roles.md).
 
 ## 4. Segregación de funciones (SoD)
 
 En compras públicas la segregación no es buena práctica: es control interno exigible. Reglas verificables:
 
 1. **Quien solicita no aprueba; quien aprueba no recepciona; quien recepciona no paga.** Las incompatibilidades entre roles se declaran en el modelo RBAC y **el motor las hace cumplir** (validación bloqueante del lado del servidor), no dependen de disciplina administrativa.
-2. Excepciones para municipios pequeños con dotaciones mínimas (donde una persona cumple varios roles): deben ser configurables, explícitas, registradas y visibles en auditoría — jamás silenciosas. **[PENDIENTE P-25]** Definir la matriz de incompatibilidades y el régimen de excepciones con contraparte DAF/jurídica; validar contra normativa de control interno aplicable (Contraloría).
+2. Excepciones para municipios pequeños con dotaciones mínimas (donde una persona cumple varios roles): deben ser configurables, explícitas, registradas y visibles en auditoría — jamás silenciosas. **[PENDIENTE X-25]** Definir la matriz de incompatibilidades y el régimen de excepciones con contraparte DAF/jurídica; validar contra normativa de control interno aplicable (Contraloría).
 3. Los intentos de operación que violen segregación se registran (quién intentó qué), no solo se rechazan.
 
 ## 5. Auditoría
@@ -57,14 +57,14 @@ En compras públicas la segregación no es buena práctica: es control interno e
 1. **Registro de auditoría inmutable** (append-only) para: toda transición de estado de flujo (ya exigida en `musts-arquitectura.md` §10.3), toda operación de escritura, toda acción de administración de roles y accesos, y todo acceso a datos personales protegidos por Ley 21.719.
 2. Cada registro: quién (persona o sistema + funcionario originante), qué operación, sobre qué entidad, cuándo, desde dónde (IP/consumidor), resultado.
 3. El registro de auditoría es consultable vía API con scope propio y restringido — la auditoría también respeta el mandato API.
-4. Retención: **[PENDIENTE P-26]** definir plazos por tipo de registro según normativa archivística y de Contraloría.
+4. Retención: **[PENDIENTE X-26]** definir plazos por tipo de registro según normativa archivística y de Contraloría.
 
 ## 6. Protección de datos (Ley 21.719)
 
-1. **Catálogo de datos personales por módulo:** qué entidades y campos contienen datos personales, con su finalidad legal declarada — extensión natural de `entidades-core.md` (campo adicional de clasificación). **[PENDIENTE P-27]** Ejecutar el catastro sobre las 14 entidades existentes; crítico antes de especificar RRHH/Remuneraciones, el módulo más sensible.
+1. **Catálogo de datos personales por módulo:** qué entidades y campos contienen datos personales, con su finalidad legal declarada — extensión natural de `entidades-core.md` (campo adicional de clasificación). **[PENDIENTE X-27]** Ejecutar el catastro sobre las 14 entidades existentes; crítico antes de especificar RRHH/Remuneraciones, el módulo más sensible.
 2. **Minimización en los contratos:** las entidades expuestas en `contracts.md` cruzan el borde con el subconjunto mínimo de campos; los datos personales no viajan en payloads que no los requieren para su finalidad.
 3. Derechos ARCO-P: los flujos de acceso, rectificación y supresión sobre datos personales deben estar especificados como operaciones, no improvisarse.
-4. Roles de responsable y encargado de tratamiento definidos por modo de consumo (**[PENDIENTE P-01]**, ver [`pendientes.md`](../decisiones/pendientes.md)).
+4. Roles de responsable y encargado de tratamiento definidos por modo de consumo (**[PENDIENTE X-01]**, ver [`pendientes.md`](../decisiones/pendientes.md)).
 
 ## 7. Cifrado y gestión de secretos
 
@@ -90,12 +90,12 @@ Flujo real que ningún documento especifica aún y que en municipios es fuente c
 
 1. Alta, modificación de roles y baja de funcionarios como flujos especificados del sistema (con ficha de proceso propia), no gestiones manuales de base de datos.
 2. **Baja oportuna:** la desvinculación revoca accesos de inmediato; cuentas huérfanas detectables por reporte (última actividad, cuentas sin uso en N días).
-3. Suplencias y subrogancias: asignación temporal de roles con fecha de término obligatoria y reversión automática. **[PENDIENTE P-28]** Levantar el proceso real de subrogancias con los pilotos — es práctica municipal cotidiana y el diseño debe reflejarla.
+3. Suplencias y subrogancias: asignación temporal de roles con fecha de término obligatoria y reversión automática. **[PENDIENTE X-28]** Levantar el proceso real de subrogancias con los pilotos — es práctica municipal cotidiana y el diseño debe reflejarla.
 4. Revisión periódica de accesos por municipio (recertificación): reporte provisto por el sistema.
 
 ## 10. Continuidad: respaldos y recuperación
 
-1. **RPO y RTO explícitos en las bases**, con valores diferenciados por criticidad (transaccional vs. capa de lectura). **[PENDIENTE P-29]** Calibrar valores; referencia inicial: RPO ≤ 1 hora, RTO ≤ 8 horas hábiles para la transaccional.
+1. **RPO y RTO explícitos en las bases**, con valores diferenciados por criticidad (transaccional vs. capa de lectura). **[PENDIENTE X-29]** Calibrar valores; referencia inicial: RPO ≤ 1 hora, RTO ≤ 8 horas hábiles para la transaccional.
 2. Respaldos cifrados, con **prueba de restauración periódica demostrada** — un respaldo que nunca se restauró no es un respaldo.
 3. Plan de recuperación documentado y ensayado como parte de la recepción.
 
@@ -103,7 +103,7 @@ Flujo real que ningún documento especifica aún y que en municipios es fuente c
 
 1. Procedimiento de respuesta a incidentes alineado con DS N°7/2023, incluyendo la notificación al CSIRT de Gobierno en los plazos que la norma exige.
 2. Clasificación de severidad y tiempos de respuesta comprometidos por el proveedor de mantención (conecta con el régimen de SLOs de `musts-arquitectura.md` §6).
-3. Si el incidente compromete datos personales: evaluación de notificación a la Agencia de Protección de Datos y a los afectados según Ley 21.719. **[PENDIENTE P-30]** Procedimiento específico con jurídica.
+3. Si el incidente compromete datos personales: evaluación de notificación a la Agencia de Protección de Datos y a los afectados según Ley 21.719. **[PENDIENTE X-30]** Procedimiento específico con jurídica.
 
 ## 12. Verificación en recepción
 
@@ -113,7 +113,7 @@ Mismo principio que las pruebas de carga — cumple o no cumple:
 2. **Revisión de configuración:** secretos fuera de logs y código, TLS interno, rate limiting activo, RBAC y segregación operando con casos de prueba.
 3. **Inventario de superficie expuesta:** el adjudicatario entrega el listado completo de endpoints con su modo de autenticación declarado, contrastable contra la especificación OpenAPI. **Criterio de cumplimiento: cero endpoints sin autenticación**, y cero endpoints de escritura fuera del inventario. Deriva del hallazgo H-2 (Anexo A); es la verificación que lo habría detectado.
 4. **Análisis de dependencias:** inventario de componentes (SBOM) y ausencia de vulnerabilidades conocidas críticas sin mitigar en el momento de la entrega.
-5. Repetición periódica en operación: **[PENDIENTE P-31]** frecuencia de pentest y auditorías (anual como referencia) y quién la financia (candidato: contrato de mantención).
+5. Repetición periódica en operación: **[PENDIENTE X-31]** frecuencia de pentest y auditorías (anual como referencia) y quién la financia (candidato: contrato de mantención).
 
 ## 13. Resumen: qué va a las bases
 
@@ -132,7 +132,7 @@ Mismo principio que las pruebas de carga — cumple o no cumple:
 
 ## 14. Pendientes abiertos
 
-Los pendientes de este documento están registrados en [`pendientes.md`](../decisiones/pendientes.md): P-21, P-22, P-23, P-24, P-25, P-26, P-27, P-28, P-29, P-30, P-31, P-32.
+Los pendientes de este documento están registrados en [`pendientes.md`](../decisiones/pendientes.md): X-21…X-32; **X-77** (completar Anexo A).
 
 ---
 
@@ -159,4 +159,4 @@ Tres razones para conservarlo como fundamento y no como anécdota:
 
 Los hallazgos se citan en las bases como fundamento de las exigencias correspondientes, sin atribución nominal al proveedor anterior. El objetivo es justificar el nivel de exigencia con evidencia propia y verificable, no imputar responsabilidades.
 
-> **PENDIENTE P-32:** Completar el anexo con los demás hallazgos de la fase Odoo que tengan consecuencia de seguridad, revisando el registro de hallazgos QA. Este anexo debe ser la única fuente de esa evidencia dentro del corpus de seguridad.
+> **PENDIENTE X-77:** Completar el anexo con los demás hallazgos de la fase Odoo que tengan consecuencia de seguridad, revisando el registro de hallazgos QA. Este anexo debe ser la única fuente de esa evidencia dentro del corpus de seguridad. (No usar X-32: ese ID es resiliencia ante servicios externos en el registro transversal.)

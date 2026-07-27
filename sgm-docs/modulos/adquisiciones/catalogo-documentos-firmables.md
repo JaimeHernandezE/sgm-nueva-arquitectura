@@ -16,7 +16,7 @@ Vista de módulo del catálogo transversal. La fuente de `code`, estructura de p
 |---|---|---|---|---|---|---|
 | 1 SOLPED | 1.2 | V°B° / aprobación de SOLPED | `adq.solped_vb` | `adq.aprobador_unidad` | `{{firma:adq.aprobador_unidad}}` | Desatendida |
 | 1 SOLPED | 1.5 | CDP | `adq.cdp` | `adq.firmante_cdp` | `{{firma:adq.firmante_cdp}}` | Desatendida |
-| 2 Modalidad | 2.2 | Aprobación de modalidad | `adq.modalidad_aprobacion` | `adq.aprobador_modalidad` | `{{firma:adq.aprobador_modalidad}}` | Desatendida — **[P-38]** |
+| 2 Modalidad | 2.2 | Aprobación de modalidad | `adq.modalidad_aprobacion` | `adq.aprobador_modalidad` | `{{firma:adq.aprobador_modalidad}}` | Desatendida — **[X-38]** |
 | 3 LP | 3.3 | Decreto/resolución aprueba bases | `adq.acto_bases` | `adq.aprobador_modalidad` | `{{firma:adq.aprobador_modalidad}}` | Desatendida |
 | 3 LP | 3.9 (a) | Acto designación comisión | `adq.acto_comision` | `adq.aprobador_modalidad` | `{{firma:adq.aprobador_modalidad}}` | Desatendida |
 | 3 LP | 3.9 (c) | Acta de evaluación | `adq.acta_evaluacion` | Comisión (v1 vía gestor/aprobador) | Por firmante | Atendida |

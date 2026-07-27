@@ -13,7 +13,7 @@ El sistema debe dimensionarse para el escenario de adopción amplia, no para los
 
 - **Referencia de carga:** 100 municipios activos operando el módulo de Adquisiciones a diario desde múltiples unidades municipales, con crecimiento proyectado hacia la totalidad de municipios del país (345 tenants eventuales).
 - **Orden de magnitud transaccional:** decenas de miles a ~100.000 transacciones de escritura diarias (SOLPEDs, cotizaciones, órdenes, recepciones, devengados), más el tráfico de lectura asociado. Carga modesta para un stack moderno bien configurado; no requiere arquitectura exótica, pero sí disciplina en los puntos críticos de las secciones siguientes.
-- **Dimensionamiento por pico, no por promedio.** La carga municipal es estacional y sincronizada: cierre presupuestario, fin de mes, diciembre — todos los municipios devengando simultáneamente. Las pruebas de carga y los SLOs se definen contra el perfil de pico. **[PENDIENTE P-07]** Caracterizar el perfil de pico con datos reales de los pilotos (razón pico/promedio).
+- **Dimensionamiento por pico, no por promedio.** La carga municipal es estacional y sincronizada: cierre presupuestario, fin de mes, diciembre — todos los municipios devengando simultáneamente. Las pruebas de carga y los SLOs se definen contra el perfil de pico. **[PENDIENTE X-07]** Caracterizar el perfil de pico con datos reales de los pilotos (razón pico/promedio).
 
 ## 2. Escalamiento horizontal
 
@@ -31,7 +31,7 @@ La multitenancy por schema (decisión asentada) tiene dos puntos críticos conoc
 ## 4. Capa de lectura separada para reportería agregada
 
 - Ninguna consulta que cruce schemas (reportería nacional, SINIM, analítica) puede ejecutarse contra la base transaccional.
-- Exigencia: capa de lectura separada (réplica de lectura o data warehouse) alimentada desde la base transaccional, con retraso máximo de actualización definido. **[PENDIENTE P-08]** Definir la frescura requerida por caso de uso (SINIM tolera horas; un tablero DAF quizás no).
+- Exigencia: capa de lectura separada (réplica de lectura o data warehouse) alimentada desde la base transaccional, con retraso máximo de actualización definido. **[PENDIENTE X-08]** Definir la frescura requerida por caso de uso (SINIM tolera horas; un tablero DAF quizás no).
 - Esta capa es además el punto de consumo natural para la categoría de reportería del ecosistema de terceros (ver `decisiones-macro-stack.md`, sección 7): los scopes de lectura de terceros apuntan aquí, no a la transaccional.
 
 ## 5. Latencia en cadenas de validación entre módulos
@@ -46,7 +46,7 @@ Exigencia sobre los contratos: **cada validación declarada en un contrato debe 
 | Asíncrona | La operación procede; la validación confirma o revierte después | Notificación de devengado a Contabilidad |
 | Cacheada | Se valida contra dato local con frescura declarada | Catálogos, tablas de referencia |
 
-**[PENDIENTE P-09]** Clasificar las validaciones del piloto Compra Ágil (insumo: los 17 sub-pasos y el catálogo de reglas bloqueantes/asesoras de la ficha QA).
+**[PENDIENTE X-09]** Clasificar las validaciones del piloto Compra Ágil (insumo: los 17 sub-pasos y el catálogo de reglas bloqueantes/asesoras de la ficha QA).
 
 ## 6. SLOs exigibles en las bases
 
@@ -56,10 +56,10 @@ Objetivos de nivel de servicio explícitos, medidos en el ambiente de recepción
 |---|---|---|
 | Latencia p95, operaciones transaccionales | < 500 ms | Medida en el borde de la API, perfil de pico |
 | Latencia p95, consultas de lectura simples | < 300 ms | Ídem |
-| Disponibilidad mensual | ≥ 99,5% | **[PENDIENTE P-11]** Validar contra el estándar de servicios del Estado y el costo asociado |
+| Disponibilidad mensual | ≥ 99,5% | **[PENDIENTE X-11]** Validar contra el estándar de servicios del Estado y el costo asociado |
 | Error rate 5xx | < 0,1% | Sostenido |
 
-Los valores exactos son de referencia y deben calibrarse antes de las bases; lo no negociable es que **existan, sean medibles y tengan consecuencias contractuales** (multas o retenciones por incumplimiento sostenido). **[PENDIENTE P-10]** Calibración final de valores y régimen de consecuencias.
+Los valores exactos son de referencia y deben calibrarse antes de las bases; lo no negociable es que **existan, sean medibles y tengan consecuencias contractuales** (multas o retenciones por incumplimiento sostenido). **[PENDIENTE X-10]** Calibración final de valores y régimen de consecuencias.
 
 ## 7. Pruebas de carga como criterio de aceptación
 
@@ -82,8 +82,8 @@ Las notificaciones se construyen sobre los eventos de dominio que cada módulo d
 
 1. **Los módulos no notifican: emiten eventos.** Adquisiciones emite `PurchaseOrderIssued`; no sabe ni necesita saber quién quiere enterarse. Esto preserva el mandato API.
 2. **Servicio transversal de notificaciones.** Un servicio único se suscribe a los eventos de todos los módulos y resuelve la entrega según reglas de suscripción por rol, unidad y municipio.
-3. **Canales de entrega desacoplados del evento:** bandeja en la aplicación, correo electrónico, y canales formales (DocDigital) cuando el hecho lo exija. DocDigital aquí es **canal de notificación** (C6), no repositorio de archivos (almacenamiento = C10) ni tramitación de actos (C11 — decisión [`2026-07-docdigital-tramitacion-documental.md`](../decisiones/2026-07-docdigital-tramitacion-documental.md)). Producto UI y principios: [`plataforma/notificaciones/overview.md`](../../plataforma/notificaciones/overview.md). **[PENDIENTE P-06]** Matriz evento → canal → destinatario por rol — borrador en [`plataforma/notificaciones/matriz-evento-canal.md`](../../plataforma/notificaciones/matriz-evento-canal.md).
-4. **El mismo mecanismo sirve al ecosistema.** Los eventos expuestos como webhooks con scopes M2M permiten que sistemas municipales externos y terceros reaccionen a hechos de SGM sin polling. Un solo diseño cubre notificación a personas e integración de sistemas. **[PENDIENTE P-05]** Decisión de mecanismo de entrega a sistemas (webhooks, cola, ambos).
+3. **Canales de entrega desacoplados del evento:** bandeja en la aplicación, correo electrónico, y canales formales (DocDigital) cuando el hecho lo exija. DocDigital aquí es **canal de notificación** (C6), no repositorio de archivos (almacenamiento = C10) ni tramitación de actos (C11 — decisión [`2026-07-docdigital-tramitacion-documental.md`](../decisiones/2026-07-docdigital-tramitacion-documental.md)). Producto UI y principios: [`plataforma/notificaciones/overview.md`](../../plataforma/notificaciones/overview.md). **[PENDIENTE X-06]** Matriz evento → canal → destinatario por rol — borrador en [`plataforma/notificaciones/matriz-evento-canal.md`](../../plataforma/notificaciones/matriz-evento-canal.md).
+4. **El mismo mecanismo sirve al ecosistema.** Los eventos expuestos como webhooks con scopes M2M permiten que sistemas municipales externos y terceros reaccionen a hechos de SGM sin polling. Un solo diseño cubre notificación a personas e integración de sistemas. **[PENDIENTE X-05]** Decisión de mecanismo de entrega a sistemas (webhooks, cola, ambos).
 
 ## 10. Flujos de proceso: BPMN como especificación, propiedades como exigencia
 
@@ -93,7 +93,7 @@ Los BPMN de la especificación son notación, no tecnología: definen el flujo q
 2. **Estado consultable vía API.** Para cualquier instancia de flujo (una SOLPED, una orden): en qué paso está, quién la tiene asignada, hace cuánto tiempo.
 3. **Transiciones auditadas.** Cada cambio de estado registra quién, cuándo, desde qué estado y hacia cuál, inmutablemente.
 4. **Timers y escalamientos de negocio configurables.** Plazos por paso (p. ej. cotización sin respuesta en N días hábiles → escalamiento) definibles sin cambio de código. Es lo que un motor BPM regala y una implementación nativa debe construir; se exige explícitamente para que no se omita.
-5. **Versionamiento de procesos en vuelo.** Regla definida para instancias a mitad de flujo cuando el proceso cambia (terminan con la versión anterior o migran con criterio explícito). **[PENDIENTE P-12]** Definir la regla por tipo de flujo.
+5. **Versionamiento de procesos en vuelo.** Regla definida para instancias a mitad de flujo cuando el proceso cambia (terminan con la versión anterior o migran con criterio explícito). **[PENDIENTE X-12]** Definir la regla por tipo de flujo.
 6. **Trazabilidad contra la especificación como criterio de recepción.** El comportamiento del sistema debe ser demostrable contra el BPMN de la especificación: mismo conjunto de pasos, mismas decisiones, mismos cruces de módulo. Cumple o no cumple.
 
 Lectura de diseño que conecta con los contratos: en los BPMN, cada cruce de carril entre unidades que corresponden a módulos distintos es un borde de contrato. El recorrido de los 17 sub-pasos de Compra Ágil identifica simultáneamente los contratos (documento API-first) y los estados/transiciones de esta sección.
@@ -132,4 +132,4 @@ Todo lo anterior se traduce en cláusulas de bases bajo la lógica de propiedade
 
 ## 13. Pendientes abiertos
 
-Los pendientes de este documento están registrados en [`pendientes.md`](../decisiones/pendientes.md): P-05, P-06, P-07, P-08, P-09, P-10, P-11, P-12.
+Los pendientes de este documento están registrados en [`pendientes.md`](../decisiones/pendientes.md): X-05, X-06, X-07, X-08, X-09, X-10, X-11, X-12.

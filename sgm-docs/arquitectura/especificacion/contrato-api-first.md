@@ -50,7 +50,7 @@ Endpoints con verbo, ruta, payload de entrada, respuesta, códigos de error posi
 Contratos de proveedor que el módulo necesita del exterior, expresados como interfaces: qué operación, con qué entrada, qué respuesta espera, y qué hace el módulo si el proveedor no responde o rechaza.
 
 ### 3.4 Eventos que emite
-Hechos de dominio que otros módulos o sistemas pueden querer observar (p. ej. `PurchaseOrderIssued`, `GoodsReceiptConfirmed`), con esquema del evento. **[PENDIENTE P-05]** Definir mecanismo de entrega (webhooks, cola, polling) — decisión de arquitectura, no de contrato funcional; por ahora solo se cataloga qué eventos existen.
+Hechos de dominio que otros módulos o sistemas pueden querer observar (p. ej. `PurchaseOrderIssued`, `GoodsReceiptConfirmed`), con esquema del evento. **[PENDIENTE X-05]** Definir mecanismo de entrega (webhooks, cola, polling) — decisión de arquitectura, no de contrato funcional; por ahora solo se cataloga qué eventos existen.
 
 ## 4. Estándares transversales del contrato
 
@@ -65,7 +65,7 @@ Dos planos distintos, ambos exigibles en las bases:
 | Personas | Clave Única | Usuarios municipales operando vía frontend |
 | Sistemas | OAuth2 client credentials (o equivalente) | Sistemas municipales consumiendo módulos M2M, con **scopes por módulo y por municipio** |
 
-**[PENDIENTE P-02]** El plano M2M no existe en el diseño actual; especificarlo es prerequisito del modo à la carte.
+**[PENDIENTE X-02]** El plano M2M no existe en el diseño actual; especificarlo es prerequisito del modo à la carte.
 
 ## 6. Piloto: Compra Ágil
 
@@ -92,4 +92,4 @@ El modelo entidad-relación y las fichas de flujo de Compra Ágil son la materia
 1. ~~Crear `sgm-docs/arquitectura/especificacion/estandares-api.md`~~ — **hecho**, ver [`estandares-api.md`](./estandares-api.md).
 2. Crear `sgm-docs/modulos/adquisiciones/contracts.md` con la plantilla de la sección 3. *(Hecho — piloto Compra Ágil.)*
 3. Ejecutar el recorrido de los 17 sub-pasos de Compra Ágil (sesión de trabajo dedicada). *(Hecho — bordes §3.5 en fichas.)*
-4. Resolver los pendientes estructurales antes del primer contrato definitivo: multitenancy en el contrato (**P-03**), plano M2M (**P-02**), política de deprecación (**P-04**).
+4. Resolver los pendientes estructurales antes del primer contrato definitivo: multitenancy en el contrato (**X-03**), plano M2M (**X-02**), política de deprecación (**X-04**).

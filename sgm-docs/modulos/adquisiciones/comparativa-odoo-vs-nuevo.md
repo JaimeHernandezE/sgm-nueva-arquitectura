@@ -127,7 +127,7 @@ Prioridad por impacto funcional, analítica y bordes. Columna **Candidato**: ado
 | `numero_orden_ingreso` / `fecha_orden_ingreso` | No | Evaluar | Documento de bodega/ingreso |
 | `factura_file_ids` / `guia_despacho_file_ids` | Adjuntos genéricos; factura en etapa 5 vía SII | Parcial | En Odoo la factura vive en la recepción |
 | `destinatarios_validacion` + flags Presupuesto / Jefe Compras / Control Interno | Roles + SoD (`confirmReceipt`) | Descartar | Modelo de validación distinto |
-| `asset_ids` M2M → `account.gov.asset` | `inventory_entry_ref` + **P-44** | Pendiente alcance | Acoplamiento fuerte en Odoo vs contrato |
+| `asset_ids` M2M → `account.gov.asset` | `inventory_entry_ref` + **X-44** | Pendiente alcance | Acoplamiento fuerte en Odoo vs contrato |
 | Cantidades previas/pendientes en línea | Sí (`quantity_*` en `GoodsReceiptLine`) | Cubierto | |
 
 ### 2.6 Otros
@@ -135,7 +135,7 @@ Prioridad por impacto funcional, analítica y bordes. Columna **Candidato**: ado
 | Campo / modelo Odoo | En el nuevo | Candidato |
 |---|---|---|
 | `adquisiciones.historial` | `CaseStep` + auditoría | Descartar como entidad propia |
-| `company_id` multi-compañía | Multitenancy **P-03** | Pendiente plataforma |
+| `company_id` multi-compañía | Multitenancy **X-03** | Pendiente plataforma |
 | `tupa_file_id` (export BD; **no** en modelo Python core de SP) | Sin TUPA — expediente = `ProcurementCase` | Descartar |
 | `dms_directory_id` (mixin DMS) | `DocumentRef` | Descartar |
 | Wizards de autorización (individual/masiva SP, bases, RC, recepción, DPP) | Operaciones de API + UI de bandeja | Cubierto por diseño distinto |
@@ -185,9 +185,9 @@ flowchart TB
 | Contraparte | Contratos / eventos clave | Estado |
 |---|---|---|
 | **Presupuestos** | `previewBudgetAvailability`, verificación 1.3, CDP 1.5, preobligación 1.6, `commitBudget` | Documentado |
-| **Contabilidad** | `recordAccrual` / `registerAccrual`, `Accrual` | Documentado; tensión **P-46** (devengo en 4.4 vs 5.2) |
-| **Tesorería** | `executePayment` (5.4); decreto con FirmaGob | Documentado; frontera **P-47** |
-| **Inventario / Activo fijo** | `checkStockAvailability` (1.0), `registerInventoryEntry` (4.3) | **P-44** — no está en los 5 módulos de licitación |
+| **Contabilidad** | `recordAccrual` / `registerAccrual`, `Accrual` | Documentado; tensión **X-46** (devengo en 4.4 vs 5.2) |
+| **Tesorería** | `executePayment` (5.4); decreto DocDigital (C11) | Documentado; **X-47 cerrado** (pago = Tesorería) |
+| **Inventario / Activo fijo** | `checkStockAvailability` (1.0), `registerInventoryEntry` (4.3) | **X-44** — no está en los 5 módulos de licitación |
 | **Core MP** | `linkMpProcess`, `readMpProcess`, catálogo CM | Solo lectura / deep link |
 | **Core docs / FirmaGob** | `storeDocument`, `requestSignature` | Sustituye DMS + firmas booleanas |
 | **SII** | `getPriceReference`, `getInvoiceForMatch` | Nuevo respecto a Odoo Adq |
@@ -195,7 +195,9 @@ flowchart TB
 
 ### 3.3 Hallazgo central
 
-En Odoo, **Presupuesto e Inventario/Activo Fijo se materializan dentro del mismo commit de aprobación** de Adquisiciones. En el nuevo, esos efectos son **dependencias de borde**; Inventario además puede quedar fuera del alcance de bases (**P-44**).
+En Odoo, **Presupuesto e Inventario/Activo Fijo se materializan dentro del mismo commit de aprobación** de Adquisiciones. En el nuevo, esos efectos son **dependencias de borde**; Inventario además puede quedar fuera del alcance de bases (**X-44**).
+
+**Lectura B0 (plan general):** es la primera aparición del problema canónico **atomicidad de efectos de borde** — un solo problema con tres manifestaciones (Adq→Presupuesto, Adq→Inventario, devengo dual Pres↔Cont). Ver [`arquitectura/decisiones/2026-07-atomicidad-efectos-borde.md`](../../arquitectura/decisiones/2026-07-atomicidad-efectos-borde.md) y [`../../plan-general.md`](../../plan-general.md) §3.0. Ancla operativa: **C-1**.
 
 ---
 
@@ -213,16 +215,18 @@ En Odoo, **Presupuesto e Inventario/Activo Fijo se materializan dentro del mismo
 
 ## 5. Decisiones humanas sugeridas
 
-| Tema | Origen Odoo / pendiente | Acción sugerida |
-|------|-------------------------|-----------------|
-| Rubro / categoría de ítem | `rubro_bien_servicio_id`; [`analitica.md`](./analitica.md) §9.5 | Decir clasificador (ONU-SPSC / presupuestario / ambos) |
-| Flag activo fijo temprano | `is_fixed_asset` en líneas SP/RC | ¿Se declara en SOLPED/OC o solo en 4.3 vía umbral? |
-| Distribución presupuestaria multi-línea | `line_distribution_ids` (cuenta, área, programa…) | ¿Vive solo en Presupuestos detrás de `budget_line_id`? |
-| Orden de ingreso de bodega | `numero_orden_ingreso` / `fecha_orden_ingreso` | ¿Campo de Adquisiciones o del proveedor de inventario? |
-| Recompra | `resolucion_original_id` + state `recompra` | ¿Entidad/relación explícita o solo republicación/desierto? |
-| Alcance Inventario / Activo fijo | Creación síncrona de `account.gov.asset` | Cerrar **P-44** |
-| Momento del devengado | Egreso en aprobación RC vs recepción | Cerrar **P-46** |
-| Frontera Pago / Tesorería | Tesorería depende de Adq; pago no está en addons Adq | Cerrar **P-47** |
+| ID | Tema | Origen Odoo / pendiente | Acción / estado B0 |
+|------|-------------------------|-------------------------|-----------------|
+| **A-1** | Rubro / categoría de ítem | `rubro_bien_servicio_id`; [`analitica.md`](./analitica.md) §9.5 | Decir clasificador (ONU-SPSC / presupuestario / ambos) — **abierto** |
+| **A-2** | Flag activo fijo temprano | `is_fixed_asset` en líneas SP/RC | ¿Se declara en SOLPED/OC o solo en 4.3 vía umbral? — **abierto** |
+| **A-3** | Distribución presupuestaria multi-línea | `line_distribution_ids` (cuenta, área, programa…) | ¿Vive solo en Presupuestos detrás de `budget_line_id`? — **abierto** |
+| **A-4** | Orden de ingreso de bodega | `numero_orden_ingreso` / `fecha_orden_ingreso` | ¿Campo de Adquisiciones o del proveedor de inventario? — **abierto** |
+| **A-5** | Recompra | `resolucion_original_id` + state `recompra` | ¿Entidad/relación explícita o solo republicación/desierto? — **abierto** |
+| **X-44** | Alcance Inventario / Activo fijo | Creación síncrona de `account.gov.asset` | **Reformulado** (vs Cont D-2); decisión jefatura — plan general §8 |
+| **X-46** | Momento del devengado | Egreso en aprobación RC vs recepción | **Absorbido bajo C-1** / ADR atomicidad |
+| **X-47** | Frontera Pago / Tesorería | Tesorería depende de Adq; pago no está en addons Adq | **Cerrado** — plan Tesorería: pago es de Tesorería; etapa 5 Adq orquesta vía contrato |
+
+**DocDigital (B0):** resoluciones y actos de adjudicación figuran en [`integracion-docdigital.md`](../../arquitectura/especificacion/integracion-docdigital.md) §3; cableado en fichas Adq (muchas aún C9/FirmaGob) queda como deuda DC-6 del plan general.
 
 ---
 

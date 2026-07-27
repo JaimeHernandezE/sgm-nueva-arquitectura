@@ -4,7 +4,7 @@
 
 *Entrada al módulo (listado / nuevo expediente):* [`0-consulta-expedientes.md`](./0-consulta-expedientes.md).
 
-*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24).*
+*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (X-24).*
 
 ## 1.0 — Verificación previa (Inventario / catálogo CM)
 
@@ -15,7 +15,7 @@
 | Plataforma | SGM |
 | Optativo | **Verdadero** — se omite si el tenant no tiene inventario utilizable (interno ni externo) **y** no tiene catálogo Convenio Marco integrado vía ChileCompra |
 
-**Detalle:** Antes de crear la SOLPED, el solicitante puede buscar el bien/servicio para saber si ya existe en **bodegas municipales** (Inventario interno o sistemas externos adaptados al mismo contrato) o en el **catálogo de Convenio Marco** (espejo ChileCompra). Si hay stock en bodega, el camino feliz **no** es un expediente de compra sino una **solicitud a bodega** (proceso enunciado; alcance Bodega/Inventario pendiente **[P-44]**). Si no hay stock pero el ítem aparece en catálogo CM, el sistema informa el hallazgo y pide confirmación para generar el expediente de compra; en 1.1 se muestra una advertencia no bloqueante sobre la modalidad sugerida. Si el paso está omitido (sin capacidades), “Nuevo expediente” conduce directo a 1.1.
+**Detalle:** Antes de crear la SOLPED, el solicitante puede buscar el bien/servicio para saber si ya existe en **bodegas municipales** (Inventario interno o sistemas externos adaptados al mismo contrato) o en el **catálogo de Convenio Marco** (espejo ChileCompra). Si hay stock en bodega, el camino feliz **no** es un expediente de compra sino una **solicitud a bodega** (proceso enunciado; alcance Bodega/Inventario pendiente **[X-44]**). Si no hay stock pero el ítem aparece en catálogo CM, el sistema informa el hallazgo y pide confirmación para generar el expediente de compra; en 1.1 se muestra una advertencia no bloqueante sobre la modalidad sugerida. Si el paso está omitido (sin capacidades), “Nuevo expediente” conduce directo a 1.1.
 
 **Condiciones de habilitación:**
 
@@ -31,7 +31,7 @@
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Dependencia *(propuesta, QA ítem 4 / P-44)* | `checkStockAvailability` | Inventario (interno o externo vía adaptador) | Síncrona *(asesora)* | Entrada: texto / `item_code`, `quantity` (opcional) — Respuesta: `available_quantity`, `warehouse_label`, `suggested_action` (`use_stock` \| `continue_purchase`) |
+| 1 | Dependencia *(propuesta, QA ítem 4 / X-44)* | `checkStockAvailability` | Inventario (interno o externo vía adaptador) | Síncrona *(asesora)* | Entrada: texto / `item_code`, `quantity` (opcional) — Respuesta: `available_quantity`, `warehouse_label`, `suggested_action` (`use_stock` \| `continue_purchase`) |
 | 2 | Dependencia *(condicional a integración catálogo ChileCompra)* | `checkCatalogAvailability` | Catálogo CM espejado (Core / MP) | Cacheada (frescura diaria) | Entrada: descripción / `item_code`, `region` — Respuesta: `available`, `catalog_price`, `provider_count`, `agreement_id` / etiqueta convenio |
 
 **Validaciones:** Sin validaciones de formulario — solo consultas asesoras (`checkStockAvailability`, `checkCatalogAvailability`); no hay operación de escritura que avance el expediente.
@@ -42,9 +42,9 @@
 - Hit solo en CM → confirmación para crear expediente; en 1.1 advertencia no bloqueante en `purchase_modality` (sugerencia `framework_agreement`). La validación bloqueante V2 permanece en 2.1.
 - Proveedor Inventario caído con catálogo CM activo → se muestra solo banda CM (o mensaje de degradación en banda stock).
 - Catálogo CM no integrado → 1.0 solo si hay Inventario; sin Inventario, omitido.
-- Solicitud a bodega aún no especificada → UI enunciada; no bloquea el diseño de Adquisiciones (**P-44**).
+- Solicitud a bodega aún no especificada → UI enunciada; no bloquea el diseño de Adquisiciones (**X-44**).
 
-> ⚠ **Pendiente:** proceso de solicitud a bodega; decisión de bases Inventario/Activo Fijo (**P-44**); disponibilidad real del sync diferencial de catálogo CM con ChileCompra.
+> ⚠ **Pendiente:** proceso de solicitud a bodega; decisión de bases Inventario/Activo Fijo (**X-44**); disponibilidad real del sync diferencial de catálogo CM con ChileCompra.
 
 **Wireframe / prototipo:** [`../wireframes/10-verificacion-previa.md`](../wireframes/10-verificacion-previa.md)
 
@@ -96,7 +96,7 @@
 | Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines[].unit_price` | El campo Precio unitario neto es obligatorio. | blocking | integridad:campo_requerido |
 | Guardar borrador | `createPurchaseRequest` | `PRICE_REFERENCE_UNAVAILABLE` | `lines[].price_source` | No hay referencia de precio disponible para la línea. | blocking | integridad:campo_requerido |
 | Guardar borrador | `createPurchaseRequest` | `PRICE_DEVIATION_EXCEEDED` | `lines[].unit_price` | La desviación de precio excede la tolerancia permitida. | blocking | integridad:campo_requerido |
-| Guardar borrador | `createPurchaseRequest` | `FOUNDED_RESOLUTION_REQUIRED` | `founded_resolution_attachment` | Trato directo requiere resolución fundada adjunta. | blocking | Ley 19.886 — causal de trato directo; ⚠ P-36 |
+| Guardar borrador | `createPurchaseRequest` | `FOUNDED_RESOLUTION_REQUIRED` | `founded_resolution_attachment` | Trato directo requiere resolución fundada adjunta. | blocking | Ley 19.886 — causal de trato directo; ⚠ X-36 |
 | Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `attachments[].attachment_type` | El tipo de documento de respaldo es obligatorio. | blocking | integridad:campo_requerido |
 | Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `attachments[].description` | La descripción del documento de respaldo es obligatoria. | blocking | integridad:campo_requerido |
 | Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `attachments[].document_ref` | El archivo del documento de respaldo es obligatorio. | blocking | integridad:campo_requerido |
@@ -111,7 +111,7 @@
 | Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines[].unit_of_measure` | El campo Unidad de medida es obligatorio. | blocking | integridad:campo_requerido |
 | Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines[].unit_price` | El campo Precio unitario neto es obligatorio. | blocking | integridad:campo_requerido |
 | Enviar a aprobación | `submitPurchaseRequest` | `PRICE_REFERENCE_UNAVAILABLE` | `lines[].price_source` | No hay referencia de precio disponible para la línea. | blocking | integridad:campo_requerido |
-| Enviar a aprobación | `submitPurchaseRequest` | `FOUNDED_RESOLUTION_REQUIRED` | `founded_resolution_attachment` | Trato directo requiere resolución fundada adjunta. | blocking | Ley 19.886 — causal de trato directo; ⚠ P-36 |
+| Enviar a aprobación | `submitPurchaseRequest` | `FOUNDED_RESOLUTION_REQUIRED` | `founded_resolution_attachment` | Trato directo requiere resolución fundada adjunta. | blocking | Ley 19.886 — causal de trato directo; ⚠ X-36 |
 | Enviar a aprobación | `submitPurchaseRequest` | `INVALID_STATUS` | `status` | Solo una SOLPED en borrador puede enviarse a aprobación. | blocking | integridad:estado_expediente |
 | — (contexto 1.0) | — | `CATALOG_CM_SUGGESTED` | `purchase_modality` | El ítem aparece en catálogo de Convenio Marco; se sugiere esa modalidad. | advisory |
 
@@ -296,13 +296,13 @@ En ambos caminos se ejecuta `checkBudgetAvailability` antes de cerrar el paso. E
 | Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
 |---|---|---|---|---|---|---|
 | Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `VERIFICATION_REQUIRED` | — | Debe existir verificación presupuestaria confirmada en 1.3. | blocking | DL 1.263 — disponibilidad previa al CDP |
-| Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `SEGREGATION_OF_DUTIES_VIOLATION` | `signed_by` | El firmante CDP no puede ser la misma persona que verificó en 1.3. | blocking | Control interno — segregación de funciones; ⚠ P-25 |
+| Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `SEGREGATION_OF_DUTIES_VIOLATION` | `signed_by` | El firmante CDP no puede ser la misma persona que verificó en 1.3. | blocking | Control interno — segregación de funciones; ⚠ X-25 |
 | Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `BUDGET_UNAVAILABLE` | `budget_line_id` | La línea presupuestaria no tiene saldo disponible al revalidar. | blocking | DL 1.263 — fase de compromiso presupuestario |
 | Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida. | blocking | Ley 19.799 — firma electrónica avanzada |
 | Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `MISSING_REQUIRED_FIELD` | `certified_amount` | El campo Monto certificado es obligatorio. | blocking | integridad:campo_requerido |
 | Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `MISSING_REQUIRED_FIELD` | `fiscal_year` | El campo Año fiscal es obligatorio. | blocking | integridad:campo_requerido |
 | Registrar CDP escaneado | `registerScannedBudgetAvailabilityCertificate` | `VERIFICATION_REQUIRED` | — | Debe existir verificación presupuestaria confirmada en 1.3. | blocking | DL 1.263 — disponibilidad previa al CDP |
-| Registrar CDP escaneado | `registerScannedBudgetAvailabilityCertificate` | `SEGREGATION_OF_DUTIES_VIOLATION` | `signed_by` | El firmante CDP no puede ser la misma persona que verificó en 1.3. | blocking | Control interno — segregación de funciones; ⚠ P-25 |
+| Registrar CDP escaneado | `registerScannedBudgetAvailabilityCertificate` | `SEGREGATION_OF_DUTIES_VIOLATION` | `signed_by` | El firmante CDP no puede ser la misma persona que verificó en 1.3. | blocking | Control interno — segregación de funciones; ⚠ X-25 |
 | Registrar CDP escaneado | `registerScannedBudgetAvailabilityCertificate` | `BUDGET_UNAVAILABLE` | `budget_line_id` | La línea presupuestaria no tiene saldo disponible al revalidar. | blocking | DL 1.263 — fase de compromiso presupuestario |
 | Registrar CDP escaneado | `registerScannedBudgetAvailabilityCertificate` | `SCANNED_CDP_INVALID` | `scanned_certificate_attachment` | El adjunto del CDP escaneado es inválido o inconsistente. | blocking | integridad:documento_requerido |
 | Registrar CDP escaneado | `registerScannedBudgetAvailabilityCertificate` | `MISSING_REQUIRED_FIELD` | `scanned_certificate_attachment` | El campo Adjunto del CDP escaneado es obligatorio. | blocking | integridad:campo_requerido |
@@ -376,7 +376,7 @@ En ambos caminos se ejecuta `checkBudgetAvailability` antes de cerrar el paso. E
 
 | Sub-paso | Tipo | Contrato o Evento | Contraparte |
 |---|---|---|---|
-| 1.0 | Dependencia *(propuesta / P-44)* | `checkStockAvailability` | Inventario *(omitible)* |
+| 1.0 | Dependencia *(propuesta / X-44)* | `checkStockAvailability` | Inventario *(omitible)* |
 | 1.0 | Dependencia *(condicional sync ChileCompra)* | `checkCatalogAvailability` | Catálogo CM espejado |
 | 1.1 | Sistema externo | `getPriceReference` | Core (SII) |
 | 1.1 | Dependencia | `previewBudgetAvailability` | Presupuestos *(informativa)* |

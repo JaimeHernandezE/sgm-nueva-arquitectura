@@ -12,7 +12,7 @@
 +----------------------------------------------------------------+
 | ## Contexto                                                      |
 | Resolución Fundada firmada ✓ · Toma de Razón: N/A (bajo umbral)  |
-| Plazo legal de publicidad: 24 h desde total tramitación (P-71)   |
+| Plazo legal de publicidad: 24 h desde total tramitación (X-71)   |
 +----------------------------------------------------------------+
 | ## Acción en Mercado Público                                     |
 | [ Publicar Trato Directo en Mercado Público ]  (deep link)       |
@@ -53,4 +53,4 @@
 
 ## Notas
 
-- Interacción MP: **Gestión** (registro del ID); luego informativa. **[PENDIENTE P-71]** plazo 24 h.
+- Interacción MP: **Gestión** (registro del ID); luego informativa. **[PENDIENTE X-71]** plazo 24 h.

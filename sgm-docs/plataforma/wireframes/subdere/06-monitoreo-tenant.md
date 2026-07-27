@@ -1,7 +1,7 @@
 # Wireframe: Monitoreo por tenant
 
 **Consola:** Plataforma (SUBDERE)  
-**Operaciones:** *(pendiente — observabilidad musts-arquitectura §8 / P-08)*; sin `operationId` estable en `contracts.md` aún
+**Operaciones:** *(pendiente — observabilidad musts-arquitectura §8 / X-08)*; sin `operationId` estable en `contracts.md` aún
 
 ## Layout
 
@@ -21,7 +21,7 @@
 +----------------------------------------------------------+
 | ⚠ Pantalla estructural: la fuente de métricas y el      |
 |   contrato de consulta de observabilidad están pendientes |
-|   (musts §8, P-08). No inventar endpoints aquí.          |
+|   (musts §8, X-08). No inventar endpoints aquí.          |
 +----------------------------------------------------------+
 ```
 
@@ -38,7 +38,7 @@ No hay entidad de dominio propia; lectura de capa de observabilidad.
 
 | Botón | Operación contrato | Efecto |
 |---|---|---|
-| Actualizar / Exportar | *(pendiente P-08)* | — |
+| Actualizar / Exportar | *(pendiente X-08)* | — |
 
 ## Estados de pantalla
 

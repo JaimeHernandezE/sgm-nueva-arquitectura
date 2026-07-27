@@ -43,7 +43,7 @@
 
 - **En espera:** Rol N/A — no hay acción de usuario, solo monitoreo (Interacción MP: Gestión, hito crítico).
 - **Aceptada + compromiso OK:** monto real puede diferir del estimado en la preobligación (1.6); si es menor, libera el excedente automáticamente (sin intervención); si es mayor y hay saldo, compromete la diferencia.
-- **`BUDGET_UNAVAILABLE`** (monto real > preobligación sin saldo): situación anómala grave — la OC ya está aceptada (vínculo legal existe) pero el compromiso contable no puede registrarse; tarea urgente a DAF Finanzas — **[PENDIENTE P-40]**, el sistema no la resuelve solo pero no debe pasar silenciosamente.
+- **`BUDGET_UNAVAILABLE`** (monto real > preobligación sin saldo): situación anómala grave — la OC ya está aceptada (vínculo legal existe) pero el compromiso contable no puede registrarse; tarea urgente a DAF Finanzas — **[PENDIENTE X-40]**, el sistema no la resuelve solo pero no debe pasar silenciosamente.
 - **Presupuestos no disponible:** reintento con retroceso; estado intermedio visible "aceptada, compromiso pendiente" — nunca se pierde el hito ni se duplica el compromiso (idempotencia por `purchase_order_ref`).
 - **Rechazo (variante):** ver 3.5 — excluyente con esta aceptación.
 

@@ -43,24 +43,24 @@ Regla derivada del mandato general (`contrato-api-first.md` §1), aplicable text
 Consecuencias:
 
 - **Toda acción administrativa es una operación de API auditada** (ya exigido para roles en `seguridad.md` §3.3; aquí se generaliza a tenants, parámetros y credenciales).
-- El core tiene su propio `contracts.md` con las cuatro secciones de `contrato-api-first.md` §3. Borrador mínimo en [`plataforma/contracts.md`](../../plataforma/contracts.md) — **[PENDIENTE P-48]** extender a ciclo de vida completo de tenants.
+- El core tiene su propio `contracts.md` con las cuatro secciones de `contrato-api-first.md` §3. Borrador mínimo en [`plataforma/contracts.md`](../../plataforma/contracts.md) — **[PENDIENTE X-48]** extender a ciclo de vida completo de tenants.
 - Las entidades del core (§4) se definen en el modelo de datos canónico con la misma regla de visibilidad interna/expuesta (`plantilla-maestra-sgm.md` §6.6).
 
 ## 3. Inventario de servicios del core
 
 | # | Servicio | Qué resuelve | Base normativa ya escrita | Estado |
 |---|---|---|---|---|
-| C1 | **Identidad y autenticación** | Plano personas (Clave Única) y plano sistemas (M2M, scopes por módulo y municipio) | `seguridad.md` §2, `estandares-api.md` §8 | Exigencias definidas; diseño abierto (**P-02**, **P-22**, **P-23**) |
-| C2 | **Autorización (RBAC + SoD)** | Roles por módulo asignados por tenant y unidad; incompatibilidades SoD aplicadas por el motor; administración delegada | `seguridad.md` §3–§4; [`catalogo-roles.md`](./catalogo-roles.md) | Modelo exigido; catálogo en **Borrador** (**P-24**, **P-25**) |
+| C1 | **Identidad y autenticación** | Plano personas (Clave Única) y plano sistemas (M2M, scopes por módulo y municipio) | `seguridad.md` §2, `estandares-api.md` §8 | Exigencias definidas; diseño abierto (**X-02**, **X-22**, **X-23**) |
+| C2 | **Autorización (RBAC + SoD)** | Roles por módulo asignados por tenant y unidad; incompatibilidades SoD aplicadas por el motor; administración delegada | `seguridad.md` §3–§4; [`catalogo-roles.md`](./catalogo-roles.md) | Modelo exigido; catálogo en **Borrador** (**X-24**, **X-25**) |
 | C3 | **Gestión de tenants** | Ciclo de vida del municipio: alta, aprovisionamiento de schema, configuración, suspensión, baja; catálogo de módulos habilitados por tenant | `principios-no-negociables.md` §2, `musts-arquitectura.md` §3 | **Nuevo en este documento** (§5) |
-| C4 | **Parámetros** | Dos familias: `NormativeParameter` (legal, administrado por SUBDERE, doble control, vigencia temporal) y parámetros operativos por tenant (perfil de recepción, vistos buenos configurables) | Fichas etapa 2; **P-37**, **P-39**, **P-42** | Entidad definida; administración sin especificar (§6) |
-| C5 | **Auditoría** | Registro inmutable append-only, consultable vía API con scope restringido | `seguridad.md` §5 | Exigencias definidas; retención abierta (**P-26**) |
-| C6 | **Eventos y notificaciones** | Servicio transversal suscrito a eventos de dominio; entrega por canal según reglas por rol/unidad/municipio; webhooks firmados hacia terceros; bandeja/campanita in-app | `musts-arquitectura.md` §9, `seguridad.md` §8.4; producto: [`plataforma/notificaciones/overview.md`](../../plataforma/notificaciones/overview.md) | Diseño exigido; mecanismo **P-05**; matriz **P-06** en borrador |
+| C4 | **Parámetros** | Dos familias: `NormativeParameter` (legal, administrado por SUBDERE, doble control, vigencia temporal) y parámetros operativos por tenant (perfil de recepción, vistos buenos configurables) | Fichas etapa 2; **X-37**, **X-39**, **X-42** | Entidad definida; administración sin especificar (§6) |
+| C5 | **Auditoría** | Registro inmutable append-only, consultable vía API con scope restringido | `seguridad.md` §5 | Exigencias definidas; retención abierta (**X-26**) |
+| C6 | **Eventos y notificaciones** | Servicio transversal suscrito a eventos de dominio; entrega por canal según reglas por rol/unidad/municipio; webhooks firmados hacia terceros; bandeja/campanita in-app | `musts-arquitectura.md` §9, `seguridad.md` §8.4; producto: [`plataforma/notificaciones/overview.md`](../../plataforma/notificaciones/overview.md) | Diseño exigido; mecanismo **X-05**; matriz **X-06** en borrador |
 | C7 | **Sincronización Mercado Público** | Servicio único de plataforma que produce el evento interno (`MpStateChanged`) sea por push o polling; los módulos nunca conocen el mecanismo | `plantilla-maestra-sgm.md` §5.2, `integracion-mercado-publico.md` | Estándar definido; es servicio de plataforma, no de Adquisiciones |
-| C8 | **Ciclo de vida de usuarios** | Alta/modificación/baja como flujos especificados; subrogancias con vencimiento automático; recertificación | `seguridad.md` §9 | Exigencias definidas; proceso real abierto (**P-28**) |
-| C9 | **Adaptadores de integración externa** | FirmaGob (`requestSignature`, `confirmSignature`); SII (`getUtmValue`, `getPriceReference`); credenciales y config por tenant vía `TenantIntegrationConfig` | `seguridad.md` §7, `contrato-api-first.md` §2 | Marco en §7; detalle en `plataforma/contracts.md` (**P-48**, **P-57**) |
-| C10 | **Gestión documental (Expediente y documentos)** | API de documentos (`storeDocument`, `getDownloadUrl`…), metadatos, retención; enrutamiento multi-backend (`platform` \| `tenant_owned` \| `external_dms`); adaptadores DMS plug-in. **Almacenamiento de bytes** del expediente — no tramita ni enumera actos | `principios-no-negociables.md` §6 | Marco en §7bis; contrato **P-48**, **P-58**, **P-59** |
-| C11 | **Tramitación de actos administrativos (DocDigital)** | Envío a DocDigital para visación, FEA, **enumeración** y distribución; retorno del acto firmado con folio oficial; vía alternativa para municipios sin DocDigital (~20 %). Plataforma externa ya desplegada en el **80 %** de los municipios | Decisión [`2026-07-docdigital-tramitacion-documental.md`](../decisiones/2026-07-docdigital-tramitacion-documental.md); [`integracion-docdigital.md`](./integracion-docdigital.md) | Condicionado a **P-72** (bloqueante); inventarios y estados en la spec |
+| C8 | **Ciclo de vida de usuarios** | Alta/modificación/baja como flujos especificados; subrogancias con vencimiento automático; recertificación | `seguridad.md` §9 | Exigencias definidas; proceso real abierto (**X-28**) |
+| C9 | **Adaptadores de integración externa** | FirmaGob (`requestSignature`, `confirmSignature`); SII (`getUtmValue`, `getPriceReference`); credenciales y config por tenant vía `TenantIntegrationConfig` | `seguridad.md` §7, `contrato-api-first.md` §2 | Marco en §7; detalle en `plataforma/contracts.md` (**X-48**, **X-57**) |
+| C10 | **Gestión documental (Expediente y documentos)** | API de documentos (`storeDocument`, `getDownloadUrl`…), metadatos, retención; enrutamiento multi-backend (`platform` \| `tenant_owned` \| `external_dms`); adaptadores DMS plug-in. **Almacenamiento de bytes** del expediente — no tramita ni enumera actos | `principios-no-negociables.md` §6 | Marco en §7bis; contrato **X-48**, **X-58**, **X-59** |
+| C11 | **Tramitación de actos administrativos (DocDigital)** | Envío a DocDigital para visación, FEA, **enumeración** y distribución; retorno del acto firmado con folio oficial; vía alternativa para municipios sin DocDigital (~20 %). Plataforma externa ya desplegada en el **80 %** de los municipios | Decisión [`2026-07-docdigital-tramitacion-documental.md`](../decisiones/2026-07-docdigital-tramitacion-documental.md); [`integracion-docdigital.md`](./integracion-docdigital.md) | Condicionado a **X-72** (bloqueante); inventarios y estados en la spec |
 
 Regla de lectura: donde la columna "Base normativa" apunta a un documento existente, este inventario **no duplica** esas exigencias — las organiza como servicios y agrega lo que falta (§4–§7).
 
@@ -78,13 +78,13 @@ Entidades transversales que hoy las fichas usan de forma implícita (columnas Un
 | `OrganizationalUnit` | Estructura orgánica del tenant en dos niveles: `department` (Finanzas, Tránsito, DOM…) → `unit` (Abastecimiento, Presupuestos…); clonada desde plantilla de plataforma y editable por el municipio | Expuesta |
 | `OrgStructureTemplate` | Catálogo base de departamentos/unidades de plataforma; se clona al aprovisionar el tenant | Expuesta (admin SUBDERE) |
 | `User` | Funcionario municipal o de SUBDERE; identidad ligada a RUN (Clave Única); estado activo/suspendido/baja | Expuesta (subconjunto mínimo, Ley 21.719) |
-| `Role` / `Permission` | Rol por módulo (`code`, `process_area`); permiso = operación del contrato (`seguridad.md` §3.1); catálogo transversal [`catalogo-roles.md`](./catalogo-roles.md) (P-24) | Expuesta |
+| `Role` / `Permission` | Rol por módulo (`code`, `process_area`); permiso = operación del contrato (`seguridad.md` §3.1); catálogo transversal [`catalogo-roles.md`](./catalogo-roles.md) (X-24) | Expuesta |
 | `RoleAssignment` | Otorgamiento de rol a usuario en contexto tenant + unidad, con vigencia | Expuesta |
 | `Delegation` | Subrogancia/suplencia: asignación temporal con fecha de término obligatoria y reversión automática | Expuesta |
 | `SodRule` / `SodException` | Incompatibilidad entre roles y excepción configurada por tenant (explícita, registrada, auditada) | Interna; excepciones consultables |
 | `ApiClient` | Credencial M2M: sistema municipal o tercero del ecosistema, con scopes por módulo y municipio, rotación y revocación | Expuesta (administración) |
 | `NormativeParameter` | Reclasificada desde `entidades-core.md`; administración SUBDERE, lectura por todos los módulos — ver `entidades-plataforma.md` | Expuesta (lectura) |
-| `TenantParameter` | Parámetro operativo por tenant (perfil de recepción **P-42**, visto bueno pre-OC **P-39**), distinto de `NormativeParameter` | Expuesta (administración municipal) |
+| `TenantParameter` | Parámetro operativo por tenant (perfil de recepción **X-42**, visto bueno pre-OC **X-39**), distinto de `NormativeParameter` | Expuesta (administración municipal) |
 | `AuditRecord` | Registro de auditoría según `seguridad.md` §5.2 | Expuesta (scope restringido) |
 | `EventSubscription` | Suscripción de un consumidor (servicio de notificaciones, webhook de tercero) a eventos de dominio | Expuesta (administración) |
 | `Notification` | Ítem de bandeja/campanita por destinatario, derivado de evento de dominio | Expuesta (destinatario) |
@@ -105,26 +105,26 @@ Entidades transversales que hoy las fichas usan de forma implícita (columnas Un
 
 **Modelo fijado:** Municipio → Departamento → Unidad (`OrganizationalUnit.kind`), con plantilla de plataforma (`OrgStructureTemplate`) clonada al alta del tenant y editable después por el administrador municipal. Detalle canónico en `entidades-plataforma.md`.
 
-⚠ **Pendiente de cerrar con pilotos/DM:** el **contenido** del catálogo base (lista típica de departamentos y unidades, variación por tamaño de municipio) — las fichas aún usan nombres como texto. El modelo de dos niveles + plantilla clonable ya no está abierto. **[PENDIENTE P-49]**
+⚠ **Pendiente de cerrar con pilotos/DM:** el **contenido** del catálogo base (lista típica de departamentos y unidades, variación por tamaño de municipio) — las fichas aún usan nombres como texto. El modelo de dos niveles + plantilla clonable ya no está abierto. **[PENDIENTE X-49]**
 
 ## 5. Ciclo de vida de tenants (nuevo)
 
 Flujo de plataforma sin especificación previa. Etapas mínimas que el contrato del core debe cubrir:
 
-1. **Alta:** creación del `Tenant` (convenio firmado como precondición administrativa — conecta con **P-01**), aprovisionamiento del schema (automatizado y demostrable a escala, `musts-arquitectura.md` §3), selección de modo de consumo y módulos habilitados, carga de configuración inicial (**clonación de `OrgStructureTemplate` → `OrganizationalUnit` del tenant**, primer administrador municipal, parámetros operativos por defecto).
+1. **Alta:** creación del `Tenant` (convenio firmado como precondición administrativa — conecta con **X-01**), aprovisionamiento del schema (automatizado y demostrable a escala, `musts-arquitectura.md` §3), selección de modo de consumo y módulos habilitados, carga de configuración inicial (**clonación de `OrgStructureTemplate` → `OrganizationalUnit` del tenant**, primer administrador municipal, parámetros operativos por defecto).
 2. **Operación:** administración delegada (C8), cambios de módulos habilitados, cambio de modo de consumo (un municipio à la carte que migra a hosting completo, o viceversa).
 3. **Suspensión / baja:** estados definidos con efecto sobre accesos (revocación inmediata) y sobre los datos (retención y devolución según el convenio — soberanía del dato, `decisiones-macro-stack.md` §2).
 
-⚠ **Pendiente de definir:** el proceso real de incorporación de un municipio (quién firma, qué datos históricos se migran, quién capacita, plazos) es un flujo administrativo SUBDERE que debe levantarse y documentarse con ficha propia. La migración de datos históricos del municipio entrante (contratos vigentes, expedientes en curso) es la parte técnicamente sensible. **[PENDIENTE P-50]**
+⚠ **Pendiente de definir:** el proceso real de incorporación de un municipio (quién firma, qué datos históricos se migran, quién capacita, plazos) es un flujo administrativo SUBDERE que debe levantarse y documentarse con ficha propia. La migración de datos históricos del municipio entrante (contratos vigentes, expedientes en curso) es la parte técnicamente sensible. **[PENDIENTE X-50]**
 
 ## 6. Administración de parámetros
 
-Dos familias con gobernanza distinta — la distinción ya existe en las fichas (**P-42**); aquí se formaliza:
+Dos familias con gobernanza distinta — la distinción ya existe en las fichas (**X-42**); aquí se formaliza:
 
 | Familia | Ejemplos | Quién administra | Control |
 |---|---|---|---|
 | `NormativeParameter` | Umbrales UTM, tramos de licitación, umbrales de garantías | SUBDERE (nivel plataforma) | **Doble control** (proponente ≠ aprobador), vigencia temporal, histórico inmutable — un cambio normativo nunca reescribe el pasado |
-| `TenantParameter` | Perfil de recepción, visto bueno pre-OC, timers de escalamiento (**P-33**) | Administrador municipal, dentro del catálogo que la plataforma define | Auditado; con valores por defecto de plataforma |
+| `TenantParameter` | Perfil de recepción, visto bueno pre-OC, timers de escalamiento (**X-33**) | Administrador municipal, dentro del catálogo que la plataforma define | Auditado; con valores por defecto de plataforma |
 
 Regla de diseño: los módulos **leen** parámetros vía contrato del core con clasificación *cacheada* (`musts-arquitectura.md` §5) y frescura declarada; nunca duplican valores normativos en su propio schema.
 
@@ -153,7 +153,7 @@ Regla derivada del mandato API y del criterio §1.4:
 | C7 | Mercado Público | `readMpProcess`, evento `MpStateChanged` | Asíncrona (lectura); síncrona en vinculación | Mecanismo push/polling interno; ver `integracion-mercado-publico.md` |
 | C9 | FirmaGob | `requestSignature`, `confirmSignature` | Síncrona bloqueante / asíncrona según modo de firma | Lee/escribe PDF vía C10; **no** sustituye C11 para actos administrativos |
 | C9 | SII | `getUtmValue`, `getPriceReference` | Cacheada | Umbrales normativos vía C4 |
-| C11 | DocDigital | `submitAdministrativeAct`, `recordActOutcome`, evento `AdministrativeActSigned` | **Asíncrona** (M2M o asistida — **P-72**) | Contrato funcional en `integracion-docdigital.md`; sin endpoints hasta verificar API |
+| C11 | DocDigital | `submitAdministrativeAct`, `recordActOutcome`, evento `AdministrativeActSigned` | **Asíncrona** (M2M o asistida — **X-72**) | Contrato funcional en `integracion-docdigital.md`; sin endpoints hasta verificar API |
 
 **Convención de fichas:** columna Contraparte = `Core (FirmaGob)`, `Core (Mercado Público)`, `Core (SII)`, `Core (DocDigital)` — nunca el tercero como implementador del módulo.
 
@@ -173,7 +173,7 @@ Los módulos **nunca** escriben en S3/Azure/GCS ni en un DMS directamente. Siemp
 
 **`DocumentRef`:** única forma de referenciar archivos desde módulos. Campos como `founded_resolution_attachment` son `DocumentRef` opacos emitidos por `storeDocument`. Patrón de upload: frontend → core (`POST /documents`) → obtiene `DocumentRef` → módulo recibe solo el ref en la operación de negocio.
 
-**DMS comercial de mercado** (DocuWare, Alfresco, M-Files, DocDigital como repositorio…): integrable vía `external_dms` y adaptador en el core — el municipio no conecta su DMS a Adquisiciones. v1 licita backends `platform` y `tenant_owned` operativos; interfaz de adaptador DMS definida + stub en sandbox; primer producto certificado en **P-59**.
+**DMS comercial de mercado** (DocuWare, Alfresco, M-Files, DocDigital como repositorio…): integrable vía `external_dms` y adaptador en el core — el municipio no conecta su DMS a Adquisiciones. v1 licita backends `platform` y `tenant_owned` operativos; interfaz de adaptador DMS definida + stub en sandbox; primer producto certificado en **X-59**.
 
 **Interfaz interna de backend documental** (exigible en bases, propiedades no marcas): todo adaptador (`tenant_owned` S3, `external_dms`) implementa operaciones mínimas alineadas con el contrato público C10: `put`, `get`, `delete`, `presignedUrl` o equivalente. Prohibido código condicional por marca de DMS en módulos funcionales.
 
@@ -197,7 +197,7 @@ El RBAC es del core, pero cada request llega a un módulo. Cómo valida el módu
 | **Consulta al core por request** | Revocación inmediata | Agrega latencia a toda operación; el core se vuelve punto único de falla |
 | **Híbrido** (claims + lista de revocación corta propagada) | Balance conocido | Mayor complejidad de especificación |
 
-**Propuesta de trabajo (no decisión):** claims en token de vida corta (≤ 15 min) + revocación efectiva vía expiración, con invalidación server-side para el plano personas (`seguridad.md` §2.1.2). Debe resolverse junto con **P-02** y **P-22**. **[PENDIENTE P-51]**
+**Propuesta de trabajo (no decisión):** claims en token de vida corta (≤ 15 min) + revocación efectiva vía expiración, con invalidación server-side para el plano personas (`seguridad.md` §2.1.2). Debe resolverse junto con **X-02** y **X-22**. **[PENDIENTE X-51]**
 
 ## 9. Pantallas de administración mínima
 
@@ -211,7 +211,7 @@ Dos consolas, ambas consumidoras sin privilegios del contrato del core (§2). Se
 |---|---|
 | Gestión de tenants | Alta, configuración, módulos habilitados, suspensión (§5) |
 | Parámetros normativos | Propuesta y aprobación con doble control, vigencias, histórico (§6) |
-| Clientes M2M y convenios | Emisión, scopes, rotación, revocación de `ApiClient` (conecta con **P-15**) |
+| Clientes M2M y convenios | Emisión, scopes, rotación, revocación de `ApiClient` (conecta con **X-15**) |
 | Integraciones de plataforma | Clave Única, webhook MP nacional, catálogo `DmsAdapter` |
 | Provisión de almacenamiento | Buckets `platform` por tenant |
 | Monitoreo por tenant | Consumo de la observabilidad exigida en `musts-arquitectura.md` §8 (métricas por tenant) |
@@ -224,7 +224,7 @@ Dos consolas, ambas consumidoras sin privilegios del contrato del core (§2). Se
 | Usuarios del municipio | Alta, modificación, baja inmediata (`seguridad.md` §9) |
 | Roles y unidades | Árbol departamento→unidad; `RoleAssignment` 1:N (usuario+nodo orgánico+rol); detección de violaciones SoD al asignar |
 | Subrogancias | `Delegation` con vencimiento obligatorio |
-| Excepciones SoD | Configuración explícita y auditada (**P-25**) |
+| Excepciones SoD | Configuración explícita y auditada (**X-25**) |
 | Parámetros operativos | `TenantParameter` dentro del catálogo de plataforma |
 | Integraciones del municipio | `TenantIntegrationConfig` (MP, FirmaGob, DocDigital si aplica); `SignatureChain` |
 | Almacenamiento de documentos | `TenantStorageConfig`: bucket propio (`tenant_owned`) o DMS (`external_dms`) |
@@ -233,7 +233,7 @@ Dos consolas, ambas consumidoras sin privilegios del contrato del core (§2). Se
 
 **Shell global (no es consola admin):** campanita y bandeja de notificaciones — [`plataforma/notificaciones/overview.md`](../../plataforma/notificaciones/overview.md); ficha **Mis datos** (identidad + `RoleAssignment` vigentes + solicitud de cambio al admin); mensajería in-app (FAB + listado chats) — [`plataforma/mensajeria/overview.md`](../../plataforma/mensajeria/overview.md). Wireframes `plataforma/wireframes/shell/`. Frontera: self-service laboral (vacaciones, liquidaciones, etc.) queda en el módulo RRHH futuro, no en esta ficha.
 
-**P-52:** wireframes de ambas consolas creados (`plataforma/wireframes/`); cuerpos HTTP de ops *(inferidas)* pendientes en **P-48** (§2.11 del contrato). Wireframes shell (C6 + mis datos + mensajería) y preferencias añadidos; ops inbox y `requestProfileChange` en contracts §2.7 / §2.11.
+**X-52:** wireframes de ambas consolas creados (`plataforma/wireframes/`); cuerpos HTTP de ops *(inferidas)* pendientes en **X-48** (§2.11 del contrato). Wireframes shell (C6 + mis datos + mensajería) y preferencias añadidos; ops inbox y `requestProfileChange` en contracts §2.7 / §2.11.
 
 ## 10. Foliación
 
@@ -250,13 +250,13 @@ Los folios (`ADQ-AAAA-NNNNN`) son hoy responsabilidad del módulo. Se mantiene a
 7. Adaptadores de integración externa (C9), gestión documental multi-backend (C10) y tramitación de actos vía DocDigital (C11); credenciales por tenant en el core; módulos solo `DocumentRef` y dependencias declaradas.
 8. Backends `platform` y `tenant_owned` demostrables en recepción; interfaz `external_dms` definida y extensible sin cambiar contratos de módulo.
 9. Exigencias de identidad, RBAC, SoD, auditoría y ciclo de vida de usuarios según `seguridad.md` §13 (no se duplican aquí).
-10. Tramitación de actos administrativos condicionada a verificación del mecanismo DocDigital (**P-72**); vía alternativa para municipios no habilitados (**P-73**).
+10. Tramitación de actos administrativos condicionada a verificación del mecanismo DocDigital (**X-72**); vía alternativa para municipios no habilitados (**X-73**).
 
 ## 12. Pendientes abiertos
 
-Nuevos de este documento: **P-48** (contracts.md de plataforma — integraciones, documentos, interfaz DMS, cuerpos HTTP de ops admin §2.11), **P-49** (estructura organizacional municipal / `OrganizationalUnit`), **P-50** (proceso de incorporación de municipio y migración de datos históricos), **P-51** (mecanismo de autorización en runtime), **P-52** (wireframes de consolas — creados; ver `plataforma/wireframes/`), **P-57** (catálogo de proveedores externos y config por tenant), **P-58** (contrato documental: MIME, tamaños, retención), **P-59** (interfaz adaptador DMS + primer producto certificado / CMIS), **P-72…P-76** (DocDigital: mecanismo, vía alternativa, alcance, folio histórico, plazos).
+Nuevos de este documento: **X-48** (contracts.md de plataforma — integraciones, documentos, interfaz DMS, cuerpos HTTP de ops admin §2.11), **X-49** (estructura organizacional municipal / `OrganizationalUnit`), **X-50** (proceso de incorporación de municipio y migración de datos históricos), **X-51** (mecanismo de autorización en runtime), **X-52** (wireframes de consolas — creados; ver `plataforma/wireframes/`), **X-57** (catálogo de proveedores externos y config por tenant), **X-58** (contrato documental: MIME, tamaños, retención), **X-59** (interfaz adaptador DMS + primer producto certificado / CMIS), **X-72…X-76** (DocDigital: mecanismo, vía alternativa, alcance, folio histórico, plazos).
 
-Preexistentes que este documento organiza: P-01, P-02, P-05, P-06, P-15, P-22, P-23, P-24, P-25, P-26, P-28, P-33, P-37, P-39, P-42.
+Preexistentes que este documento organiza: X-01, X-02, X-05, X-06, X-15, X-22, X-23, X-24, X-25, X-26, X-28, X-33, X-37, X-39, X-42.
 
 ## 13. Referencias
 

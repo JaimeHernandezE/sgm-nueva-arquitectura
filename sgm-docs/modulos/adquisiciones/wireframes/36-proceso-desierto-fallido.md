@@ -37,14 +37,14 @@
 | Botón / control | Operación contrato | Dependencia |
 |---|---|---|
 | Republicar | — (re-vinculación vía `linkMpProcess`, mismo mecanismo de 2.3) | Mercado Público |
-| Reevaluar | — (reversión formal a 2.1 — **[PENDIENTE P-34]**, procedimiento aún no definido) | — |
+| Reevaluar | — (reversión formal a 2.1 — **[PENDIENTE X-34]**, procedimiento aún no definido) | — |
 | Cancelar expediente | `releasePreCommitment` | Proveedor de disponibilidad presupuestaria (síncrona bloqueante) |
 
 ## Estados de pantalla
 
 - **Modo degradado:** vencido el plazo sin lectura de selección (3.2), el expediente muestra **Pendiente en MP** / posible desierto + deep link; la tarea de decisión se habilita cuando llega la lectura — sin confirmar por transcripción.
 - **Cancelado:** libera el 100% de la preobligación; notifica a la unidad solicitante.
-- **Reevaluar:** bloqueado en este prototipo — el procedimiento de reversión formal a etapa 2 no está definido (**[PENDIENTE P-34]**); se muestra la opción pero la acción real queda pendiente.
+- **Reevaluar:** bloqueado en este prototipo — el procedimiento de reversión formal a etapa 2 no está definido (**[PENDIENTE X-34]**); se muestra la opción pero la acción real queda pendiente.
 
 ## Validaciones visibles
 
@@ -53,4 +53,4 @@
 ## Notas
 
 - Republicación reiterada sin resultado (2+ intentos) → advertencia asesora sugiriendo reevaluar condiciones o modalidad (no bloqueante).
-- **[PENDIENTE P-41]** Cancelación con preobligación ya vencida de saldo anual — coordinar con regla de cierre presupuestario, con Finanzas.
+- **[PENDIENTE X-41]** Cancelación con preobligación ya vencida de saldo anual — coordinar con regla de cierre presupuestario, con Finanzas.

@@ -111,9 +111,9 @@ flowchart TB
 | Seguridad | `arquitectura/especificacion/seguridad.md` | Personas (Clave Única) y sistemas (M2M) |
 | Modelo de datos canónico | `modelo-datos/entidades-core.md` (+ `entidades-plataforma.md`, a crear) | Fuente única de entidades y campos |
 | Fichas de proceso | `modulos/*/procesos-transversales/`, modalidades | Reglas de negocio, materias, bordes §3.5 |
-| Contrato funcional por módulo | `modulos/*/contracts.md` + `plataforma/contracts.md` (**P-48**) | Operaciones, entradas `{a}`, salidas `{b}`, eventos |
+| Contrato funcional por módulo | `modulos/*/contracts.md` + `plataforma/contracts.md` (**X-48**) | Operaciones, entradas `{a}`, salidas `{b}`, eventos |
 | OpenAPI | `modulos/*/openapi/` (**a crear según estándar**) | Esquemas formales; código validado contra spec |
-| Wireframes | `modulos/*/wireframes/*.md` + consolas admin (**P-52**) | Entregable de licitación — estructura UI |
+| Wireframes | `modulos/*/wireframes/*.md` + consolas admin (**X-52**) | Entregable de licitación — estructura UI |
 | Prototipos HTML | `sgm-prototipos/` | Validación UX; **no** sustituye API ni sandbox |
 
 **Regla de oro ([`estandares-api.md`](../especificacion/estandares-api.md) §1):** ante discrepancia entre `contracts.md` y OpenAPI, se resuelve la inconsistencia antes de dar por cerrado cualquiera de los dos. El código se valida contra OpenAPI, no al revés.
@@ -154,7 +154,7 @@ En [`decisiones-macro-stack.md`](../decisiones/decisiones-macro-stack.md) §7.2,
 
 > *Ambiente sandbox con datos sintéticos. Cualquier empresa debe poder desarrollar y demostrar su servicio sin convenio previo, contra un ambiente de prueba públicamente accesible.*
 
-Hoy está registrado como **[PENDIENTE P-16]**; detalle operativo en [`sandbox-desarrolladores.md`](./sandbox-desarrolladores.md).
+Hoy está registrado como **[PENDIENTE X-16]**; detalle operativo en [`sandbox-desarrolladores.md`](./sandbox-desarrolladores.md).
 
 ### 5.2 Lo que el sandbox NO es
 
@@ -169,7 +169,7 @@ Hoy está registrado como **[PENDIENTE P-16]**; detalle operativo en [`sandbox-d
 
 1. **Mismo motor** (o mismo artefacto desplegado) que producción, con configuración de entorno sandbox.
 2. **Mismos endpoints, esquemas y errores** que OpenAPI publicada — incluido el contrato del core (autenticación, consulta de identidad y roles, auditoría), necesario para que un integrador pruebe el flujo completo.
-3. **Credenciales M2M de prueba** obtenibles sin convenio (self-service o registro simple), alineado con **[P-02]** y **[P-15]**.
+3. **Credenciales M2M de prueba** obtenibles sin convenio (self-service o registro simple), alineado con **[X-02]** y **[X-15]**.
 4. **Datos sintéticos** — nunca datos reales de municipios (Ley 21.719).
 5. **Catálogo de fixtures versionado** según [`estandares-api.md`](../especificacion/estandares-api.md) §6 — expedientes y escenarios con IDs estables y respuestas documentadas.
 6. **Portal de desarrollador** — OpenAPI navegable, guías de inicio, ejemplos `{a}`/`{b}` por operación.
@@ -212,7 +212,7 @@ El sandbox debe permitir ejecutar esa operación y obtener `{b}` conforme a Open
 | `ProcurementCase` y `CaseStep` marcados internos | El expediente no está en entidades expuestas de `contracts.md` §1 | Abierto — prioridad 1 (§10) |
 | Vista de expediente sin operación API | `musts-arquitectura.md` §10.2 exige estado vía API; el contrato no cierra la operación | Abierto — prioridad 1 (§10) |
 | Prototipos desacoplados de contrato | IDs demo en cliente sin fixture API equivalente | **Regla de alineación definida** (`estandares-api.md` §6.2.5); catálogo por crear |
-| Sin contrato del core | Los módulos asumen identidad/roles/auditoría sin interfaz declarada | **Nuevo — [P-48]**, marco en `plataforma-core.md` |
+| Sin contrato del core | Los módulos asumen identidad/roles/auditoría sin interfaz declarada | **Nuevo — [X-48]**, marco en `plataforma-core.md` |
 
 ### 6.3 Operaciones de lectura pendientes de modelar (propuesta de trabajo)
 
@@ -273,12 +273,12 @@ flowchart LR
 | ¿Qué reglas de negocio aplican? | Fichas de proceso + QA | Parcial por modalidad |
 | ¿Qué entidades y campos existen? | `entidades-core.md` (+ `entidades-plataforma.md`) | En curso |
 | ¿Qué operaciones expone el módulo? | `contracts.md` | Piloto CA; lecturas incompletas |
-| **¿Qué hay debajo de los módulos (identidad, roles, tenants, admin)?** | [`plataforma-core.md`](../especificacion/plataforma-core.md) | **Marco definido; contrato P-48** |
+| **¿Qué hay debajo de los módulos (identidad, roles, tenants, admin)?** | [`plataforma-core.md`](../especificacion/plataforma-core.md) | **Marco definido; contrato X-48** |
 | ¿Cuál es el JSON exacto de request/response? | OpenAPI según `estandares-api.md` | Estándar definido; specs por crear |
-| ¿Cómo se ve la pantalla? | Wireframes + prototipos | Adquisiciones transversal avanzado; consolas admin P-52 |
-| ¿Cómo pruebo sin producción? | Sandbox | Marco en §5; detalle operativo P-16 |
+| ¿Cómo se ve la pantalla? | Wireframes + prototipos | Adquisiciones transversal avanzado; consolas admin X-52 |
+| ¿Cómo pruebo sin producción? | Sandbox | Marco en §5; detalle operativo X-16 |
 | ¿Qué SLOs y pruebas de carga? | `musts-arquitectura.md` | Definido |
-| ¿Cómo autentico M2M? | `estandares-api.md` §8 | **[P-02]** abierto |
+| ¿Cómo autentico M2M? | `estandares-api.md` §8 | **[X-02]** abierto |
 
 ---
 
@@ -312,9 +312,9 @@ Lista consolidada para traducir a cláusulas de licitación. Detalle normativo e
 ### 9.1 Especificación y contrato
 
 - [ ] OpenAPI versionada por módulo **y por el core** en repositorio estatal, según `estandares-api.md`; código validado contra spec.
-- [ ] `contracts.md` por módulo con las cuatro secciones de [`contrato-api-first.md`](../especificacion/contrato-api-first.md) §3; ídem para el core (**[P-48]**).
-- [ ] Política de deprecación publicada (**[P-04]**).
-- [ ] Multitenancy explícita en contrato (**[P-03]**).
+- [ ] `contracts.md` por módulo con las cuatro secciones de [`contrato-api-first.md`](../especificacion/contrato-api-first.md) §3; ídem para el core (**[X-48]**).
+- [ ] Política de deprecación publicada (**[X-04]**).
+- [ ] Multitenancy explícita en contrato (**[X-03]**).
 - [ ] Operaciones de lectura que permitan integración sin UI (expediente, estado de flujo).
 
 ### 9.2 Implementación
@@ -325,16 +325,16 @@ Lista consolidada para traducir a cláusulas de licitación. Detalle normativo e
 - [ ] Errores estructurados en toda respuesta `4xx`/`5xx` de negocio.
 - [ ] Idempotencia en escrituras sensibles.
 - [ ] Validación bloqueante en servidor; clasificación síncrona/asíncrona/cacheada por dependencia.
-- [ ] Eventos de dominio según contrato; mecanismo de entrega especificado (**[P-05]**).
+- [ ] Eventos de dominio según contrato; mecanismo de entrega especificado (**[X-05]**).
 
 ### 9.3 Sandbox y ecosistema
 
-- [ ] Sandbox públicamente accesible con datos sintéticos (**[P-16]** — este documento es insumo).
+- [ ] Sandbox públicamente accesible con datos sintéticos (**[X-16]** — este documento es insumo).
 - [ ] Registro o emisión de credenciales M2M de prueba sin convenio de producción.
 - [ ] Catálogo de fixtures con IDs estables y ejemplos `{a}`/`{b}` según `estandares-api.md` §6.
 - [ ] Portal de desarrollador con OpenAPI interactiva.
 - [ ] Paridad sandbox ↔ producción en contrato; sin endpoints exclusivos de sandbox.
-- [ ] Procedimiento de acceso a producción publicado (**[P-15]**).
+- [ ] Procedimiento de acceso a producción publicado (**[X-15]**).
 
 ### 9.4 Recepción
 
@@ -358,17 +358,17 @@ Orden sugerido de trabajo en el repositorio (sin implementar código aún):
 |---|---|---|
 | **1** | Completar operaciones de lectura en `contracts.md` (expediente, steps, listados) | Integradores y frontend paritario |
 | **2** | Crear OpenAPI del módulo Adquisiciones según `estandares-api.md` | Validación automática, portal dev |
-| **3** | Redactar `plataforma/contracts.md` (**[P-48]**) | Dependencias de módulos hacia el core como interfaces |
-| **4** | Redactar `sandbox-desarrolladores.md` (especificación operativa P-16) | Bases y consulta al mercado (**[P-19]**) |
+| **3** | Redactar `plataforma/contracts.md` (**[X-48]**) | Dependencias de módulos hacia el core como interfaces |
+| **4** | Redactar `sandbox-desarrolladores.md` (especificación operativa X-16) | Bases y consulta al mercado (**[X-19]**) |
 | **5** | Catálogo de fixtures alineado con prototipos demo | Sandbox demostrable |
-| **6** | Cerrar P-02, P-03, P-04, P-05, P-51 | Contrato definitivo y autenticación en sandbox |
+| **6** | Cerrar X-02, X-03, X-04, X-05, X-51 | Contrato definitivo y autenticación en sandbox |
 | **7** | Extender contrato y fixtures a las otras modalidades | Entregable Adquisiciones completo |
 
 ---
 
 ## 11. Relación con consulta al mercado
 
-[`decisiones-macro-stack.md`](../decisiones/decisiones-macro-stack.md) §9 establece que SUBDERE llega a la consulta al mercado con **borrador de estándares**, no con página en blanco. Este documento — junto con `plataforma-core.md`, el estándar OpenAPI + fixtures y la especificación de sandbox — forma parte del **borrador mínimo** que permite al mercado estimar viabilidad y costo de integración (**[P-19]**).
+[`decisiones-macro-stack.md`](../decisiones/decisiones-macro-stack.md) §9 establece que SUBDERE llega a la consulta al mercado con **borrador de estándares**, no con página en blanco. Este documento — junto con `plataforma-core.md`, el estándar OpenAPI + fixtures y la especificación de sandbox — forma parte del **borrador mínimo** que permite al mercado estimar viabilidad y costo de integración (**[X-19]**).
 
 La mesa técnica de estándares (API, contratos, sandbox, convenio de acceso) es el foro para iterar este modelo antes y después de la licitación del motor.
 
@@ -384,7 +384,7 @@ La mesa técnica de estándares (API, contratos, sandbox, convenio de acceso) es
 | D-04 | Toda operación publicada debe ser expresable como `{a}` → `{b}` en OpenAPI con ejemplos. |
 | D-05 | Las operaciones de lectura del expediente son prerequisito del contrato Adquisiciones, no detalle de frontend. |
 | D-06 | El catálogo de fixtures es un activo versionado en repo, no documentación informal del proveedor. |
-| D-07 | Este documento es insumo para cerrar **[P-16]** y fortalecer **[P-19]**; los cambios en `contracts.md` y OpenAPI son el siguiente paso acordado. |
+| D-07 | Este documento es insumo para cerrar **[X-16]** y fortalecer **[X-19]**; los cambios en `contracts.md` y OpenAPI son el siguiente paso acordado. |
 | D-08 *(v2)* | El nivel de detalle de la especificación se decide por **reversibilidad** (§3): lo estructural se especifica completo; el *cómo* se recibe contra propiedades; lo aditivo tolera corrección post-recepción con mecanismo especificado. |
 | D-09 *(v2)* | El core de plataforma es parte del entregable licitado, con contrato y OpenAPI propios y el mismo estándar de recepción que un módulo ([`plataforma-core.md`](../especificacion/plataforma-core.md)). |
 | D-10 *(v2)* | No existe orquestador central de procesos de negocio; la coordinación entre módulos es por contratos y eventos. |
@@ -398,19 +398,19 @@ La mesa técnica de estándares (API, contratos, sandbox, convenio de acceso) es
 
 | ID | Relación con este documento |
 |---|---|
-| P-02 | Auth M2M — prerequisito de sandbox usable |
-| P-03 | Multitenancy en rutas/token — afecta todos los ejemplos `{a}` |
-| P-05 | Webhooks — escenarios de integración en sandbox |
-| P-15 | Convenio producción vs acceso libre sandbox |
-| P-16 | Especificación técnica del sandbox — **este documento es el marco; falta el detalle operativo** |
-| P-19 | Borrador mínimo para consulta al mercado |
-| P-48 | `plataforma/contracts.md` — contrato del core (integraciones, documentos, identidad) |
-| P-57 | Catálogo de proveedores externos y config por tenant |
-| P-58 | Contrato documental C10: MIME, tamaños, retención |
-| P-59 | Interfaz adaptador DMS (`external_dms`) + primer producto certificado |
-| P-51 | Autorización en runtime — afecta headers de ejemplos `{a}` |
-| P-52 | Wireframes de consolas de administración |
-| P-53 | Tooling de validación CI de OpenAPI y fixtures |
+| X-02 | Auth M2M — prerequisito de sandbox usable |
+| X-03 | Multitenancy en rutas/token — afecta todos los ejemplos `{a}` |
+| X-05 | Webhooks — escenarios de integración en sandbox |
+| X-15 | Convenio producción vs acceso libre sandbox |
+| X-16 | Especificación técnica del sandbox — **este documento es el marco; falta el detalle operativo** |
+| X-19 | Borrador mínimo para consulta al mercado |
+| X-48 | `plataforma/contracts.md` — contrato del core (integraciones, documentos, identidad) |
+| X-57 | Catálogo de proveedores externos y config por tenant |
+| X-58 | Contrato documental C10: MIME, tamaños, retención |
+| X-59 | Interfaz adaptador DMS (`external_dms`) + primer producto certificado |
+| X-51 | Autorización en runtime — afecta headers de ejemplos `{a}` |
+| X-52 | Wireframes de consolas de administración |
+| X-53 | Tooling de validación CI de OpenAPI y fixtures |
 
 **Referencias:**
 
@@ -432,8 +432,8 @@ Pasos 1–5 del piloto Adquisiciones (**completados en repo**, julio 2026):
 
 1. ~~Completar `contracts.md` de Adquisiciones (capa de lectura + entidades expediente).~~
 2. ~~Generar OpenAPI inicial del piloto según el estándar.~~
-3. ~~Redactar `plataforma/contracts.md` (**P-48** borrador mínimo).~~
+3. ~~Redactar `plataforma/contracts.md` (**X-48** borrador mínimo).~~
 4. ~~Redactar especificación operativa del sandbox (`sandbox-desarrolladores.md`).~~
 5. ~~Crear catálogo de fixtures con los IDs demo existentes.~~
 
-Siguiente iteración: extender contrato y fixtures a modalidades LP/CM/TD en profundidad; OpenAPI del core; CI **P-53**; cerrar **P-02**, **P-03**.
+Siguiente iteración: extender contrato y fixtures a modalidades LP/CM/TD en profundidad; OpenAPI del core; CI **X-53**; cerrar **X-02**, **X-03**.

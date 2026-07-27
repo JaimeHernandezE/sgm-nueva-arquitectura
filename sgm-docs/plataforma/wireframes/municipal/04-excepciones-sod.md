@@ -22,7 +22,7 @@
 | [ Guardar ]  [ Revocar ]  [ Cancelar ]                   |
 +----------------------------------------------------------+
 | ⚠ Toda excepción es explícita, registrada y auditada     |
-|   (seguridad / P-25).                                    |
+|   (seguridad / X-25).                                    |
 +----------------------------------------------------------+
 ```
 
@@ -51,4 +51,4 @@
 ## Validaciones visibles
 
 - Motivo y fecha de fin obligatorios.
-- Quién crea la excepción ≠ sujeto de la excepción (recomendado / política P-25).
+- Quién crea la excepción ≠ sujeto de la excepción (recomendado / política X-25).

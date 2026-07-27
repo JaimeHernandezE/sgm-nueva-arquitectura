@@ -48,7 +48,7 @@
 
 - **En espera:** sin acción de usuario, solo monitoreo — Interacción MP: **Gestión, hito contable de la etapa**.
 - **Aceptada + compromiso OK (camino feliz):** la preobligación ya fue ajustada al monto adjudicado en 3.10, así que la diferencia esperable con el Compromiso Cierto es cero; si no lo es, mismo tratamiento de ajuste/regularización que CA 3.4. Avanza a Recepción Conforme (etapa 4 transversal) y dispara notificaciones. Idempotencia por `purchase_order_ref`.
-- **`BUDGET_UNAVAILABLE`:** situación anómala — mismo tratamiento que CA 3.4, tarea urgente a DAF Finanzas (**[PENDIENTE P-40]**).
+- **`BUDGET_UNAVAILABLE`:** situación anómala — mismo tratamiento que CA 3.4, tarea urgente a DAF Finanzas (**[PENDIENTE X-40]**).
 - **Rechazo de OC post-contrato:** anomalía grave (hay contrato suscrito) — tarea a jurídica, no auto-resolución; solo comparte mecánica con CA 3.5 si no hay contrato de por medio (bajo umbral, sin 3.13).
 
 ## Validaciones visibles

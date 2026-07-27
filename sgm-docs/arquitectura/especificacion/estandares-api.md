@@ -17,7 +17,7 @@ La especificación OpenAPI de cada módulo se versiona en el repositorio. El có
 
 - Los contratos siguen **versionado semántico** (`MAJOR.MINOR.PATCH`).
 - Toda versión publicada declara su política de deprecación.
-- **[PENDIENTE P-04]** Definir plazo mínimo de convivencia entre versiones deprecadas y su reemplazo.
+- **[PENDIENTE X-04]** Definir plazo mínimo de convivencia entre versiones deprecadas y su reemplazo.
 
 ## 3. Errores verbosos y estructurados
 
@@ -66,7 +66,7 @@ Cuando una operación de escritura (típicamente un submit de formulario) viola 
       "error_code": "FOUNDED_RESOLUTION_REQUIRED",
       "field": "founded_resolution_attachment",
       "rule": "Trato directo requiere resolución fundada adjunta.",
-      "legal_reference": "Ley 19.886 — causal de trato directo; ⚠ P-36 catálogo de artículos",
+      "legal_reference": "Ley 19.886 — causal de trato directo; ⚠ X-36 catálogo de artículos",
       "severity": "blocking"
     }
   ]
@@ -99,7 +99,7 @@ Must transversal: [`musts-arquitectura.md`](./musts-arquitectura.md) §11.
 | Normativo | Texto de cita (ley, decreto, dictamen; opcionalmente `NormativeParameter.key`) | Se muestra bajo el mensaje como «Fundamento: …» |
 | Integridad | `integridad:<motivo>` — motivos canónicos: `campo_requerido`, `estado_expediente`, `documento_requerido`, `rol_operacion` | **No** se muestra; solo `rule` |
 
-Prohibido: `blocking` con `legal_reference` ausente, `null` o string vacío. Si la cita exacta está pendiente (ej. P-36), el valor no queda vacío: se usa la norma marco más la marca `⚠ P-NN`.
+Prohibido: `blocking` con `legal_reference` ausente, `null` o string vacío. Si la cita exacta está pendiente (ej. X-36), el valor no queda vacío: se usa la norma marco más la marca `⚠ P-NN`.
 
 ## 4. Paginación, filtrado y orden
 
@@ -131,9 +131,9 @@ Las operaciones de escritura sensibles (creación de órdenes, devengados, pagos
 
 ## 6. Multitenancy explícita en el contrato
 
-**[PENDIENTE P-03]** Decidir si el tenant (municipio) viaja en la ruta (`/tenants/{tenant_id}/…`), en el token JWT, o ambos. Esta decisión afecta a todos los endpoints y debe resolverse antes del primer contrato definitivo.
+**[PENDIENTE X-03]** Decidir si el tenant (municipio) viaja en la ruta (`/tenants/{tenant_id}/…`), en el token JWT, o ambos. Esta decisión afecta a todos los endpoints y debe resolverse antes del primer contrato definitivo.
 
-Hasta resolverlo, los `contracts.md` documentan las rutas sin prefijo de tenant y marcan el pendiente. En OpenAPI, las specs incluyen el comentario estándar `# P-03: tenant pendiente (ruta/token)` en `servers`.
+Hasta resolverlo, los `contracts.md` documentan las rutas sin prefijo de tenant y marcan el pendiente. En OpenAPI, las specs incluyen el comentario estándar `# X-03: tenant pendiente (ruta/token)` en `servers`.
 
 ## 7. Clasificación de validaciones entre módulos
 
@@ -156,7 +156,7 @@ Dos planos distintos, ambos exigibles en las bases (detalle en [`contrato-api-fi
 | Personas | Clave Única | Usuarios municipales operando vía frontend |
 | Sistemas | OAuth2 client credentials (o equivalente) | Sistemas municipales consumiendo módulos M2M, con **scopes por módulo y por municipio** |
 
-**[PENDIENTE P-02]** El plano M2M no existe en el diseño actual; especificarlo es prerequisito del modo à la carte.
+**[PENDIENTE X-02]** El plano M2M no existe en el diseño actual; especificarlo es prerequisito del modo à la carte.
 
 Exigencias de seguridad de ambos planos: [`seguridad.md`](./seguridad.md) §2. Esquemas OpenAPI: `bearerPersonas` / `bearerM2M` en [`openapi/comunes.yaml`](./openapi/comunes.yaml).
 
@@ -213,7 +213,7 @@ Extienden las convenciones del modelo de datos ([`plantilla-maestra-sgm.md`](../
 
 La identidad de nombres entre `contracts.md`, `entidades-core.md` y OpenAPI no es estilo: es lo que permite verificar consistencia de forma automática (§13) y sostiene la regla de resolución de discrepancias de la Parte I §1.
 
-**Multitenancy:** hasta resolver **[P-03]**, las rutas se documentan sin prefijo de tenant (Parte I §6).
+**Multitenancy:** hasta resolver **[X-03]**, las rutas se documentan sin prefijo de tenant (Parte I §6).
 
 ## 12. Extensiones obligatorias de trazabilidad
 
@@ -244,8 +244,8 @@ Toda operación publicada debe incluir:
 1. **Correspondencia biunívoca:** toda operación de `contracts.md` §2 existe como `operationId` en la OpenAPI del módulo (entrada + fragmentos resueltos), y viceversa. Toda entidad expuesta en `contracts.md` §1 existe como esquema. Un endpoint en OpenAPI sin entrada en `contracts.md` es un **endpoint no documentado** — exactamente lo que las bases prohíben al adjudicatario; el repo se somete a su propia regla.
 2. **Resolución de discrepancias:** según Parte I §1 — se resuelve antes de dar por cerrado cualquiera de los dos. El código (del adjudicatario) se valida contra OpenAPI, no al revés.
 3. **Examples en OpenAPI:** al menos un ejemplo de éxito por operación publicada; los fixtures **referencian** esos examples (`example_ref`), no duplican el JSON de respuesta.
-4. **Validación automática en el repo:** lint de la spec (nomenclatura §11, extensiones §12, contenido mínimo §13.1) y verificación de correspondencia con `contracts.md` como paso de CI de `sgm-docs`. **[PENDIENTE P-53]** Selección de tooling (linter de referencia: Spectral con reglas propias; verificación de examples contra fixtures) — herramienta interna del repo, no exigencia de bases.
-5. **Versionamiento:** `info.version` sigue el semver del contrato (Parte I §2). Un cambio MAJOR requiere entrada en la política de deprecación (**P-04**).
+4. **Validación automática en el repo:** lint de la spec (nomenclatura §11, extensiones §12, contenido mínimo §13.1) y verificación de correspondencia con `contracts.md` como paso de CI de `sgm-docs`. **[PENDIENTE X-53]** Selección de tooling (linter de referencia: Spectral con reglas propias; verificación de examples contra fixtures) — herramienta interna del repo, no exigencia de bases.
+5. **Versionamiento:** `info.version` sigue el semver del contrato (Parte I §2). Un cambio MAJOR requiere entrada en la política de deprecación (**X-04**).
 
 ## 14. Catálogo de fixtures
 
@@ -313,12 +313,12 @@ Los fixtures cumplen doble función exigible en bases:
 1. ~~Derivar OpenAPI de Adquisiciones de `contracts.md` + `entidades-core.md`, empezando por lecturas del expediente.~~ *(Hecho — seccionada en `modulos/adquisiciones/openapi/`.)*
 2. ~~Crear `arquitectura/especificacion/openapi/comunes.yaml` con error, paginación y seguridad.~~ *(Hecho.)*
 3. ~~Escribir fixtures del catálogo con este formato.~~ *(Hecho — ver `modulos/adquisiciones/fixtures/`.)*
-4. Montar la validación de CI (**P-53**).
-5. Completar/replicar en el contrato del core (**P-48**) y luego en los demás módulos.
+4. Montar la validación de CI (**X-53**).
+5. Completar/replicar en el contrato del core (**X-48**) y luego en los demás módulos.
 
 ## 16. Pendientes y referencias
 
-Pendientes que anclan este documento: **P-02**, **P-03**, **P-04**, **P-53** (y **P-48** para el core). Catálogo completo: [`pendientes.md`](../decisiones/pendientes.md).
+Pendientes que anclan este documento: **X-02**, **X-03**, **X-04**, **X-53** (y **X-48** para el core). Catálogo completo: [`pendientes.md`](../decisiones/pendientes.md).
 
 - Mandato API y metodología de contratos: [`contrato-api-first.md`](./contrato-api-first.md)
 - Modelo de entregable y sandbox: [`entregable-licitacion.md`](../licitacion/entregable-licitacion.md)

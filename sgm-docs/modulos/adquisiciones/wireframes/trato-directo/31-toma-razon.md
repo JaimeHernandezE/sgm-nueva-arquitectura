@@ -56,4 +56,4 @@
 
 ## Notas
 
-- Reutiliza `ComptrollerReview` de LP. Canal API CGR — **[PENDIENTE P-64]**.
+- Reutiliza `ComptrollerReview` de LP. Canal API CGR — **[PENDIENTE X-64]**.

@@ -6,7 +6,7 @@
 
 *Estándar MP ↔ SGM según plantilla §5. Lectura confirmada: OC Aceptada. Todas las demás lecturas de esta etapa son **deseadas**, con modo degradado = **paso pendiente en expediente + espera de lectura** (LP: 0 deep links de proceso; sin transcripción de datos MP en SGM). Excepción de bootstrap: ingreso del `mp_process_id` en 3.5.*
 
-*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24).*
+*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (X-24).*
 
 ---
 
@@ -77,7 +77,7 @@
 
 **Entidades:** `AdministrativeAct` *(transversal)* — `act_type` (`bases_approval`/…), `subject_id`, `act_number` (trazabilidad), `external_folio`, `document_procedure_id`, `status` (`pending_signature` → `signed`), ref. documento. Generaliza el patrón de `PaymentDecree`; **candidata a absorberlo a futuro** — marcar `REVISAR`, no fusionar ahora. Cadena de firmantes: `SignatureChain` (plataforma; proceso 25).
 
-**Borde:** Dependencia `submitAdministrativeAct` / retorno vía evento → **Core (DocDigital)** (**asíncrona**; contrato funcional en [`integracion-docdigital.md`](../../../arquitectura/especificacion/integracion-docdigital.md); **[PENDIENTE P-72]** mecanismo M2M vs. asistido). Evento `AdministrativeActSigned`. FirmaGob queda encapsulado en DocDigital para este acto (no cablear C9 directo).
+**Borde:** Dependencia `submitAdministrativeAct` / retorno vía evento → **Core (DocDigital)** (**asíncrona**; contrato funcional en [`integracion-docdigital.md`](../../../arquitectura/especificacion/integracion-docdigital.md); **[PENDIENTE X-72]** mecanismo M2M vs. asistido). Evento `AdministrativeActSigned`. FirmaGob queda encapsulado en DocDigital para este acto (no cablear C9 directo).
 
 **Validaciones:**
 
@@ -86,7 +86,7 @@
 | Aprobar bases (enviar a tramitación) | `approveTenderBases` | `LEGAL_REVIEW_REQUIRED` | — | Se requiere visto bueno jurídico de las bases antes de aprobarlas. | blocking | Ley 19.886 — bases de licitación |
 | Aprobar bases (enviar a tramitación) | `approveTenderBases` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida del acto tramitado. | blocking | Ley 19.799 — firma electrónica avanzada |
 | Aprobar bases (enviar a tramitación) | `approveTenderBases` | `DOCDIGITAL_PROVIDER_UNAVAILABLE` | — | DocDigital no está disponible para tramitar el acto. | blocking | integridad:estado_expediente |
-**Edge cases:** falla o latencia DocDigital → acto permanece `pending_signature`, reintento; nunca `signed` sin retorno con folio; vía alternativa si municipio no habilitado — **[PENDIENTE P-73]**.
+**Edge cases:** falla o latencia DocDigital → acto permanece `pending_signature`, reintento; nunca `signed` sin retorno con folio; vía alternativa si municipio no habilitado — **[PENDIENTE X-73]**.
 
 ---
 
@@ -103,7 +103,7 @@
 
 **Entidades:** `ComptrollerReview` *(nueva, transversal — **reutilizable en Trato Directo**, que tiene el mismo trámite para su Resolución Fundada)* — `administrative_act_id`, `submitted_at`, `outcome` (`approved`/`approved_with_remarks`/`rejected`), `outcome_at`, ref. oficio.
 
-**Borde:** Sistema externo CGR — **sin integración API asumida**: registro manual del envío y del resultado, con documento de respaldo. **[PENDIENTE P-64]** explorar si existe canal de consulta de estado de trámites CGR integrable; no asumirlo.
+**Borde:** Sistema externo CGR — **sin integración API asumida**: registro manual del envío y del resultado, con documento de respaldo. **[PENDIENTE X-64]** explorar si existe canal de consulta de estado de trámites CGR integrable; no asumirlo.
 
 **Validaciones:**
 
@@ -161,7 +161,7 @@
 | Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
 |---|---|---|---|---|---|---|
 | Registrar aclaración | `recordClarification` | `MISSING_REQUIRED_FIELD` | `clarification_document_ref` | El documento de aclaración a las bases es obligatorio. | blocking | integridad:campo_requerido |
-**Edge cases:** aclaración que modifica sustantivamente las bases → puede requerir acto administrativo complementario y extensión de plazo. **[PENDIENTE P-65]** criterio jurídico de cuándo una aclaración exige acto formal.
+**Edge cases:** aclaración que modifica sustantivamente las bases → puede requerir acto administrativo complementario y extensión de plazo. **[PENDIENTE X-65]** criterio jurídico de cuándo una aclaración exige acto formal.
 
 ---
 
@@ -223,7 +223,7 @@
 
 **Entidades:** `EvaluationCommittee` *(nueva)* + `CommitteeMember` (con `conflict_declaration_ref`, obligatoria); `OfferRecord` *(nueva)* — espejo mínimo de cada oferta (proveedor, monto, admisibilidad, causal); `EvaluationScore` — `offer_id`, `criterion_id`, `score`, `rationale`; `EvaluationReport` — acta, ranking, firmas.
 
-**Regla SoD:** los integrantes de la comisión no pueden ser el requirente de la SOLPED ni quien elaboró las bases técnicas — **[PENDIENTE P-66]** validar con jurídica el alcance exacto de las inhabilidades.
+**Regla SoD:** los integrantes de la comisión no pueden ser el requirente de la SOLPED ni quien elaboró las bases técnicas — **[PENDIENTE X-66]** validar con jurídica el alcance exacto de las inhabilidades.
 
 **Borde:** Dependencia condicional Core (FirmaGob) (firmas del acta); evento `EvaluationCompleted`.
 
@@ -323,7 +323,7 @@
 | Plataforma | SGM |
 | Obligatoriedad | **Condicional** — obligatorio sobre umbral o cuando las bases lo establecen; bajo él, las bases pueden disponer que la OC formaliza el contrato |
 
-**Detalle:** Redacción sobre bases + oferta adjudicada, firma de ambas partes (FirmaGob por el municipio; firma del proveedor según canal definido — **[PENDIENTE P-67]** mecanismo de firma del contratista: FEA propia, firma en papel digitalizada, o plataforma). El contrato queda en el expediente con su acto aprobatorio.
+**Detalle:** Redacción sobre bases + oferta adjudicada, firma de ambas partes (FirmaGob por el municipio; firma del proveedor según canal definido — **[PENDIENTE X-67]** mecanismo de firma del contratista: FEA propia, firma en papel digitalizada, o plataforma). El contrato queda en el expediente con su acto aprobatorio.
 
 **Entidades:** `Contract` *(nueva)* — `procurement_case_id`, `awarded_offer_ref`, `amount`, `start_date`/`end_date`, refs. documento y acto, `status`.
 
@@ -381,9 +381,9 @@
 
 | Sub-paso | Contrato / Evento | Contraparte | Nota |
 |---|---|---|---|
-| 3.3, 3.10 | `submitAdministrativeAct`, `AdministrativeActSigned` | Core (DocDigital) | Asíncrona; folio oficial externo; **[PENDIENTE P-72]** |
+| 3.3, 3.10 | `submitAdministrativeAct`, `AdministrativeActSigned` | Core (DocDigital) | Asíncrona; folio oficial externo; **[PENDIENTE X-72]** |
 | 3.9 (acta), 3.13 | `requestSignature` / `confirmSignature` | Core (FirmaGob) | Síncrona bloqueante — no son actos DocDigital (ver inventario) |
-| 3.4, 3.11 | — (registro manual + documento) | Contraloría | Sin API asumida; **[PENDIENTE P-64]** |
+| 3.4, 3.11 | — (registro manual + documento) | Contraloría | Sin API asumida; **[PENDIENTE X-64]** |
 | 3.5 | `readMpProcess`, `linkMpProcess`, `MpProcessLinked` | Core (Mercado Público) | Vinculación diferida de 2.3 |
 | 3.6, 3.8, 3.10 | `readMpProcess` (foro, apertura, adjudicación) | Core (Mercado Público) | Lecturas **deseadas** |
 | 3.7, 3.12, 3.13 | `registerGuaranteeCustody`, ejecución de garantía | Tesorería | Nueva dependencia de módulo |
@@ -392,4 +392,4 @@
 
 **Etapa anterior:** [2. Modalidad de Compra](../procesos-transversales/2-modalidad-compra.md) · **Siguiente etapa:** [4. Recepción Conforme](../procesos-transversales/4-recepcion-conforme.md) *(transversal; en LP con servicios continuos, recepción recurrente)*
 
-> **Pendientes registrados (abiertos, decisión humana):** **[P-37]** umbrales como `NormativeParameter`; **[P-64]** canal CGR; **[P-65]** aclaración → acto formal; **[P-66]** inhabilidades comisión; **[P-67]** firma del contratista; **[P-72]** mecanismo DocDigital; **[P-74]** alcance decreto de pago / actas.
+> **Pendientes registrados (abiertos, decisión humana):** **[X-37]** umbrales como `NormativeParameter`; **[X-64]** canal CGR; **[X-65]** aclaración → acto formal; **[X-66]** inhabilidades comisión; **[X-67]** firma del contratista; **[X-72]** mecanismo DocDigital; **[X-74]** alcance decreto de pago / actas.

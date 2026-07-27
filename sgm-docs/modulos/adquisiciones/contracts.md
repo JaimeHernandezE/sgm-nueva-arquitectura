@@ -8,7 +8,7 @@
 > OpenAPI: [`openapi/adquisiciones.openapi.yaml`](./openapi/adquisiciones.openapi.yaml) — estructura: [`openapi/README.md`](./openapi/README.md)
 > Fixtures sandbox: [`fixtures/catalogo.md`](./fixtures/catalogo.md)
 
-**Alcance:** las etapas transversales (1, 2, 4) y la etapa 3 de Compra Ágil (§2.3), Licitación Pública (§2.4), Convenio Marco (§2.7) y Trato Directo (§2.8) están cubiertas. Pendientes humanos de TD: P-69 (rechazo OC), P-70 (polling/webhook), P-71 (plazo 24 h). Actos administrativos (LP 3.3/3.10, TD Resolución Fundada, decreto de pago 5.3) tramitados vía **Core (DocDigital)** — decisión canónica DocDigital; **[PENDIENTE P-72]** (bloqueante), **P-74**.
+**Alcance:** las etapas transversales (1, 2, 4) y la etapa 3 de Compra Ágil (§2.3), Licitación Pública (§2.4), Convenio Marco (§2.7) y Trato Directo (§2.8) están cubiertas. Pendientes humanos de TD: X-69 (rechazo OC), X-70 (polling/webhook), X-71 (plazo 24 h). Actos administrativos (LP 3.3/3.10, TD Resolución Fundada, decreto de pago 5.3) tramitados vía **Core (DocDigital)** — decisión canónica DocDigital; **[PENDIENTE X-72]** (bloqueante), **X-74**.
 
 **Fundamento en validadores:** todo `blocking` en `ValidationIssue` / `ErrorResponse` lleva `legal_reference` (cita normativa o `integridad:<motivo>`). Catálogo completo con columna Fundamento en las fichas §3.6; el backend debe poblar el mismo valor al emitir `422`. Norma: [`musts-arquitectura.md`](../../arquitectura/especificacion/musts-arquitectura.md) §11 · [`estandares-api.md`](../../arquitectura/especificacion/estandares-api.md) §3.3.
 
@@ -32,7 +32,7 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | `BudgetPreCommitment` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `budget_availability_certificate_id`, `budget_line_id`, `estimated_amount`, `fiscal_year`, `status` | 1.6 |
 | `AgileQuoteProcess` | Expuesta | `id`, `purchase_request_id`, `deep_link_clicked_at`, `mp_quote_id` | 2.1 *(CA)* — duplica `ProcurementCase.mp_process_id`, ver `entidades-core.md` <!-- REVISAR: consolidar AgileQuoteProcess --> |
 | `ModalityDecision` | Expuesta | `id`, `procurement_case_id`, `selected_modality`, `ratified`, `requires_jefatura_approval`, `decided_by`, `decided_at` | 2.1 |
-| `ModalityDecisionApproval` | Expuesta | `id`, `modality_decision_id`, `approver_id`, `decision`, `decision_date` | 2.2 — existencia condicionada a **[PENDIENTE P-38]** |
+| `ModalityDecisionApproval` | Expuesta | `id`, `modality_decision_id`, `approver_id`, `decision`, `decision_date` | 2.2 — existencia condicionada a **[PENDIENTE X-38]** |
 | `QuotationResult` | Expuesta | `id`, `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `recorded_at` | 3.2 *(CA)* / 3.5 *(CM, ruta `gran_compra`)* |
 | `PurchaseOrder` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `mp_oc_id`, `supplier_rut`, `total_amount`, `selection_justification`, `status`, `acceptance_date`, `fulfillment_status` | 3.3, 3.4, 3.5 *(CA)* / 3.5, 3.14 *(LP)* / 3.2, 3.3, 3.7, 3.8 *(CM)* / 3.3, 3.4 *(TD)*, 4.1 |
 | `BudgetCommitment` | Expuesta | `id`, `purchase_order_id`, `budget_pre_commitment_id`, `committed_amount`, `commitment_date`, `source` | 3.4 *(CA)* / 3.14 *(LP)* / 3.7 *(CM)* / 3.3 *(TD)* |
@@ -59,13 +59,13 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 
 ## 2. Operaciones que ofrece
 
-Convenciones de error y paginación según [`estandares-api.md`](../../arquitectura/especificacion/estandares-api.md). Rutas sin prefijo de tenant hasta resolver multitenancy (**[PENDIENTE P-03]**).
+Convenciones de error y paginación según [`estandares-api.md`](../../arquitectura/especificacion/estandares-api.md). Rutas sin prefijo de tenant hasta resolver multitenancy (**[PENDIENTE X-03]**).
 
 ### 2.0 Expediente (lecturas)
 
 Operaciones de consulta del expediente y recursos asociados. Requisito de [`musts-arquitectura.md`](../../arquitectura/especificacion/musts-arquitectura.md) §10.2 y [`entregable-licitacion.md`](../../arquitectura/licitacion/entregable-licitacion.md) §6.3.
 
-**Autorización (placeholder hasta P-02):** scope `adquisiciones:read` (personas) / `adquisiciones.read` (M2M).
+**Autorización (placeholder hasta X-02):** scope `adquisiciones:read` (personas) / `adquisiciones.read` (M2M).
 
 #### `GET /procurement-cases` — `listProcurementCases`
 - **Sub-pasos:** 0.1 — [Consulta de expedientes](./procesos-transversales/0-consulta-expedientes.md)
@@ -154,6 +154,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 - **Reglas:** solo lectura; no persiste verificación ni afecta `PurchaseRequest.status`; requiere RBAC de consulta sobre la línea
 - **Dependencias:** Presupuestos (cacheada)
 - **Comportamiento ante falla:** error en panel/modal; la pantalla de creación o aprobación continúa operativa
+- **Nota B0 (CDP / personal):** esta operación es **informativa** en el flujo de Adquisiciones. La **disponibilidad bloqueante** y el **CDP de gasto en personal** (RRHH procesos 1–4, 8; cometidos 3.2.4) son contratos distintos Presupuestos↔RRHH (**R-1**). No asumir que `previewBudgetAvailability` cubre contratación de personal.
 
 #### `POST /purchase-requests/{id}/submit` — `submitPurchaseRequest`
 - **Sub-pasos:** 1.1
@@ -266,7 +267,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 - **Evento emitido:** `ProcurementModalityConfirmed`
 
 #### `POST /modality-decisions/{id}/approve` — `approveModalityDecision`
-- **Sub-pasos:** 2.2 — existencia y alcance pendientes de ratificar con la DM (**[PENDIENTE P-38]**); ejecución condicionada a `ModalityDecision.requires_jefatura_approval`
+- **Sub-pasos:** 2.2 — existencia y alcance pendientes de ratificar con la DM (**[PENDIENTE X-38]**); ejecución condicionada a `ModalityDecision.requires_jefatura_approval`
 - **Entrada:** `comments` (opcional)
 - **Respuesta:** `ModalityDecisionApproval`
 - **Reglas:**
@@ -370,16 +371,16 @@ Vinculación con Mercado Público diferida al sub-paso 3.5 — reutiliza íntegr
 - **Sub-pasos:** 3.3
 - **Reglas:** `TenderBases.status = approved` (VB jurídico) requerido (`LEGAL_REVIEW_REQUIRED`)
 - **Respuesta:** `AdministrativeAct` (`act_type = bases_approval`, `status = pending_signature`)
-- **Dependencias:** `submitAdministrativeAct` (Core DocDigital, asíncrona) — decisión DocDigital; **[PENDIENTE P-72]**
+- **Dependencias:** `submitAdministrativeAct` (Core DocDigital, asíncrona) — decisión DocDigital; **[PENDIENTE X-72]**
 - **Evento emitido:** `AdministrativeActSigned` (al retorno con `external_folio`)
-- **Comportamiento ante falla:** DocDigital no disponible → acto permanece `pending_signature`, reintento / vía alternativa (**P-73**); nunca `signed` sin retorno del acto firmado
+- **Comportamiento ante falla:** DocDigital no disponible → acto permanece `pending_signature`, reintento / vía alternativa (**X-73**); nunca `signed` sin retorno del acto firmado
 
 #### `POST /administrative-acts/{id}/comptroller-submission` — `submitToComptroller`
 - **Sub-pasos:** 3.4, 3.11 *(mismo mecanismo, distinto `AdministrativeAct` de origen — bases o adjudicación)*
 - **Entrada:** `submitted_at`
 - **Reglas:** solo si el monto supera el umbral de Toma de Razón vigente (`NormativeParameter`)
 - **Respuesta:** `ComptrollerReview` con `outcome` pendiente
-- **Dependencias:** Contraloría — registro manual, sin integración API asumida (**[PENDIENTE P-64]**)
+- **Dependencias:** Contraloría — registro manual, sin integración API asumida (**[PENDIENTE X-64]**)
 
 #### `POST /comptroller-reviews/{id}/outcome` — `recordComptrollerOutcome`
 - **Sub-pasos:** 3.4, 3.11
@@ -390,7 +391,7 @@ Vinculación con Mercado Público diferida al sub-paso 3.5 — reutiliza íntegr
 #### `POST /procurement-cases/{id}/clarifications` — `recordClarification`
 - **Sub-pasos:** 3.6
 - **Entrada:** `clarification_document_ref`, `modifies_bases` (booleano)
-- **Reglas:** `modifies_bases = true` → advertencia, puede requerir `AdministrativeAct` complementario y extensión de plazo — criterio exacto **[PENDIENTE P-65]**
+- **Reglas:** `modifies_bases = true` → advertencia, puede requerir `AdministrativeAct` complementario y extensión de plazo — criterio exacto **[PENDIENTE X-65]**
 - **Dependencias:** `readMpProcess` — preguntas recibidas / aclaración publicada (deseada); degradado: registro manual del documento
 - **Evento emitido:** `ClarificationRecorded`
 
@@ -406,7 +407,7 @@ Vinculación con Mercado Público diferida al sub-paso 3.5 — reutiliza íntegr
   | Regla | Severidad | Error |
   |---|---|---|
   | Cada integrante con `conflict_declaration_ref` | blocking | `CONFLICT_DECLARATION_REQUIRED` |
-  | Integrante ≠ requirente SOLPED ni elaborador de bases técnicas | blocking ⚠ | `COMMITTEE_MEMBER_CONFLICT` — alcance exacto **[PENDIENTE P-66]** |
+  | Integrante ≠ requirente SOLPED ni elaborador de bases técnicas | blocking ⚠ | `COMMITTEE_MEMBER_CONFLICT` — alcance exacto **[PENDIENTE X-66]** |
 - **Respuesta:** `EvaluationCommittee` + `AdministrativeAct` (`act_type = committee_designation`)
 - **Dependencias:** `requestSignature`, `confirmSignature`
 - **Evento emitido:** `EvaluationCommitteeDesignated`
@@ -453,8 +454,8 @@ Vinculación con Mercado Público diferida al sub-paso 3.5 — reutiliza íntegr
 
 #### `POST /contracts/{id}/sign` — `signContract`
 - **Sub-pasos:** 3.13
-- **Entrada:** `contractor_signature_mode` — mecanismo de firma del contratista **[PENDIENTE P-67]**
-- **Dependencias:** `requestSignature`, `confirmSignature` (firma municipal); firma del proveedor según canal a definir (P-67)
+- **Entrada:** `contractor_signature_mode` — mecanismo de firma del contratista **[PENDIENTE X-67]**
+- **Dependencias:** `requestSignature`, `confirmSignature` (firma municipal); firma del proveedor según canal a definir (X-67)
 - **Evento emitido:** `ContractSigned`
 - **Edge cases (crítico):** adjudicatario no suscribe en plazo → ejecución de la Garantía de Seriedad (`Guarantee.status = executed`, borde a Tesorería) y facultad de readjudicar al siguiente del ranking (reejecuta `issueAwardResolution` con el acta vigente) o declarar desierta
 
@@ -491,7 +492,7 @@ Vinculación con Mercado Público diferida al sub-paso 3.5 — reutiliza íntegr
 - **Evento emitido:** `GoodsReceiptConfirmed`, `ReceiptRejected` (si rechazo parcial)
 
 #### `POST /goods-receipt-lines/{id}/inventory-entry` — `registerInventoryEntry` *(dependencia externa, ver §3)*
-- **Sub-pasos:** 4.3 — alcance pendiente de decisión de bases (**[PENDIENTE P-44]**)
+- **Sub-pasos:** 4.3 — alcance pendiente de decisión de bases (**[PENDIENTE X-44]**)
 
 #### `POST /goods-receipts/{id}/accrual` — `recordAccrual`
 - **Sub-pasos:** 4.4
@@ -527,7 +528,7 @@ Vinculación con Mercado Público diferida al sub-paso 3.5 — reutiliza íntegr
 
 #### `POST /accruals/{id}/payment-decree` — `issuePaymentDecree`
 - **Sub-pasos:** 5.3
-- **Dependencias:** `submitAdministrativeAct` (Core (DocDigital)) — **[PENDIENTE P-72]**, **P-74**
+- **Dependencias:** `submitAdministrativeAct` (Core (DocDigital)) — **[PENDIENTE X-72]**, **X-74**
 - **Evento emitido:** `PaymentDecreeIssued` (tras retorno con `external_folio`)
 - **Comportamiento ante falla:** `DOCDIGITAL_PROVIDER_UNAVAILABLE`; decreto en `pending_signature`
 
@@ -574,14 +575,14 @@ Vinculación con Mercado Público diferida al sub-paso 3.5 — reutiliza íntegr
 *(Emisión y aceptación de la OC reutiliza `syncPurchaseOrderAccepted` — ver declaración en §2.3.)*
 
 #### `POST /procurement-cases/{id}/oc-rejection-decision` — `recordPurchaseOrderRejectionDecision`
-- **Sub-pasos:** 3.8 *(CM, condicional — excluyente con 3.7)* / 3.4 *(TD, condicional — excluyente con 3.3; enum de decisión distinto — **[PENDIENTE P-69]**)*
+- **Sub-pasos:** 3.8 *(CM, condicional — excluyente con 3.7)* / 3.4 *(TD, condicional — excluyente con 3.3; enum de decisión distinto — **[PENDIENTE X-69]**)*
 - **Entrada:** `decision` (enum: `next_provider` \| `republish` *(CM)*; `restart_modality` \| `cancel` *(TD, propuesto)*)
 - **Reglas:**
   | Regla | Severidad | Error |
   |---|---|---|
   | Existe proveedor alternativo en catálogo si `decision = next_provider` *(CM)* | blocking | `NO_ALTERNATIVE_PROVIDER_AVAILABLE` |
 - **Dependencias:** `readMpProcess` — OC Rechazada (deseada), previa a habilitar esta decisión; `releasePreCommitment` si `decision = cancel` *(TD)*
-- **Evento emitido:** `PurchaseOrderRejected` (al recibir la lectura); la decisión en sí no emite evento nuevo — CM: `next_provider` reejecuta `syncPurchaseOrderAccepted` (3.7) / `republish` reejecuta `linkMpProcess` (3.2/3.3); TD: `restart_modality` retorna a etapa 2 / `cancel` libera preobligación (**[PENDIENTE P-69]**)
+- **Evento emitido:** `PurchaseOrderRejected` (al recibir la lectura); la decisión en sí no emite evento nuevo — CM: `next_provider` reejecuta `syncPurchaseOrderAccepted` (3.7) / `republish` reejecuta `linkMpProcess` (3.2/3.3); TD: `restart_modality` retorna a etapa 2 / `cancel` libera preobligación (**[PENDIENTE X-69]**)
 
 ### 2.8 Resolución de Compra — Trato Directo
 
@@ -590,25 +591,25 @@ Vinculación con Mercado Público diferida al sub-paso 3.5 — reutiliza íntegr
 #### *(reutiliza `submitToComptroller` / `recordComptrollerOutcome` de §2.4)* 3.1 Toma de Razón de la Resolución Fundada
 - **Sub-pasos:** 3.1 *(condicional — monto > umbral Toma de Razón)*
 - **Entidad:** `AdministrativeAct` (`act_type = founded_resolution`) + `ComptrollerReview`
-- **Dependencias:** Contraloría (registro manual) — **[PENDIENTE P-64]**
+- **Dependencias:** Contraloría (registro manual) — **[PENDIENTE X-64]**
 - **Evento emitido:** `ComptrollerReviewRecorded`
 
 #### *(reutiliza `linkMpProcess` de §2.2)* 3.2 Publicación en MP y vinculación
 - **Sub-pasos:** 3.2 *(ejecución diferida de 2.3)*
 - **Dependencias:** `readMpProcess` (síncrona bloqueante solo en la vinculación)
 - **Evento emitido:** `MpProcessLinked`
-- **Nota:** plazo legal de publicidad 24 h — **[PENDIENTE P-71]**
+- **Nota:** plazo legal de publicidad 24 h — **[PENDIENTE X-71]**
 
 #### *(reutiliza `syncPurchaseOrderAccepted` de §2.3)* 3.3 Emisión de OC y aceptación *(hito contable)*
 - **Sub-pasos:** 3.3 *(excluyente con 3.4)*
 - **Reglas adicionales TD:** `MP_PROCESS_NOT_PUBLISHED`, `PRE_COMMITMENT_INACTIVE` (ver §2.3)
 - **Dependencias:** `readMpProcess` — OC Aceptada (**confirmada**) + estado Publicado (deseada); `commitBudget` (Presupuestos)
 - **Eventos:** `PurchaseOrderAccepted`, `BudgetCommitmentCreated`
-- **Clasificación borde:** asíncrona, agnóstica push/polling — **[PENDIENTE P-70]**
+- **Clasificación borde:** asíncrona, agnóstica push/polling — **[PENDIENTE X-70]**
 
 #### *(reutiliza `recordPurchaseOrderRejectionDecision` de §2.7)* 3.4 Rechazo de la OC
 - **Sub-pasos:** 3.4 *(condicional — excluyente con 3.3)*
-- **Entrada:** `decision` (`restart_modality` \| `cancel`) — **[PENDIENTE P-69]**
+- **Entrada:** `decision` (`restart_modality` \| `cancel`) — **[PENDIENTE X-69]**
 - **Dependencias:** `readMpProcess` — OC Rechazada (deseada); `releasePreCommitment` si cancelación
 - **Evento emitido:** `PurchaseOrderRejected`
 
@@ -627,7 +628,7 @@ Contrato del core: [`plataforma/contracts.md`](../../plataforma/contracts.md) §
 | `checkBudgetAvailability` | 1.3, 1.5, 1.6 | Síncrona bloqueante | Error `BUDGET_PROVIDER_UNAVAILABLE`; operación no procede |
 | `previewBudgetAvailability` | 1.1, 1.2 | Cacheada / informativa | Error en panel de autoconsulta; no bloquea creación ni aprobación |
 | `createBudgetPreCommitment` | 1.6 | Síncrona bloqueante | Rechazo → `BUDGET_UNAVAILABLE`; sin efecto parcial |
-| `commitBudget` | 3.4 *(CA)*, 3.14 *(LP)*, 3.7 *(CM)*, 3.3 *(TD)* | Síncrona bloqueante | Rechazo → `BUDGET_UNAVAILABLE`; OC queda `commitment_pending` — regularización pendiente (**[PENDIENTE P-40]**). Reemplaza el par anterior `convertPreCommitmentToCommitment`+`registerBudgetCommitment`. |
+| `commitBudget` | 3.4 *(CA)*, 3.14 *(LP)*, 3.7 *(CM)*, 3.3 *(TD)* | Síncrona bloqueante | Rechazo → `BUDGET_UNAVAILABLE`; OC queda `commitment_pending` — regularización pendiente (**[PENDIENTE X-40]**). Reemplaza el par anterior `convertPreCommitmentToCommitment`+`registerBudgetCommitment`. |
 | `releasePreCommitment` | 3.6 | Síncrona bloqueante | Error `BUDGET_PROVIDER_UNAVAILABLE`; cancelación no se persiste sin liberación confirmada |
 | `adjustPreCommitment` | 3.10 *(LP)* | Síncrona bloqueante | Ajuste de la preobligación al monto adjudicado, antes del Compromiso Cierto (3.14) |
 
@@ -658,7 +659,7 @@ Consolidado en torno a `readMpProcess`, operación única de lectura que atiende
 
 | Operación | Sub-pasos | Lectura MP (§5.3) | Clasificación | Comportamiento ante falla |
 |---|---|---|---|---|
-| `readMpProcess` — vinculación | 2.3, 3.5 *(LP, diferida)*, 3.2/3.3 *(CM, diferida)*, 3.2 *(TD, diferida)* | — | Síncrona bloqueante (solo en la vinculación) | `MP_PROCESS_NOT_FOUND` / `MP_PROCESS_ORGANISM_MISMATCH` / `MP_PROCESS_TYPE_MISMATCH` / `MP_PROCESS_ALREADY_LINKED`; `MP_PROVIDER_UNAVAILABLE` → **[PENDIENTE P-32]** |
+| `readMpProcess` — vinculación | 2.3, 3.5 *(LP, diferida)*, 3.2/3.3 *(CM, diferida)*, 3.2 *(TD, diferida)* | — | Síncrona bloqueante (solo en la vinculación) | `MP_PROCESS_NOT_FOUND` / `MP_PROCESS_ORGANISM_MISMATCH` / `MP_PROCESS_TYPE_MISMATCH` / `MP_PROCESS_ALREADY_LINKED`; `MP_PROVIDER_UNAVAILABLE` → **[PENDIENTE X-32]** |
 | `readMpProcess` — período de cotización | 3.1 *(CA)* / 3.4 *(CM, período de competencia Gran Compra)* | Deseada | Asíncrona | Sin efecto de gestión (informativo); retroceso exponencial |
 | `readMpProcess` — cierre y selección | 3.2 *(CA)* / 3.5 *(CM)* | Deseada | Asíncrona | Modo degradado: pendiente en expediente + deep link; avance solo con lectura |
 | `readMpProcess` — OC enviada / bloqueo | 3.3 | Deseada | Asíncrona | Modo degradado: pendiente + deep link; espejo solo con lectura |
@@ -686,11 +687,11 @@ Documentos **no** tramitados como acto administrativo DocDigital (CDP, VB, acta 
 | `submitAdministrativeAct` | 3.3, 3.10 *(LP)*; 5.3 (decreto de pago); TD Resolución Fundada | Asíncrona | `DOCDIGITAL_PROVIDER_UNAVAILABLE`; acto en `pending_signature` |
 | Evento `AdministrativeActSigned` | mismos | Asíncrona | Retorno con `external_folio` y documento firmado |
 
-Decisión: [`2026-07-docdigital-tramitacion-documental.md`](../../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). **[PENDIENTE P-72]** (bloqueante), **P-74** (alcance decreto de pago).
+Decisión: [`2026-07-docdigital-tramitacion-documental.md`](../../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). **[PENDIENTE X-72]** (bloqueante), **X-74** (alcance decreto de pago).
 
 #### Contraloría (sin integración API asumida)
 
-Registro manual del envío y del resultado, con documento de respaldo — no hay integración API asumida con el sistema de tramitación de la CGR. Canal de consulta integrable **[PENDIENTE P-64]**.
+Registro manual del envío y del resultado, con documento de respaldo — no hay integración API asumida con el sistema de tramitación de la CGR. Canal de consulta integrable **[PENDIENTE X-64]**.
 
 | Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
 |---|---|---|---|
@@ -716,7 +717,7 @@ Patrón upload-then-reference: el cliente sube vía `storeDocument` → recibe `
 
 Campos de adjunto en entidades expuestas: `founded_resolution_attachment`, `scanned_certificate_attachment`, `supporting_document_ref`, `PurchaseRequestAttachment.document_ref` — todos `DocumentRef`.
 
-### 3.6 Inventario *(propuesta, QA ítem 4 / P-44)*
+### 3.6 Inventario *(propuesta, QA ítem 4 / X-44)*
 
 | Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
 |---|---|---|---|
@@ -728,7 +729,7 @@ Campos de adjunto en entidades expuestas: `founded_resolution_attachment`, `scan
 
 ## 4. Eventos que emite
 
-Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de entrega (webhooks, cola, polling).
+Catálogo de hechos de dominio observables. **[PENDIENTE X-05]** mecanismo de entrega (webhooks, cola, polling).
 
 | Evento | Sub-pasos | Esquema (campos principales) |
 |---|---|---|
@@ -740,7 +741,7 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 | `PurchaseOrderAccepted` | 3.4 *(CA)* / 3.14 *(LP)* / 3.7 *(CM)* / 3.3 *(TD)* | `purchase_order_id`, `acceptance_date`, `total_amount` |
 | `BudgetCommitmentCreated` | 3.4 *(CA)* / 3.14 *(LP)* / 3.7 *(CM)* / 3.3 *(TD)* | `budget_commitment_id`, `committed_amount`, `commitment_date` |
 | `ProcurementModalityConfirmed` | 2.1 | `modality_decision_id`, `procurement_case_id`, `procurement_type` |
-| `ProcurementModalityApproved` | 2.2 | `modality_decision_approval_id`, `procurement_case_id` — **[PENDIENTE P-38]** |
+| `ProcurementModalityApproved` | 2.2 | `modality_decision_approval_id`, `procurement_case_id` — **[PENDIENTE X-38]** |
 | `NormativeParameterChanged` | 2.1 (gobernanza) | `parameter_code`, `value`, `valid_from`, `approved_by` |
 | `MpProcessLinked` | 2.3, 3.5 *(LP)*, 3.2/3.3 *(CM)*, 3.2 *(TD)* | `procurement_case_id`, `mp_process_id`, `procurement_type` |
 | `MpStateChanged` | 3.1 *(CA)* / 3.4 *(CM)* | `mp_process_snapshot_ref` |
@@ -768,8 +769,8 @@ Catálogo de hechos de dominio observables. **[PENDIENTE P-05]** mecanismo de en
 | `PaymentDecreeIssued` | 5.3 | `payment_decree_id`, `decree_number`, `decree_date` |
 | `PaymentCompleted` | 5.4 | `payment_id`, `payment_date`, `payment_status` |
 
-> <!-- REVISAR: `AccrualRegistered` (5.2, disparado por `ThreeWayMatch`) y `AccrualRecorded` (4.4, disparado por conformidad de recepción) coexisten como dos eventos de devengado distintos — no se fusionan aquí. Ver **[PENDIENTE P-46]** momento del devengado. -->
-> <!-- REVISAR: frontera Pago/Tesorería — los eventos de la sección 2.5 (Pago) asumen que Pago es una etapa propia de Adquisiciones (`procesos-transversales/5-pago.md`), mientras la ficha de Recepción Conforme (4.4) asume que Pago pertenece a un módulo Tesorería separado. Ver **[PENDIENTE P-47]**. -->
+> <!-- REVISAR: `AccrualRegistered` (5.2, disparado por `ThreeWayMatch`) y `AccrualRecorded` (4.4, disparado por conformidad de recepción) coexisten como dos eventos de devengado distintos — no se fusionan aquí. Ver **[PENDIENTE X-46]** momento del devengado. -->
+> **X-47 cerrado (B0):** el pago pertenece a Tesorería; la etapa 5 de Adquisiciones orquesta el borde vía contrato (`executePayment`, etc.). Ver plan general §3 DC-9.
 
 ---
 
@@ -808,7 +809,7 @@ La ficha QA original solo cubrió el piloto Compra Ágil. Las operaciones de Lic
 | 1.5 | `issueBudgetAvailabilityCertificate`, `registerScannedBudgetAvailabilityCertificate` | `checkBudgetAvailability`, `requestSignature`, `confirmSignature` *(solo electronic)* | `BudgetAvailabilityCertificateIssued` |
 | 1.6 | `createBudgetPreCommitment` | `createBudgetPreCommitment`, `registerPreObligation` | `BudgetPreCommitmentCreated` |
 | 2.1 | `confirmProcurementModality` | `getUtmValue`, `checkCatalogAvailability` | `ProcurementModalityConfirmed` |
-| 2.2 | `approveModalityDecision`, `rejectModalityDecision` *(inferidos)* | `requestSignature`, `confirmSignature` (condicional) | `ProcurementModalityApproved` — **[PENDIENTE P-38]** |
+| 2.2 | `approveModalityDecision`, `rejectModalityDecision` *(inferidos)* | `requestSignature`, `confirmSignature` (condicional) | `ProcurementModalityApproved` — **[PENDIENTE X-38]** |
 | 2.3 | `linkMpProcess` | `readMpProcess` | `MpProcessLinked` |
 | 3.1 *(CA)* | — *(lectura MP)* | `readMpProcess` | `MpStateChanged` |
 | 3.2 *(CA)* | — *(sync MP)* | `readMpProcess` | `QuotationClosed` |
@@ -842,13 +843,13 @@ La ficha QA original solo cubrió el piloto Compra Ágil. Las operaciones de Lic
 | 3.1 *(TD)* | `submitToComptroller`, `recordComptrollerOutcome` *(reutiliza LP)* | Contraloría (sin integración asumida) | `ComptrollerReviewRecorded` |
 | 3.2 *(TD)* | `linkMpProcess` *(reutiliza 2.2, vinculación diferida)* | `readMpProcess` | `MpProcessLinked` |
 | 3.3 *(TD)* | `syncPurchaseOrderAccepted` *(reutiliza CA 3.4)* | MP, `commitBudget` (Presupuestos) | `PurchaseOrderAccepted`, `BudgetCommitmentCreated` |
-| 3.4 *(TD)* | `recordPurchaseOrderRejectionDecision` *(enum TD — P-69)* | `readMpProcess`, `releasePreCommitment` (si cancel) | `PurchaseOrderRejected` |
+| 3.4 *(TD)* | `recordPurchaseOrderRejectionDecision` *(enum TD — X-69)* | `readMpProcess`, `releasePreCommitment` (si cancel) | `PurchaseOrderRejected` |
 | 4.1 | `registerReceipt` | — | — |
 | 4.2 | `confirmReceipt` *(inferido)* | `requestSignature` (condicional) | `GoodsReceiptConfirmed` |
 | 4.3 | — | `registerInventoryEntry` (proveedor de inventario) | — |
-| 4.4 | `recordAccrual` | Contabilidad | `AccrualRecorded` — **[PENDIENTE P-46]** |
+| 4.4 | `recordAccrual` | Contabilidad | `AccrualRecorded` — **[PENDIENTE X-46]** |
 | 4.5 | — *(gestión de rechazo, ver 4.2)* | — | `ReceiptRejected` |
 | 5.1 | `performThreeWayMatch` | `getInvoiceForMatch`, MP | `ThreeWayMatchCompleted` |
-| 5.2 | `registerAccrual` | `registerAccrual` | `AccrualRegistered` — **[PENDIENTE P-46]** |
+| 5.2 | `registerAccrual` | `registerAccrual` | `AccrualRegistered` — **[PENDIENTE X-46]** |
 | 5.3 | `issuePaymentDecree` | `submitAdministrativeAct` (Core DocDigital) | `PaymentDecreeIssued` |
 | 5.4 | `executePayment` | `executePayment` | `PaymentCompleted` |

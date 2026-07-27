@@ -30,7 +30,7 @@ El **híbrido** es distinto del à la carte: el municipio opera contra el fronte
 - **Hosting híbrido:** motor y datos transaccionales en SUBDERE; **archivos** en bucket o DMS del municipio, configurado en el core (C10). Soberanía documental municipal sin dejar de operar en SGM hospedado.
 - **À la carte:** el municipio absorbe su data en sus propias nubes/sistemas donde el convenio lo establezca, consumiendo el motor vía API.
 
-**[PENDIENTE P-01]** Formalizar el instrumento jurídico (convenio tipo) que define responsable del tratamiento y encargado en cada modo, en línea con Ley 21.719.
+**[PENDIENTE X-01]** Formalizar el instrumento jurídico (convenio tipo) que define responsable del tratamiento y encargado en cada modo, en línea con Ley 21.719.
 
 ## 3. Principio rector para las bases: propiedades, no marcas
 
@@ -62,7 +62,7 @@ Cuando la API es el producto, el contrato es el activo central. Exigencias deriv
 
 - OpenAPI versionada como fuente de verdad, con política de deprecación publicada.
 - Errores estructurados: código de error de dominio, campo, regla infringida, referencia normativa cuando aplique. Nunca un 400 sin cuerpo.
-- Autenticación máquina-a-máquina (OAuth2 client credentials o equivalente) con scopes por módulo y por municipio, distinta de Clave Única (personas). **[PENDIENTE P-02]** Hoy no existe en el diseño; debe especificarse.
+- Autenticación máquina-a-máquina (OAuth2 client credentials o equivalente) con scopes por módulo y por municipio, distinta de Clave Única (personas). **[PENDIENTE X-02]** Hoy no existe en el diseño; debe especificarse.
 - Criterio de aceptación en recepción: cada módulo pasa sus pruebas de integración consumiendo únicamente los contratos publicados de los demás módulos, con las bases de datos del resto inaccesibles.
 
 ## 7. Ecosistema abierto de terceros sobre SGM
@@ -100,7 +100,7 @@ El proveedor del desarrollo original lanzó posteriormente un ERP municipal prop
 1. **Los no-negociables en [`principios-no-negociables.md`](../licitacion/principios-no-negociables.md) son correctivos, no perfeccionismo.** Propiedad estatal del código, cláusulas de portabilidad y contratos verificables en recepción responden punto por punto a las debilidades del contrato anterior.
 2. **El conocimiento de dominio financiado por el Estado debe quedar en activos del Estado.** Todo el levantamiento, especificación y documentación del nuevo SGM se versiona en repositorios de propiedad de SUBDERE (`sgm-docs/`). Nada del valor generado durante el contrato debe ser apropiable en exclusiva por el adjudicatario.
 3. **La especificación completa neutraliza ventajas informativas en la licitación.** Debe anticiparse que actores con conocimiento previo del dominio (incluido el proveedor anterior) se presenten a la licitación. La respuesta no es la inhabilitación —jurídicamente frágil— sino una especificación tan completa que la ventaja de conocimiento se diluya, más criterios de evaluación que exijan evidencia verificable de calidad en proyectos previos.
-4. **[PENDIENTE P-17]** Revisión jurídica del contrato original completo (obligaciones de confidencialidad o de destino de los desarrollos que puedan sobrevivir aunque la PI no esté bien amarrada), previa a descartar acciones.
+4. **[PENDIENTE X-17]** Revisión jurídica del contrato original completo (obligaciones de confidencialidad o de destino de los desarrollos que puedan sobrevivir aunque la PI no esté bien amarrada), previa a descartar acciones.
 
 ## 9. Participación temprana del mercado en la definición de estándares
 
@@ -108,7 +108,7 @@ El proveedor del desarrollo original lanzó posteriormente un ERP municipal prop
 
 ### 9.1 Mecanismo: consulta al mercado, nunca reuniones informales
 
-Las conversaciones informales con empresas previas a una licitación exponen el proceso a impugnaciones (ventaja del participante, trato desigual hacia el no invitado) y a reproches de probidad. El instrumento correcto es la **consulta al mercado (RFI) vía Mercado Público**, formalizada por la reforma a la Ley 19.886 (Ley 21.634): convocatoria pública, participación abierta a cualquier interesado, registro íntegro de lo conversado, sin que participar inhabilite ni privilegie. Para instancias donde la solución deba construirse iterativamente con el mercado, la misma reforma contempla el **diálogo competitivo** como alternativa a evaluar. **[PENDIENTE P-18]** Confirmación jurídica del encuadre exacto (RFI, diálogo competitivo u otro) antes de la primera convocatoria.
+Las conversaciones informales con empresas previas a una licitación exponen el proceso a impugnaciones (ventaja del participante, trato desigual hacia el no invitado) y a reproches de probidad. El instrumento correcto es la **consulta al mercado (RFI) vía Mercado Público**, formalizada por la reforma a la Ley 19.886 (Ley 21.634): convocatoria pública, participación abierta a cualquier interesado, registro íntegro de lo conversado, sin que participar inhabilite ni privilegie. Para instancias donde la solución deba construirse iterativamente con el mercado, la misma reforma contempla el **diálogo competitivo** como alternativa a evaluar. **[PENDIENTE X-18]** Confirmación jurídica del encuadre exacto (RFI, diálogo competitivo u otro) antes de la primera convocatoria.
 
 Regla operativa: todo intercambio con empresas sobre SGM es público, trazable y de convocatoria abierta. Sin excepciones.
 
@@ -131,6 +131,6 @@ En un mecanismo de convocatoria abierta, el proveedor anterior no puede ser excl
 
 ## 10. Pendientes abiertos
 
-Los pendientes de este documento están registrados en [`pendientes.md`](./pendientes.md): P-01, P-02, P-13, P-14, P-15, P-16, P-17, P-18, P-19.
+Los pendientes de este documento están registrados en [`pendientes.md`](./pendientes.md): X-01, X-02, X-13, X-14, X-15, X-16, X-17, X-18, X-19.
 
 Modelo consolidado de entregable exigible de licitación (API, contratos, sandbox): [`entregable-licitacion.md`](../licitacion/entregable-licitacion.md).

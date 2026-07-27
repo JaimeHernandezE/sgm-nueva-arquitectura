@@ -16,7 +16,7 @@ Municipio
 
 - Al aprovisionar el tenant se clona la **plantilla de plataforma** (`OrgStructureTemplate`). El municipio puede renombrar, agregar, desactivar o reubicar unidades.
 - **RBAC:** un usuario puede tener **varias** asignaciones. Cada `RoleAssignment` es la terna **usuario + nodo orgánico + rol** (con vigencia). El nodo es una **unidad**; o un **departamento** solo si no tiene unidades hijas activas.
-- SoD y permisos se evalúan sobre el **conjunto** de asignaciones vigentes (detalle ⚠ P-25 / catálogo §7).
+- SoD y permisos se evalúan sobre el **conjunto** de asignaciones vigentes (detalle ⚠ X-25 / catálogo §7).
 
 ## Dos vistas funcionales
 
@@ -136,7 +136,7 @@ Nodos Adquisiciones (borrador): `adq.solped`, `adq.modalidad`, `adq.resolucion`,
 - **Violación SoD:** bloqueo al agregar si el conjunto de roles vigentes es incompatible, salvo excepción vigente (`04-excepciones-sod`).
 - **Usuario sin asignaciones / nodo sin cobertura:** empty state + CTA asignar.
 - **Departamento sin unidades:** selector ofrece «(el departamento)» como nodo.
-- **Catálogo / árbol:** borrador **P-24**; contenido orgánico **P-49**.
+- **Catálogo / árbol:** borrador **X-24**; contenido orgánico **X-49**.
 
 ## Validaciones visibles
 

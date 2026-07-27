@@ -19,7 +19,7 @@ Inventario histórico de brechas + **estado actual** tras el llenado de CM, LP y
 | OpenAPI real | Sí | **Sí** (`2-convenio-marco/3-resolucion-compra.yaml`) | **Sí** (`3-licitacion-publica/…`) | **Sí** (docs + examples; rutas reutilizadas) |
 | Fixture etapa 3 | Sí | ✅ `ADQ-2026-00089` | ✅ `ADQ-2026-00045` | ✅ `ADQ-2026-00012` (vinculado, 3.3 pendiente) |
 | QA P0/P1 dedicada | Sí | Pendiente | Pendiente | Pendiente |
-| Pendientes humanos | Varios | P-68 | P-64…P-67 | **P-69, P-70, P-71** (+ P-64 compartido) |
+| Pendientes humanos | Varios | X-68 | X-64…X-67 | **X-69, X-70, X-71** (+ X-64 compartido) |
 
 ---
 
@@ -30,9 +30,9 @@ Cerrado el vacío estructural del diagnóstico original:
 - Sub-paso de **publicación / vinculación MP** (3.2) — cumple tabla de `2-modalidad-compra.md` §2.3.
 - `DirectProcurementCase` corregido → `ProcurementCase`; `BudgetCommitment` marcada canónica.
 - Toma de Razón > 8.000 UTM modelada en 3.1 (reuso `ComptrollerReview`).
-- Rechazo OC en 3.4 con enum propuesto — **[PENDIENTE P-69]** (no inventar regla de negocio).
-- Borde OC Aceptada clasificado asíncrono (agnóstico push/polling) — **[PENDIENTE P-70]**.
-- Plazo 24 h — **[PENDIENTE P-71]**.
+- Rechazo OC en 3.4 con enum propuesto — **[PENDIENTE X-69]** (no inventar regla de negocio).
+- Borde OC Aceptada clasificado asíncrono (agnóstico push/polling) — **[PENDIENTE X-70]**.
+- Plazo 24 h — **[PENDIENTE X-71]**.
 - `contracts.md` §2.8; wireframes; prototipos; fixture; OpenAPI fragmento.
 
 ---
@@ -42,9 +42,9 @@ Cerrado el vacío estructural del diagnóstico original:
 - OpenAPI real de etapa 3 + `$ref` en `adquisiciones.openapi.yaml`.
 - Wireframes ASCII con títulos de sección (`## …`) alineados a `.form-section`.
 - Prototipos CM migrados a `demoValidation`.
-- Drift documental: ficha LP (entidades ya en core + P-64…P-67), `catalogo.md`, `MANIFEST.md`, refs `contracts.md` (§2.3 no §2.6; `commitBudget` incluye CM/TD).
+- Drift documental: ficha LP (entidades ya en core + X-64…X-67), `catalogo.md`, `MANIFEST.md`, refs `contracts.md` (§2.3 no §2.6; `commitBudget` incluye CM/TD).
 
-**Sigue pendiente (humano / pasada QA):** fichas QA P0/P1 para CM/LP/TD; cierre de P-64…P-71 con división de municipalidades. No hay specs Playwright versionadas en el repo (el claim e2e previo era solo documental).
+**Sigue pendiente (humano / pasada QA):** fichas QA P0/P1 para CM/LP/TD; cierre de X-64…X-71 con división de municipalidades. No hay specs Playwright versionadas en el repo (el claim e2e previo era solo documental).
 
 ---
 
@@ -52,14 +52,14 @@ Cerrado el vacío estructural del diagnóstico original:
 
 | ID | Tema | Dueño |
 |---|---|---|
-| P-64 | Canal consulta CGR | Contraloría |
-| P-65 | Aclaración → acto formal | jurídica |
-| P-66 | Inhabilidades comisión LP | jurídica |
-| P-67 | Firma contratista LP | DM / jurídica |
-| P-68 | Límite reintentos CA/CM | DM |
-| P-69 | Camino rechazo OC en TD | DM / división municipalidades |
-| P-70 | Polling vs webhook MP | ChileCompra / plataforma |
-| P-71 | Control bloqueante plazo 24 h TD | DM / jurídica |
+| X-64 | Canal consulta CGR | Contraloría |
+| X-65 | Aclaración → acto formal | jurídica |
+| X-66 | Inhabilidades comisión LP | jurídica |
+| X-67 | Firma contratista LP | DM / jurídica |
+| X-68 | Límite reintentos CA/CM | DM |
+| X-69 | Camino rechazo OC en TD | DM / división municipalidades |
+| X-70 | Polling vs webhook MP | ChileCompra / plataforma |
+| X-71 | Control bloqueante plazo 24 h TD | DM / jurídica |
 
 ---
 

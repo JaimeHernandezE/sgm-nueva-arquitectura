@@ -7,9 +7,9 @@ Infraestructura **obligatoria** del SGM: identidad, RBAC, tenants, parámetros, 
 Marco arquitectónico: [`arquitectura/especificacion/plataforma-core.md`](../arquitectura/especificacion/plataforma-core.md)  
 Modelo de datos: [`modelo-datos/entidades-plataforma.md`](../modelo-datos/entidades-plataforma.md)  
 Contrato API: [`contracts.md`](./contracts.md)  
-Notificaciones (C6): [`notificaciones/overview.md`](./notificaciones/overview.md) · matriz P-06: [`notificaciones/matriz-evento-canal.md`](./notificaciones/matriz-evento-canal.md)  
+Notificaciones (C6): [`notificaciones/overview.md`](./notificaciones/overview.md) · matriz X-06: [`notificaciones/matriz-evento-canal.md`](./notificaciones/matriz-evento-canal.md)  
 Mensajería in-app: [`mensajeria/overview.md`](./mensajeria/overview.md)  
-Catálogo RBAC (borrador P-24, transversal): [`arquitectura/especificacion/catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md)
+Catálogo RBAC (borrador X-24, transversal): [`arquitectura/especificacion/catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md)
 
 ## Dos consolas, una API
 
@@ -31,7 +31,7 @@ Fuente de pantallas: `plataforma-core.md` §9. Wireframes: [`wireframes/`](./wir
 | Clientes M2M | [`subdere/03-clientes-m2m.md`](./wireframes/subdere/03-clientes-m2m.md) | `createApiClient`, `revokeApiClient`; *(inferidas)* `listApiClients`, `rotateApiClientSecret` |
 | Integraciones de plataforma | [`subdere/04-integraciones-plataforma.md`](./wireframes/subdere/04-integraciones-plataforma.md) | `listDmsAdapters`; *(inferida)* `upsertPlatformIntegration` |
 | Provisión de almacenamiento | [`subdere/05-provision-almacenamiento.md`](./wireframes/subdere/05-provision-almacenamiento.md) | *(inferida)* `provisionPlatformBucket` |
-| Monitoreo por tenant | [`subdere/06-monitoreo-tenant.md`](./wireframes/subdere/06-monitoreo-tenant.md) | *(pendiente observabilidad — musts §8 / P-08)* |
+| Monitoreo por tenant | [`subdere/06-monitoreo-tenant.md`](./wireframes/subdere/06-monitoreo-tenant.md) | *(pendiente observabilidad — musts §8 / X-08)* |
 | Auditoría de plataforma | [`subdere/07-auditoria-plataforma.md`](./wireframes/subdere/07-auditoria-plataforma.md) | `listAuditRecords` (scope plataforma) |
 
 ## Índice — Consola municipal
@@ -60,12 +60,12 @@ Superficie del **propio usuario** (no es consola admin). Presente en todas las c
 | Chat contextual (FAB) | [`shell/04-chat-contextual.md`](./wireframes/shell/04-chat-contextual.md) | Mensajería (demo) — [`mensajeria/overview.md`](./mensajeria/overview.md) |
 | Chats (listado) | [`shell/05-chats.md`](./wireframes/shell/05-chats.md) | Listado de conversaciones demo + deep link a vista citada |
 
-Las operaciones *(inferidas)* están listadas en [`contracts.md`](./contracts.md) §2.11 hasta cerrar **P-48**.
+Las operaciones *(inferidas)* están listadas en [`contracts.md`](./contracts.md) §2.11 hasta cerrar **X-48**.
 
 ## Fuera de alcance de esta carpeta
 
 - Flujos de negocio de módulos funcionales (Adquisiciones, Presupuestos, etc.).
-- OpenAPI del core — sigue en P-48.
+- OpenAPI del core — sigue en X-48.
 
 ## Prototipo HTML
 
@@ -75,4 +75,4 @@ Hub de consolas: [`sgm-prototipos/plataforma/`](../../sgm-prototipos/plataforma/
 
 ## Estado
 
-Wireframes (**P-52**) y prototipos HTML de ambas consolas. Shell: C6 ([`notificaciones/`](./notificaciones/overview.md)), [`mis datos`](./wireframes/shell/03-mis-datos.md), mensajería ([`mensajeria/`](./mensajeria/overview.md) — FAB + [`05-chats`](./wireframes/shell/05-chats.md)). Cuerpos HTTP de ops admin e inbox pendientes en **P-48**. Matriz **P-06** en borrador.
+Wireframes (**X-52**) y prototipos HTML de ambas consolas. Shell: C6 ([`notificaciones/`](./notificaciones/overview.md)), [`mis datos`](./wireframes/shell/03-mis-datos.md), mensajería ([`mensajeria/`](./mensajeria/overview.md) — FAB + [`05-chats`](./wireframes/shell/05-chats.md)). Cuerpos HTTP de ops admin e inbox pendientes en **X-48**. Matriz **X-06** en borrador.

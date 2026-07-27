@@ -41,7 +41,7 @@
 
 - **Pending:** alta de tenant en curso; botón deshabilitado hasta schema listo.
 - **Error:** mensaje `DOCUMENT_STORAGE_UNAVAILABLE`; reintento.
-- **Tenant en modo híbrido:** advertencia — el bucket platform puede coexistir o no según política (⚠ P-58).
+- **Tenant en modo híbrido:** advertencia — el bucket platform puede coexistir o no según política (⚠ X-58).
 
 ## Validaciones visibles
 

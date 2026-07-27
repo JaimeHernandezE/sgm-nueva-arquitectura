@@ -48,7 +48,7 @@ Sin operación de escritura manual del usuario: el hito se dispara al recibir la
 ## Estados de pantalla
 
 - **Camino feliz:** OC Aceptada (única lectura MP **confirmada** de toda la etapa) → `commitBudget` ajusta la preobligación al monto real, libera excedente si el real es menor, emite `PurchaseOrderAccepted` → expediente avanza a Recepción Conforme (etapa 4 transversal).
-- **`BUDGET_UNAVAILABLE`:** monto real > preobligación y la línea no tiene saldo para la diferencia (`severity: blocking`). Situación anómala grave — OC ya aceptada legalmente pero el compromiso contable no puede registrarse; tarea urgente a DAF Finanzas (**[PENDIENTE P-40]**).
+- **`BUDGET_UNAVAILABLE`:** monto real > preobligación y la línea no tiene saldo para la diferencia (`severity: blocking`). Situación anómala grave — OC ya aceptada legalmente pero el compromiso contable no puede registrarse; tarea urgente a DAF Finanzas (**[PENDIENTE X-40]**).
 - **Monto real < preobligación:** compromiso por el real y liberación automática del excedente (regla estándar, sin intervención).
 - **Proveedor de presupuesto no disponible:** reintento con retroceso; estado intermedio visible ("OC aceptada, compromiso pendiente") — nunca se pierde el hito ni se duplica el compromiso (idempotencia por `purchase_order_ref`).
 

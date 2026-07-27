@@ -135,7 +135,7 @@ Reglas de diseño:
 ## 8. Resumen de pendientes
 
 1. Normativa técnica vigente de firma electrónica avanzada del Estado (verificar decretos actualizados).
-2. Catálogo RBAC de roles firmantes (**[PENDIENTE P-24]** — borrador en [`catalogo-roles.md`](./catalogo-roles.md)).
+2. Catálogo RBAC de roles firmantes (**[PENDIENTE X-24]** — borrador en [`catalogo-roles.md`](./catalogo-roles.md)).
 3. Comparecientes externos sin cuenta SGM: mecanismo de autenticación (candidato a regla transversal).
 4. Capacidades exactas de la API FirmaGob (mesa técnica con Gobierno Digital).
 5. Umbral de escalamiento ante indisponibilidad de FirmaGob.

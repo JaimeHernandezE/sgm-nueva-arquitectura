@@ -50,4 +50,4 @@ Ninguna — es una compuerta automática, sin botón ni formulario. La pantalla 
 ## Notas
 
 - Reutiliza íntegramente el patrón de compuerta automática por umbral ya construido en 2.1 (mismo `UtmValue`, misma regla de frescura mensual).
-- **[PENDIENTE P-37]** Carga inicial de `FRAMEWORK_AGREEMENT_GRAN_COMPRA_UTM_LIMIT` en `NormativeParameter`, verificada contra norma vigente.
+- **[PENDIENTE X-37]** Carga inicial de `FRAMEWORK_AGREEMENT_GRAN_COMPRA_UTM_LIMIT` en `NormativeParameter`, verificada contra norma vigente.

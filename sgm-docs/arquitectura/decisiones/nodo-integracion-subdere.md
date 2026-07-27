@@ -4,7 +4,7 @@
 > Estado: **borrador para discusión interna** (julio 2026).
 > Destinatarios: Camila, Juan.
 > Propósito: exponer opciones, riesgos y una recomendación sobre cómo tratar el nodo de integración frente a la licitación SGM. **No** es una decisión tomada.
-> Pendientes nuevos propuestos al final (§9), a registrar en [`pendientes.md`](./pendientes.md) si el equipo acoge el documento.
+> Pendientes nuevos propuestos al final (§9), a registrar en [`pendientes.md`](./pendientes.md) si el equipo acoge el documento. IDs canónicos del nodo: **X-82…X-85** (no X-71…X-74 del registro DocDigital/Trato Directo).
 
 ---
 
@@ -129,10 +129,10 @@ SGM especifica y financia **solo la capa de integración que necesita por sí mi
 **Qué entra legítimamente por esta vía** (todo ya justificado por el diseño SGM vigente, sin forzar alcance):
 
 - Capa de exposición de API con gobierno de acceso — mandato API-first, [`decisiones-macro-stack.md`](./decisiones-macro-stack.md) §1.
-- Identidad y autorización M2M con scopes por módulo y municipio — **P-02**, prerequisito del modo à la carte.
+- Identidad y autorización M2M con scopes por módulo y municipio — **X-02**, prerequisito del modo à la carte.
 - Catálogo de servicios publicados y portal de desarrollador — [`sandbox-desarrolladores.md`](../licitacion/sandbox-desarrolladores.md).
 - Observabilidad de consumo por tenant — [`musts-arquitectura.md`](../especificacion/musts-arquitectura.md) §8.
-- Borde **C-PISEE** — ya especificado en [`brechas-estandarizacion-ntdee-pisee.md`](./brechas-estandarizacion-ntdee-pisee.md) §5.4, pendiente **P-61**.
+- Borde **C-PISEE** — ya especificado en [`brechas-estandarizacion-ntdee-pisee.md`](./brechas-estandarizacion-ntdee-pisee.md) §5.4, pendiente **X-61**.
 
 **Qué NO entra por esta vía** (alcance del nodo propiamente tal, requiere financiamiento propio):
 
@@ -179,10 +179,10 @@ A registrar en [`pendientes.md`](./pendientes.md) si el equipo acoge el document
 
 | ID propuesto | Título corto | Contraparte |
 |---|---|---|
-| **P-71** | Criterio jurídico: ¿el consumo municipal de datos SUBDERE debe canalizarse por PISEE (municipio = OAE) o admite canal propio? — bloqueante del alcance externo del nodo | jurídica / SGD |
-| **P-72** | Inventario de plataformas SUBDERE: datos, integraciones existentes (incl. manuales), duplicaciones, candidatas a piloto | Camila / equipo |
-| **P-73** | Decisión producto vs. capacidad: ¿el nodo es producto institucional con SLA y usuarios externos, o capacidad interna de integración? Define modelo de operación y presupuesto recurrente | jefatura |
-| **P-74** | Propiedades verificables de extensibilidad de la capa de integración SGM (Opción C) para bases de licitación | arquitectura |
+| **X-82** | Criterio jurídico: ¿el consumo municipal de datos SUBDERE debe canalizarse por PISEE (municipio = OAE) o admite canal propio? — bloqueante del alcance externo del nodo | jurídica / SGD |
+| **X-83** | Inventario de plataformas SUBDERE: datos, integraciones existentes (incl. manuales), duplicaciones, candidatas a piloto | Camila / equipo |
+| **X-84** | Decisión producto vs. capacidad: ¿el nodo es producto institucional con SLA y usuarios externos, o capacidad interna de integración? Define modelo de operación y presupuesto recurrente | jefatura |
+| **X-85** | Propiedades verificables de extensibilidad de la capa de integración SGM (Opción C) para bases de licitación | arquitectura |
 
 ---
 
@@ -196,10 +196,10 @@ A registrar en [`pendientes.md`](./pendientes.md) si el equipo acoge el document
 
 ## Referencias
 
-- [`brechas-estandarizacion-ntdee-pisee.md`](./brechas-estandarizacion-ntdee-pisee.md) — borde C-PISEE, deslinde con la Red de Interoperabilidad, P-61
+- [`brechas-estandarizacion-ntdee-pisee.md`](./brechas-estandarizacion-ntdee-pisee.md) — borde C-PISEE, deslinde con la Red de Interoperabilidad, X-61
 - [`principios-no-negociables.md`](../licitacion/principios-no-negociables.md) §5 — propiedad del código y portabilidad
 - [`decisiones-macro-stack.md`](./decisiones-macro-stack.md) §1, §3 — modos de consumo; propiedades, no marcas
-- [`estandares-api.md`](../especificacion/estandares-api.md) §8 — planos de autenticación; P-02
+- [`estandares-api.md`](../especificacion/estandares-api.md) §8 — planos de autenticación; X-02
 - [`entregable-licitacion.md`](../licitacion/entregable-licitacion.md) §3 — criterio de nivel de detalle de especificación
 - [`musts-arquitectura.md`](../especificacion/musts-arquitectura.md) §8 — observabilidad exigida
 - [`sandbox-desarrolladores.md`](../licitacion/sandbox-desarrolladores.md) — portal de desarrollador y catálogo

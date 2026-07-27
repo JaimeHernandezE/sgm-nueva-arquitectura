@@ -51,6 +51,6 @@
 
 ## Notas
 
-- Legalmente no existe aprobación interna obligatoria en Compra Ágil — es informativo (salvo **[PENDIENTE P-39]**).
+- Legalmente no existe aprobación interna obligatoria en Compra Ágil — es informativo (salvo **[PENDIENTE X-39]**).
 - Modo degradado (lectura deseada): el expediente permanece pendiente hasta la lectura; no hay transcripción (plantilla §5.3).
-- **[PENDIENTE P-33]** Timer de escalamiento si el usuario no gestiona la selección en MP a tiempo.
+- **[PENDIENTE X-33]** Timer de escalamiento si el usuario no gestiona la selección en MP a tiempo.

@@ -52,5 +52,5 @@
 
 ## Notas
 
-- Interacción MP: **Gestión — hito contable**. Clasificación asíncrona — **[PENDIENTE P-70]**.
+- Interacción MP: **Gestión — hito contable**. Clasificación asíncrona — **[PENDIENTE X-70]**.
 - También: Presupuestos (borde módulo, tinte secundario).

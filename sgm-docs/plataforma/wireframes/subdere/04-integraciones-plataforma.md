@@ -33,7 +33,7 @@
 | Callback MP | config plataforma | No (sistema) |
 | Catálogo | `DmsAdapter.*` | — (lectura) |
 
-⚠ Campos secretos de CU/MP no se muestran en claro; rotación vía gestor de secretos (**P-57**).
+⚠ Campos secretos de CU/MP no se muestran en claro; rotación vía gestor de secretos (**X-57**).
 
 ## Acciones
 

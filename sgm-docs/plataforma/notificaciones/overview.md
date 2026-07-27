@@ -5,7 +5,7 @@ Servicio transversal del core: consume eventos de dominio de todos los módulos,
 **Marco:** [`plataforma-core.md`](../../arquitectura/especificacion/plataforma-core.md) C6 · [`musts-arquitectura.md`](../../arquitectura/especificacion/musts-arquitectura.md) §9  
 **Contrato:** [`../contracts.md`](../contracts.md) §2.7  
 **Entidades:** [`entidades-plataforma.md`](../../modelo-datos/entidades-plataforma.md) (`Notification`, `NotificationPreference`, …)  
-**Matriz evento → canal (borrador P-06):** [`matriz-evento-canal.md`](./matriz-evento-canal.md)  
+**Matriz evento → canal (borrador X-06):** [`matriz-evento-canal.md`](./matriz-evento-canal.md)  
 **Wireframes:** [`../wireframes/shell/`](../wireframes/shell/) · preferencias en [`../wireframes/municipal/09-preferencias-notificacion.md`](../wireframes/municipal/09-preferencias-notificacion.md)  
 **Prototipo:** campanita global (`sgm-prototipos/shared/notifications-ui.js`) · [`02-bandeja.html`](../../../sgm-prototipos/plataforma/shell/02-bandeja.html) · [`09-preferencias-notificacion.html`](../../../sgm-prototipos/plataforma/municipal/09-preferencias-notificacion.html)
 
@@ -27,7 +27,7 @@ Servicio transversal del core: consume eventos de dominio de todos los módulos,
 |---|---|---|---|
 | `action_required` | Acción requerida | El destinatario debe actuar para avanzar el flujo | Firmar CDP, aprobar SOLPED, confirmar recepción |
 | `info` | Informativa | Hecho informativo; no bloquea al receptor | “Tu compra fue confirmada; proveedor X” |
-| `deadline` | Plazo | Aviso de plazo o recordatorio (timers musts §10.4 / P-33) | Cotización sin respuesta en N días hábiles |
+| `deadline` | Plazo | Aviso de plazo o recordatorio (timers musts §10.4 / X-33) | Cotización sin respuesta en N días hábiles |
 | `escalation` | Escalamiento | Escalamiento por inacción | Plazo vencido → rol superior |
 
 Cada ítem lleva `deep_link` estable al expediente/paso (o recurso equivalente), no solo texto. En el prototipo, `kindLabel()` / `KIND_LABELS` en `notifications-ui.js` muestran siempre la etiqueta en español (campanita, bandeja, preferencias).
@@ -41,7 +41,7 @@ Cada ítem lleva `deep_link` estable al expediente/paso (o recurso equivalente),
 | **Bandeja in-app** (+ campanita en shell) | Exigible v1 | Canal primario para personas |
 | **Correo electrónico** | Exigible v1 | Según preferencias y política municipal (eventos obligatorios sin opt-out) |
 | **DocDigital** | Exigible cuando el hecho lo requiera | Notificación **formal**; no es repositorio (C10) |
-| **Webhooks M2M** | Exigible (mecanismo P-05) | Sistemas externos / ecosistema; mismo bus de eventos |
+| **Webhooks M2M** | Exigible (mecanismo X-05) | Sistemas externos / ecosistema; mismo bus de eventos |
 | WhatsApp / SMS | Fuera de alcance v1 | Canal futuro opt-in vía `TenantIntegration`; no formal |
 | Push móvil | Fuera de alcance v1 | Si hay app |
 
@@ -88,7 +88,7 @@ Wireframe: [`../wireframes/municipal/09-preferencias-notificacion.md`](../wirefr
 
 - Digest / agrupación (“3 OC pendientes”)
 - Horario laboral / no molestar (correo)
-- Escalamientos y recordatorios (P-33)
+- Escalamientos y recordatorios (X-33)
 - Política municipal de eventos de correo obligatorios
 - Vista admin de fallos de entrega y reenvío
 
@@ -129,7 +129,7 @@ Must de producto en mensajería: conversación inicia **sin** contexto (pregunta
 
 | ID | Tema |
 |---|---|
-| **P-05** | Mecanismo de entrega a sistemas (webhooks, cola, ambos) |
-| **P-06** | Matriz evento → canal → destinatario — borrador en [`matriz-evento-canal.md`](./matriz-evento-canal.md) |
-| **P-33** | Timers / escalamientos que alimentan `deadline` y `escalation` |
-| **P-48** | Cuerpos HTTP completos de ops de inbox (hoy stub / inferidas en contracts §2.7 / §2.11) |
+| **X-05** | Mecanismo de entrega a sistemas (webhooks, cola, ambos) |
+| **X-06** | Matriz evento → canal → destinatario — borrador en [`matriz-evento-canal.md`](./matriz-evento-canal.md) |
+| **X-33** | Timers / escalamientos que alimentan `deadline` y `escalation` |
+| **X-48** | Cuerpos HTTP completos de ops de inbox (hoy stub / inferidas en contracts §2.7 / §2.11) |

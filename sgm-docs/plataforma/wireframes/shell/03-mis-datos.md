@@ -3,7 +3,7 @@
 **Consola:** Shell global (entrada desde menú de cuenta del topbar)  
 **Operaciones:** `getCurrentUser`; *(inferida)* `requestProfileChange`  
 **Prototipo:** [`sgm-prototipos/plataforma/shell/03-mis-datos.html`](../../../../sgm-prototipos/plataforma/shell/03-mis-datos.html)  
-**Catálogo de roles:** [`arquitectura/especificacion/catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24)
+**Catálogo de roles:** [`arquitectura/especificacion/catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (X-24)
 
 Ficha de **solo lectura** del funcionario autenticado: identidad mínima de plataforma, nodos orgánicos y roles vigentes. No es administración de usuarios ni módulo RRHH (vacaciones, liquidaciones, etc. — fuera de alcance).
 

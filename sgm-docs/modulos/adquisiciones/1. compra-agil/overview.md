@@ -36,7 +36,7 @@ Alineadas con [`plantilla-maestra-sgm.md`](../../../arquitectura/instrucciones/p
 | Materia | Valores | Notas |
 |---|---|---|
 | Unidad municipal | Unidad Solicitante / DAF Finanzas / DAF Abastecimiento / Contabilidad / Tesorería / `—` | Departamento u oficina del municipio responsable del paso |
-| Rol | Nombre (usuarios) + código (sistema) del catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24), p. ej. `Solicitante ([adq.solicitante](…))`. `N/A` si automático o actor externo. |
+| Rol | Nombre (usuarios) + código (sistema) del catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (X-24), p. ej. `Solicitante ([adq.solicitante](…))`. `N/A` si automático o actor externo. |
 | Plataforma | SGM / Mercado Público / Otra | Sistema donde se ejecuta la acción principal del sub-paso |
 | Optativo | Verdadero / Falso | Si el sub-paso puede omitirse en el flujo (`Verdadero`) o es obligatorio (`Falso`) |
 
@@ -73,7 +73,7 @@ Agregado de las secciones 3.5 de los 17 sub-pasos. Insumo directo de [`contracts
 | 2.1 | Dependencia | `checkCatalogAvailability` | Catálogo CM espejado | Cacheada |
 | 2.1 | Operación / Evento | `confirmProcurementModality`, `ProcurementModalityConfirmed` | — | — / Asíncrona |
 | 2.2 | Dependencia *(condicional)* | `requestSignature`, `confirmSignature` | Core (FirmaGob) | Síncrona bloqueante |
-| 2.2 | Evento | `ProcurementModalityApproved` | — | Asíncrona — **[PENDIENTE P-38]** |
+| 2.2 | Evento | `ProcurementModalityApproved` | — | Asíncrona — **[PENDIENTE X-38]** |
 | 2.3 | Sistema externo | deep link (navegación), `readMpProcess` | Mercado Público (portal) / Core (Mercado Público) (lectura) | — / Síncrona bloqueante (solo vinculación) |
 | 2.3 | Operación / Evento | `linkMpProcess`, `MpProcessLinked` | — | — / Asíncrona |
 | 3.1 | Sistema externo / Evento | `readMpProcess`, `MpStateChanged` | Core (Mercado Público) | Asíncrona — lectura deseada |
@@ -84,8 +84,8 @@ Agregado de las secciones 3.5 de los 17 sub-pasos. Insumo directo de [`contracts
 | 3.6 | Lectura + Dependencia + Evento | `readMpProcess`, `releasePreCommitment`, `ProcurementProcessFailed` | Core (Mercado Público) + Presupuestos | Asíncrona (MP) / Síncrona bloqueante (`releasePreCommitment`) — lectura deseada |
 | 4.1 | Operación | `registerReceipt` | — | — |
 | 4.2 | Evento | `GoodsReceiptConfirmed` | — | Asíncrona |
-| 4.3 | Dependencia | `registerInventoryEntry` | Proveedor de inventario | Asíncrona — **[PENDIENTE P-44]** alcance por decidir |
-| 4.4 | Dependencia / Evento | `recordAccrual`, `AccrualRecorded` | Proveedor contable | Asíncrona — **[PENDIENTE P-46]** momento del devengado, ver `entidades-core.md` |
+| 4.3 | Dependencia | `registerInventoryEntry` | Proveedor de inventario | Asíncrona — **[PENDIENTE X-44]** alcance por decidir |
+| 4.4 | Dependencia / Evento | `recordAccrual`, `AccrualRecorded` | Proveedor contable | Asíncrona — **[PENDIENTE X-46]** momento del devengado, ver `entidades-core.md` |
 | 4.5 | Evento / Deep link | `ReceiptRejected`, reclamo en ChileCompra | MP (navegación) | Asíncrona / — |
 | 5.1 | Dependencia | `getInvoiceForMatch` | SII / Contabilidad | Síncrona bloqueante |
 | 5.1 | Sistema externo | `readMpProcess` | Core (Mercado Público) | Cacheada |
@@ -102,7 +102,7 @@ Estos puntos aparecen repetidos en más de una etapa y son candidatos a resolver
 
 - **Regla de tolerancia de desviación de montos/precios** — aparece en 1.1 (precio de línea vs. `PriceReference`), 3.4 (monto MP vs. Pre-afectación) y 5.1 (discrepancia en Three-Way Match).
 - **Fuente(s) API externas confiables** — `PriceReference` (1.1) queda sin fuente definida (SII, histórico Mercado Público, u otra).
-- **Manejo de fallas de sincronización/disponibilidad de API externa** — aparece en 2.3 (vínculo MP no disponible), 3.1-3.6 (lecturas MP deseadas) y 1.1 (API de precios) — consolidado en **[PENDIENTE P-32]**.
-- **Timers de escalamiento configurables** — aparece en 2.3, 3.2, 4.1, 4.2 — consolidado en **[PENDIENTE P-33]**.
+- **Manejo de fallas de sincronización/disponibilidad de API externa** — aparece en 2.3 (vínculo MP no disponible), 3.1-3.6 (lecturas MP deseadas) y 1.1 (API de precios) — consolidado en **[PENDIENTE X-32]**.
+- **Timers de escalamiento configurables** — aparece en 2.3, 3.2, 4.1, 4.2 — consolidado en **[PENDIENTE X-33]**.
 
 Ver también [`contracts.md`](../contracts.md) para el contrato API del módulo, [`wireframes/`](./wireframes/README.md) para pantallas SGM prioritarias, y `modelo-datos/entidades-core.md` para la definición canónica de todas las entidades usadas en este macroproceso.

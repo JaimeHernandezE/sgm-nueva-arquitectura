@@ -1,7 +1,7 @@
 # Integración SGM ↔ DocDigital
 
 > Documento de trabajo — arquitectura / especificación
-> Estado: borrador condicionado a **[PENDIENTE P-72]** (bloqueante).
+> Estado: borrador condicionado a **[PENDIENTE X-72]** (bloqueante).
 > Decisión canónica: [`../decisiones/2026-07-docdigital-tramitacion-documental.md`](../decisiones/2026-07-docdigital-tramitacion-documental.md).
 > Este documento **no** repite la decisión; la implementa como contrato funcional.
 
@@ -27,7 +27,7 @@ El proceso **25 — «Alcaldía: Firmar»** es el proceso transversal de firma y
 
 ## 2. Contrato funcional (agnóstico de protocolo)
 
-⚠ **No asumir API.** Hasta cerrar P-72, este contrato describe semántica, no endpoints.
+⚠ **No asumir API.** Hasta cerrar X-72, este contrato describe semántica, no endpoints.
 
 ### 2.1 Qué envía SGM
 
@@ -61,7 +61,7 @@ El proceso **25 — «Alcaldía: Firmar»** es el proceso transversal de firma y
 
 **Regla:** ninguna máquina de estado cuyo avance dependa del acto firmado sale de `pending_signature` sin `completed` (o registro explícito en vía alternativa / contingencia).
 
-### 2.4 Dos modos de invocación (condicionados a P-72)
+### 2.4 Dos modos de invocación (condicionados a X-72)
 
 | Modo | Cuándo | Clasificación |
 |---|---|---|
@@ -89,11 +89,11 @@ Todo acto del corpus debe figurar aquí como **tramitado en DocDigital** o **exc
 | Contabilidad | Decreto alcaldicio que aprueba donación de bienes | Proceso 28.2.2 | DocDigital |
 | Contabilidad | Decreto de baja de bienes de inventario | Proceso 28.2.5 y 28.2.6 | DocDigital |
 | Contabilidad | Decreto que registra la cesión de factura | Proceso 32.2.3 y 32.2.4 | DocDigital |
-| Contabilidad | Decreto de pago, y su rehacer por cesión | Proceso 32.2.5, 32.2.6 y 32.2.8 | DocDigital — **alcance operativo abierto (P-74)** |
-| Tesorería | Decreto de pago | Proceso 38 | DocDigital — **mismo pendiente P-74** (alta frecuencia) |
+| Contabilidad | Decreto de pago, y su rehacer por cesión | Proceso 32.2.5, 32.2.6 y 32.2.8 | DocDigital — **alcance operativo abierto (X-74)** |
+| Tesorería | Decreto de pago | Proceso 38 | DocDigital — **mismo pendiente X-74** (alta frecuencia) |
 | Adquisiciones | Resolución de compra / actos de adjudicación (LP: bases, comisión, adjudicación/deserción/revocación) | Etapa 3 LP §§3.3, 3.9a, 3.10 | DocDigital |
 | Adquisiciones | Resolución Fundada (Trato Directo) | TD §3.1 / etapa 1–2 | DocDigital |
-| Adquisiciones | Decreto de pago (etapa 5) | Proceso transversal 5.3 | DocDigital — **P-74** |
+| Adquisiciones | Decreto de pago (etapa 5) | Proceso transversal 5.3 | DocDigital — **X-74** |
 
 ### Exclusiones explícitas (no son actos administrativos DocDigital)
 
@@ -101,8 +101,8 @@ Todo acto del corpus debe figurar aquí como **tramitado en DocDigital** o **exc
 |---|---|
 | CDP / certificado de disponibilidad presupuestaria | Documento de control presupuestario; firma vía C9/FirmaGob (o escaneado), no enumeración DocDigital |
 | Visto bueno de jefatura / aprobación de modalidad | Control interno de expediente; no es decreto/resolución |
-| Acta de evaluación de ofertas (LP §3.9c) | Acta de comisión; firma de integrantes vía C9 salvo que normativa municipal exija acto — **confirmar en P-74** |
-| Contrato con proveedor (LP §3.13) | Instrumento bilateral; FEA municipal vía C9; firma del contratista abierta (**P-67**) |
+| Acta de evaluación de ofertas (LP §3.9c) | Acta de comisión; firma de integrantes vía C9 salvo que normativa municipal exija acto — **confirmar en X-74** |
+| Contrato con proveedor (LP §3.13) | Instrumento bilateral; FEA municipal vía C9; firma del contratista abierta (**X-67**) |
 | OC en Mercado Público | Acto en plataforma ChileCompra, no DocDigital |
 | Notificación formal por canal DocDigital (C6) | Canal de aviso, no tramitación del acto |
 
@@ -118,7 +118,7 @@ Naming técnico en inglés. **No crear duplicados** donde ya exista equivalente.
 |---|---|---|
 | `AdministrativeAct` | Ya existe en `entidades-core.md` (Adquisiciones) | **Extender:** `act_number` = trazabilidad interna; agregar `external_folio` (oficial cuando tramitado en DocDigital); `document_procedure_id`; ampliar `act_type` a decretos de otros módulos o usar sujeto polimórfico |
 | `DocumentProcedure` | No existe | **Nueva** en entidades de plataforma — tramitación externa: envío, visaciones, firmas, retorno |
-| `ExternalFolio` | No existe como entidad | Campo tipado / value object del acto: folio oficial DocDigital (o folio interno **solo** en vía alternativa sin DocDigital — P-73) |
+| `ExternalFolio` | No existe como entidad | Campo tipado / value object del acto: folio oficial DocDigital (o folio interno **solo** en vía alternativa sin DocDigital — X-73) |
 | `SignatureChain` | Presupuestos propone `DecreeSignatureChain` | **Unificar** como entidad de plataforma configurable por tenant; `DecreeSignatureChain` queda alias de trabajo → `SignatureChain` |
 | `PaymentDecree` | Existe; `decree_number` como correlativo | **Cambio vs as-is:** `decree_number` = trazabilidad interna; folio oficial = `external_folio` vía procedimiento DocDigital. Candidata a absorberse en `AdministrativeAct` a futuro (REVISAR vigente) |
 
@@ -136,12 +136,12 @@ Naming técnico en inglés. **No crear duplicados** donde ya exista equivalente.
 
 | Brecha | Dónde | Qué falta |
 |---|---|---|
-| **Mecanismo de integración no verificado** | Plataforma | P-72 bloqueante: ¿API M2M o solo web? |
+| **Mecanismo de integración no verificado** | Plataforma | X-72 bloqueante: ¿API M2M o solo web? |
 | Actos cableados a FirmaGob directo | LP §§3.3/3.10, TD, 5-pago, contracts.md, wireframes | Reclasificar borde a `Core (DocDigital)`; estado `pending_signature` ya existe en varios sitios — alinear semántica al retorno DocDigital |
-| Folio / `act_number` / `decree_number` como identificador oficial | `AdministrativeAct`, `PaymentDecree`, Odoo as-is | Separar trazabilidad vs folio externo (P-75 históricos) |
-| FEA como “capacidad a construir” | Contabilidad EEFF (parcialmente reclasificada a cableado) | Para actos: cablear DocDigital; para EEFF: confirmar si van por DocDigital o C9 directo (P-74) |
-| Municipios sin DocDigital (~20 %) | Transversal | Vía alternativa + contingencia (P-73); mismo patrón que Presupuestos §5.1 |
-| Latencia externa vs plazos legales | Presupuesto 15 dic; representación 10 días; publicidad TD 24 h | P-76 |
+| Folio / `act_number` / `decree_number` como identificador oficial | `AdministrativeAct`, `PaymentDecree`, Odoo as-is | Separar trazabilidad vs folio externo (X-75 históricos) |
+| FEA como “capacidad a construir” | Contabilidad EEFF (parcialmente reclasificada a cableado) | Para actos: cablear DocDigital; para EEFF: confirmar si van por DocDigital o C9 directo (X-74) |
+| Municipios sin DocDigital (~20 %) | Transversal | Vía alternativa + contingencia (X-73); mismo patrón que Presupuestos §5.1 |
+| Latencia externa vs plazos legales | Presupuesto 15 dic; representación 10 días; publicidad TD 24 h | X-76 |
 | DocDigital solo como notificación / DMS | `musts` §9, `plataforma-core` §7bis, brechas NTDEE arts. 27–28 | Actualizado: tramitación C11 es el rol principal para actos; notificación C6 se mantiene |
 | Proceso 25 sin contraparte de sistema | Levantamiento Magenta | Este documento cierra el vínculo |
 
@@ -149,7 +149,7 @@ Naming técnico en inglés. **No crear duplicados** donde ya exista equivalente.
 
 ## 6. Operaciones candidatas hacia módulos (borrador)
 
-Publicables en `plataforma/contracts.md` tras P-72. Nombres de trabajo:
+Publicables en `plataforma/contracts.md` tras X-72. Nombres de trabajo:
 
 | Operación | Dirección | Efecto |
 |---|---|---|
@@ -158,7 +158,7 @@ Publicables en `plataforma/contracts.md` tras P-72. Nombres de trabajo:
 | Evento `AdministrativeActSigned` | Core → módulos | Dispara transición de negocio (ya referenciado en Adquisiciones) |
 | Evento `DocumentProcedureFailed` | Core → módulos | Modo degradado / reintento / contingencia |
 
-Clasificación de borde: **asíncrona**. Prohibido especificar URLs o verbos HTTP de DocDigital hasta P-72.
+Clasificación de borde: **asíncrona**. Prohibido especificar URLs o verbos HTTP de DocDigital hasta X-72.
 
 ---
 
@@ -166,11 +166,11 @@ Clasificación de borde: **asíncrona**. Prohibido especificar URLs o verbos HTT
 
 | ID | Tema | Contenido | Estado |
 |---|---|---|---|
-| **P-72** | Mecanismo de integración | ¿DocDigital expone interfaz M2M para originar documentos y recibir el acto firmado con folio? **Verificar antes de diseñar.** Si no: exportación/importación asistida. | **Abierto — BLOQUEANTE** |
-| **P-73** | Vía alternativa | Comportamiento del ~20 % sin DocDigital: circuito alternativo; ¿el folio pasa a ser interno? | Abierto |
-| **P-74** | Alcance de los actos | Qué actos se tramitan efectivamente en DocDigital y cuáles quedan internos. En particular el **decreto de pago** (alta frecuencia) y EEFF / actas. | Abierto |
-| **P-75** | Conflicto de folio | Reconciliar correlativo interno del as-is Odoo con folio externo; actos históricos migrados | Abierto |
-| **P-76** | Plazos de tramitación | Efecto de la latencia externa sobre operaciones con plazo legal (presupuesto 15 dic, representación 10 días, otros) | Abierto |
+| **X-72** | Mecanismo de integración | ¿DocDigital expone interfaz M2M para originar documentos y recibir el acto firmado con folio? **Verificar antes de diseñar.** Si no: exportación/importación asistida. | **Abierto — BLOQUEANTE** |
+| **X-73** | Vía alternativa | Comportamiento del ~20 % sin DocDigital: circuito alternativo; ¿el folio pasa a ser interno? | Abierto |
+| **X-74** | Alcance de los actos | Qué actos se tramitan efectivamente en DocDigital y cuáles quedan internos. En particular el **decreto de pago** (alta frecuencia) y EEFF / actas. | Abierto |
+| **X-75** | Conflicto de folio | Reconciliar correlativo interno del as-is Odoo con folio externo; actos históricos migrados | Abierto |
+| **X-76** | Plazos de tramitación | Efecto de la latencia externa sobre operaciones con plazo legal (presupuesto 15 dic, representación 10 días, otros) | Abierto |
 
 Detalle centralizado en [`../decisiones/pendientes.md`](../decisiones/pendientes.md).
 

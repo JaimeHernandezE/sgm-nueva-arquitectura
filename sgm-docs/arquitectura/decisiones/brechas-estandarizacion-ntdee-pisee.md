@@ -2,7 +2,7 @@
 
 > Documento de trabajo — arquitectura / cumplimiento normativo  
 > Estado: **propuesta / borrador** (julio 2026).  
-> Alcance: diagnóstico y propuestas. **No** modifica aún `entidades-core.md`, OpenAPI ni el contrato C10; esos cambios se canalizan por los pendientes P-60…P-63.  
+> Alcance: diagnóstico y propuestas. **No** modifica aún `entidades-core.md`, OpenAPI ni el contrato C10; esos cambios se canalizan por los pendientes X-60…X-63.  
 > Complementa [`principios-no-negociables.md`](../licitacion/principios-no-negociables.md) §4, [`seguridad.md`](../especificacion/seguridad.md) §1, [`plataforma-core.md`](../especificacion/plataforma-core.md) §7–§7bis.
 
 ---
@@ -71,14 +71,14 @@ Leyenda de estado: **cubierto** · **parcial** · **ausente**.
 | Exigencia (referencia guía / norma) | Estado | Evidencia en SGM | Impacto si no se cierra |
 |---|---|---|---|
 | Política de Gestión Documental y procesos asociados (arts. 3–4) | ausente | No hay artefacto de política; C10 define almacenamiento, no tipologías ni flujos documentales institucionales | Impide demonstrar cumplimiento procesal ante Contraloría / SGD |
-| Formatos válidos de documentos electrónicos y proceso de visar formatos nuevos (art. 13) | parcial | `content_type` libre; **P-58** abre MIME/tamaños/retención pero sin lista NTDEE ni flujo de visación | Riesgo de incorporar formatos no admitidos en expediente electrónico |
+| Formatos válidos de documentos electrónicos y proceso de visar formatos nuevos (art. 13) | parcial | `content_type` libre; **X-58** abre MIME/tamaños/retención pero sin lista NTDEE ni flujo de visación | Riesgo de incorporar formatos no admitidos en expediente electrónico |
 | Metadatos de documentos — obligatorios / condicionales / sugeridos (art. 14) | parcial | `Document`: `id`, MIME, tamaño, `sha256`, backend, `retention_class`, fechas. Faltan tipología, productor, fechas de incorporación al expediente, clasificación, etc. | Exportación NTDEE incompleta; interoperabilidad documental débil |
 | Metadatos de creación del expediente electrónico (art. 18) | parcial | `ProcurementCase`: folio, descripción, unidad, tipo, estado, timestamps, vínculo MP. Falta mapeo explícito a campos mínimos NTDEE (órgano, procedimiento, identificador persistente…) | Identidad del expediente no demostrable frente a la norma |
 | Esquema estructural y elementos del expediente (arts. 19–20, 22) | parcial | `CaseStep` modela el **flujo de negocio**, no el índice / componentes NTDEE (actuaciones, índice, vínculos formales) | Confusión flujo ≠ expediente electrónico; auditoría documental incompleta |
 | Documentos/datos aportados por interoperabilidad — formatos y metadatos (art. 24) | ausente | No hay tipo ni traza de “origen PISEE / nodo” en `Document` ni en el expediente | Imposible distinguir evidencia interna vs. aportada por otro OAE |
 | Expedientes híbridos — excepción documental física (art. 26) | parcial | Existe `signature_mode = scanned` y adjuntos escaneados; no hay modelo de expediente híbrido ni inventario de pieza física | Casos municipales con papel sin regla única |
-| Incorporación de comunicaciones oficiales y notificaciones (arts. 27–28) | parcial | DocDigital como **tramitación de actos** (C11 — decisión 2026-07) además de canal de **notificación** (C6). Pendiente: incorporar el acto retornado al expediente NTDEE de forma explícita; vía alternativa P-73 | Hueco residual frente a Ley 19.880 si no se cierra el vínculo expediente ↔ `DocumentProcedure` |
-| Plazo de disponibilidad / acceso cuando no hay norma de transferencia (art. 32) | parcial | `retention_class` existe; plazos no calibrados (**P-26** es auditoría, no disponibilidad de expediente) | Incumplimiento archivístico / acceso |
+| Incorporación de comunicaciones oficiales y notificaciones (arts. 27–28) | parcial | DocDigital como **tramitación de actos** (C11 — decisión 2026-07) además de canal de **notificación** (C6). Pendiente: incorporar el acto retornado al expediente NTDEE de forma explícita; vía alternativa X-73 | Hueco residual frente a Ley 19.880 si no se cierra el vínculo expediente ↔ `DocumentProcedure` |
+| Plazo de disponibilidad / acceso cuando no hay norma de transferencia (art. 32) | parcial | `retention_class` existe; plazos no calibrados (**X-26** es auditoría, no disponibilidad de expediente) | Incumplimiento archivístico / acceso |
 | Enlaces persistentes — habilitación técnica (art. 33) | ausente | IDs internos (`ADQ-…`, UUID); sin URI/PID pública estable por expediente o documento | Imposibilidad de referenciar de forma estable en actos e interoperabilidad |
 | Registro de actuaciones al expediente (art. 34) | parcial | Transiciones de estado y auditoría cubren hechos de sistema/workflow; no hay entidad/vista “actuación administrativa” NTDEE | Acto administrativo vs. paso de proceso no trazable de forma normativa |
 | Estándares mínimos de plataformas de gestión documental/expedientes (art. 35) | parcial | API, RBAC, C10, auditoría apuntan bien; falta checklist explícito contra art. 35 | Brecha en recepción / bases de licitación |
@@ -107,7 +107,7 @@ Leyenda de estado: **cubierto** · **parcial** · **ausente**.
 
 Vista / DTO de cumplimiento proyectado sobre `ProcurementCase` + `CaseStep` + documentos vinculados + actuaciones. **No** reemplaza el modelo de dominio.
 
-- Operación candidata en core o módulo: `exportElectronicCase` / `getNtdeeCaseView` (nombre a fijar en P-60).
+- Operación candidata en core o módulo: `exportElectronicCase` / `getNtdeeCaseView` (nombre a fijar en X-60).
 - Consumidores: Contraloría, auditoría, exportación a otro OAE vía nodo, certificación de conformidad.
 
 ### 5.2 Matriz de mapeo (borrador)
@@ -135,7 +135,7 @@ Acción: `usar` (campo existente alcanza) · `extender` (enriquecer semántica) 
 | Concepto norma (resumen) | Campo SGM | Acción |
 |---|---|---|
 | Identificador | `Document.id` | extender — PID |
-| Formato / MIME | `content_type` | extender — lista blanca NTDEE (P-58) |
+| Formato / MIME | `content_type` | extender — lista blanca NTDEE (X-58) |
 | Integridad | `sha256` | usar |
 | Tamaño | `size_bytes` | usar |
 | Retención / clase | `retention_class` | extender — catálogo alineado art. 32 |
@@ -146,7 +146,7 @@ Acción: `usar` (campo existente alcanza) · `extender` (enriquecer semántica) 
 | Origen interoperabilidad | — | nuevo (flag + metadatos art. 24) |
 | Versión firmada | vía `SignatureRequest.signed_document_ref` | usar |
 
-### 5.3 Extensión C10 / `Document` (alimenta P-58 y P-60)
+### 5.3 Extensión C10 / `Document` (alimenta X-58 y X-60)
 
 Sin implementar aquí: tipología, productor, fechas de incorporación, origen PISEE, lista MIME NTDEE, política de visación de formatos, PID.
 
@@ -155,8 +155,8 @@ Sin implementar aquí: tipología, productor, fechas de incorporación, origen P
 Mismo patrón que C7 (MP) / C9 (FirmaGob, SII) / C10 (documentos):
 
 - El módulo declara operaciones de negocio; el **core** adapta mensajes al nodo, custodia certificados/credenciales de nodo por tenant y registra traza hacia servicios centralizados.
-- Configuración candidata: `TenantIntegrationConfig` + proveedor `pisee` (**P-57** / **P-61**).
-- Decisión operativa a fijar en P-61: nodo provisionado por SGD operado por el municipio, vs. nodo en infraestructura SUBDERE en nombre del tenant (hosting completo).
+- Configuración candidata: `TenantIntegrationConfig` + proveedor `pisee` (**X-57** / **X-61**).
+- Decisión operativa a fijar en X-61: nodo provisionado por SGD operado por el municipio, vs. nodo en infraestructura SUBDERE en nombre del tenant (hosting completo).
 
 ### 5.5 Servicios candidatos a Catálogo PISEE (inicial)
 
@@ -181,7 +181,7 @@ No fusionar ambas en un solo log.
 
 ### 5.7 Actualización del marco documental interno
 
-Citar explícitamente D.S. N° 10/2023 y D.S. N° 12/2023 en principios y seguridad (este entregable). Checklist art. 35 NTDEE como anexo futuro de recepción (P-60).
+Citar explícitamente D.S. N° 10/2023 y D.S. N° 12/2023 en principios y seguridad (este entregable). Checklist art. 35 NTDEE como anexo futuro de recepción (X-60).
 
 ---
 
@@ -191,10 +191,10 @@ Registrados en [`pendientes.md`](./pendientes.md):
 
 | ID | Título corto | Depende / relaciona |
 |---|---|---|
-| **P-60** | Matriz definitiva SGM ↔ NTDEE; perfil `ExpedienteElectronicoNTDEE`; campos nuevos en `Document` / expediente; checklist art. 35 | P-58, P-26 |
-| **P-61** | Borde C-PISEE: quién opera el nodo, adaptador core, servicios Catálogo iniciales, traza PISEE vs auditoría | P-57, P-48 |
-| **P-62** | Política de Gestión Documental (artefacto) y soporte en C10 (tipologías, retención, formatos, visación) | P-58, P-60 |
-| **P-63** | Enlaces persistentes (art. 33) y plazo de disponibilidad de expedientes/documentos (art. 32) | P-26, P-60 |
+| **X-60** | Matriz definitiva SGM ↔ NTDEE; perfil `ExpedienteElectronicoNTDEE`; campos nuevos en `Document` / expediente; checklist art. 35 | X-58, X-26 |
+| **X-61** | Borde C-PISEE: quién opera el nodo, adaptador core, servicios Catálogo iniciales, traza PISEE vs auditoría | X-57, X-48 |
+| **X-62** | Política de Gestión Documental (artefacto) y soporte en C10 (tipologías, retención, formatos, visación) | X-58, X-60 |
+| **X-63** | Enlaces persistentes (art. 33) y plazo de disponibilidad de expedientes/documentos (art. 32) | X-26, X-60 |
 
 ---
 
@@ -203,7 +203,7 @@ Registrados en [`pendientes.md`](./pendientes.md):
 - Cambios de schema en `entidades-*.md` o migraciones.
 - Cambios OpenAPI / fixtures / prototipos HTML.
 - Implementación del nodo o enrolamiento en Portal PISEE.
-- Redacción completa de la Política de Gestión Documental municipal/SUBDERE (solo se exige el pendiente P-62).
+- Redacción completa de la Política de Gestión Documental municipal/SUBDERE (solo se exige el pendiente X-62).
 
 ---
 
@@ -219,4 +219,4 @@ Ante la pregunta «¿hay que rediseñar el expediente de Adquisiciones?»:
 
 - [Guía Técnica de Documentos y Expedientes Electrónicos](https://wikiguias.digital.gob.cl/guias/guia-tecnica-documentosyexpedientes) (Decreto N° 10/2023).
 - [Guía Técnica de Interoperabilidad](https://wikiguias.digital.gob.cl/es/guias/guia-tecnica-interoperabilidad) (Decreto N° 12/2023); [¿Qué es PISEE?](https://pisee.gob.cl/que-es-pisee/); [Manual configuración Nodo v2](https://wikiguias.digital.gob.cl/Manuales/configuracion-nodo).
-- Diseño SGM: entidades core/plataforma, seguridad, plataforma-core, contratos Adquisiciones, pendientes P-26 y P-58.
+- Diseño SGM: entidades core/plataforma, seguridad, plataforma-core, contratos Adquisiciones, pendientes X-26 y X-58.

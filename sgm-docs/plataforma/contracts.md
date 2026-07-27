@@ -4,7 +4,7 @@
 > Marco: [`arquitectura/especificacion/plataforma-core.md`](../arquitectura/especificacion/plataforma-core.md)
 > Estándares: [`arquitectura/especificacion/estandares-api.md`](../arquitectura/especificacion/estandares-api.md)
 > Metodología: [`arquitectura/especificacion/contrato-api-first.md`](../arquitectura/especificacion/contrato-api-first.md)
-> Pendiente completo: **[P-48]**
+> Pendiente completo: **[X-48]**
 
 **Alcance de este borrador:** operaciones que Adquisiciones y el sandbox requieren para autenticación, identidad, autorización, parámetros normativos y auditoría. Ciclo de vida completo de tenants y consolas admin se extienden en iteraciones posteriores.
 
@@ -40,7 +40,7 @@ Definición canónica: [`modelo-datos/entidades-plataforma.md`](../modelo-datos/
 
 ## 2. Operaciones que ofrece
 
-Rutas sin prefijo de tenant hasta resolver **[P-03]**.
+Rutas sin prefijo de tenant hasta resolver **[X-03]**.
 
 ### 2.1 Autenticación
 
@@ -48,7 +48,7 @@ Rutas sin prefijo de tenant hasta resolver **[P-03]**.
 - **Uso:** plano M2M (client credentials) y refresh de personas.
 - **Entrada:** `grant_type`, `client_id`, `client_secret` (M2M) o `refresh_token` (personas)
 - **Respuesta:** `access_token`, `token_type`, `expires_in`, `scope`
-- **Nota:** diseño detallado **[P-02]**, **[P-22]**.
+- **Nota:** diseño detallado **[X-02]**, **[X-22]**.
 
 #### `POST /oauth/token/refresh` — `refreshToken`
 - **Uso:** renovación de token personas (Clave Única).
@@ -67,7 +67,7 @@ Rutas sin prefijo de tenant hasta resolver **[P-03]**.
 - **Respuesta:** `User`
 - **Errores:** `USER_NOT_FOUND`
 
-#### `POST /users/me/profile-change-requests` — `requestProfileChange` *(inferida — detalle HTTP en §2.11 / P-48)*
+#### `POST /users/me/profile-change-requests` — `requestProfileChange` *(inferida — detalle HTTP en §2.11 / X-48)*
 - **Uso:** el funcionario solicita al administrador municipal un cambio de datos personales; **no** muta `User` en el acto (el admin aplica vía `updateUser`).
 - **Entrada (borrador):** `proposed_display_name` (opcional), `reason` (obligatorio)
 - **Respuesta (borrador):** acuse con `id`, `status` (`pending`), `created_at`
@@ -80,7 +80,7 @@ Rutas sin prefijo de tenant hasta resolver **[P-03]**.
 - **Uso:** catálogo de roles del módulo (consola «Por módulo/proceso»); agrupable por `process_area`
 - **Entrada:** filtros `module`, `process_area` (opcionales)
 - **Respuesta:** colección de `Role`
-- **Nota:** contenido canónico de prueba en [`arquitectura/especificacion/catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) (**P-24**)
+- **Nota:** contenido canónico de prueba en [`arquitectura/especificacion/catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) (**X-24**)
 
 #### `GET /role-assignments` — `listRoleAssignments`
 - **Entrada:** filtros `user_id`, `organizational_unit_id`, `module`
@@ -89,7 +89,7 @@ Rutas sin prefijo de tenant hasta resolver **[P-03]**.
 #### `POST /permissions/check` — `checkPermission`
 - **Entrada:** `operation_id`, `resource_id` (opcional)
 - **Respuesta:** `allowed` (boolean), `reason` (opcional)
-- **Nota:** mecanismo runtime **[P-51]**; alternativa: claims en token de vida corta.
+- **Nota:** mecanismo runtime **[X-51]**; alternativa: claims en token de vida corta.
 
 ### 2.4 Parámetros
 
@@ -124,7 +124,7 @@ Rutas sin prefijo de tenant hasta resolver **[P-03]**.
 
 ### 2.7 Eventos y notificaciones (C6)
 
-Visión: [`notificaciones/overview.md`](./notificaciones/overview.md). Matriz borrador **P-06:** [`notificaciones/matriz-evento-canal.md`](./notificaciones/matriz-evento-canal.md). Mecanismo de entrega a sistemas: **[P-05]**.
+Visión: [`notificaciones/overview.md`](./notificaciones/overview.md). Matriz borrador **X-06:** [`notificaciones/matriz-evento-canal.md`](./notificaciones/matriz-evento-canal.md). Mecanismo de entrega a sistemas: **[X-05]**.
 
 #### Webhooks M2M
 
@@ -147,11 +147,11 @@ Visión: [`notificaciones/overview.md`](./notificaciones/overview.md). Matriz bo
 - **Respuesta:** `Notification`
 - **Errores:** `NOTIFICATION_NOT_FOUND`, `FORBIDDEN`
 
-#### `POST /notifications/{id}/read` — `markNotificationRead` *(inferido — P-48)*
+#### `POST /notifications/{id}/read` — `markNotificationRead` *(inferido — X-48)*
 - **Efecto:** setea `read_at` si estaba nulo (idempotente)
 - **Respuesta:** `Notification`
 
-#### `POST /notifications/read-all` — `markAllNotificationsRead` *(inferido — P-48)*
+#### `POST /notifications/read-all` — `markAllNotificationsRead` *(inferido — X-48)*
 - **Entrada:** filtros opcionales (mismos que listado)
 - **Efecto:** marca leídas las del actor que cumplan filtro
 - **Respuesta:** `{ updated_count }`
@@ -166,10 +166,10 @@ Visión: [`notificaciones/overview.md`](./notificaciones/overview.md). Matriz bo
 - **Respuesta:** `NotificationPreference`
 - **Reglas:** rechaza opt-out de correo cuando `TenantNotificationPolicy` marca el kind/evento como obligatorio → `POLICY_FORBIDS_OPT_OUT`
 
-#### `GET /tenant/notification-policy` — `getTenantNotificationPolicy` *(inferido — P-48)*
+#### `GET /tenant/notification-policy` — `getTenantNotificationPolicy` *(inferido — X-48)*
 - **Respuesta:** `TenantNotificationPolicy`
 
-#### `PUT /tenant/notification-policy` — `upsertTenantNotificationPolicy` *(inferido — P-48)*
+#### `PUT /tenant/notification-policy` — `upsertTenantNotificationPolicy` *(inferido — X-48)*
 - **Uso:** admin municipal — hechos de correo obligatorio
 - **Entrada:** `mandatory_email_kinds`, `mandatory_email_event_types`
 - **Respuesta:** `TenantNotificationPolicy`
@@ -177,7 +177,7 @@ Visión: [`notificaciones/overview.md`](./notificaciones/overview.md). Matriz bo
 ### 2.8 Clientes M2M (admin)
 
 #### `POST /api-clients` — `createApiClient`
-- **Uso:** emisión de credenciales sandbox o producción (conecta con **P-15**).
+- **Uso:** emisión de credenciales sandbox o producción (conecta con **X-15**).
 - **Entrada:** `name`, `scopes`, `tenant_ids`
 - **Respuesta:** `ApiClient` + `client_secret` (una sola vez)
 
@@ -212,7 +212,7 @@ Operaciones consumidas por módulos vía dependencias declaradas en `contracts.m
 - **Entrada:** `subject_type`, `subject_id`, `source_document_ref`, `signature_chain_id` (opcional), metadatos del acto
 - **Respuesta:** `document_procedure_id`, `status` (`submitted` / `pending_signature`)
 - **Clasificación:** asíncrona
-- **Nota:** contrato funcional en [`integracion-docdigital.md`](../arquitectura/especificacion/integracion-docdigital.md). **No especificar protocolo DocDigital** hasta **[PENDIENTE P-72]** (bloqueante). Si no hay API: modo `assisted` (exportación/importación).
+- **Nota:** contrato funcional en [`integracion-docdigital.md`](../arquitectura/especificacion/integracion-docdigital.md). **No especificar protocolo DocDigital** hasta **[PENDIENTE X-72]** (bloqueante). Si no hay API: modo `assisted` (exportación/importación).
 - **Errores:** `DOCDIGITAL_PROVIDER_UNAVAILABLE`, `DOCDIGITAL_NOT_ENABLED_FOR_TENANT`
 
 #### `POST /document-procedures/{id}/outcome` — `recordActOutcome`
@@ -277,9 +277,9 @@ Patrón recomendado para módulos: frontend sube aquí → obtiene `DocumentRef`
 - **Uso:** catálogo SUBDERE de adaptadores `external_dms`
 - **Respuesta:** colección de `DmsAdapter`
 
-### 2.11 Consolas admin — operations pendientes (P-48 / P-52)
+### 2.11 Consolas admin — operations pendientes (X-48 / X-52)
 
-Operaciones citadas en wireframes de [`overview.md`](./overview.md) / [`wireframes/`](./wireframes/README.md) que **aún no tienen cuerpo HTTP completo** en §2.1–§2.10. Los botones de UI las invocan por `operationId`; el detalle request/response se cierra en **P-48**.
+Operaciones citadas en wireframes de [`overview.md`](./overview.md) / [`wireframes/`](./wireframes/README.md) que **aún no tienen cuerpo HTTP completo** en §2.1–§2.10. Los botones de UI las invocan por `operationId`; el detalle request/response se cierra en **X-48**.
 
 #### Consola SUBDERE
 
@@ -295,7 +295,7 @@ Operaciones citadas en wireframes de [`overview.md`](./overview.md) / [`wirefram
 | `rotateApiClientSecret` | idem | Secreto una sola vez en respuesta |
 | `upsertPlatformIntegration` | `subdere/04-integraciones-plataforma` | CU OIDC, webhook MP nacional |
 | `provisionPlatformBucket` | `subdere/05-provision-almacenamiento` | Backend `platform` por tenant |
-| *(observabilidad)* | `subdere/06-monitoreo-tenant` | Sin operationId hasta P-08 / musts §8 |
+| *(observabilidad)* | `subdere/06-monitoreo-tenant` | Sin operationId hasta X-08 / musts §8 |
 
 #### Consola municipal
 
@@ -305,18 +305,18 @@ Operaciones citadas en wireframes de [`overview.md`](./overview.md) / [`wirefram
 | `createUser` | idem | Alta funcionario |
 | `updateUser` | idem | Metadatos / estado |
 | `revokeUser` | idem | Baja inmediata |
-| `listRoles` | `municipal/02-roles-unidades` | Catálogo + `process_area` (P-24) |
+| `listRoles` | `municipal/02-roles-unidades` | Catálogo + `process_area` (X-24) |
 | `listOrganizationalUnits` | `municipal/02-roles-unidades` | Árbol departamento→unidad |
 | `createOrganizationalUnit` | idem | Alta departamento o unidad (`kind`) |
 | `updateOrganizationalUnit` | idem | Renombre / padre / `status` |
-| `listOrgStructureTemplates` | *SUBDERE (futuro)* | Catálogo base de plataforma — P-49 contenido |
+| `listOrgStructureTemplates` | *SUBDERE (futuro)* | Catálogo base de plataforma — X-49 contenido |
 | `createRoleAssignment` | idem | Con validación SoD |
 | `revokeRoleAssignment` | idem | Fin asignación |
 | `listDelegations` | `municipal/03-subrogancias` | |
 | `createDelegation` | idem | `valid_until` obligatorio |
 | `revokeDelegation` | idem | |
 | `listSodExceptions` | `municipal/04-excepciones-sod` | |
-| `createSodException` | idem | Auditada (P-25) |
+| `createSodException` | idem | Auditada (X-25) |
 | `revokeSodException` | idem | |
 | `listTenantParameters` | `municipal/05-parametros-operativos` | Catálogo permitido |
 | `upsertTenantParameter` | idem | |
@@ -338,7 +338,7 @@ Operaciones citadas en wireframes de [`overview.md`](./overview.md) / [`wirefram
 | Clave Única | OIDC | Autenticación plano personas (C1) |
 | Mercado Público | API lectura procesos | C7 — `readMpProcess`, evento `MpStateChanged` |
 | FirmaGob | Firma electrónica | C9 — `requestSignature`, `confirmSignature`; PDF vía C10 — documentos **no** acto DocDigital |
-| DocDigital | Tramitación de actos | C11 — `submitAdministrativeAct`, retorno con folio; **[PENDIENTE P-72]** (no asumir API) |
+| DocDigital | Tramitación de actos | C11 — `submitAdministrativeAct`, retorno con folio; **[PENDIENTE X-72]** (no asumir API) |
 | SII | UTM, referencias de precio | C9 — `getUtmValue`, `getPriceReference` |
 | Object storage S3-compatible | Buckets `platform` / `tenant_owned` | C10 — backends documentales |
 | APIs de DMS según adaptador | Repositorio municipal | C10 — backend `external_dms` vía `DmsAdapter` |
@@ -361,8 +361,8 @@ Los módulos **no** acceden a tablas del core ni a APIs de terceros; consumen la
 | `TenantProvisioned` | Alta tenant | `tenant_id`, `schema_name` |
 | `ApiClientRevoked` | Revocación M2M | `api_client_id`, `revoked_at` |
 
-**[PENDIENTE P-05]** mecanismo de entrega (webhooks, cola).  
-**[PENDIENTE P-06]** matriz evento → canal → destinatario — borrador en [`notificaciones/matriz-evento-canal.md`](./notificaciones/matriz-evento-canal.md).
+**[PENDIENTE X-05]** mecanismo de entrega (webhooks, cola).  
+**[PENDIENTE X-06]** matriz evento → canal → destinatario — borrador en [`notificaciones/matriz-evento-canal.md`](./notificaciones/matriz-evento-canal.md).
 
 ---
 
@@ -370,12 +370,12 @@ Los módulos **no** acceden a tablas del core ni a APIs de terceros; consumen la
 
 `modulos/adquisiciones/contracts.md` §3 declara dependencias hacia módulos de negocio (Presupuestos, Contabilidad, Tesorería) y hacia el **core** (integraciones C7/C9/C11, documentos C10, notificaciones C6). Las siguientes capacidades se resuelven vía **este contrato**:
 
-- Identidad del funcionario originante (**P-23**)
+- Identidad del funcionario originante (**X-23**)
 - Scopes y roles para RBAC
 - `getNormativeParameter`, `getUtmValue`, `getPriceReference`
 - `readMpProcess` / `MpStateChanged`
 - `requestSignature`, `confirmSignature` — documentos no-acto
-- `submitAdministrativeAct` / `AdministrativeActSigned` — actos DocDigital (**P-72**)
+- `submitAdministrativeAct` / `AdministrativeActSigned` — actos DocDigital (**X-72**)
 - `storeDocument`, `getDownloadUrl` — adjuntos como `DocumentRef`
 - Bandeja / campanita C6 (`listNotifications`, …) — pendientes del actor; no columna en listado de expedientes
 

@@ -55,6 +55,6 @@
 
 ## Notas
 
-- Sin integración API asumida con el sistema de tramitación de la CGR — registro enteramente manual con documento de respaldo. Explorar canal de consulta de estado integrable **[PENDIENTE P-64]**.
+- Sin integración API asumida con el sistema de tramitación de la CGR — registro enteramente manual con documento de respaldo. Explorar canal de consulta de estado integrable **[PENDIENTE X-64]**.
 - Mismo mecanismo y misma entidad (`ComptrollerReview`) que 3.11 (Toma de Razón de la adjudicación) — reutilizados sin cambio.
-- Umbral vigente fijado por resolución de la propia CGR, modelado como `NormativeParameter` — carga inicial verificada contra norma vigente **[PENDIENTE P-37]**.
+- Umbral vigente fijado por resolución de la propia CGR, modelado como `NormativeParameter` — carga inicial verificada contra norma vigente **[PENDIENTE X-37]**.

@@ -2,9 +2,13 @@
 
 **Proyecto:** SGM — Sistema de Gestión Municipal
 **Módulo:** Presupuestos
-**Versión:** 0.10 (borrador para revisión interna)
+**Versión:** 0.11 (borrador para revisión interna)
 **Fecha:** julio 2026
 **Estado:** propuesta de plan, no validado con DM
+
+**Gobierno del corpus:** [`../../plan-general.md`](../../plan-general.md). Criterios de calidad comunes: plan general §7. Decisiones transversales: plan general §4.
+
+**Cambios v0.11 (B0 plan general):** matiz de **D-1** (devengo dual — efecto patrimonial es Contabilidad; atomicidad = ADR / C-1). Contrato bidireccional **RRHH↔Presupuestos** (disponibilidad bloqueante + CDP de personal; R-1). Referencias DocDigital a prefijo **X-72…X-76**. Criterios de calidad remiten al plan general.
 
 **Cambios v0.10:** decisión de frontera **D-4 — DocDigital** (SGM origina actos; DocDigital tramita y enumera). Referencia canónica: [`arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md`](../../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). Ajuste de cadena de firma del decreto (`SignatureChain` de plataforma; `DecreeSignatureChain` como alias de trabajo). `approval_resolution` del as-is deja de ser identificador oficial. Pendientes P-18…P-20 (vía alternativa, alcance/folio, plazos). Inventario de actos del módulo en [`integracion-docdigital.md`](../../arquitectura/especificacion/integracion-docdigital.md) §3.
 
@@ -40,10 +44,10 @@ Tomadas antes de iniciar el trabajo. Si alguna cambia, el plan se recalcula.
 
 | # | Decisión | Contenido |
 |---|----------|-----------|
-| D-1 | **Frontera del módulo** | Presupuestos es dueño de la cadena completa de compromiso: disponibilidad → CDP → preobligación → obligación → devengo presupuestario. Adquisiciones, Contabilidad y Tesorería consumen vía contrato versionado. |
+| D-1 | **Frontera del módulo** | Presupuestos es dueño de la cadena de compromiso hasta el **devengo presupuestario**: disponibilidad → CDP (Adquisiciones **y** gasto en personal) → preobligación → obligación → devengo presupuestario. El **efecto patrimonial** del mismo hecho pertenece a Contabilidad (devengo dual). La atomicidad entre ambos efectos es el problema canónico [`2026-07-atomicidad-efectos-borde.md`](../../arquitectura/decisiones/2026-07-atomicidad-efectos-borde.md) (ancla **C-1**). Adquisiciones, Contabilidad, Tesorería y RRHH consumen vía contrato versionado. |
 | D-2 | **Alcance de entidades presupuestarias** | Ciclo completo municipal **más** los presupuestos separados de Salud y Educación (servicios traspasados), que son entidades presupuestarias distintas con consolidación propia. SINIM expone además un cuarto sector, **Cementerio** — alcance por confirmar (P-12). |
 | D-3 | **Método** | Réplica del método de Adquisiciones: fichas de proceso por etapa → modelo de entidades en naming técnico inglés → contratos de API → wireframes → especificaciones transversales. |
-| D-4 | **Tramitación de decretos (DocDigital)** | Los decretos que promulgan el presupuesto anual (26.2.7) y de modificación presupuestaria (27.2.4 / 27.2.5) se **originan en SGM** y se **tramitan en DocDigital** (visación, FEA, enumeración, distribución). El folio oficial es el externo; el correlativo interno es solo trazabilidad. Decisión canónica transversal — no se reitera aquí. Cadena de firma municipal = `SignatureChain` (plataforma), implementación del proceso 25 del levantamiento. Condicionado a **P-72** (mecanismo de integración). |
+| D-4 | **Tramitación de decretos (DocDigital)** | Los decretos que promulgan el presupuesto anual (26.2.7) y de modificación presupuestaria (27.2.4 / 27.2.5) se **originan en SGM** y se **tramitan en DocDigital** (visación, FEA, enumeración, distribución). El folio oficial es el externo; el correlativo interno es solo trazabilidad. Decisión canónica transversal — no se reitera aquí. Cadena de firma municipal = `SignatureChain` (plataforma), implementación del proceso 25 del levantamiento. Condicionado a **X-72** (mecanismo de integración). |
 
 ### Consecuencia inmediata de D-1
 
@@ -53,7 +57,7 @@ Adquisiciones ya declaró la entidad `BudgetPreCommitment` en su modelo prelimin
 
 ### Consecuencia inmediata de D-4
 
-1. **Cambio respecto del as-is:** `approval_resolution` (Char con secuencia interna en Odoo) **deja de ser el identificador oficial** del decreto. Se conserva, si aplica, como trazabilidad interna; el folio oficial es `ExternalFolio` asignado por DocDigital (o folio interno solo en vía alternativa — P-18 / P-73).
+1. **Cambio respecto del as-is:** `approval_resolution` (Char con secuencia interna en Odoo) **deja de ser el identificador oficial** del decreto. Se conserva, si aplica, como trazabilidad interna; el folio oficial es `ExternalFolio` asignado por DocDigital (o folio interno solo en vía alternativa — P-18 / X-73).
 2. **Estado de espera:** la transición post-decreto (promulgación → apertura; modificación → registro) pasa por `pending_signature` hasta el retorno del acto firmado (`AdministrativeActSigned` / `DocumentProcedureCompleted`).
 3. **Entidades:** `DecreeSignatureChain` (candidata v0.2–v0.9) se alinea a `SignatureChain` de plataforma; el acto se modela como `AdministrativeAct` (o equivalente presupuestario) con `DocumentProcedure`.
 4. **Contingencia:** municipios sin DocDigital y latencia ante plazos legales (15 dic, 10 días art. 29 c) — P-18, P-20; mismo patrón que §5.1.
@@ -363,10 +367,11 @@ Insumo para la especificación de independencia modular. Cada uno es un contrato
 |---|---|---|---|
 | **Adquisiciones** | Presupuestos → Adq | Consulta de disponibilidad; emisión y estado de CDP; preobligación asociada a SOLPED | **Alta** — costura principal del sistema |
 | **Adquisiciones** | Adq → Presupuestos | Evento de resolución de compra que dispara obligación | Alta |
-| **Contabilidad** | Presupuestos → Cont | Devengo presupuestario que origina asiento; apertura del ejercicio (traspaso de saldos, Deuda Flotante) | **Alta** |
+| **Contabilidad** | Presupuestos → Cont | Devengo presupuestario que origina asiento; apertura del ejercicio (traspaso de saldos, Deuda Flotante). Atomicidad: ADR / **C-1** | **Alta** |
 | **Contabilidad** | Cont → Presupuestos | Confirmación de imputación; saldos de cierre del ejercicio anterior | Alta |
 | **Tesorería** | Tes → Presupuestos | Ingresos efectivamente percibidos vs. estimados; **ingresos propios percibidos del año anterior (base del 42% art. 67)**; pagos que cierran la cadena | **Alta** |
-| **RRHH / Remuneraciones** | RRHH → Presupuestos | Dotación, jubilaciones previstas, concursos, honorarios; **base de cálculo de los límites 42% y 20%** | **Alta** (elevada desde Media en v0.1) |
+| **RRHH / Remuneraciones** | RRHH → Presupuestos | Dotación, jubilaciones previstas, concursos, honorarios; **base de cálculo de los límites 42% y 20%** | **Alta** |
+| **RRHH / Remuneraciones** | Presupuestos → RRHH | **Consulta de disponibilidad presupuestaria bloqueante** (contratación, cometidos, HE) y **emisión de CDP de gasto en personal** (p. ej. proceso 3.2.4). Contrato no previsto en v≤0.10 — ver **R-1** | **Crítica — bloqueante** |
 | **Salud / Educación** | Bidireccional | Presupuestos separados con consolidación y reporte propios | Media |
 | **SINIM / CGR** | Presupuestos → externo | BEP, informes CGR, cálculo de déficit, informes trimestrales del art. 29 d) | Alta (obligación legal) |
 
@@ -542,7 +547,7 @@ Formato ficha idéntico al usado en Adquisiciones: actores, precondiciones, paso
 |---|---|
 | Modelo de entidades consolidado | Naming inglés, atributos, cardinalidades, invariantes. Contraste explícito contra el ORM de Odoo, no contra el export de BD |
 | Máquinas de estado | Una por entidad con ciclo de vida. Incluye la transición por silencio del art. 82 y la asimetría rechazo/no-rechazo entre MP-1 y MP-2 |
-| Contratos de API inter-módulo | Los ocho de §6, versionados, con clasificación síncrono / asíncrono / cacheado |
+| Contratos de API inter-módulo | Los de §6 (incl. RRHH bidireccional), versionados, con clasificación síncrono / asíncrono / cacheado |
 | Reconciliación con Adquisiciones | Modelo de Adquisiciones actualizado según D-1 |
 
 ### F5 — Transversales, wireframes y consolidación · 2 semanas
@@ -581,9 +586,9 @@ Formato ficha idéntico al usado en Adquisiciones: actores, precondiciones, paso
 | **P-15** | Exposición legal por operación, vía alternativa y modo de contingencia (§5.1) | F5 | Equipo + Jurídica | Abierto |
 | **P-16** | Inventario de reglas de clase Criterio y ruta de consolidación GP-4 | F3 / F4 | Equipo + Jurídica | Abierto |
 | **P-17** | Ingesta y gobernanza del Manual de Imputaciones como fuente autoritativa | F1 | Equipo + Depto. Finanzas Municipales | Abierto |
-| **P-18** | Vía alternativa de decretos presupuestarios para municipios sin DocDigital (~20 %); alineado a P-73 de arquitectura y a §5.1 | F3 / MP-1–MP-2 | Equipo + Jurídica | Abierto |
-| **P-19** | Conflicto de folio: migración de `approval_resolution` históricos vs. `ExternalFolio` DocDigital (P-75) | F4 | Equipo interno | Abierto |
-| **P-20** | Efecto de la latencia DocDigital sobre plazos legales del módulo (15 dic art. 82; 10 días art. 29 c) — P-76 | F5 | Equipo + Jurídica | Abierto |
+| **P-18** | Vía alternativa de decretos presupuestarios para municipios sin DocDigital (~20 %); alineado a X-73 de arquitectura y a §5.1 | F3 / MP-1–MP-2 | Equipo + Jurídica | Abierto |
+| **P-19** | Conflicto de folio: migración de `approval_resolution` históricos vs. `ExternalFolio` DocDigital (X-75) | F4 | Equipo interno | Abierto |
+| **P-20** | Efecto de la latencia DocDigital sobre plazos legales del módulo (15 dic art. 82; 10 días art. 29 c) — X-76 | F5 | Equipo + Jurídica | Abierto |
 
 Cada pendiente abierto se documenta abajo con: contexto, pregunta a resolver, opciones candidatas, decisión por defecto si no hay respuesta a tiempo, criterio de cierre e insumos.
 
@@ -960,7 +965,7 @@ F5:  P-13, P-14 (track GP), P-15 (cierre)
 
 1. Todo validador bloqueante declara fundamento en `legal_reference`: cita de artículo/decreto/dictamen cuando la regla es normativa, o `integridad:<motivo>` cuando es invariante de proceso sin ancla legal única. El fundamento normativo se muestra en el helper de validación al funcionario ([`musts-arquitectura.md`](../../arquitectura/especificacion/musts-arquitectura.md) §11).
 2. Ningún umbral, plazo o clasificación normativa está hardcodeado; todos son `NormativeParameter` con vigencia temporal. Incluye el 42%, el 20%, los plazos del art. 82 y el clasificador del Decreto 854.
-3. Los ocho contratos inter-módulo están versionados y clasificados por modo de invocación.
+3. Los contratos inter-módulo de §6 están versionados y clasificados por modo de invocación (incl. RRHH bidireccional — R-1).
 4. Cada etapa tiene ficha completa; ningún paso queda descrito como "según práctica municipal".
 5. La especificación permite construir el módulo sin consultar el código de Odoo.
 6. Segregación de funciones verificable: formulación, aprobación, emisión de CDP, obligación y control son roles distintos, y el motor lo impone.

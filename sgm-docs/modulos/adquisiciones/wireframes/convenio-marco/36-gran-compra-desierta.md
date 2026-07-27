@@ -43,7 +43,7 @@ Sin operación de escritura propia: la transición la dispara el evento `GranCom
 
 - **Confirmado (camino feliz):** lectura de desierto recibida → `procurement_route` actualizado, `mp_process_id` anterior invalidado, flujo retoma desde 3.2 con nuevo ID de OC de catálogo.
 - **Vencido sin lectura:** `purchase_intent_deadline` vencido pero sin lectura de selección (3.5) ni de desierto — SGM muestra pendiente / posible desierto + deep link; la transición se confirma solo cuando llega la lectura (sin transcribir el estado MP en SGM).
-- **Desierto reiterado:** Gran Compra desierta → Compra Directa → rechazo de OC (3.8) → ¿nuevo intento? **[PENDIENTE P-68]** límite de reintentos y acción de escalamiento sin definir.
+- **Desierto reiterado:** Gran Compra desierta → Compra Directa → rechazo de OC (3.8) → ¿nuevo intento? **[PENDIENTE X-68]** límite de reintentos y acción de escalamiento sin definir.
 
 ## Validaciones visibles
 

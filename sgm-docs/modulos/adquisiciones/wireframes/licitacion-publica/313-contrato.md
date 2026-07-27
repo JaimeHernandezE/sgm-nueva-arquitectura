@@ -2,7 +2,7 @@
 
 **Sub-paso:** 3.13 — Contrato *(Licitación Pública, condicional)*
 **Rol:** Gestor de compra (`adq.gestor_compra`) / Aprobador de modalidad (`adq.aprobador_modalidad`) — catálogo [`catalogo-roles.md`](../../../../arquitectura/catalogo-roles.md); redacción Departamento Jurídico, firma Alcaldía
-**Operación:** `draftContract`, `signContract` · Dependencias: `requestSignature`/`confirmSignature` (municipio); canal de firma del proveedor **[PENDIENTE P-67]**
+**Operación:** `draftContract`, `signContract` · Dependencias: `requestSignature`/`confirmSignature` (municipio); canal de firma del proveedor **[PENDIENTE X-67]**
 
 ## Layout
 
@@ -21,7 +21,7 @@
 | ## Firmas                                                        |
 | Firma municipal (FirmaGob): Pendiente…                            |
 | [ Simular firma FirmaGob (demo) ]                                 |
-| Firma del proveedor: mecanismo por definir (P-67)                 |
+| Firma del proveedor: mecanismo por definir (X-67)                 |
 | [ Simular firma proveedor (demo) ]                                |
 | [ Confirmar contrato suscrito ]                                   |
 +----------------------------------------------------------------+
@@ -40,7 +40,7 @@
 | Fecha de inicio | `Contract.start_date` | Sí |
 | Fecha de término | `Contract.end_date` | Sí |
 | Documento del contrato | `Contract.document_ref` | Sí |
-| Mecanismo de firma del contratista | `Contract.contractor_signature_mode` | Sí — **[PENDIENTE P-67]** |
+| Mecanismo de firma del contratista | `Contract.contractor_signature_mode` | Sí — **[PENDIENTE X-67]** |
 | Estado | `Contract.status` | No (generado: `draft` → `signed` / `not_subscribed`) |
 
 ## Acciones
@@ -62,5 +62,5 @@
 
 ## Notas
 
-- Firma del proveedor: mecanismo pendiente de definir — FEA propia, firma en papel digitalizada, o plataforma externa **[PENDIENTE P-67]**.
-- El botón "Simular firma proveedor" es un artefacto de prototipo que anticipa la resolución de P-67 sin comprometer una decisión.
+- Firma del proveedor: mecanismo pendiente de definir — FEA propia, firma en papel digitalizada, o plataforma externa **[PENDIENTE X-67]**.
+- El botón "Simular firma proveedor" es un artefacto de prototipo que anticipa la resolución de X-67 sin comprometer una decisión.

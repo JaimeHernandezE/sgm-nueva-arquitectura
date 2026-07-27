@@ -6,7 +6,7 @@
 
 *✅ **Ajuste a la etapa 2 propagado:** para CM, la vinculación MP (`mp_process_id`) ocurre en este sub-paso 3.2 (Compra Directa) o 3.3 (Gran Compra), no al cierre de la etapa 2 — la lógica es idéntica a la corrección ya documentada en LP §3.5. `2-modalidad-compra.md` §2.3 ya refleja la vinculación diferida por modalidad.*
 
-*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24).*
+*Roles de la fila **Rol:** nombre (usuarios) + código (sistema) según el catálogo transversal [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (X-24).*
 
 ---
 
@@ -46,7 +46,7 @@
 - Fuente UTM no disponible y sin valor cacheado del mes en curso → `UTM_VALUE_UNAVAILABLE` (`severity: blocking`); la evaluación de umbral no puede ejecutarse. Mismo edge case que 2.1 — candidato a regla transversal de resiliencia.
 - UTM varía y la ruta cambia respecto de la declarada en la SOLPED → el sistema actualiza `procurement_route`, notifica al usuario y ajusta los `CaseStep` instanciados.
 
-> **[PENDIENTE P-37]** Carga inicial del valor `FRAMEWORK_AGREEMENT_GRAN_COMPRA_UTM_LIMIT` en `NormativeParameter` verificada contra norma vigente (misma regla que los umbrales de CA, LP y TD en la etapa 2).
+> **[PENDIENTE X-37]** Carga inicial del valor `FRAMEWORK_AGREEMENT_GRAN_COMPRA_UTM_LIMIT` en `NormativeParameter` verificada contra norma vigente (misma regla que los umbrales de CA, LP y TD en la etapa 2).
 
 ---
 
@@ -90,7 +90,7 @@
 **Edge cases:**
 - Los cuatro bloqueos estándar de vinculación aplican idénticos a 2.3: `MP_PROCESS_NOT_FOUND`, `MP_PROCESS_ORGANISM_MISMATCH`, `MP_PROCESS_TYPE_MISMATCH`, `MP_PROCESS_ALREADY_LINKED` (`severity: blocking` en todos).
 - API de MP no disponible al validar → `MP_PROVIDER_UNAVAILABLE`; el vínculo no se persiste sin validación. Ver pendiente transversal de registro provisional.
-- Usuario navega MP pero no registra el ID en SGM → expediente queda detenido; candidato a timer de escalamiento (`musts-arquitectura.md` §10.4). **[PENDIENTE P-33]** Plazo concreto por definir.
+- Usuario navega MP pero no registra el ID en SGM → expediente queda detenido; candidato a timer de escalamiento (`musts-arquitectura.md` §10.4). **[PENDIENTE X-33]** Plazo concreto por definir.
 
 ---
 
@@ -135,7 +135,7 @@
 | Vincular Intención de Compra | `linkMpProcess` | `MP_PROVIDER_UNAVAILABLE` | — | Mercado Público no está disponible para validar el vínculo. | blocking | integridad:estado_expediente |
 **Edge cases:**
 - Mismos cuatro bloqueos de vinculación que 3.2.
-- Usuario no publica la Intención de Compra dentro de un plazo razonable tras la evaluación de umbral → timer de escalamiento. **[PENDIENTE P-33]** Plazo concreto por definir.
+- Usuario no publica la Intención de Compra dentro de un plazo razonable tras la evaluación de umbral → timer de escalamiento. **[PENDIENTE X-33]** Plazo concreto por definir.
 
 ---
 
@@ -181,7 +181,7 @@
 | **Rol** | Gestor de compra ([`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md)) |
 | **Plataforma** | Mercado Público |
 | **Obligatoriedad** | **Obligatorio** *(condicional a `gran_compra` con al menos una oferta)* |
-| **Interacción MP** | **Informativo** *(candidato a Gestión optativa — ver **[PENDIENTE P-39]**)* |
+| **Interacción MP** | **Informativo** *(candidato a Gestión optativa — ver **[PENDIENTE X-39]**)* |
 
 **Detalle:** Cerrado el período, el usuario compara y selecciona la mejor oferta **en MP**. Para SGM el paso es informativo: refleja que hubo selección y quién fue elegido. A diferencia de CA, en CM no hay revalidación de habilidad del proveedor al emitir la OC desde MP (el proveedor ya está adjudicado al Convenio Marco); sin embargo, la inhabilitación sobreviniente es un edge case que debe tratarse.
 
@@ -201,10 +201,10 @@
 **Validaciones:** Sin validaciones de formulario — selección ocurre en MP; `QuotationResult` solo por sync (sin transcripción ni escritura de usuario en SGM).
 
 **Edge cases:**
-- Usuario no gestiona la selección en MP dentro de un plazo razonable → timer de escalamiento sobre el `CaseStep`. **[PENDIENTE P-33]** Plazo concreto por definir.
+- Usuario no gestiona la selección en MP dentro de un plazo razonable → timer de escalamiento sobre el `CaseStep`. **[PENDIENTE X-33]** Plazo concreto por definir.
 - Sin lectura → el expediente permanece en `Pendiente en MP`; no hay transcripción de proveedor/monto en SGM.
 
-> **[PENDIENTE P-39]** VB interno pre-OC como control configurable por municipio, igual que CA 3.2. Si se confirma, este sub-paso pasa a Gestión condicional.
+> **[PENDIENTE X-39]** VB interno pre-OC como control configurable por municipio, igual que CA 3.2. Si se confirma, este sub-paso pasa a Gestión condicional.
 
 ---
 
@@ -239,7 +239,7 @@
 **Validaciones:** Sin validaciones de formulario — transición automática a Compra Directa tras lectura de desierto; sin captura de usuario en SGM.
 
 **Edge cases:**
-- Desierto reiterado (Gran Compra desierta → Compra Directa → rechazo de OC → ¿nuevo intento?): **[PENDIENTE P-68]** límite de reintentos y acción de escalamiento. Candidato a métrica de reportería (procesos desiertos por Convenio Marco/unidad).
+- Desierto reiterado (Gran Compra desierta → Compra Directa → rechazo de OC → ¿nuevo intento?): **[PENDIENTE X-68]** límite de reintentos y acción de escalamiento. Candidato a métrica de reportería (procesos desiertos por Convenio Marco/unidad).
 
 ---
 
@@ -276,7 +276,7 @@
 |---|---|---|---|---|---|---|
 | Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `BUDGET_UNAVAILABLE` | — | La línea presupuestaria no tiene saldo disponible para el monto real de la OC. | blocking | DL 1.263 — fase de compromiso presupuestario |
 **Edge cases:**
-- **Monto real > preobligación y la línea no tiene saldo para la diferencia** → `commitBudget` responde `BUDGET_UNAVAILABLE` (`severity: blocking`). Situación anómala grave (la OC ya está aceptada legalmente pero el compromiso contable no puede registrarse): tarea urgente a DAF Finanzas para regularización presupuestaria. **[PENDIENTE P-40]** — mismo tratamiento que CA 3.4.
+- **Monto real > preobligación y la línea no tiene saldo para la diferencia** → `commitBudget` responde `BUDGET_UNAVAILABLE` (`severity: blocking`). Situación anómala grave (la OC ya está aceptada legalmente pero el compromiso contable no puede registrarse): tarea urgente a DAF Finanzas para regularización presupuestaria. **[PENDIENTE X-40]** — mismo tratamiento que CA 3.4.
 - Monto real < preobligación → compromiso por el real y **liberación automática del excedente** de la preobligación (regla estándar, sin intervención).
 - Proveedor de presupuesto no disponible al recibir la lectura → reintento con retroceso; el expediente queda en estado intermedio visible ("OC aceptada, compromiso pendiente") — nunca se pierde el hito ni se duplica el compromiso (idempotencia por `purchase_order_ref`).
 
@@ -313,7 +313,7 @@
 
 **Edge cases:**
 - No existe proveedor alternativo en catálogo → única vía: republicar o reevaluar modalidad (reversión a etapa 2 con nueva `ModalityDecision`, según procedimiento de reversión pendiente en 2.1).
-- Rechazos sucesivos que agotan proveedores disponibles → equivalente funcional a proceso fallido; misma decisión que 3.6. **[PENDIENTE P-68]**.
+- Rechazos sucesivos que agotan proveedores disponibles → equivalente funcional a proceso fallido; misma decisión que 3.6. **[PENDIENTE X-68]**.
 
 ---
 
@@ -344,10 +344,10 @@
 **Etapa anterior:** [2. Modalidad de Compra](../procesos-transversales/2-modalidad-compra.md) · **Siguiente etapa:** [4. Recepción Conforme](../procesos-transversales/4-recepcion-conforme.md) *(transversal, por documentar)*
 
 > **Pendientes de la etapa (registrados en `arquitectura/decisiones/pendientes.md`):**
-> - **[PENDIENTE P-37]** Umbral `FRAMEWORK_AGREEMENT_GRAN_COMPRA_UTM_LIMIT` como `NormativeParameter` con carga inicial verificada contra norma vigente.
-> - **[PENDIENTE P-33]** Plazo del timer de escalamiento para vínculo no registrado (3.2/3.3) y para selección no gestionada (3.5).
-> - **[PENDIENTE P-68]** Límite de reintentos ante rechazos sucesivos de OC o desiertos reiterados.
-> - **[PENDIENTE P-32]** Comportamiento ante `MP_PROVIDER_UNAVAILABLE` en vinculación: bloqueo total vs. registro provisional con `mp_link_unverified` — candidato a regla transversal (mismo pendiente de 2.3 y CA).
-> - **[PENDIENTE P-39]** VB interno pre-OC como control configurable por municipio (3.5) — pendiente de ratificación DM, igual que CA 3.2.
-> - **[PENDIENTE P-40]** Procedimiento de regularización presupuestaria cuando monto real > preobligación (3.7) — pendiente con DM/Finanzas, idéntico a CA 3.4.
+> - **[PENDIENTE X-37]** Umbral `FRAMEWORK_AGREEMENT_GRAN_COMPRA_UTM_LIMIT` como `NormativeParameter` con carga inicial verificada contra norma vigente.
+> - **[PENDIENTE X-33]** Plazo del timer de escalamiento para vínculo no registrado (3.2/3.3) y para selección no gestionada (3.5).
+> - **[PENDIENTE X-68]** Límite de reintentos ante rechazos sucesivos de OC o desiertos reiterados.
+> - **[PENDIENTE X-32]** Comportamiento ante `MP_PROVIDER_UNAVAILABLE` en vinculación: bloqueo total vs. registro provisional con `mp_link_unverified` — candidato a regla transversal (mismo pendiente de 2.3 y CA).
+> - **[PENDIENTE X-39]** VB interno pre-OC como control configurable por municipio (3.5) — pendiente de ratificación DM, igual que CA 3.2.
+> - **[PENDIENTE X-40]** Procedimiento de regularización presupuestaria cuando monto real > preobligación (3.7) — pendiente con DM/Finanzas, idéntico a CA 3.4.
 > - ✅ Propagado a `2-modalidad-compra.md` §2.3: la vinculación MP para CM ocurre en 3.2/3.3 (diferida), no al cierre de la etapa 2.

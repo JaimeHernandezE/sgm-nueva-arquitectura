@@ -1,6 +1,6 @@
 # 2026-07 — DocDigital como servicio transversal de tramitación documental
 
-**Estado:** Aceptada (condicionada a verificación del mecanismo de integración — **[PENDIENTE P-72]**, bloqueante)
+**Estado:** Aceptada (condicionada a verificación del mecanismo de integración — **[PENDIENTE X-72]**, bloqueante)
 **Fecha:** Julio 2026
 **Especificación de contrato funcional:** [`../especificacion/integracion-docdigital.md`](../especificacion/integracion-docdigital.md)
 
@@ -24,9 +24,9 @@ Esta decisión es **canónica**: los demás documentos la referencian; no la rep
 
 ### Condición bloqueante
 
-Toda la especificación de integración queda **condicionada** a verificar si DocDigital expone una interfaz máquina-a-máquina que permita originar documentos desde un sistema externo y recibir de vuelta el acto firmado con su folio (**[PENDIENTE P-72]**). La evidencia disponible describe una plataforma web con autenticación por Clave Única; **no está verificado** que permita integración programática. Si no la tiene, el diseño cambia a exportación e importación asistida con folio ingresado manualmente.
+Toda la especificación de integración queda **condicionada** a verificar si DocDigital expone una interfaz máquina-a-máquina que permita originar documentos desde un sistema externo y recibir de vuelta el acto firmado con su folio (**[PENDIENTE X-72]**). La evidencia disponible describe una plataforma web con autenticación por Clave Única; **no está verificado** que permita integración programática. Si no la tiene, el diseño cambia a exportación e importación asistida con folio ingresado manualmente.
 
-Hasta cerrar P-72: se describe el **contrato funcional** (qué se envía, qué se recibe, qué estados existen), **sin** endpoints ni protocolo.
+Hasta cerrar X-72: se describe el **contrato funcional** (qué se envía, qué se recibe, qué estados existen), **sin** endpoints ni protocolo.
 
 ## Consecuencias
 
@@ -36,7 +36,7 @@ Hasta cerrar P-72: se describe el **contrato funcional** (qué se envía, qué s
 
 3. **Firma electrónica avanzada.** FirmaGob y Clave Única llegan incluidos en DocDigital para actos tramitados por esa vía. Donde la documentación declare la FEA como capacidad a construir, se reclasifica como **integración a cablear**, manteniendo la exigencia de verificación funcional de extremo a extremo antes de darla por disponible.
 
-4. **Cobertura parcial.** El ~20 % de municipios sin DocDigital obliga a una vía alternativa documentada, con el mismo tratamiento que el modo de contingencia ya especificado para operaciones con plazo legal (**[PENDIENTE P-73]**).
+4. **Cobertura parcial.** El ~20 % de municipios sin DocDigital obliga a una vía alternativa documentada, con el mismo tratamiento que el modo de contingencia ya especificado para operaciones con plazo legal (**[PENDIENTE X-73]**).
 
 5. **Tres roles distintos de DocDigital en SGM (no colapsar):**
    - **Tramitación de actos** (esta decisión; servicio C11).
@@ -49,7 +49,7 @@ La tabla canónica vive en [`integracion-docdigital.md`](../especificacion/integ
 
 ## Pendientes derivados
 
-Registrados en [`pendientes.md`](./pendientes.md): **P-72** (bloqueante), **P-73**, **P-74**, **P-75**, **P-76**.
+Registrados en [`pendientes.md`](./pendientes.md): **X-72** (bloqueante), **X-73**, **X-74**, **X-75**, **X-76**.
 
 ## Fuentes
 

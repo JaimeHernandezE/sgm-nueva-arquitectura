@@ -2,7 +2,7 @@
 
 *Proceso transversal del módulo Adquisiciones — entrada al ciclo de compra (listado, apertura de expediente y arranque de creación). No es específico de una modalidad. El patrón de **consulta con alcance por rol** es reutilizable como patrón de plataforma; las operaciones y el esquema viven en el contrato de Adquisiciones.*
 
-*Roles:* nombre (usuarios) + código (sistema) según [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (P-24).
+*Roles:* nombre (usuarios) + código (sistema) según [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) (X-24).
 
 *Contrato / API:* [`../contracts.md`](../contracts.md) §2.0 · OpenAPI [`../openapi/expediente.yaml`](../openapi/expediente.yaml) · ensamblado [`../openapi/adquisiciones.openapi.yaml`](../openapi/adquisiciones.openapi.yaml).
 
@@ -74,7 +74,7 @@ Query de `listProcurementCases` (todos **opcionales** salvo paginación estánda
 - Token sin scope `adquisiciones:read` / `adquisiciones.read` → `401` / `403`.
 - Folio inexistente al abrir fila → `PROCUREMENT_CASE_NOT_FOUND` en `getProcurementCase`.
 
-> ⚠ **Pendiente de definir:** comportamiento exacto ante intento de ampliar scope (¿forzar silenciosamente vs `FORBIDDEN`)? Grano departamento vs unidad en municipios sin desglose (**P-49** / **P-51**).
+> ⚠ **Pendiente de definir:** comportamiento exacto ante intento de ampliar scope (¿forzar silenciosamente vs `FORBIDDEN`)? Grano departamento vs unidad en municipios sin desglose (**X-49** / **X-51**).
 
 **Wireframe / prototipo:** [`../wireframes/01-listado-expedientes.md`](../wireframes/01-listado-expedientes.md)
 
