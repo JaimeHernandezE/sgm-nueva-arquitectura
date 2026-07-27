@@ -4,6 +4,7 @@
 > Estado: borrador. Complementa `principios-no-negociables.md`, `estandares-api.md` y `musts-arquitectura.md`.
 > Principio rector: mismo estándar que el resto de la arquitectura — **propiedades verificables, no declaraciones de intención**. La seguridad se demuestra en recepción y se audita en operación.
 > Pendientes registrados en [`pendientes.md`](../decisiones/pendientes.md).
+> Los hallazgos empíricos del sistema anterior que fundamentan varias exigencias están consolidados en el [Anexo A](#anexo-a--hallazgos-del-sistema-anterior).
 
 ---
 
@@ -31,7 +32,8 @@ Dos planos, ya definidos en `estandares-api.md` §8; aquí se agregan las exigen
 ### 2.2 Plano sistemas (M2M)
 1. OAuth2 client credentials (o equivalente) con **scopes por módulo y por municipio**; principio de mínimo privilegio por defecto — un consumidor de reportería obtiene lectura de los módulos pertinentes, nunca acceso total.
 2. Credenciales de cliente con rotación exigible y revocación inmediata disponible.
-3. **Identidad del funcionario originante en escrituras M2M (regla de trazabilidad administrativa):** cuando un sistema municipal escribe vía API, el contrato exige que el payload incluya la identidad del funcionario que originó la acción (RUN o identificador institucional). La autenticación es de máquina; la responsabilidad administrativa del acto es de una persona, y debe quedar registrada para efectos de auditoría y Contraloría. **[PENDIENTE P-23]** Formato exacto del campo y mecanismo de verificación (¿se valida contra nómina del municipio o se registra declarativamente?).
+3. **Ninguna superficie de API sin autenticación.** Todo endpoint, sin excepción, exige credencial válida en alguno de los dos planos. **No se admite la ausencia de autenticación como facilidad de integración**, ni siquiera para feeds internos, cargas masivas o integraciones con sistemas municipales considerados de confianza. La regla aplica con especial fuerza a los endpoints de escritura que crean registros con efecto patrimonial o presupuestario. Fundamento empírico: **hallazgo H-2 del Anexo A** — el sistema anterior expone un endpoint HTTP sin autenticación que crea órdenes de ingreso y pagos.
+4. **Identidad del funcionario originante en escrituras M2M (regla de trazabilidad administrativa):** cuando un sistema municipal escribe vía API, el contrato exige que el payload incluya la identidad del funcionario que originó la acción (RUN o identificador institucional). La autenticación es de máquina; la responsabilidad administrativa del acto es de una persona, y debe quedar registrada para efectos de auditoría y Contraloría. **[PENDIENTE P-23]** Formato exacto del campo y mecanismo de verificación (¿se valida contra nómina del municipio o se registra declarativamente?).
 
 ## 3. Autorización: modelo de roles y permisos (RBAC)
 
@@ -72,7 +74,7 @@ En compras públicas la segregación no es buena práctica: es control interno e
    - **`ApiClient`:** credenciales de sistemas que **consumen** el SGM (M2M municipal, ecosistema).
    - **`IntegrationCredential`:** secretos del SGM hacia terceros (MP, FirmaGob, SII, APIs de DMS).
    - **Credenciales de bucket municipal** (`tenant_owned`): access keys del object storage del tenant, referenciadas desde `TenantStorageConfig`.
-   **Lección directa del sistema anterior: se encontraron secretos JWT en logs.** La ausencia de secretos en logs es ítem explícito de la revisión de recepción. Los módulos funcionales **no** almacenan ninguna de estas familias.
+   **Lección directa del sistema anterior: se encontraron secretos JWT en logs (hallazgo H-1 del Anexo A).** La ausencia de secretos en logs es ítem explícito de la revisión de recepción. Los módulos funcionales **no** almacenan ninguna de estas familias.
 4. Rotación de llaves y secretos: procedimiento documentado y demostrado, no declarado.
 
 ## 8. Seguridad de la API en operación
@@ -109,8 +111,9 @@ Mismo principio que las pruebas de carga — cumple o no cumple:
 
 1. **Pruebas de penetración** ejecutadas por un tercero independiente del adjudicatario, sobre el ambiente de recepción, con alcance que incluya la API (ambos planos de autenticación), el frontend base y la infraestructura. Los hallazgos críticos y altos se corrigen antes de la recepción.
 2. **Revisión de configuración:** secretos fuera de logs y código, TLS interno, rate limiting activo, RBAC y segregación operando con casos de prueba.
-3. **Análisis de dependencias:** inventario de componentes (SBOM) y ausencia de vulnerabilidades conocidas críticas sin mitigar en el momento de la entrega.
-4. Repetición periódica en operación: **[PENDIENTE P-31]** frecuencia de pentest y auditorías (anual como referencia) y quién la financia (candidato: contrato de mantención).
+3. **Inventario de superficie expuesta:** el adjudicatario entrega el listado completo de endpoints con su modo de autenticación declarado, contrastable contra la especificación OpenAPI. **Criterio de cumplimiento: cero endpoints sin autenticación**, y cero endpoints de escritura fuera del inventario. Deriva del hallazgo H-2 (Anexo A); es la verificación que lo habría detectado.
+4. **Análisis de dependencias:** inventario de componentes (SBOM) y ausencia de vulnerabilidades conocidas críticas sin mitigar en el momento de la entrega.
+5. Repetición periódica en operación: **[PENDIENTE P-31]** frecuencia de pentest y auditorías (anual como referencia) y quién la financia (candidato: contrato de mantención).
 
 ## 13. Resumen: qué va a las bases
 
@@ -125,7 +128,35 @@ Mismo principio que las pruebas de carga — cumple o no cumple:
 9. RPO/RTO explícitos con restauración demostrada.
 10. Gestión de incidentes alineada con DS N°7/2023.
 11. Pentest independiente, revisión de configuración y SBOM como condición de recepción.
+12. **Cero superficie de API sin autenticación**, verificada contra inventario de endpoints en recepción.
 
 ## 14. Pendientes abiertos
 
-Los pendientes de este documento están registrados en [`pendientes.md`](../decisiones/pendientes.md): P-21, P-22, P-23, P-24, P-25, P-26, P-27, P-28, P-29, P-30, P-31.
+Los pendientes de este documento están registrados en [`pendientes.md`](../decisiones/pendientes.md): P-21, P-22, P-23, P-24, P-25, P-26, P-27, P-28, P-29, P-30, P-31, P-32.
+
+---
+
+## Anexo A — Hallazgos del sistema anterior
+
+Este anexo consolida los hallazgos verificados en el código del sistema Odoo desarrollado por el proveedor anterior. **No son hipótesis ni escenarios de riesgo: son defectos constatados en el código entregado**, y por eso sirven como fundamento empírico de exigencias que de otro modo quedarían como buenas prácticas discutibles en la evaluación de ofertas.
+
+**Estado de exposición.** Ningún municipio opera actualmente el sistema: las máquinas de los pilotajes fueron dadas de baja. **No existe exposición vigente.** El valor de estos hallazgos es probatorio, no operativo.
+
+| ID | Hallazgo | Evidencia | Qué demuestra | Exigencia que fundamenta |
+|---|---|---|---|---|
+| **H-1** | Secretos JWT presentes en logs de aplicación | Registro de logs del sistema anterior | La gestión de secretos no puede confiarse a disciplina de desarrollo; requiere gestor dedicado y verificación en recepción | §7.3 (familias de secretos en gestor dedicado), §12.2 (secretos fuera de logs) |
+| **H-2** | Endpoint HTTP **sin autenticación** que crea registros financieros | Controlador `POST /api/sem/data` en `tesoreria_gov_cl`, declarado con `auth='none'`. Crea `sem.data.reception` y desde ahí una orden de ingreso (`account.gov.entry.order`) y un pago (`account.gov.payment`) | Que un desarrollo entregado puede exponer escritura de registros con efecto patrimonial sin ninguna credencial, por conveniencia de integración. La ausencia de autenticación no fue un descuido puntual: fue el mecanismo de diseño del feed externo | §2.2.3 (cero superficie sin autenticación), §12.2.3 (inventario de endpoints con modo de autenticación), §12.1 (pentest independiente sobre la API) |
+
+### A.1 Por qué H-2 importa más allá del caso
+
+Tres razones para conservarlo como fundamento y no como anécdota:
+
+1. **Es el único patrón productivo de ingreso externo del sistema anterior.** No era un endpoint marginal: era la vía por la que un sistema externo alimentaba caja. La decisión de dejarlo sin autenticación estaba en el camino principal, no en un rincón.
+2. **Un pentest lo habría detectado; una revisión documental, no.** Justifica que la verificación de seguridad sea ejecución sobre el sistema y no revisión de declaraciones del proveedor.
+3. **Reaparece como tentación en SGM.** El pendiente T-12 del plan de Tesorería recupera la semántica funcional de ese feed como base del contrato de entrada de órdenes de ingreso. La semántica se hereda; el mecanismo, no.
+
+### A.2 Uso de este anexo
+
+Los hallazgos se citan en las bases como fundamento de las exigencias correspondientes, sin atribución nominal al proveedor anterior. El objetivo es justificar el nivel de exigencia con evidencia propia y verificable, no imputar responsabilidades.
+
+> **PENDIENTE P-32:** Completar el anexo con los demás hallazgos de la fase Odoo que tengan consecuencia de seguridad, revisando el registro de hallazgos QA. Este anexo debe ser la única fuente de esa evidencia dentro del corpus de seguridad.
