@@ -2,9 +2,11 @@
 
 **Proyecto:** SGM — Sistema de Gestión Municipal
 **Módulo:** Presupuestos
-**Versión:** 0.4 (borrador para revisión interna)
+**Versión:** 0.5 (borrador para revisión interna)
 **Fecha:** julio 2026
 **Estado:** propuesta de plan, no validado con DM
+
+**Cambios v0.5:** dictamen CGR N° 60.449/2008 verificado en fuente primaria — **el levantamiento lo cita incorrectamente** (§4.2; cierra P-9). La fuente real de la obligación trimestral es el art. 29 letra d) LOCM. Se incorporan el plazo de 10 días del art. 29 letra c) con escalamiento a CGR, el criterio de delegación del decreto modificatorio, y la nueva §5.1 (disponibilidad diferenciada por exposición legal y modo de contingencia, P-15). Corrección de trazabilidad en Anexo A.3.
 
 **Cambios v0.4:** nuevo §7 — track GP de gobernanza de plataforma (procesos en SUBDERE). Renumeración de §7–§10 a §8–§11. Anexo A (jerarquía clasificador / plan de cuentas). P-12 Cementerio; P-13/P-14 del track GP. Ajuste D-2.
 
@@ -112,7 +114,9 @@ Leyenda de cobertura Odoo: **Sí** = opera el ámbito · **Parcial** = hay rastr
 | **Preobligación / obligación** | No (caja `Ejecutar`) | Sí: en puente `account_gov_adquisiciones` | **Levantamiento BPMN pendiente** |
 | **Devengo presupuestario** | No | Sí: `accrued_move_id` → `account.gov.move` | **Levantamiento + frontera Contabilidad** |
 | Examen trimestral ingresos/gastos (art. 81) | Parcial (26.2.10) | No | Levantar como proceso formal |
-| **Informe trimestral de pasivos acumulados** (dictamen 60.449/2008) | **Sí (26.2.10)** | No | **Obligación distinta del art. 81; verificar fuente (P-9)** |
+| **Informes trimestrales de la Unidad de Control** (art. 29 d LOCM) | **Sí (26.2.10), con cita normativa errónea** | No | **Obligación distinta del art. 81; contenido legalmente tipificado. Ver §4.2** |
+| **Representación de actos ilegales: 10 días y escalamiento a CGR** (art. 29 c) | No | No | **Sin cobertura. Plazo legal computable con consecuencia externa** |
+| Delegación de la facultad de dictar el decreto modificatorio | No | No | **Configurable por municipio según su acto de delegación (dictamen 60.449/2008)** |
 | **Peticiones no contempladas en el presupuesto aprobado** | **Sí (26.2.10)** | No | **Entidad `UnfundedRequest`** |
 | Registro correlativo de imputación con glosa y respaldo | Sí (26.2.10) | Parcial: `tupa.file`, `dms.file`, glosas en CDP/ejecución | Especificar requisito de auditoría |
 | Flujo de caja / programación | No | Parcial: `budget.cash.flow` solo computed | Levantar como proceso de programación (no solo vista) |
@@ -131,6 +135,8 @@ Leyenda de cobertura Odoo: **Sí** = opera el ámbito · **Parcial** = hay rastr
 **Cobertura del levantamiento:** ~35–40% de la superficie funcional, concentrada en formulación y gobernanza.  
 **Cobertura de Odoo:** fuerte en ejecución y formulación operativa; débil en norma y control.  
 **Brecha residual conjunta:** Salud/Educación como entidades, control periódico completo, series históricas, y la costura Contabilidad en apertura/devengo.
+
+**Advertencia sobre la calidad de las citas.** §4.2 documenta un caso confirmado en que el levantamiento atribuye una obligación a un dictamen que trata de otra materia. El levantamiento es insumo de proceso confiable; sus citas normativas no lo son sin verificación.
 
 El proceso 26 **agrega** requisitos que Odoo no tiene (series históricas, límites de personal, acto de Alcaldía, apertura como proceso). Odoo **agrega** requisitos que Magenta no descompone (cadena CDP→devengo, validador I/E, export CGR, tipologías de ficha). Ambos son insumos; ninguno es contrato de arquitectura.
 
@@ -153,7 +159,10 @@ Cada regla normativa se traduce en una regla verificable del motor. Esta tabla e
 | DL 3.063 | Ingresos propios, tributos locales, Fondo Común Municipal | Modelo de ingresos con origen tipificado; frontera con Tesorería |
 | Decreto 854/2004 Hacienda (mod. Decreto 1227/2024, vigente para información presupuestaria 2026) | Clasificador presupuestario: subtítulo / ítem / asignación / subasignación | Clasificador **versionado con vigencia temporal**, administrado por SUBDERE como `NormativeParameter`. Cambia por decreto sin nuevo despliegue |
 | Normativa de Contabilidad General de la Nación (26.2.8) | Apertura del ejercicio: traspaso de deudores presupuestarios a **ingresos por percibir** y de acreedores a **Deuda Flotante**; registro de saldos de activo, pasivo y patrimonio | `ExerciseOpening` como proceso con efecto contable. Es la costura de arranque con Contabilidad |
-| Dictamen CGR N° 60.449/2008 (citado en 26.2.10) | Informar **trimestralmente** al Concejo el detalle **mensual** de pasivos acumulados | Reporte periódico distinto del examen del art. 81. Dos obligaciones trimestrales concurrentes |
+| **LOCM art. 29 letra d)** | La Unidad de Control emite informe **trimestral** del estado de avance del ejercicio programático presupuestario; y también trimestralmente sobre **cotizaciones previsionales**, **aportes al FCM** y **asignaciones de perfeccionamiento docente**. Debe responder por escrito a consultas de cualquier concejal | Reportes trimestrales con contenido legalmente tipificado —no un "informe de pasivos" genérico— más un canal de consultas de concejales con respuesta obligatoria. Cruza con RRHH y Educación |
+| **LOCM art. 29 letra c)** | La Unidad de Control representa al alcalde los actos que estime ilegales **dentro de 10 días** de tomado conocimiento; si el alcalde no enmienda, **debe remitir a CGR** | Plazo legal computable y **escalamiento automático a un órgano externo**. Segundo punto del sistema donde el tiempo dispara una consecuencia |
+| **LOCM art. 21 letras b) y c)** | SECPLA asesora en la elaboración del presupuesto y evalúa su cumplimiento, informando al Concejo **al menos semestralmente** | Reporte semestral con actor y periodicidad propios, distinto de los trimestrales del art. 29 |
+| **Dictamen CGR N° 60.449/2008** (verificado en fuente primaria) | SECPLA puede **solicitar** modificaciones presupuestarias por su función de asesoría; la DAF también, coordinadamente (art. 27); la **proposición al Concejo la formula el alcalde**; SECPLA puede **dictar el decreto modificatorio** si existe delegación de atribuciones (art. 63 j) y previa aprobación del Concejo | Legitima el modelo de actores del proceso 27 y exige que **la facultad de dictar el decreto sea configurable por municipio** según su acto de delegación |
 | Instrucciones CGR / SUBDERE sobre déficit | Cálculo de déficit preventivo | Fórmula parametrizable, no hardcodeada |
 | SINIM | Reporte periódico y BEP | Contrato de exportación; automatización de canal legal existente |
 
@@ -171,6 +180,24 @@ En v0.1 este era el pendiente crítico del módulo. El proceso 26 lo destraba:
 Esto convierte el gateway `Requiere Aprobación del Concejo` del proceso 27 en **una regla computable sobre el clasificador**, no en un juicio discrecional del DAF. Es probablemente el hallazgo de diseño más valioso del cruce de ambos procesos.
 
 > **PENDIENTE P-3 (reformulado, ya no bloqueante):** Confirmar con DM y unidades de Control que la regla derivada corresponde a la práctica, y verificar el tratamiento de casos borde: creación de un ítem nuevo, modificaciones que compensan entre subtítulos con neto cero, y traspasos desde subtítulos de saldo final de caja. Mientras no se confirme, la regla se implementa como parámetro configurable con este valor por defecto.
+
+### 4.2 Corrección: el levantamiento cita mal el dictamen 60.449/2008
+
+La tarea 26.2.10 afirma: *"Informar trimestralmente al concejo sobre el detalle mensual de los pasivos acumulados (dictamen N° 60.449, de 2008)."*
+
+Verificado el dictamen en la Base de Dictámenes de CGR, **la cita no corresponde**. El pronunciamiento resuelve una consulta del Secretario Comunal de Planificación de la Municipalidad de San Ramón sobre **a qué unidad corresponde efectuar las solicitudes de modificación presupuestaria**, y si SECPLA puede dictar el decreto modificatorio. No trata de reportes de pasivos ni de periodicidad trimestral. La única periodicidad que menciona es el informe **semestral** de SECPLA al Concejo (art. 21 c).
+
+**La obligación descrita sí existe, pero su fuente es el art. 29 letra d) de la LOCM**, y su contenido es más específico que "pasivos acumulados": informes trimestrales tipificados sobre avance del ejercicio programático presupuestario, cotizaciones previsionales, aportes al FCM y perfeccionamiento docente, más la obligación de responder por escrito a consultas de concejales.
+
+**Vigencia del dictamen.** Está vigente: los campos de la ficha CGR marcan RECONSIDERADO, RECONSIDERADO PARCIAL, ACLARADO y ALTERADO en NO, y los artículos en que se funda (21, 27, 29 y 63 LOCM) siguen vigentes con el mismo contenido. Caveat: esos campos registran acciones explícitas de jurisprudencia posterior; no capturan una eventual superación implícita por reforma legal.
+
+**Consecuencias de diseño.**
+
+1. La entidad `AccruedLiabilitiesReport` prevista en v0.4 estaba mal especificada. Se reemplaza por `QuarterlyControlReport`, con contenido legalmente tipificado.
+2. El dictamen sí aporta un requisito real: la facultad de dictar el decreto modificatorio depende del acto de delegación de cada municipio, y por tanto debe ser configurable (MP-2).
+3. El art. 29 c) agrega un plazo de 10 días con escalamiento obligatorio a CGR, que `DeficitRepresentation` debe modelar.
+
+**Consecuencia metodológica.** Ninguna cita normativa del levantamiento se da por buena sin verificación en fuente primaria. Se incorpora como criterio de la fase F1 y como categoría de trabajo del track GP (§7.3, GP-1).
 
 ---
 
@@ -214,11 +241,34 @@ Naming técnico en inglés, consistente con Adquisiciones. Lista de trabajo, no 
 
 **Ejecución:** `CommitmentChain`, `AvailabilityCertificate` (CDP), `BudgetPreCommitment`, `BudgetCommitment`, `BudgetAccrual`, `BudgetAllocationEntry`
 
-**Control:** `DeficitRepresentation`, `QuarterlyReview`, **`AccruedLiabilitiesReport`**, **`UnfundedRequest`** (peticiones no contempladas), `CashFlowProjection`, `ExecutionSnapshot`
+**Control:** `DeficitRepresentation` (con plazo art. 29 c y escalamiento a CGR), `QuarterlyReview`, **`QuarterlyControlReport`** (art. 29 d; reemplaza a `AccruedLiabilitiesReport` de v0.4 — ver §4.2), **`UnfundedRequest`** (peticiones no contempladas), `CashFlowProjection`, `ExecutionSnapshot`, **`ContingencyRecord`** (§5.1)
 
 **Transversal:** `BudgetClassifier` (versionado, subtítulo/ítem/asignación/subasignación), `NormativeParameter` (compartido con Adquisiciones), `CostCenter`, `ManagementArea`, `Program` / `Subprogram`
 
 **Gobernanza de plataforma (GP):** `NormativeWatch`, `ChangeRequest`, `NormativeRuling`, `ContractVersion`, `EcosystemNotice` — ver §7.7
+
+### 5.1 Disponibilidad diferenciada y modo de contingencia
+
+La criticidad de disponibilidad **no es uniforme** en el módulo. Especificar un SLA global alto para todo es caro y difícil de defender en licitación; especificarlo por proceso según su exposición legal es más barato y más sólido.
+
+| Clase | Operaciones | Consecuencia de la indisponibilidad |
+|---|---|---|
+| **Crítica con efecto jurídico** | Presentación de la primera semana de octubre y pronunciamiento del Concejo antes del 15 de diciembre (art. 82); representación dentro de 10 días (art. 29 c); apertura del ejercicio al 1 de enero | El plazo corre igual. La indisponibilidad **produce** el efecto legal |
+| **Crítica operacional** | Emisión de CDP, preobligación, obligación y devengo | Paraliza la ejecución del gasto del municipio |
+| **Diferible** | Series históricas, reportes agregados, consultas de ejecución | Molestia, sin efecto jurídico |
+
+**El caso que obliga a diseñar contingencia.** Si el sistema está caído el 14 de diciembre, el silencio del art. 82 hace que rija lo propuesto por el alcalde. Una indisponibilidad técnica produciría un efecto jurídico: no es que el Concejo decidiera no pronunciarse, es que el sistema no se lo permitió. Lo mismo con los diez días del art. 29 c), cuyo vencimiento obliga a remitir los antecedentes a Contraloría.
+
+Esto **no se resuelve con uptime.** Ninguna cifra de disponibilidad elimina el riesgo; solo lo hace menos probable. Se resuelve con cuatro elementos:
+
+1. **Vía alternativa documentada** para cada operación de clase crítica con efecto jurídico, ejecutable fuera del sistema.
+2. **Regularización posterior** con efecto retroactivo a la fecha real del acto, no a la fecha de carga.
+3. **Registro de contingencia** (`ContingencyRecord`): constancia auditable de que se operó en modo degradado, quién lo autorizó, y cuándo se regularizó.
+4. **No consumar automáticamente el efecto del silencio.** El plazo del art. 82 corre por ley y el sistema no puede suspenderlo. Lo que sí puede es **no registrar la consumación como hecho sin verificación humana**: si hubo contingencia declarada, la constancia debe quedar en el expediente para que el municipio pueda hacerla valer. Un sistema que marca "aprobado por silencio" de forma automática mientras estuvo caído está documentando en contra de su propio usuario.
+
+**Consecuencia de custodia.** En el modo de hospedaje SUBDERE para municipios pequeños, la obligación de disponibilidad —y la exposición asociada— es de SUBDERE. Es el mismo argumento de §7.1: no se transfiere por contrato lo que la norma radica en la institución.
+
+> **PENDIENTE P-15:** Clasificar todas las operaciones del módulo por exposición legal, definir la vía alternativa de cada operación crítica, y resolver el punto 4. Requiere criterio jurídico, no solo técnico.
 
 ---
 
@@ -235,7 +285,7 @@ Insumo para la especificación de independencia modular. Cada uno es un contrato
 | **Tesorería** | Tes → Presupuestos | Ingresos efectivamente percibidos vs. estimados; **ingresos propios percibidos del año anterior (base del 42% art. 67)**; pagos que cierran la cadena | **Alta** |
 | **RRHH / Remuneraciones** | RRHH → Presupuestos | Dotación, jubilaciones previstas, concursos, honorarios; **base de cálculo de los límites 42% y 20%** | **Alta** (elevada desde Media en v0.1) |
 | **Salud / Educación** | Bidireccional | Presupuestos separados con consolidación y reporte propios | Media |
-| **SINIM / CGR** | Presupuestos → externo | BEP, informes, cálculo de déficit, pasivos acumulados | Alta (obligación legal) |
+| **SINIM / CGR** | Presupuestos → externo | BEP, informes CGR, cálculo de déficit, informes trimestrales del art. 29 d) | Alta (obligación legal) |
 
 **Patrón de etapa observada:** el pago (Tesorería) cierra la cadena de compromiso pero no es propiedad de Presupuestos. Se modela igual que Pago en Adquisiciones — Presupuestos consume el evento sin poseer el proceso.
 
@@ -341,7 +391,8 @@ Duraciones en semanas, preliminares y a ajustar según disponibilidad de DM. Las
 | Especificación del clasificador | `BudgetClassifier` versionado según Decreto 854 y Anexo A (tres capas); modelo de vigencia temporal y gobernanza de cambios; soporte a la regla de §4.1 |
 | **Especificación de límites de gasto en personal** | Validadores del 42% (art. 67 LOCM) y 20% (art. 2 Ley 18.883): base de cálculo, momento de evaluación, efecto al incumplir |
 | **Requisito de series históricas** | Retención y consulta de ejecución de ≥2 ejercicios anteriores más el semestre en curso, con corte a julio. Define la política de retención del módulo |
-| Mapa de obligaciones de reporte | CGR, SINIM, BEP, pasivos acumulados (dictamen 60.449/2008), Anexos: qué, cuándo, formato |
+| Mapa de obligaciones de reporte | CGR, SINIM, BEP, informes trimestrales del art. 29 d) LOCM, informe semestral SECPLA (art. 21 c), Anexos: qué, cuándo, formato |
+| **Verificación de citas normativas del levantamiento** | Contrastar en fuente primaria toda referencia legal o jurisprudencial del Informe 2 antes de convertirla en requisito. Criterio derivado de §4.2 |
 
 ### F2 — Levantamiento de procesos faltantes · 3 semanas
 
@@ -351,7 +402,7 @@ Recuperar como procesos formales lo que hoy solo existe como caja no descompuest
 |---|---|
 | BPMN — Ejecución presupuestaria | Cadena CDP → preobligación → obligación → devengo. Descompone la caja `Ejecutar` del proceso 26. Matriz de doble pool |
 | **BPMN — Apertura del ejercicio** | Descompone `Registrar` (26.2.8): generación de disponibilidad, traspaso a ingresos por percibir y Deuda Flotante, saldos patrimoniales. Validar con Contabilidad |
-| BPMN — Examen trimestral, déficit y pasivos | Art. 81 más dictamen 60.449/2008. Descompone `Controlar y Evaluar` (26.2.10). Validar con Control |
+| BPMN — Examen trimestral, déficit y reportes de Control | Art. 81 más art. 29 letras c) y d) LOCM, incluido el plazo de 10 días con escalamiento a CGR. Descompone `Controlar y Evaluar` (26.2.10). Validar con Control |
 | BPMN — Programación de caja | Derivado de `budget.cash.flow` más práctica municipal |
 | BPMN — Salud y Educación | Ciclo separado y consolidación |
 | Validación con municipios piloto | Contraste con al menos dos de los cinco municipios de referencia |
@@ -386,6 +437,7 @@ Formato ficha idéntico al usado en Adquisiciones: actores, precondiciones, paso
 | Especificación de escalabilidad | Capa de lectura separada para reportes agregados y series históricas; volumetría de la cadena de compromiso, que es el punto de alto volumen |
 | Wireframes SVG | Vista de ejercicio presupuestario, ficha por área, y expediente de cadena de compromiso, con codificación semántica consistente con Adquisiciones |
 | **Especificación del track GP** | Los cuatro procesos de §7 con ficha propia, taxonomía de triage, clasificación de parámetros por clase de autoridad (P-14), y mapa de contrapartes. Insumo directo de las bases |
+| **Especificación de disponibilidad y contingencia** | Clasificación de operaciones por exposición legal (§5.1), SLA diferenciado por clase, vía alternativa por operación crítica y `ContingencyRecord` (P-15). Insumo directo de las bases |
 | Documento consolidado en `sgm-docs/` | Integración final y revisión cruzada |
 
 ---
@@ -404,12 +456,13 @@ Formato ficha idéntico al usado en Adquisiciones: actores, precondiciones, paso
 | P-6 | Apertura del ejercicio y frontera Contabilidad | F2 | DM + Contabilidad | Abierto |
 | P-7 | Tolerancias de monto CDP ↔ obligación ↔ devengo | F3 | Equipo + Adq | Abierto |
 | P-8 | Formato y canal SINIM / CGR / BEP | F1 | SUBDERE / DM | Abierto |
-| P-9 | Verificar dictamen CGR N° 60.449/2008 | F1 | Equipo interno | Abierto |
+| ~~P-9~~ | Verificar dictamen CGR N° 60.449/2008 | — | — | **Resuelto** (§4.2, v0.5) |
 | P-10 | Momento de evaluación de límites 42% y 20% | F3 | DM + RRHH | Abierto |
 | P-11 | Retención y migración de series históricas | F1 | Equipo interno | Abierto |
 | **P-12** | Sector **Cementerio** (cuarto sector SINIM) | F1 | DM + Unidad de Información Municipal | Abierto |
 | **P-13** | Declaración del track GP en bases de licitación | F5 / bases | Jefatura SUBDERE | Abierto |
 | **P-14** | Clasificar parámetros: mandato propio vs órgano rector (§7.5) | F5 / GP | Equipo + Depto. Finanzas Municipales | Abierto |
+| **P-15** | Exposición legal por operación, vía alternativa y modo de contingencia (§5.1) | F5 | Equipo + Jurídica | Abierto |
 
 Cada pendiente abierto se documenta abajo con: contexto, pregunta a resolver, opciones candidatas, decisión por defecto si no hay respuesta a tiempo, criterio de cierre e insumos.
 
@@ -564,21 +617,21 @@ con la apertura (26.2.8) como interfaz que hace ejecutable el ejercicio y habili
 
 ---
 
-### P-9 — Verificar dictamen CGR N° 60.449/2008
+### ~~P-9~~ — Dictamen CGR N° 60.449/2008 · **RESUELTO (v0.5)**
 
-**Contexto.** El levantamiento cita el dictamen para el informe trimestral de pasivos acumulados (detalle mensual). No está verificado en fuente primaria.
+**Resultado.** Verificado en la Base de Dictámenes de CGR. El dictamen **está vigente**, pero **el levantamiento lo cita incorrectamente**. Desarrollo completo en §4.2.
 
-**Pregunta.** ¿Qué obliga exactamente el dictamen (destinatario, periodicidad, contenido, vigencia)? ¿Sigue siendo la referencia correcta o hay dictamen/oficio posterior?
+**Qué resuelve realmente.** Consulta del Secretario Comunal de Planificación de San Ramón sobre a qué unidad corresponde efectuar las solicitudes de modificación presupuestaria y si SECPLA puede dictar el decreto modificatorio. Conclusiones: (a) SECPLA puede solicitar modificaciones por su función de asesoría; (b) la DAF también, coordinadamente (art. 27); (c) la proposición al Concejo la formula el alcalde; (d) SECPLA puede dictar el decreto modificatorio si existe delegación de atribuciones (art. 63 j) y previa aprobación del Concejo.
 
-**Pasos.**
-1. Buscar en [jurisprudencia CGR](https://www.contraloria.cl/web/cgr/buscar-jurisprudencia) el N° 60.449/2008.
-2. Extraer párrafos operativos (quién, qué, cuándo).
-3. Contrastar con 26.2.10 y con el examen del art. 81 (son obligaciones distintas).
-4. Si no existe o fue superado, documentar sustituto o bajar el requisito a “práctica Magenta no normativa”.
+**Qué no dice.** Nada sobre pasivos acumulados ni sobre periodicidad trimestral. La única periodicidad que menciona es el informe **semestral** de SECPLA al Concejo (art. 21 c).
 
-**Criterio de cierre.** Cita textual + enlace + implicancia de diseño actualizada en §4; o descarte documentado.
+**Fuente correcta de la obligación trimestral.** Art. 29 letra d) LOCM, con contenido tipificado: avance del ejercicio programático presupuestario, cotizaciones previsionales, aportes al FCM y perfeccionamiento docente.
 
-**Insumos.** 26.2.10; base CGR; §4 fila dictamen.
+**Efectos en el plan.** (1) `AccruedLiabilitiesReport` reemplazada por `QuarterlyControlReport`. (2) Nuevo requisito: delegación configurable de la facultad de dictar el decreto modificatorio (MP-2). (3) Nuevo requisito: plazo de 10 días y escalamiento a CGR del art. 29 c) en `DeficitRepresentation`. (4) Criterio metodológico incorporado a F1 y a GP-1.
+
+**Caveat.** Los campos de estado de la ficha CGR registran acciones explícitas de jurisprudencia posterior; no capturan una eventual superación implícita por reforma legal.
+
+**Derivado.** Queda abierta la pregunta de cuántas otras citas normativas del levantamiento no resisten verificación. Es el fundamento del criterio metodológico de F1.
 
 ---
 
@@ -677,15 +730,34 @@ con la apertura (26.2.8) como interfaz que hace ejecutable el ejercicio y habili
 
 ---
 
+### P-15 — Exposición legal por operación y modo de contingencia
+
+**Contexto.** §5.1. Hay operaciones cuyo incumplimiento de plazo produce efecto jurídico (silencio del art. 82; diez días del art. 29 c). Una caída del sistema en fecha crítica consumaría ese efecto sin decisión humana.
+
+**Pregunta.** ¿Cuál es la vía alternativa para cada operación crítica, y cómo debe comportarse el sistema frente al vencimiento de un plazo legal cuando hubo contingencia declarada?
+
+**Opciones (para el comportamiento ante el silencio del art. 82).**
+1. El sistema registra la consumación automáticamente al vencer el plazo (comportamiento ingenuo; documenta en contra del municipio si estuvo caído).
+2. El sistema registra la consumación solo tras **verificación humana** de que efectivamente no hubo pronunciamiento, dejando el `ContingencyRecord` asociado en el expediente.
+3. El sistema bloquea el registro mientras exista contingencia abierta (arriesga desalinear el estado del sistema respecto del estado legal real).
+
+**Default:** opción 2. El plazo legal corre por ley y el sistema no puede suspenderlo; lo que sí puede es no dar por acreditado un hecho sin verificación, y conservar la constancia para que el municipio la haga valer.
+
+**Criterio de cierre.** Tabla operación × clase de exposición × vía alternativa × responsable; pronunciamiento jurídico sobre el punto del silencio (candidato natural a GP-4); `ContingencyRecord` especificado en F4 y SLA diferenciado en F5.
+
+**Insumos.** §5.1; arts. 82 y 29 c) LOCM; especificación de escalabilidad F5; modo de hospedaje SUBDERE (§7.1).
+
+---
+
 ### Orden sugerido de resolución
 
 ```
 F0:  P-1, P-4
-F1:  P-9 → P-8, P-11, P-12, (P-10 inicia con RRHH)
+F1:  P-8, P-11, P-12, (P-10 inicia con RRHH)     · P-9 cerrado en v0.5
 F2:  P-5, P-6
 F3:  P-3, P-7, P-10 (cierre)
-F4:  cierre formal P-1 en modelo de Adquisiciones
-F5:  P-13, P-14 (track GP)
+F4:  cierre formal P-1 en modelo de Adquisiciones; ContingencyRecord (P-15)
+F5:  P-13, P-14 (track GP), P-15 (cierre)
 ```
 
 ---
@@ -703,6 +775,8 @@ F5:  P-13, P-14 (track GP)
 | La apertura del ejercicio cruza la frontera con Contabilidad | Medio — riesgo de doble propiedad del dato | P-6 resuelto en F2, con Contabilidad presente en el levantamiento |
 | **El sistema se entrega sin mantenedor del modelo normativo** | **Alto — modo de falla de largo plazo del proyecto, no solo de este módulo** | Track GP especificado en F5 y declarado en las bases (P-13). Si no se resuelve explícitamente, se materializa por omisión al cerrar el proyecto |
 | **SUBDERE crea interpretación normativa de hecho** vía validadores bloqueantes sin respaldo de órgano rector | Medio-alto — atribución que corresponde a CGR | Clasificación de parámetros por clase de autoridad (§7.5, P-14) y vía de escalamiento GP-4 |
+| **Indisponibilidad del sistema en fecha con efecto jurídico** | **Alto — una caída puede consumar un efecto legal (silencio del art. 82, vencimiento del art. 29 c) sin decisión humana** | Disponibilidad diferenciada por exposición legal, vía alternativa documentada y `ContingencyRecord` auditable (§5.1, P-15). El sistema no da por acreditado el silencio sin verificación humana |
+| **Citas normativas del levantamiento tomadas como requisito sin verificar** | Medio-alto — §4.2 muestra un caso confirmado | Verificación en fuente primaria como entregable de F1; incorporado a GP-1 como práctica permanente |
 
 ---
 
@@ -717,6 +791,8 @@ F5:  P-13, P-14 (track GP)
 7. La cadena de firma del decreto es configurable por municipio sin modificar código.
 8. Cada parámetro normativo está clasificado como de mandato propio o de respaldo de órgano rector, y ninguno de la segunda clase se modifica sin acto del órgano competente registrado en el sistema (P-14).
 9. Los cuatro procesos del track GP tienen ficha propia y el sistema los soporta técnicamente: vigencia temporal de parámetros, versionado de contratos con preaviso, y trazabilidad de cada validador a su fuente (§7, P-13).
+10. Toda operación con plazo legal tiene clase de exposición asignada y vía alternativa documentada; el sistema no da por acreditado el vencimiento de un plazo con efecto jurídico sin verificación humana registrada, y conserva el `ContingencyRecord` asociado (§5.1, P-15).
+11. Ninguna regla del módulo se funda en una cita normativa no verificada en fuente primaria (§4.2).
 
 ---
 
@@ -766,7 +842,13 @@ El error habitual es tratarlas como una sola. Son tres artefactos con autoridad,
 
 **Cementerio como cuarto sector.** El clasificador de SINIM filtra por MUNICIPAL, SALUD, EDUCACION y **CEMENTERIO**. El levantamiento y Odoo solo contemplan el municipal (área de catálogo ≠ entidad). Ver P-12.
 
-**Desfase de los materiales publicados.** Las planillas de carga BEP publicadas corresponden a 2023 y los datos de ejecución llegan a 2025 en primera edición. Si el contrato de reporte se especifica contra estos archivos, hay que asumir latencia y versionado por año. Refuerza P-8.
+**Trazabilidad de los materiales publicados.** Conviene separar lo verificado de lo inferido:
+
+- **Verificable:** los enlaces rotulados "Archivo de carga BEP actualizado" en la página de Documentos del Clasificador Presupuestario apuntan a `BEP_Planillas_Excel_2023.rar` y `BEP_Planillas_csv_2023.rar`.
+- **No verificado:** si el Manual de Imputaciones V19 incorpora el Decreto 1227/2024. Comprobación pendiente en P-8.
+- **No es evidencia de desfase:** que los datos de ejecución lleguen a 2025, que corresponde al rezago normal del reporte municipal.
+
+Si el contrato de reporte se especifica contra estos archivos, hay que asumir versionado por año. Refuerza P-8.
 
 ### A.4 Regla de gobernanza derivada
 
@@ -778,11 +860,12 @@ La evidencia de más de veinte años de modificaciones sucesivas al DS 854 confi
 
 - Informe 2 — Anexo procesos: Levantamiento de procesos y diseño de Servicios, Magenta / C Amable para SUBDERE (procesos 26 y 27)
 - [`modelos-odoo.md`](modelos-odoo.md) — inventario as-is reconstruido desde `presupuesto_gov_cl` y `account_gov_adquisiciones`
-- [Ley N° 18.695, Orgánica Constitucional de Municipalidades](https://www.bcn.cl/leychile/navegar?idNorma=30077) — arts. 65, 67, 81, 82
+- [Ley N° 18.695, Orgánica Constitucional de Municipalidades](https://www.bcn.cl/leychile/navegar?idNorma=30077) — arts. 21, 27, 29, 63, 65, 67, 81, 82
 - [Ley N° 18.883, Estatuto Administrativo para Funcionarios Municipales](https://www.leychile.cl/leychile/navegar?idNorma=30256) — art. 2
 - [Decreto 854/2004, Ministerio de Hacienda — Determina clasificaciones presupuestarias](https://www.bcn.cl/leychile/navegar?idNorma=233184)
 - [ACHM — Elaboración, seguimiento y fiscalización del presupuesto municipal](https://www.achm.cl/wp-content/uploads/2025/01/Elaboracion-Seguimiento-y-Fiscalizacion-del-Presupuesto-Municipal.pdf)
 - [SUBDERE — Instrucciones para el cálculo del déficit municipal](https://municipalidades.subdere.gob.cl/descargas/20_12_2024_Instrucciones_calculo_deficit_municipal_2024.pdf)
-- [CGR — Base de jurisprudencia administrativa](https://www.contraloria.cl/web/cgr/buscar-jurisprudencia) — para verificación de P-9
+- [CGR — Base de jurisprudencia administrativa](https://www.contraloria.cl/web/cgr/buscar-jurisprudencia)
+- Dictamen CGR N° 60.449, de 19-XII-2008 — verificado en fuente primaria; ver §4.2
 - [SINIM — Sistema Nacional de Información Municipal](https://www.sinim.gov.cl/)
 - Anexo A de este plan — jerarquía clasificador / plan de cuentas / puente SUBDERE
