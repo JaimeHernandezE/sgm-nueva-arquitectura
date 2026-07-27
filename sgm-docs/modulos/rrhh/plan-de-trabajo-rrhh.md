@@ -2,9 +2,11 @@
 
 **Proyecto:** SGM — Sistema de Gestión Municipal
 **Módulo:** RRHH / Remuneraciones
-**Versión:** 0.1 (borrador para revisión interna)
+**Versión:** 0.2 (borrador para revisión interna)
 **Fecha:** julio 2026
 **Estado:** propuesta de plan, no validada con DM
+
+**Cambios v0.2:** contraste del diagnóstico §3.2–3.3 contra el ORM del stack RRHH. Se corrige permisos ≠ `hr.holiday.request` (traslado de feriado; permisos = `hr.leave`); se matiza HE (resolución + checklist, sin hard-stop en liquidación); se reclasifican informe de honorarios, retenciones judiciales, Previred y viáticos con la lente de *expediente sin efecto de dominio*; se añaden PMG, portal/autoservicio y modelos de reporte (`report.transparency`, `report.ine`); conteo de addons alineado al inventario (13). Nueva §3.2.1. Sin renumerar R-1…R-14.
 
 **Convención de pendientes:** este módulo usa el prefijo **R-nn**. Las referencias a Presupuestos (**P-nn**), Contabilidad (**C-nn**), Tesorería (**T-nn**) y arquitectura transversal conservan su prefijo original.
 
@@ -90,7 +92,7 @@ Amplía el alcance del CDP más allá de adquisiciones, que era el único uso co
 
 **4. Las horas extras exigen acto administrativo previo e individualizado.** El proceso 8 lo cita del Estatuto Administrativo: las HE *«deben autorizarse en forma previa a la realización de aquéllas mediante actos administrativos, y en ellos se debe individualizar al personal que las desarrollará, el número de horas a efectuar y el mes que comprende la autorización»*.
 
-Es un validador duro: **no se puede liquidar una hora extra sin resolución previa que individualice persona, cantidad y mes**. El as-is lo modela correctamente en `hr.cl.overtime.resolution`.
+**Requisito legal (to-be):** validador duro — **no se puede liquidar una hora extra sin resolución previa vigente** que individualice persona, cantidad y mes. **As-is (v0.2):** `hr.cl.overtime.resolution` condiciona el **registro** de saldos (`hr.cl.employee.extra` con resolución `active`); en el lote de nómina solo hay checklist booleano `check_extra_hours`, **sin** hard-stop que revalide la resolución al calcular la liquidación. Ver §3.2.1.
 
 **5. El pago previsional tiene plazo con hora exacta y doble firma.** El proceso 17.2.8: el pago de la nómina en Previred *«no puede ocurrir posterior al 13 de cada mes a las 13:45 hrs»* y *«requiere la firma de 2 cuentadantes»*.
 
@@ -121,7 +123,7 @@ Es el tercer caso documentado de cita normativa del levantamiento que no resiste
 
 ### 3.2 Odoo as-is
 
-[`modelos-odoo.md`](modelos-odoo.md) reconstruye once addons. Es el módulo con mayor implementación del as-is.
+[`modelos-odoo.md`](modelos-odoo.md) documenta el stack completo (**13 addons**: `tupa_hr`, `l10n_cl_hr`, `bi_hr_payroll`, escala, asistencia, méritos, viáticos, puente contable, portal, autoservicio, cursos, feriados públicos, LRE). Es el módulo con mayor implementación del as-is. **v0.2:** tablas siguientes contrastadas contra el ORM (julio 2026).
 
 Regla de uso: **fuente de requisitos funcionales candidatos, nunca fuente de arquitectura.**
 
@@ -133,56 +135,78 @@ Regla de uso: **fuente de requisitos funcionales candidatos, nunca fuente de arq
 | Localización previsional chilena | `l10n_cl_hr`: AFP, Isapre, CCAF, mutual, APV con régimen A/B, seguro complementario, indicadores mensuales |
 | Escala única municipal | `l10n_cl_hr_scale`: escala con factores de bienios, grados, estamentos, estamento DIPRES, ley aplicable, asignaciones de caja y movilidad por categoría |
 | Reliquidación | `hr.payroll.supplementary`: `draft → computed → confirmed`, con líneas y resumen |
-| Horas extras con resolución previa | `hr.cl.overtime.resolution`: `draft → waiting → active → expired`, con líneas por empleado; saldos 25% y 50% en `hr.cl.employee.extra` |
+| Horas extras con resolución y saldos | `hr.cl.overtime.resolution` (`draft → waiting → active → expired`) + `hr.cl.employee.extra` (saldos 25%/50%); checklist `check_extra_hours` en el run — **no** hard-stop en liquidación (§3.2.1) |
 | Licencias con ciclo externo | `hr.leave.isapre`: `pending → sended → approved / rejected / reduced / increased`, con datos SIAPER y **vínculo a orden de ingreso y pago** (`gov_entry_order_id`, `gov_payment_id`) |
 | Subrogación durante licencia | `hr.subrogation`: `draft → registered / cancelled` |
 | Declaración jurada anual | `hr.dj1887`: `draft → computed → generated → sent` |
 | Archivo bancario de nómina | `hr.bank.transfer.file`: `draft → review → generated`, líneas por empleado |
 | Puente contable por calidad jurídica | `hr.salary.rule.account.line`: mapeo regla salarial × calidad jurídica → cuentas de débito y crédito, con clave única |
 | Generación de decretos por grupo de pago | `action_create_payment_decrees`: un decreto por `payment_group_id` |
-| Viáticos, méritos y deméritos, evaluación | `l10n_cl_viatic`, `l10n_cl_hr_merit_demerit`, evaluación del desempeño en `l10n_cl_hr` |
-| Reclutamiento municipal | `hr.gov.recruitment` con candidatos |
+| Honorarios con asiento y decreto | `hr.fee.payslip.run` / `hr.fee.payslip`: `draft → close`; `accounting_move_id`, `payment_decree_id` |
+| PMG | `hr.cl.pmg` (`draft → open → done`) con efecto en liquidación (`pmg_id` / niveles en payslip) |
+| Evaluación del desempeño | `hr.cl.performance.evaluation` + `hr.cl.qualification.record` en `l10n_cl_hr` |
+| Viáticos (solicitud) | `l10n_cl_viatic`: request/response/config; **sin** CDP ni pago contable real (§3.2.1) |
+| Méritos y deméritos | `hr.cl.request.merit` / `demerit` (satélite; **sin** vínculo a payslip) |
+| Reclutamiento municipal | `hr.gov.recruitment` con candidatos; **sí** crea empleado/contrato; **sin** cupo/CDP |
+| Reportes Transparencia / INE | Modelos `report.transparency`, `report.ine` (+ `hr.ine.occupational.group`); DIPRES XLSX en `reports_gov_cl` |
+| Portal / autoservicio | `employee_portal` (mural/banners); `autoservicio_gov_cl` (menús/vistas sin modelos propios) |
 
 #### Qué Odoo hace mal o no hace
 
 | Capacidad esperada | Situación real |
 |---|---|
-| **Validación de disponibilidad presupuestaria en contratación** | **Ausente.** Ningún flujo de incorporación consulta a Presupuestos |
+| **Validación de disponibilidad presupuestaria en contratación** | **Ausente.** BPMN TUPA de incorporación sin consulta a Presupuestos (§3.2.1) |
 | **Control de cupo de dotación** | **Ausente** |
 | **Validadores del 42% y del 20%** | **Ausentes**, pese a que el módulo tiene todos los datos |
 | **Doble vía de calidad jurídica** | `hr.cl.legal.quality` (escala) y `hr.calidad.juridica` (nómina y contabilidad) coexisten. El puente contable usa la segunda. **Es un defecto de modelo, no una decisión**: dos catálogos para el mismo concepto |
 | **LRE** | `l10n_cl_hr_lre` es **solo un wizard de exportación CSV, sin modelos de dominio** |
 | **SIAPER** | Solo campos de datos y wizards de apoyo; **no hay integración ni estado de registro** |
 | **Registro Nacional de Deudores de Pensiones de Alimentos** | Ausente |
-| **Informes DIPRES, Transparencia e INE** | Parcial: existen wizards de reporte en `tupa_hr`, sin entidad de envío ni acuse |
+| **Informes DIPRES, Transparencia e INE** | Parcial: modelos/wizards de generación; **sin** entidad de envío ni acuse |
 | **Recuperación de subsidios como ciclo** | Parcial: `hr.leave.isapre` enlaza a orden de ingreso y pago, pero no hay proceso de cobranza ni seguimiento del recupero |
-| **Calendario de nómina parametrizable** | No evidenciado |
-| **Informe de actividades como condición de pago de honorarios** | No evidenciado en el flujo de `hr.fee.payslip` |
-| **Retenciones judiciales** | No evidenciadas |
-| Méritos y deméritos | `l10n_cl_hr_merit_demerit` **no está en `depends` de `tupa_hr`**: satélite instalable aparte, no integrado |
+| **Calendario de nómina parametrizable** | Ausente (solo calendarios laborales `resource.calendar`) |
+| **Informe de actividades como condición de pago de honorarios** | TUPA *Elaborar/Aprobar Informe* antes del lote; **sin** entidad ni campo en `hr.fee.payslip` (§3.2.1; R-9) |
+| **Retenciones judiciales** | Checklist `check_judicial_discounts` + paso BPMN; **sin** modelo de embargo (§3.2.1; R-6) |
+| **Hard-stop HE en liquidación** | Resolución + checklist; **sin** revalidación bloqueante al calcular (§3.2.1) |
+| **Plazo Previred 13:45 y doble cuentadante** | Export/cálculo + firma TUPA; **sin** plazo horario ni doble firma en código (§3.2.1) |
+| **Viático → CDP / decreto / asiento** | Solicitud sí; pagos stub; sin CDP/`payment.decree`/`account.gov.move` (§3.2.1) |
+| Méritos y deméritos | `l10n_cl_hr_merit_demerit` **no está en `depends` de `tupa_hr`**: satélite instalable aparte; sin efecto en nómina |
+
+#### 3.2.1 Expediente sin efecto de dominio (casos confirmados en RRHH)
+
+Se adopta la categoría del plan de Contabilidad §3.2.1 (también Tesorería). Casos ya verificados en el ORM:
+
+| Caso | Qué existe | Qué falta |
+|---|---|---|
+| Cupo / disponibilidad presupuestaria | BPMN TUPA de contrata/planta/honorarios/HE | Consulta a Presupuestos / CDP / cupo de dotación |
+| Informe de honorarios | Etapas TUPA *Elaborar/Aprobar Informe* en `remuneracion_honorarios` | Entidad de dominio y condición en `hr.fee.payslip` (R-9) |
+| Retenciones judiciales | Checklist `check_judicial_discounts` + paso BPMN | Modelo de órdenes/embargos y efecto en liquidación (R-6) |
+| HE en nómina | Resolución activa + saldos + checklist `check_extra_hours` | Hard-stop que revalide resolución al liquidar |
+| Previred | Cálculo/export CSV + tarea «Firmar» TUPA | Plazo 13:45 y doble firma de cuentadantes |
+| Viático / cometido | `hr.cl.viatic.request` + procedimiento TUPA cometido | CDP; pago contable real (`payment.decree` / move) |
 
 ### 3.3 Brecha de cobertura
 
 | Ámbito | Levantamiento | Odoo | Brecha |
 |---|---|---|---|
-| Incorporación contrata y planta | Sí (1, 2) | Parcial: reclutamiento y contrato | **Faltan cupo y disponibilidad presupuestaria** |
-| Contrato a honorarios | Sí (4) | Parcial | Falta Registro de Deudores; falta informe como condición |
+| Incorporación contrata y planta | Sí (1, 2) | Parcial: reclutamiento **crea** empleado/contrato | **Faltan cupo y disponibilidad presupuestaria** |
+| Contrato a honorarios | Sí (4) | Parcial (fee payslip + TUPA informe) | Falta RNDPA; informe como **dominio** (§3.2.1) |
 | Desvinculación y renuncia | Sí (5, 9) | Parcial: `hr.employee.termination` | Formalizar causales y decreto |
-| Cometido y comisión de servicio | Sí (3) | Sí: `l10n_cl_viatic` | **Falta el CDP como precondición** |
+| Cometido y comisión de servicio | Sí (3) | Parcial: solicitud viático + TUPA | **Sin CDP; pago contable stub** (§3.2.1) |
 | Licencia médica | Sí (7) | Sí: `hr.leave.isapre` | Cubierto; falta integración de portales |
 | **Recuperación de subsidios** | **Sí (18)** | Parcial (enlace a OI) | **Ciclo de cobranza sin cobertura** |
-| Horas extras | Sí (8) | Sí: resolución + saldos | Cubierto; falta la consulta presupuestaria |
-| Permisos y feriados | Sí (10) | Sí: `hr.holiday.request`, compensados | Cubierto |
+| Horas extras | Sí (8) | Parcial: resolución + saldos + checklist | Falta hard-stop en liquidación y consulta presupuestaria |
+| Permisos y feriados | Sí (10) | Parcial: permisos vía `hr.leave`; `hr.holiday.request` = **traslado de feriado**; compensados | Cubierto en ausencias; no confundir modelos |
 | Evaluación del desempeño | Sí (6) | Sí | Cubierto; **resolver contradicción de periodo** |
 | Capacitación y plan anual | Sí (11) | Parcial: `hr_course` | **Falta el plan anual y su presentación al Concejo** |
-| Nómina planta y contrata | Sí (15) | Sí | Cubierto; falta calendario parametrizable |
-| Pago de honorarios | Sí (16) | Parcial: `hr.fee.payslip` | Falta informe y retenciones |
+| Nómina planta y contrata | Sí (15) | Sí (+ PMG) | Cubierto; falta calendario parametrizable |
+| Pago de honorarios | Sí (16) | Parcial: `hr.fee.payslip` + TUPA | Informe y retenciones = expediente sin dominio |
 | Pagos previsionales | Sí (17) | Parcial: Previred en el run | **Falta el plazo con hora y la doble firma** |
-| **Informes DIPRES, Transparencia, INE** | **Sí (12, 13, 14)** | Parcial: wizards | **Sin entidad de envío ni acuse** |
+| **Informes DIPRES, Transparencia, INE** | **Sí (12, 13, 14)** | Parcial: modelos/wizards de generación | **Sin entidad de envío ni acuse** |
 | **LRE** | No levantado | Solo wizard CSV | **Sin dominio; verificar obligatoriedad** |
 | **SIAPER** | Sí (6 procesos) | Parcial | **Sin integración (R-2)** |
 
-**Lectura.** Es el módulo con mejor implementación del as-is y con mejor levantamiento, pero la brecha se concentra en un lugar preciso: **los controles de admisibilidad que conectan RRHH con el resto del sistema no existen**. Odoo calcula muy bien, pero no valida si el municipio puede contratar. Los tres validadores más importantes del módulo —cupo, disponibilidad presupuestaria, límites del 42% y 20%— están todos ausentes.
+**Lectura.** Es el módulo con mejor implementación del as-is y con mejor levantamiento, pero la brecha se concentra en un lugar preciso: **los controles de admisibilidad que conectan RRHH con el resto del sistema no existen**. Odoo calcula muy bien, pero no valida si el municipio puede contratar. Los tres validadores más importantes del módulo —cupo, disponibilidad presupuestaria, límites del 42% y 20%— están todos ausentes. A eso se suman varios *expedientes sin efecto de dominio* (§3.2.1) que el levantamiento trata como pasos reales.
 
 ---
 
@@ -312,7 +336,7 @@ Es la fase más larga del corpus: cuatro estatutos concurrentes y siete integrac
 | BPMN — Controles de admisibilidad | Cupo y disponibilidad presupuestaria como pasos formales, hoy implícitos |
 | BPMN — Registro en SIAPER | Transversal, condicionado a R-2 |
 | BPMN — Reportes externos | Los tres mensuales más DJ1887 |
-| **Reclasificación con la lente de expediente sin efecto de dominio** | Aplicar la categoría de §3.2.1 del plan de Contabilidad a los procedimientos TUPA del módulo |
+| **Reclasificación con la lente de expediente sin efecto de dominio** | Aplicar §3.2.1 (y la categoría de Contabilidad) a los procedimientos TUPA restantes del módulo |
 | Validación con municipios piloto | Contraste con al menos dos municipios |
 
 ### F3 — Fichas de proceso por etapa · 4 semanas
@@ -359,10 +383,10 @@ Es el módulo con más etapas del corpus.
 | **R-3** | Verificar estatuto, periodo de calificación y dictamen del proceso 6 | F1 / MR-3 | Equipo interno |
 | **R-4** | Unificar la doble vía de calidad jurídica del as-is | F0 / F4 | Equipo interno |
 | **R-5** | Obligatoriedad y alcance del Libro de Remuneraciones Electrónico para municipalidades | F1 | DM + Jurídica |
-| **R-6** | Régimen de retenciones judiciales: origen, control y efecto en la liquidación | F1 | DM + Jurídica |
+| **R-6** | Régimen de retenciones judiciales: origen, control y efecto en la liquidación. **Ancla as-is:** checklist `check_judicial_discounts` + paso BPMN honorarios; **sin** modelo de embargo (§3.2.1) | F1 | DM + Jurídica |
 | **R-7** | Ciclo de recuperación de subsidios: quién persigue la cobranza, en qué plazo, y qué ocurre con los no recuperados | F2 | DM + Tesorería |
 | **R-8** | Calendario de nómina parametrizable por municipio y por mes | F3 | DM |
-| **R-9** | Informe de actividades como condición de pago de honorarios: formato, aprobador y efecto del rechazo | F3 | DM |
+| **R-9** | Informe de actividades como condición de pago de honorarios: formato, aprobador y efecto del rechazo. **Ancla as-is:** etapas TUPA *Elaborar/Aprobar Informe*; **sin** entidad en `hr.fee.payslip` (§3.2.1) | F3 | DM |
 | **R-10** | Composición y funcionamiento de la Junta Calificadora en municipios con planta reducida | F3 | DM |
 | **R-11** | Integración con el Registro Nacional de Deudores de Pensiones de Alimentos: mecanismo y efecto de la consulta | F1 | Equipo + DM |
 | **R-12** | Control de cupo de dotación: fuente de la dotación autorizada y su relación con el presupuesto | F2 | DM |

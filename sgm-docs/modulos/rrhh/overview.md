@@ -1,11 +1,12 @@
 # Módulo: RRHH / Remuneraciones
 
-Inventario Odoo del stack municipal de remuneraciones documentado. Macroprocesos, contratos y dominio nuevo aún pendientes.
+Inventario Odoo del stack municipal de remuneraciones documentado. Plan de trabajo de especificación en curso. Macroprocesos, contratos y dominio nuevo aún pendientes.
 
 ## Documentos
 
 | Documento | Descripción |
 |-----------|-------------|
+| [`plan-de-trabajo-rrhh.md`](plan-de-trabajo-rrhh.md) | Plan de trabajo v0.2 — diagnóstico Magenta × Odoo, decisiones, fases y pendientes **R-nn** |
 | [`modelos-odoo.md`](modelos-odoo.md) | Modelos, relaciones y flujos de estado en Odoo (`tupa_hr` + `l10n_cl_hr` + `bi_hr_payroll` + satélites escala/asistencia/viáticos/méritos + puente `account_hr_gov_cl`) |
 
 ## Referencias
