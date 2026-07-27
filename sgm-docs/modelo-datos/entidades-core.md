@@ -305,17 +305,21 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `accrual_date` | fecha | **Obligatorio** |
 
 ### `PaymentDecree` (Decreto de Pago)
-**Visibilidad:** expuesta — campos en contrato: `id`, `accrual_id`, `decree_number`, `decree_date`, `approver_id`
+**Visibilidad:** expuesta — campos en contrato: `id`, `accrual_id`, `decree_number`, `external_folio`, `decree_date`, `approver_id`, `status`
 
-1:1 con `Accrual`.
+1:1 con `Accrual`. **Tramitación DocDigital (C11)** — decisión [`2026-07-docdigital-tramitacion-documental.md`](../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). Alcance operativo del decreto de pago abierto — **[PENDIENTE P-74]**.
 
 | Campo | Tipo | Notas |
 |---|---|---|
 | `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
 | `accrual_id` | ref. `Accrual` | **Obligatorio** |
-| `decree_number` | texto | **Obligatorio** |
+| `decree_number` | texto | **Obligatorio** — identificador **interno de trazabilidad**; no sustituye al folio oficial |
+| `external_folio` | texto | **Obligatorio si** tramitado en DocDigital y `status = signed` — folio oficial externo |
+| `document_procedure_id` | ref. `DocumentProcedure` | **Obligatorio si** enviado a tramitación |
 | `decree_date` | fecha | **Obligatorio** |
 | `approver_id` | ref. `User` | **Obligatorio** |
+| `status` | enum | **Obligatorio**. Valores: `pending_signature`, `signed`, `failed` *(salida de `pending_signature` solo con retorno del acto firmado)* |
+| `document_ref` | ref. `DocumentRef` | **Obligatorio si** `status = signed` — vía C10 |
 
 ### `Payment` (Pago)
 **Visibilidad:** expuesta — campos en contrato: `id`, `payment_decree_id`, `payment_date`, `payment_method`, `payment_status`
@@ -471,21 +475,24 @@ Valor UTM mensual usado para convertir montos CLP↔UTM en el gateway de validac
 | `reviewed_at` | fecha/hora | **Obligatorio** (generado por sistema al registrar) |
 
 ### `AdministrativeAct` (Acto Administrativo)
-**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `act_type`, `subject_id`, `act_number`, `signed_by`, `signed_at`, `status`
+**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `act_type`, `subject_id`, `act_number`, `external_folio`, `signed_by`, `signed_at`, `status`
 
-**Transversal** — polimórfica por `act_type`, cubre decretos/resoluciones de aprobación de bases (3.3), designación de comisión (3.9a), adjudicación/deserción/revocación (3.10). Generaliza el patrón de `PaymentDecree`.
+**Transversal** — polimórfica por `act_type`, cubre decretos/resoluciones de aprobación de bases (3.3), designación de comisión (3.9a), adjudicación/deserción/revocación (3.10), Resolución Fundada (TD). Generaliza el patrón de `PaymentDecree`. **Tramitación:** DocDigital (C11) — SGM origina el contenido; DocDigital visa, firma (FEA), enumera y distribuye. Decisión canónica: [`arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md`](../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). Contrato funcional: [`integracion-docdigital.md`](../arquitectura/especificacion/integracion-docdigital.md).
 
 <!-- REVISAR: `AdministrativeAct` generaliza el patrón de `PaymentDecree` — candidata a absorberlo a futuro. No fusionar ahora; ambas entidades coexisten hasta validación explícita. -->
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
-| `act_type` | enum | **Obligatorio**. Valores: `bases_approval`, `committee_designation`, `award`, `desertion`, `revocation`, `founded_resolution` *(Trato Directo — Resolución Fundada sujeta a Toma de Razón en TD §3.1)* |
+| `procurement_case_id` | ref. `ProcurementCase` | **Obligatorio** en Adquisiciones. Desnormalización intencional. Otros módulos pueden usar sujeto propio sin este campo o con ref. polimórfica de expediente — **extender en F4 de cada módulo** |
+| `act_type` | enum | **Obligatorio**. Valores actuales Adq.: `bases_approval`, `committee_designation`, `award`, `desertion`, `revocation`, `founded_resolution`. Extensibles a decretos presupuestarios/contables según inventario DocDigital |
 | `subject_id` | ref. polimórfica | **Opcional** — entidad sobre la que recae el acto (ej. `TenderBases.id`), según `act_type` |
-| `act_number` | texto | **Obligatorio** (generado por sistema en modo electrónico; ingreso manual en escaneado) |
-| `status` | enum | **Obligatorio**. Valores: `pending_signature`, `signed`, `failed` |
-| `signed_by` | ref. `User` | **Obligatorio si** `status = signed` |
-| `signed_at` | fecha/hora | **Obligatorio si** `status = signed` (generado por sistema al confirmar firma) |
+| `act_number` | texto | **Obligatorio** — identificador **interno de trazabilidad** (no es el folio oficial del acto) |
+| `external_folio` | texto | **Obligatorio si** tramitado en DocDigital y `status = signed` — folio oficial asignado por la plataforma externa. En vía alternativa sin DocDigital, ver **[PENDIENTE P-73]** |
+| `document_procedure_id` | ref. `DocumentProcedure` | **Obligatorio si** enviado a tramitación — ver entidades de plataforma |
+| `signature_chain_id` | ref. `SignatureChain` | **Opcional** — cadena de firmantes configurada por el municipio (proceso 25) |
+| `status` | enum | **Obligatorio**. Valores: `pending_signature`, `signed`, `failed`. Salida de `pending_signature` solo con retorno del acto firmado (evento `AdministrativeActSigned`) |
+| `signed_by` | ref. `User` | **Obligatorio si** `status = signed` — último firmante o autoridad que perfecciona (detalle de cadena en `DocumentProcedure`) |
+| `signed_at` | fecha/hora | **Obligatorio si** `status = signed` (generado por sistema al confirmar retorno) |
 | `document_ref` | ref. `DocumentRef` | **Obligatorio si** `status = signed` — vía C10 |
 
 ### `ComptrollerReview` (Toma de Razón)

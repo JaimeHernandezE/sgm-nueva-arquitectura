@@ -284,9 +284,9 @@ Plantilla de título/cuerpo por `source_event_type` y canal.
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `provider_id` | enum | **Obligatorio**. `mercado_publico`, `firma_gob`, `sii`, `clave_unica` |
+| `provider_id` | enum | **Obligatorio**. `mercado_publico`, `firma_gob`, `sii`, `clave_unica`, `doc_digital` |
 | `name` | texto | **Obligatorio** |
-| `service_code` | texto | **Obligatorio** — C1, C7, C9, etc. |
+| `service_code` | texto | **Obligatorio** — C1, C7, C9, C11, etc. |
 
 ### `TenantIntegrationConfig`
 **Visibilidad:** expuesta (administración)
@@ -389,9 +389,49 @@ En payloads de módulo, los campos `founded_resolution_attachment`, `scanned_cer
 
 ---
 
+## Tramitación de actos (C11 — DocDigital)
+
+Decisión: [`arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md`](../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). Contrato funcional: [`integracion-docdigital.md`](../arquitectura/especificacion/integracion-docdigital.md). Condicionado a **[PENDIENTE P-72]**.
+
+### `SignatureChain`
+**Visibilidad:** expuesta (administración municipal)
+
+Cadena de firma configurable por tenant. Implementa el proceso 25 del levantamiento («Alcaldía: Firmar»).
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `id` | UUID | **Obligatorio** |
+| `tenant_id` | ref. `Tenant` | **Obligatorio** |
+| `name` | texto | **Obligatorio** — p. ej. «Decreto alcaldicio estándar» |
+| `act_types` | texto[] | **Obligatorio** — tipos de acto a los que aplica |
+| `steps` | JSON | **Obligatorio** — orden de roles (`role_code`, `order`, `optional`) |
+| `active` | booleano | **Obligatorio** |
+
+### `DocumentProcedure`
+**Visibilidad:** interna — subconjunto consultable por el módulo dueño del acto
+
+Tramitación de un acto en DocDigital (o vía asistida).
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `id` | UUID | **Obligatorio** |
+| `tenant_id` | ref. `Tenant` | **Obligatorio** |
+| `subject_type` | texto | **Obligatorio** — p. ej. `AdministrativeAct`, `PaymentDecree` |
+| `subject_id` | UUID | **Obligatorio** |
+| `signature_chain_id` | ref. `SignatureChain` | **Opcional** |
+| `mode` | enum | **Obligatorio**. `m2m` \| `assisted` — según P-72 / P-73 |
+| `status` | enum | **Obligatorio**. `draft`, `submitted`, `in_visation`, `pending_signature`, `completed`, `rejected`, `failed` |
+| `external_folio` | texto | **Obligatorio si** `status = completed` — folio oficial DocDigital (o interno en vía alternativa) |
+| `source_document_ref` | ref. `DocumentRef` | **Obligatorio** — contenido originado en SGM |
+| `signed_document_ref` | ref. `DocumentRef` | **Obligatorio si** `status = completed` |
+| `submitted_at` | fecha/hora | **Opcional** |
+| `completed_at` | fecha/hora | **Opcional** |
+
+---
+
 ## Valores de referencia consumidos por módulos (no entidades de módulo)
 
-Estos tipos se devuelven por operaciones del core (C7/C9); los módulos pueden cachearlos pero no los administran.
+Estos tipos se devuelven por operaciones del core (C7/C9/C11); los módulos pueden cachearlos pero no los administran.
 
 ### `UtmValue` *(DTO)*
 Procedencia: `getUtmValue` (C9 → SII). Ver nota en `entidades-core.md`.

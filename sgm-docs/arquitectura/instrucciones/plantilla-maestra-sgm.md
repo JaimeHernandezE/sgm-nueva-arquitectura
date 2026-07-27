@@ -263,9 +263,10 @@ Las fichas declaran la clasificación como **quinta materia de la tabla de ficha
 
 Reglas de propiedad (`plataforma-core.md` §7–§7bis):
 
-1. **Adaptador + secretos en el core** — MP (C7), FirmaGob, SII (C9), almacenamiento (C10). El módulo declara qué operación necesita y cuándo; el core implementa el HTTP y custodia credenciales por tenant.
-2. **Contraparte en fichas** = `Core (Mercado Público)`, `Core (FirmaGob)`, `Core (SII)`, `Core (documentos)` — no el nombre del tercero como implementador del módulo.
-3. **DocDigital** como canal de notificación formal (`musts-arquitectura.md` §9) es distinto del repositorio de archivos (C10). Si un municipio usa DocDigital como DMS, entra por backend `external_dms` con adaptador en el core.
+1. **Adaptador + secretos en el core** — MP (C7), FirmaGob, SII (C9), DocDigital (C11), almacenamiento (C10). El módulo declara qué operación necesita y cuándo; el core implementa el HTTP (o circuito asistido) y custodia credenciales por tenant.
+2. **Mercado Público** — solo lectura vía C7; escritura prohibida (persona en portal).
+3. **DocDigital** tiene tres roles distintos: **tramitación de actos** (C11 — decisión [`2026-07-docdigital-tramitacion-documental.md`](../decisiones/2026-07-docdigital-tramitacion-documental.md)), **canal de notificación formal** (`musts-arquitectura.md` §9 / C6), y opcionalmente **DMS** (`external_dms` en C10). No colapsar.
+4. **Contraparte en fichas** = `Core (Mercado Público)`, `Core (FirmaGob)`, `Core (SII)`, `Core (DocDigital)`, `Core (documentos)` — no el nombre del tercero como implementador del módulo.
 
 ---
 

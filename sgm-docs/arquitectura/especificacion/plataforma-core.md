@@ -6,6 +6,8 @@
 > Complementa `seguridad.md` (que define exigencias de seguridad del core sin declararlo como tal), `musts-arquitectura.md` §9 (notificaciones) y `plantilla-maestra-sgm.md` §5.2 (sincronización MP).
 > Pendientes registrados en [`pendientes.md`](../decisiones/pendientes.md).
 
+**Cambios v0.2 (julio 2026):** servicio **C11 — Tramitación de actos administrativos (DocDigital)**; distinción explícita entre tramitación, notificación (C6) y DMS (`external_dms`); entidades `DocumentProcedure` / `SignatureChain` / folio externo. Decisión canónica: [`../decisiones/2026-07-docdigital-tramitacion-documental.md`](../decisiones/2026-07-docdigital-tramitacion-documental.md). Contrato funcional: [`integracion-docdigital.md`](./integracion-docdigital.md).
+
 ---
 
 ## 1. Qué es el core y qué no es
@@ -24,7 +26,7 @@ En este documento, **módulo funcional** designa dominio de negocio (Adquisicion
 1. Es requerida por dos o más módulos con la **misma semántica** (identidad, permisos, auditoría).
 2. Su propiedad no es atribuible a ningún dominio funcional (gestión de tenants, parámetros normativos).
 3. Es condición de operación de la plataforma, no de un proceso de negocio (aprovisionamiento de schemas, emisión de credenciales).
-4. Es una **integración externa** requerida por dos o más módulos con la misma semántica, o cuyas credenciales y configuración son responsabilidad del tenant (Mercado Público, FirmaGob, SII, almacenamiento de documentos).
+4. Es una **integración externa** requerida por dos o más módulos con la misma semántica, o cuyas credenciales y configuración son responsabilidad del tenant (Mercado Público, FirmaGob, SII, DocDigital, almacenamiento de documentos).
 
 **Anti-definición (igual de importante).** El core **no orquesta procesos de negocio**. No existe un motor central de flujos ni un bus de orquestación que dirija los macroprocesos: cada módulo es dueño de sus estados y transiciones (`musts-arquitectura.md` §10), y la coordinación entre módulos ocurre por **contratos** (dependencias declaradas) y **eventos de dominio** (coreografía), nunca por un director central. Ser transversal no implica centralizar flujos: implica proveer capacidades compartidas vía contrato.
 
@@ -57,13 +59,14 @@ Consecuencias:
 | C7 | **Sincronización Mercado Público** | Servicio único de plataforma que produce el evento interno (`MpStateChanged`) sea por push o polling; los módulos nunca conocen el mecanismo | `plantilla-maestra-sgm.md` §5.2, `integracion-mercado-publico.md` | Estándar definido; es servicio de plataforma, no de Adquisiciones |
 | C8 | **Ciclo de vida de usuarios** | Alta/modificación/baja como flujos especificados; subrogancias con vencimiento automático; recertificación | `seguridad.md` §9 | Exigencias definidas; proceso real abierto (**P-28**) |
 | C9 | **Adaptadores de integración externa** | FirmaGob (`requestSignature`, `confirmSignature`); SII (`getUtmValue`, `getPriceReference`); credenciales y config por tenant vía `TenantIntegrationConfig` | `seguridad.md` §7, `contrato-api-first.md` §2 | Marco en §7; detalle en `plataforma/contracts.md` (**P-48**, **P-57**) |
-| C10 | **Gestión documental** | API de documentos (`storeDocument`, `getDownloadUrl`…), metadatos, retención; enrutamiento multi-backend (`platform` \| `tenant_owned` \| `external_dms`); adaptadores DMS plug-in | `principios-no-negociables.md` §6 | Marco en §7bis; contrato **P-48**, **P-58**, **P-59** |
+| C10 | **Gestión documental (Expediente y documentos)** | API de documentos (`storeDocument`, `getDownloadUrl`…), metadatos, retención; enrutamiento multi-backend (`platform` \| `tenant_owned` \| `external_dms`); adaptadores DMS plug-in. **Almacenamiento de bytes** del expediente — no tramita ni enumera actos | `principios-no-negociables.md` §6 | Marco en §7bis; contrato **P-48**, **P-58**, **P-59** |
+| C11 | **Tramitación de actos administrativos (DocDigital)** | Envío a DocDigital para visación, FEA, **enumeración** y distribución; retorno del acto firmado con folio oficial; vía alternativa para municipios sin DocDigital (~20 %). Plataforma externa ya desplegada en el **80 %** de los municipios | Decisión [`2026-07-docdigital-tramitacion-documental.md`](../decisiones/2026-07-docdigital-tramitacion-documental.md); [`integracion-docdigital.md`](./integracion-docdigital.md) | Condicionado a **P-72** (bloqueante); inventarios y estados en la spec |
 
 Regla de lectura: donde la columna "Base normativa" apunta a un documento existente, este inventario **no duplica** esas exigencias — las organiza como servicios y agrega lo que falta (§4–§7).
 
 Nota sobre C7: aunque hoy solo Adquisiciones consume estados MP, el servicio se clasifica como core por el criterio 2 de §1 (el mecanismo de sincronización y la negociación con ChileCompra son activos de plataforma). Sus eventos internos se declaran en el contrato del core; Adquisiciones los consume como dependencia.
 
-Nota sobre C9/C10: los módulos funcionales **declaran** dependencias en su `contracts.md` §3; el **implementador** es siempre el core. Prohibido que un módulo almacene secretos, llame APIs de terceros directamente o implemente adaptadores HTTP.
+Nota sobre C9/C10/C11: los módulos funcionales **declaran** dependencias en su `contracts.md` §3; el **implementador** es siempre el core. Prohibido que un módulo almacene secretos, llame APIs de terceros directamente o implemente adaptadores HTTP. C11 no colapsa con C9 (FirmaGob directo para documentos no-acto) ni con C10 (bytes) ni con C6 (DocDigital como canal de notificación).
 
 ## 4. Entidades del core
 
@@ -89,14 +92,16 @@ Entidades transversales que hoy las fichas usan de forma implícita (columnas Un
 | `NotificationPreference` | Preferencias de canal del usuario | Expuesta (propietario) |
 | `TenantNotificationPolicy` | Hechos de correo obligatorio sin opt-out | Expuesta (admin municipal) |
 | `NotificationTemplate` | Plantilla título/cuerpo por evento y canal | Interna |
-| `ExternalProvider` | Catálogo de proveedores externos integrables (`mercado_publico`, `firma_gob`, `sii`, `clave_unica`) | Interna |
-| `TenantIntegrationConfig` | Configuración no secreta por tenant y proveedor (organismo MP, base URL, etc.) | Expuesta (administración) |
+| `ExternalProvider` | Catálogo de proveedores externos integrables (`mercado_publico`, `firma_gob`, `sii`, `clave_unica`, `doc_digital`) | Interna |
+| `TenantIntegrationConfig` | Configuración no secreta por tenant y proveedor (organismo MP, base URL, habilitación DocDigital, etc.) | Expuesta (administración) |
 | `IntegrationCredential` | Referencia a secreto en gestor dedicado; rotación auditada | Interna |
 | `TenantStorageConfig` | Backend documental del tenant: `platform`, `tenant_owned` o `external_dms` | Expuesta (administración) |
 | `DmsAdapter` | Catálogo de adaptadores plug-in para `external_dms` (`adapter_id`, estilo de API) | Expuesta (lectura SUBDERE); catálogo |
 | `Document` | Metadatos del archivo (hash, MIME, retención, `external_locator` opaco); bytes fuera de BD transaccional | Interna |
 | `DocumentRef` | Identificador opaco que cruzan los módulos en campos `*_attachment` | Expuesta |
-| `SignatureRequest` | Estado de solicitud de firma electrónica vía FirmaGob (C9) | Interna; subconjunto consultable |
+| `SignatureRequest` | Estado de solicitud de firma electrónica vía FirmaGob (C9) — documentos **no** tramitados como acto en DocDigital | Interna; subconjunto consultable |
+| `SignatureChain` | Cadena de firma configurable por municipio (roles y orden: p. ej. Control → Jurídica → Alcalde/Administrador → Secretario Municipal); implementa el proceso 25 del levantamiento | Expuesta (administración municipal) |
+| `DocumentProcedure` | Tramitación de un acto en plataforma externa (DocDigital u vía asistida): envío, visaciones, firmas, retorno, folio | Interna; subconjunto consultable por el módulo dueño del acto |
 
 **Modelo fijado:** Municipio → Departamento → Unidad (`OrganizationalUnit.kind`), con plantilla de plataforma (`OrgStructureTemplate`) clonada al alta del tenant y editable después por el administrador municipal. Detalle canónico en `entidades-plataforma.md`.
 
@@ -127,29 +132,30 @@ Regla de diseño: los módulos **leen** parámetros vía contrato del core con c
 
 Regla derivada del mandato API y del criterio §1.4:
 
-> Las integraciones con terceros transversales (Mercado Público, FirmaGob, SII) se implementan en el core. Los módulos consumen operaciones publicadas en `plataforma/contracts.md`; nunca almacenan secretos ni llaman APIs de terceros directamente.
+> Las integraciones con terceros transversales (Mercado Público, FirmaGob, SII, DocDigital) se implementan en el core. Los módulos consumen operaciones publicadas en `plataforma/contracts.md`; nunca almacenan secretos ni llaman APIs de terceros directamente.
 
 **Dos planos de credenciales (no confundir):**
 
 | Plano | Entidad | Dirección | Quién administra |
 |---|---|---|---|
 | **Consumidores del SGM** | `ApiClient` | Municipio/ecosistema → SGM | SUBDERE emite; scopes por módulo y tenant |
-| **SGM hacia terceros** | `TenantIntegrationConfig` + `IntegrationCredential` | SGM → MP / FirmaGob / SII / bucket municipal | SUBDERE (plataforma) o admin municipal (tenant), según proveedor |
+| **SGM hacia terceros** | `TenantIntegrationConfig` + `IntegrationCredential` | SGM → MP / FirmaGob / SII / DocDigital / bucket municipal | SUBDERE (plataforma) o admin municipal (tenant), según proveedor |
 
 **Configuración por nivel:**
 
-- **Plataforma (SUBDERE):** Clave Única OIDC, webhook MP nacional, negociación con ChileCompra, catálogo `ExternalProvider` y `DmsAdapter`.
-- **Tenant (municipio):** organismo comprador MP, credenciales de bucket propio (`tenant_owned`), adaptador DMS (`external_dms`), rotación delegada donde aplique.
+- **Plataforma (SUBDERE):** Clave Única OIDC, webhook MP nacional, negociación con ChileCompra / Gobierno Digital (DocDigital), catálogo `ExternalProvider` y `DmsAdapter`.
+- **Tenant (municipio):** organismo comprador MP, habilitación DocDigital, `SignatureChain`, credenciales de bucket propio (`tenant_owned`), adaptador DMS (`external_dms`), rotación delegada donde aplique.
 
 **Servicios y responsabilidades:**
 
-| Servicio | Tercero | Operaciones hacia módulos | Notas |
-|---|---|---|---|
-| C7 | Mercado Público | `readMpProcess`, evento `MpStateChanged` | Mecanismo push/polling interno; ver `integracion-mercado-publico.md` |
-| C9 | FirmaGob | `requestSignature`, `confirmSignature` | Lee/escribe PDF vía C10 |
-| C9 | SII | `getUtmValue`, `getPriceReference` | Cacheada; umbrales normativos vía C4 |
+| Servicio | Tercero | Operaciones hacia módulos | Modo de invocación | Notas |
+|---|---|---|---|---|
+| C7 | Mercado Público | `readMpProcess`, evento `MpStateChanged` | Asíncrona (lectura); síncrona en vinculación | Mecanismo push/polling interno; ver `integracion-mercado-publico.md` |
+| C9 | FirmaGob | `requestSignature`, `confirmSignature` | Síncrona bloqueante / asíncrona según modo de firma | Lee/escribe PDF vía C10; **no** sustituye C11 para actos administrativos |
+| C9 | SII | `getUtmValue`, `getPriceReference` | Cacheada | Umbrales normativos vía C4 |
+| C11 | DocDigital | `submitAdministrativeAct`, `recordActOutcome`, evento `AdministrativeActSigned` | **Asíncrona** (M2M o asistida — **P-72**) | Contrato funcional en `integracion-docdigital.md`; sin endpoints hasta verificar API |
 
-**Convención de fichas:** columna Contraparte = `Core (FirmaGob)`, `Core (Mercado Público)`, `Core (SII)` — nunca el tercero como implementador del módulo.
+**Convención de fichas:** columna Contraparte = `Core (FirmaGob)`, `Core (Mercado Público)`, `Core (SII)`, `Core (DocDigital)` — nunca el tercero como implementador del módulo.
 
 ## 7bis. Gestión documental
 
@@ -171,9 +177,15 @@ Los módulos **nunca** escriben en S3/Azure/GCS ni en un DMS directamente. Siemp
 
 **Interfaz interna de backend documental** (exigible en bases, propiedades no marcas): todo adaptador (`tenant_owned` S3, `external_dms`) implementa operaciones mínimas alineadas con el contrato público C10: `put`, `get`, `delete`, `presignedUrl` o equivalente. Prohibido código condicional por marca de DMS en módulos funcionales.
 
-**DocDigital:** en `musts-arquitectura.md` §9 aparece como **canal de notificación formal** (C6), distinto del rol de repositorio. Si un municipio usa DocDigital como DMS, entra por `external_dms`; la notificación formal puede seguir siendo canal C6 aparte.
+**DocDigital — tres roles (no colapsar):**
 
-**FirmaGob + documentos:** C9 lee el PDF vía C10 y persiste la versión firmada vía C10; el módulo solo recibe `DocumentRef` actualizado.
+| Rol | Servicio | Qué hace |
+|---|---|---|
+| **Tramitación de actos** | **C11** | Visación, FEA, enumeración, distribución; folio oficial externo. Decisión canónica y `integracion-docdigital.md` |
+| **Canal de notificación formal** | C6 | Aviso de hechos que exigen canal formal (`musts-arquitectura.md` §9) — no enumera actos |
+| **Repositorio DMS** | C10 `external_dms` | Solo si el municipio usa DocDigital como gestor documental de archivos |
+
+**FirmaGob + documentos:** C9 lee el PDF vía C10 y persiste la versión firmada vía C10; el módulo solo recibe `DocumentRef` actualizado. Para actos administrativos tramitados en DocDigital, la FEA ocurre **dentro** de C11; C9 permanece para documentos que no son esos actos.
 
 ## 8. Autorización en runtime: decisión pendiente con opciones acotadas
 
@@ -214,7 +226,7 @@ Dos consolas, ambas consumidoras sin privilegios del contrato del core (§2). Se
 | Subrogancias | `Delegation` con vencimiento obligatorio |
 | Excepciones SoD | Configuración explícita y auditada (**P-25**) |
 | Parámetros operativos | `TenantParameter` dentro del catálogo de plataforma |
-| Integraciones del municipio | `TenantIntegrationConfig` (MP, FirmaGob si aplica) |
+| Integraciones del municipio | `TenantIntegrationConfig` (MP, FirmaGob, DocDigital si aplica); `SignatureChain` |
 | Almacenamiento de documentos | `TenantStorageConfig`: bucket propio (`tenant_owned`) o DMS (`external_dms`) |
 | Recertificación de accesos | Reporte de cuentas y última actividad (`seguridad.md` §9.4) |
 | Preferencias de notificación | Canales del usuario acotados por `TenantNotificationPolicy` (C6) |
@@ -235,13 +247,14 @@ Los folios (`ADQ-AAAA-NNNNN`) son hoy responsabilidad del módulo. Se mantiene a
 4. Ciclo de vida de tenants con aprovisionamiento demostrable a escala y estados de suspensión/baja con efecto verificable sobre accesos y datos.
 5. Dos familias de parámetros con gobernanza diferenciada; módulos leen vía contrato, nunca duplican valores normativos.
 6. Servicio de sincronización MP (C7) conmutable (push/polling) que produce eventos internos estables.
-7. Adaptadores de integración externa (C9) y gestión documental multi-backend (C10); credenciales por tenant en el core; módulos solo `DocumentRef` y dependencias declaradas.
+7. Adaptadores de integración externa (C9), gestión documental multi-backend (C10) y tramitación de actos vía DocDigital (C11); credenciales por tenant en el core; módulos solo `DocumentRef` y dependencias declaradas.
 8. Backends `platform` y `tenant_owned` demostrables en recepción; interfaz `external_dms` definida y extensible sin cambiar contratos de módulo.
 9. Exigencias de identidad, RBAC, SoD, auditoría y ciclo de vida de usuarios según `seguridad.md` §13 (no se duplican aquí).
+10. Tramitación de actos administrativos condicionada a verificación del mecanismo DocDigital (**P-72**); vía alternativa para municipios no habilitados (**P-73**).
 
 ## 12. Pendientes abiertos
 
-Nuevos de este documento: **P-48** (contracts.md de plataforma — integraciones, documentos, interfaz DMS, cuerpos HTTP de ops admin §2.11), **P-49** (estructura organizacional municipal / `OrganizationalUnit`), **P-50** (proceso de incorporación de municipio y migración de datos históricos), **P-51** (mecanismo de autorización en runtime), **P-52** (wireframes de consolas — creados; ver `plataforma/wireframes/`), **P-57** (catálogo de proveedores externos y config por tenant), **P-58** (contrato documental: MIME, tamaños, retención), **P-59** (interfaz adaptador DMS + primer producto certificado / CMIS).
+Nuevos de este documento: **P-48** (contracts.md de plataforma — integraciones, documentos, interfaz DMS, cuerpos HTTP de ops admin §2.11), **P-49** (estructura organizacional municipal / `OrganizationalUnit`), **P-50** (proceso de incorporación de municipio y migración de datos históricos), **P-51** (mecanismo de autorización en runtime), **P-52** (wireframes de consolas — creados; ver `plataforma/wireframes/`), **P-57** (catálogo de proveedores externos y config por tenant), **P-58** (contrato documental: MIME, tamaños, retención), **P-59** (interfaz adaptador DMS + primer producto certificado / CMIS), **P-72…P-76** (DocDigital: mecanismo, vía alternativa, alcance, folio histórico, plazos).
 
 Preexistentes que este documento organiza: P-01, P-02, P-05, P-06, P-15, P-22, P-23, P-24, P-25, P-26, P-28, P-33, P-37, P-39, P-42.
 
@@ -250,6 +263,8 @@ Preexistentes que este documento organiza: P-01, P-02, P-05, P-06, P-15, P-22, P
 - [`seguridad.md`](./seguridad.md) — exigencias de C1, C2, C5, C8
 - [`musts-arquitectura.md`](./musts-arquitectura.md) — §3 tenants a escala, §5 clasificación, §8 observabilidad, §9 eventos, §10 flujos
 - [`contrato-api-first.md`](./contrato-api-first.md) — mandato API y estructura de contratos
+- [`integracion-docdigital.md`](./integracion-docdigital.md) — contrato funcional C11
 - [`plantilla-maestra-sgm.md`](../instrucciones/plantilla-maestra-sgm.md) — §5.2 sincronización MP, §7 wireframes
 - [`decisiones-macro-stack.md`](../decisiones/decisiones-macro-stack.md) — §1 modos de consumo, §2 soberanía del dato, §7 ecosistema
 - [`entregable-licitacion.md`](../licitacion/entregable-licitacion.md) — modelo de entregable donde este core se integra
+- [`2026-07-docdigital-tramitacion-documental.md`](../decisiones/2026-07-docdigital-tramitacion-documental.md) — decisión canónica DocDigital

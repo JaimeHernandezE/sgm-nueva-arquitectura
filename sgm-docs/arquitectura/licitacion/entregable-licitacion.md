@@ -129,7 +129,7 @@ El implementador debe construir, como mínimo:
 | Multitenancy por schema | Separación por municipio; pooling y migraciones demostrables |
 | Frontend base | Consume la misma API que un tercero; sin rutas internas privilegiadas |
 | Motor de validación | Reglas bloqueantes en servidor; errores con esquema de `estandares-api.md` §3 |
-| Integraciones declaradas | Solo contratos de dependencia en `contracts.md` §3 hacia core (MP, FirmaGob, SII, documentos); MP read-only vía C7 |
+| Integraciones declaradas | Solo contratos de dependencia en `contracts.md` §3 hacia core (MP, FirmaGob, SII, DocDigital, documentos); MP read-only vía C7; actos vía C11 |
 | Servicio documental (C10) | Backends `platform` y `tenant_owned` demostrables; interfaz `external_dms` + stub en sandbox |
 | Observabilidad | Métricas por endpoint y tenant, trazas entre módulos, logs estructurados |
 | Capa de lectura agregada | Reportería nacional sin cruzar la transaccional (`musts-arquitectura.md` §4) |
@@ -389,7 +389,7 @@ La mesa técnica de estándares (API, contratos, sandbox, convenio de acceso) es
 | D-09 *(v2)* | El core de plataforma es parte del entregable licitado, con contrato y OpenAPI propios y el mismo estándar de recepción que un módulo ([`plataforma-core.md`](../especificacion/plataforma-core.md)). |
 | D-10 *(v2)* | No existe orquestador central de procesos de negocio; la coordinación entre módulos es por contratos y eventos. |
 | D-11 *(v2)* | El formato de OpenAPI y fixtures queda normado en [`estandares-api.md`](../especificacion/estandares-api.md); las brechas 2 y 4 de la v1 pasan de «sin estándar» a «estándar definido, artefactos por crear». |
-| D-12 *(v2)* | Integraciones transversales (MP, FirmaGob, SII) y gestión documental (C10) son responsabilidad del core; módulos solo `DocumentRef` y dependencias declaradas ([`plataforma-core.md`](../especificacion/plataforma-core.md) §7–§7bis). |
+| D-12 *(v2)* | Integraciones transversales (MP, FirmaGob, SII, DocDigital) y gestión documental (C10) son responsabilidad del core; módulos solo `DocumentRef` y dependencias declaradas ([`plataforma-core.md`](../especificacion/plataforma-core.md) §7–§7bis; C11 en [`integracion-docdigital.md`](../especificacion/integracion-docdigital.md)). |
 | D-13 *(v2)* | Backends documentales `platform` y `tenant_owned` demostrables en recepción; interfaz `external_dms` definida y extensible sin cambiar contratos de módulo. |
 
 ---

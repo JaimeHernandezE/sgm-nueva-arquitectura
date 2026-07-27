@@ -16,6 +16,7 @@ Documentación transversal de arquitectura, organizada por propósito.
 ### decisiones/
 
 - [`2026-07-eliminacion-odoo.md`](./decisiones/2026-07-eliminacion-odoo.md) — ADR: descontinuación de Odoo
+- [`2026-07-docdigital-tramitacion-documental.md`](./decisiones/2026-07-docdigital-tramitacion-documental.md) — ADR: DocDigital como tramitación de actos (SGM origina; DocDigital tramita)
 - [`pendientes.md`](./decisiones/pendientes.md) — registro único de pendientes (`P-nn`)
 - [`decisiones-macro-stack.md`](./decisiones/decisiones-macro-stack.md) — decisiones macro de stack
 - [`brechas-estandarizacion-ntdee-pisee.md`](./decisiones/brechas-estandarizacion-ntdee-pisee.md) — diagnóstico NTDEE / PISEE
@@ -36,6 +37,7 @@ Documentación transversal de arquitectura, organizada por propósito.
 - [`catalogo-roles.md`](./especificacion/catalogo-roles.md) — catálogo RBAC transversal (P-24)
 - [`catalogo-documentos-firmables.md`](./especificacion/catalogo-documentos-firmables.md) — tipología de documentos firmables (anclas + roles)
 - [`integracion-mercado-publico.md`](./especificacion/integracion-mercado-publico.md) — integración SGM ↔ MP
+- [`integracion-docdigital.md`](./especificacion/integracion-docdigital.md) — integración SGM ↔ DocDigital (C11; condicionada a P-72)
 - [`estandar-firma-electronica.md`](./especificacion/estandar-firma-electronica.md) — firma electrónica
 - [`openapi/comunes.yaml`](./especificacion/openapi/comunes.yaml) — componentes OpenAPI transversales
 

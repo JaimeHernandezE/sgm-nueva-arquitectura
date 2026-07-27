@@ -199,13 +199,27 @@ Operaciones consumidas por módulos vía dependencias declaradas en `contracts.m
 - **Servicio:** C9 — FirmaGob
 - **Entrada:** `document_ref` (`DocumentRef`), `signer_id`, `document_type` (opcional)
 - **Respuesta:** `signature_request_id`, `status`
-- **Nota:** C9 lee PDF vía C10; versión firmada se persiste en C10
+- **Nota:** C9 lee PDF vía C10; versión firmada se persiste en C10. **No** usar para actos administrativos tramitados en DocDigital (C11).
 - **Errores:** `SIGNATURE_PROVIDER_UNAVAILABLE`
 
 #### `POST /signatures/{id}/confirm` — `confirmSignature`
 - **Entrada:** `signature_request_id`
 - **Respuesta:** `status`, `signed_document_ref`, `signed_at`
 - **Errores:** `SIGNATURE_REJECTED`, `SIGNATURE_PROVIDER_UNAVAILABLE`
+
+#### `POST /document-procedures` — `submitAdministrativeAct`
+- **Servicio:** C11 — DocDigital
+- **Entrada:** `subject_type`, `subject_id`, `source_document_ref`, `signature_chain_id` (opcional), metadatos del acto
+- **Respuesta:** `document_procedure_id`, `status` (`submitted` / `pending_signature`)
+- **Clasificación:** asíncrona
+- **Nota:** contrato funcional en [`integracion-docdigital.md`](../arquitectura/especificacion/integracion-docdigital.md). **No especificar protocolo DocDigital** hasta **[PENDIENTE P-72]** (bloqueante). Si no hay API: modo `assisted` (exportación/importación).
+- **Errores:** `DOCDIGITAL_PROVIDER_UNAVAILABLE`, `DOCDIGITAL_NOT_ENABLED_FOR_TENANT`
+
+#### `POST /document-procedures/{id}/outcome` — `recordActOutcome`
+- **Uso:** retorno M2M o regularización asistida (folio + documento firmado)
+- **Entrada:** `external_folio`, `signed_document_ref`, `outcome` (`completed` \| `rejected`)
+- **Respuesta:** `DocumentProcedure` actualizado; emite `AdministrativeActSigned` si `completed`
+- **Errores:** `INVALID_STATUS`, `MISSING_REQUIRED_FIELD`
 
 #### `GET /normative/utm` — `getUtmValue`
 - **Servicio:** C9 — SII (cacheada, frescura mensual)
@@ -323,7 +337,8 @@ Operaciones citadas en wireframes de [`overview.md`](./overview.md) / [`wirefram
 |---|---|---|
 | Clave Única | OIDC | Autenticación plano personas (C1) |
 | Mercado Público | API lectura procesos | C7 — `readMpProcess`, evento `MpStateChanged` |
-| FirmaGob | Firma electrónica | C9 — `requestSignature`, `confirmSignature`; PDF vía C10 |
+| FirmaGob | Firma electrónica | C9 — `requestSignature`, `confirmSignature`; PDF vía C10 — documentos **no** acto DocDigital |
+| DocDigital | Tramitación de actos | C11 — `submitAdministrativeAct`, retorno con folio; **[PENDIENTE P-72]** (no asumir API) |
 | SII | UTM, referencias de precio | C9 — `getUtmValue`, `getPriceReference` |
 | Object storage S3-compatible | Buckets `platform` / `tenant_owned` | C10 — backends documentales |
 | APIs de DMS según adaptador | Repositorio municipal | C10 — backend `external_dms` vía `DmsAdapter` |
@@ -340,6 +355,8 @@ Los módulos **no** acceden a tablas del core ni a APIs de terceros; consumen la
 | `DocumentStored` | C10 | `document_ref`, `tenant_id`, `content_type`, `retention_class` |
 | `SignatureCompleted` | C9 | `signature_request_id`, `signed_document_ref`, `signed_at` |
 | `SignatureRejected` | C9 | `signature_request_id`, `reason` |
+| `AdministrativeActSigned` | C11 (DocDigital) | `document_procedure_id`, `subject_type`, `subject_id`, `external_folio`, `signed_document_ref` |
+| `DocumentProcedureFailed` | C11 | `document_procedure_id`, `reason` |
 | `NormativeParameterUpdated` | Administración parámetros | `key`, `value`, `valid_from` |
 | `TenantProvisioned` | Alta tenant | `tenant_id`, `schema_name` |
 | `ApiClientRevoked` | Revocación M2M | `api_client_id`, `revoked_at` |
@@ -351,13 +368,14 @@ Los módulos **no** acceden a tablas del core ni a APIs de terceros; consumen la
 
 ## 5. Relación con Adquisiciones
 
-`modulos/adquisiciones/contracts.md` §3 declara dependencias hacia módulos de negocio (Presupuestos, Contabilidad, Tesorería) y hacia el **core** (integraciones C7/C9, documentos C10, notificaciones C6). Las siguientes capacidades se resuelven vía **este contrato**:
+`modulos/adquisiciones/contracts.md` §3 declara dependencias hacia módulos de negocio (Presupuestos, Contabilidad, Tesorería) y hacia el **core** (integraciones C7/C9/C11, documentos C10, notificaciones C6). Las siguientes capacidades se resuelven vía **este contrato**:
 
 - Identidad del funcionario originante (**P-23**)
 - Scopes y roles para RBAC
 - `getNormativeParameter`, `getUtmValue`, `getPriceReference`
 - `readMpProcess` / `MpStateChanged`
-- `requestSignature`, `confirmSignature`
+- `requestSignature`, `confirmSignature` — documentos no-acto
+- `submitAdministrativeAct` / `AdministrativeActSigned` — actos DocDigital (**P-72**)
 - `storeDocument`, `getDownloadUrl` — adjuntos como `DocumentRef`
 - Bandeja / campanita C6 (`listNotifications`, …) — pendientes del actor; no columna en listado de expedientes
 

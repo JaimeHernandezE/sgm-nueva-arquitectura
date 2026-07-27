@@ -19,10 +19,10 @@
 | Plataforma | SGM / Otra (plataforma CGR) |
 | Optativo | **Condicional** — solo si el monto supera el umbral de Toma de Razón vigente (`NormativeParameter`; V5 en etapa 2 es advisory; aquí se ejecuta el trámite) |
 
-**Detalle:** Remisión a Contraloría de la **Resolución Fundada** (acto que sostiene el Trato Directo) y espera del pronunciamiento. Resultados: toma de razón (continúa a 3.2), **representación/reparo** (el proceso se cae → obligación de licitar: reversión a etapa 2 con modalidad LP, o cancelación), o toma de razón con alcance. Reutiliza el patrón transversal de LP §3.4/`ComptrollerReview`.
+**Detalle:** Remisión a Contraloría de la **Resolución Fundada** (acto que sostiene el Trato Directo) y espera del pronunciamiento. Resultados: toma de razón (continúa a 3.2), **representación/reparo** (el proceso se cae → obligación de licitar: reversión a etapa 2 con modalidad LP, o cancelación), o toma de razón con alcance. Reutiliza el patrón transversal de LP §3.4/`ComptrollerReview`. La Resolución Fundada se tramita en **DocDigital** antes de quedar `signed` (mismo patrón que LP §3.3).
 
 **Entidad(es) y campos:**
-- `AdministrativeAct` — `act_type = founded_resolution`, `procurement_case_id`, `status = signed`, `document_ref` (la Resolución Fundada ya adjuntada en etapa 1/2 vía `PurchaseRequest.founded_resolution_attachment`; aquí se materializa como acto formal sujeto a CGR)
+- `AdministrativeAct` — `act_type = founded_resolution`, `procurement_case_id`, `status` (`pending_signature` → `signed`), `act_number` (trazabilidad), `external_folio`, `document_procedure_id`, `document_ref` (la Resolución Fundada originada en etapa 1/2; perfeccionada vía DocDigital)
 - `ComptrollerReview` *(transversal, reutilizable desde LP)* — `administrative_act_id`, `submitted_at`, `outcome` (`approved` / `approved_with_remarks` / `rejected`), `outcome_at`, `official_document_ref`
 
 **Borde de módulo:**

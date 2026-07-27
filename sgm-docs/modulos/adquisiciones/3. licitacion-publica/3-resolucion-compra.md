@@ -73,20 +73,20 @@
 | Plataforma | SGM |
 | Obligatoriedad | **Obligatorio** |
 
-**Detalle:** Decreto o resolución que aprueba las bases, con firma electrónica. Sin este acto no hay publicación.
+**Detalle:** Decreto o resolución que aprueba las bases. Sin este acto no hay publicación. **SGM origina el contenido; DocDigital lo tramita** (visación, FEA, enumeración, distribución) — decisión [`2026-07-docdigital-tramitacion-documental.md`](../../../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). El identificador oficial del acto es el folio externo (`external_folio`); `act_number` es solo trazabilidad interna. Estado intermedio: `pending_signature` hasta el retorno del acto firmado.
 
-**Entidades:** `AdministrativeAct` *(nueva, transversal)* — `act_type` (`bases_approval`/`award`/`desertion`/`revocation`/...), `subject_id`, `act_number`, `signed_by`, `signed_at`, ref. documento. Generaliza el patrón de `PaymentDecree`; **candidata a absorberlo a futuro** — marcar `REVISAR`, no fusionar ahora.
+**Entidades:** `AdministrativeAct` *(transversal)* — `act_type` (`bases_approval`/…), `subject_id`, `act_number` (trazabilidad), `external_folio`, `document_procedure_id`, `status` (`pending_signature` → `signed`), ref. documento. Generaliza el patrón de `PaymentDecree`; **candidata a absorberlo a futuro** — marcar `REVISAR`, no fusionar ahora. Cadena de firmantes: `SignatureChain` (plataforma; proceso 25).
 
-**Borde:** Dependencia `requestSignature`/`confirmSignature` → Core (FirmaGob) (**síncrona bloqueante**; estándar "campo presente ≠ integración funcional": el contrato define el flujo completo de firma). Evento `AdministrativeActSigned`.
+**Borde:** Dependencia `submitAdministrativeAct` / retorno vía evento → **Core (DocDigital)** (**asíncrona**; contrato funcional en [`integracion-docdigital.md`](../../../arquitectura/especificacion/integracion-docdigital.md); **[PENDIENTE P-72]** mecanismo M2M vs. asistido). Evento `AdministrativeActSigned`. FirmaGob queda encapsulado en DocDigital para este acto (no cablear C9 directo).
 
 **Validaciones:**
 
 | Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
 |---|---|---|---|---|---|---|
-| Aprobar bases (firmar acto) | `approveTenderBases` | `LEGAL_REVIEW_REQUIRED` | — | Se requiere visto bueno jurídico de las bases antes de aprobarlas. | blocking | Ley 19.886 — bases de licitación |
-| Aprobar bases (firmar acto) | `approveTenderBases` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida. | blocking | Ley 19.799 — firma electrónica avanzada |
-| Aprobar bases (firmar acto) | `approveTenderBases` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking | integridad:estado_expediente |
-**Edge cases:** falla de FirmaGob → acto no perfeccionado, reintento; nunca "firmado" sin confirmación del servicio.
+| Aprobar bases (enviar a tramitación) | `approveTenderBases` | `LEGAL_REVIEW_REQUIRED` | — | Se requiere visto bueno jurídico de las bases antes de aprobarlas. | blocking | Ley 19.886 — bases de licitación |
+| Aprobar bases (enviar a tramitación) | `approveTenderBases` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida del acto tramitado. | blocking | Ley 19.799 — firma electrónica avanzada |
+| Aprobar bases (enviar a tramitación) | `approveTenderBases` | `DOCDIGITAL_PROVIDER_UNAVAILABLE` | — | DocDigital no está disponible para tramitar el acto. | blocking | integridad:estado_expediente |
+**Edge cases:** falla o latencia DocDigital → acto permanece `pending_signature`, reintento; nunca `signed` sin retorno con folio; vía alternativa si municipio no habilitado — **[PENDIENTE P-73]**.
 
 ---
 
@@ -253,9 +253,9 @@
 | Obligatoriedad | **Obligatorio** (en alguna de sus variantes: adjudica, declara desierta o revoca) |
 | Interacción MP | **Gestión** |
 
-**Detalle:** Sobre el acta, la autoridad dicta el acto terminal: **adjudicación** al ranking (o distinta del ranking, con fundamentación reforzada), **deserción** (sin oferentes o todos inadmisibles/inconvenientes) o **revocación** por interés público. Reutiliza `LegalReview` (revisión jurídica previa) y `AdministrativeAct` (firma). El acto se publica **en MP** por el usuario. La lectura de la **Resolución de Adjudicación publicada** trae monto real y RUT del adjudicatario y gatilla el **ajuste de la preobligación al monto adjudicado** (`adjustPreCommitment` → Presupuestos) — el compromiso cierto espera a la OC aceptada (3.14).
+**Detalle:** Sobre el acta, la autoridad dicta el acto terminal: **adjudicación** al ranking (o distinta del ranking, con fundamentación reforzada), **deserción** (sin oferentes o todos inadmisibles/inconvenientes) o **revocación** por interés público. Reutiliza `LegalReview` (revisión jurídica previa) y `AdministrativeAct` (**tramitación DocDigital**, mismo patrón que §3.3: `pending_signature` → retorno con `external_folio`). El acto se publica **en MP** por el usuario. La lectura de la **Resolución de Adjudicación publicada** trae monto real y RUT del adjudicatario y gatilla el **ajuste de la preobligación al monto adjudicado** (`adjustPreCommitment` → Presupuestos) — el compromiso cierto espera a la OC aceptada (3.14).
 
-**Lecturas MP:** Resolución de Adjudicación publicada — **deseada**; degradado: el acto se dicta y firma en SGM (fuera de MP); la publicación ocurre en MP y el ajuste presupuestario espera la lectura — **sin** transcribir monto/RUT desde MP en formulario.
+**Lecturas MP:** Resolución de Adjudicación publicada — **deseada**; degradado: el acto se dicta y tramita en SGM→DocDigital (fuera de MP); la publicación ocurre en MP y el ajuste presupuestario espera la lectura — **sin** transcribir monto/RUT desde MP en formulario.
 
 **Validaciones:**
 
@@ -265,9 +265,9 @@
 | Dictar resolución | `issueAwardResolution` | `MISSING_REQUIRED_FIELD` | `resolution_type` | El campo Tipo de resolución es obligatorio. | blocking | integridad:campo_requerido |
 | Dictar resolución | `issueAwardResolution` | `MISSING_REQUIRED_FIELD` | `awarded_offer_id` | La oferta adjudicada es obligatoria si el tipo es adjudicación. | blocking | integridad:campo_requerido |
 | Dictar resolución | `issueAwardResolution` | `AWARD_JUSTIFICATION_REQUIRED` | `justification` | La fundamentación es obligatoria si se adjudica a una oferta distinta del primero del ranking. | blocking | Ley 19.886 — resolución de adjudicación |
-| Dictar resolución | `issueAwardResolution` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida. | blocking | Ley 19.799 — firma electrónica avanzada |
-| Dictar resolución | `issueAwardResolution` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking | integridad:estado_expediente |
-**Edge cases:** deserción → decisión posterior: relicitar (nuevo proceso MP, mismo expediente) o Trato Directo por causal de licitación desierta (reversión a etapa 2 con la causal precargada — ver `procesos-transversales/2-modalidad-compra.md` §2.1); adjudicación distinta del ranking → fundamentación obligatoria y visible en auditoría.
+| Dictar resolución | `issueAwardResolution` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida del acto tramitado. | blocking | Ley 19.799 — firma electrónica avanzada |
+| Dictar resolución | `issueAwardResolution` | `DOCDIGITAL_PROVIDER_UNAVAILABLE` | — | DocDigital no está disponible para tramitar el acto. | blocking | integridad:estado_expediente |
+**Edge cases:** deserción → decisión posterior: relicitar (nuevo proceso MP, mismo expediente) o Trato Directo por causal de licitación desierta (reversión a etapa 2 con la causal precargada — ver `procesos-transversales/2-modalidad-compra.md` §2.1); adjudicación distinta del ranking → fundamentación obligatoria y visible en auditoría; acto en `pending_signature` hasta retorno DocDigital.
 
 ---
 
@@ -381,7 +381,8 @@
 
 | Sub-paso | Contrato / Evento | Contraparte | Nota |
 |---|---|---|---|
-| 3.3, 3.9, 3.10, 3.13 | `requestSignature` / `confirmSignature` | Core (FirmaGob) | Síncrona bloqueante |
+| 3.3, 3.10 | `submitAdministrativeAct`, `AdministrativeActSigned` | Core (DocDigital) | Asíncrona; folio oficial externo; **[PENDIENTE P-72]** |
+| 3.9 (acta), 3.13 | `requestSignature` / `confirmSignature` | Core (FirmaGob) | Síncrona bloqueante — no son actos DocDigital (ver inventario) |
 | 3.4, 3.11 | — (registro manual + documento) | Contraloría | Sin API asumida; **[PENDIENTE P-64]** |
 | 3.5 | `readMpProcess`, `linkMpProcess`, `MpProcessLinked` | Core (Mercado Público) | Vinculación diferida de 2.3 |
 | 3.6, 3.8, 3.10 | `readMpProcess` (foro, apertura, adjudicación) | Core (Mercado Público) | Lecturas **deseadas** |
@@ -391,4 +392,4 @@
 
 **Etapa anterior:** [2. Modalidad de Compra](../procesos-transversales/2-modalidad-compra.md) · **Siguiente etapa:** [4. Recepción Conforme](../procesos-transversales/4-recepcion-conforme.md) *(transversal; en LP con servicios continuos, recepción recurrente)*
 
-> **Pendientes registrados (abiertos, decisión humana):** **[P-37]** umbrales como `NormativeParameter`; **[P-64]** canal CGR; **[P-65]** aclaración → acto formal; **[P-66]** inhabilidades comisión; **[P-67]** firma del contratista.
+> **Pendientes registrados (abiertos, decisión humana):** **[P-37]** umbrales como `NormativeParameter`; **[P-64]** canal CGR; **[P-65]** aclaración → acto formal; **[P-66]** inhabilidades comisión; **[P-67]** firma del contratista; **[P-72]** mecanismo DocDigital; **[P-74]** alcance decreto de pago / actas.

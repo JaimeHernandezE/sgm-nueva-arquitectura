@@ -8,7 +8,7 @@
 > OpenAPI: [`openapi/adquisiciones.openapi.yaml`](./openapi/adquisiciones.openapi.yaml) — estructura: [`openapi/README.md`](./openapi/README.md)
 > Fixtures sandbox: [`fixtures/catalogo.md`](./fixtures/catalogo.md)
 
-**Alcance:** las etapas transversales (1, 2, 4) y la etapa 3 de Compra Ágil (§2.3), Licitación Pública (§2.4), Convenio Marco (§2.7) y Trato Directo (§2.8) están cubiertas. Pendientes humanos de TD: P-69 (rechazo OC), P-70 (polling/webhook), P-71 (plazo 24 h).
+**Alcance:** las etapas transversales (1, 2, 4) y la etapa 3 de Compra Ágil (§2.3), Licitación Pública (§2.4), Convenio Marco (§2.7) y Trato Directo (§2.8) están cubiertas. Pendientes humanos de TD: P-69 (rechazo OC), P-70 (polling/webhook), P-71 (plazo 24 h). Actos administrativos (LP 3.3/3.10, TD Resolución Fundada, decreto de pago 5.3) tramitados vía **Core (DocDigital)** — decisión canónica DocDigital; **[PENDIENTE P-72]** (bloqueante), **P-74**.
 
 **Fundamento en validadores:** todo `blocking` en `ValidationIssue` / `ErrorResponse` lleva `legal_reference` (cita normativa o `integridad:<motivo>`). Catálogo completo con columna Fundamento en las fichas §3.6; el backend debe poblar el mismo valor al emitir `422`. Norma: [`musts-arquitectura.md`](../../arquitectura/especificacion/musts-arquitectura.md) §11 · [`estandares-api.md`](../../arquitectura/especificacion/estandares-api.md) §3.3.
 
@@ -40,12 +40,12 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | `ReceiptRejectionCase` | Expuesta | `id`, `goods_receipt_id`, `resolution_type`, `resolution_deadline`, `resolved_at`, `outcome` | 4.5 |
 | `ThreeWayMatch` | Expuesta | `id`, `purchase_order_id`, `goods_receipt_id`, `invoice_id`, `match_status`, `match_date` | 5.1 |
 | `Accrual` | Expuesta | `id`, `three_way_match_id`, `budget_commitment_id`, `accrual_amount`, `accrual_date` | 5.2 — ver también `recordAccrual` (4.4) <!-- REVISAR: dos eventos de devengado, ver §4 --> |
-| `PaymentDecree` | Expuesta | `id`, `accrual_id`, `decree_number`, `decree_date`, `approver_id` | 5.3 |
+| `PaymentDecree` | Expuesta | `id`, `accrual_id`, `decree_number`, `external_folio`, `decree_date`, `approver_id`, `status` | 5.3 — folio oficial DocDigital; `decree_number` = trazabilidad |
 | `Payment` | Expuesta | `id`, `payment_decree_id`, `payment_date`, `payment_method`, `payment_status` | 5.4 |
 | `TenderBases` | Expuesta | `id`, `procurement_case_id`, `status`, `technical_bases_ref`, `administrative_bases_ref`, `requires_bid_bond`, `requires_performance_bond`, `version` | 3.1 *(LP)* |
 | `EvaluationCriterion` | Expuesta | `id`, `tender_bases_id`, `name`, `weight_percent`, `scoring_rule` | 3.1 *(LP)* |
 | `LegalReview` | Expuesta | `id`, `subject_type`, `subject_id`, `reviewer_id`, `outcome`, `observations`, `reviewed_at` | 3.2, 3.10 *(LP)* — polimórfica, transversal |
-| `AdministrativeAct` | Expuesta | `id`, `procurement_case_id`, `act_type`, `subject_id`, `act_number`, `status`, `signed_by`, `signed_at` | 3.3, 3.9, 3.10 *(LP)* / 3.1 *(TD, `founded_resolution`)* — polimórfica, transversal <!-- REVISAR: candidata a absorber `PaymentDecree`, ver entidades-core.md --> |
+| `AdministrativeAct` | Expuesta | `id`, `procurement_case_id`, `act_type`, `subject_id`, `act_number`, `external_folio`, `status`, `signed_by`, `signed_at` | 3.3, 3.9, 3.10 *(LP)* / 3.1 *(TD, `founded_resolution`)* — polimórfica, transversal; tramitación DocDigital <!-- REVISAR: candidata a absorber `PaymentDecree`, ver entidades-core.md --> |
 | `ComptrollerReview` | Expuesta | `id`, `administrative_act_id`, `submitted_at`, `outcome`, `outcome_at` | 3.4, 3.11 *(LP)* / 3.1 *(TD)* — transversal |
 | `Guarantee` | Expuesta | `id`, `procurement_case_id`, `guarantee_type`, `provider_rut`, `instrument_type`, `amount`, `expiry_date`, `status` | 3.7, 3.12 *(LP)* — transversal |
 | `EvaluationCommittee` | Expuesta | `id`, `procurement_case_id`, `designation_act_id`, `status` | 3.9 *(LP)* |
@@ -344,7 +344,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 
 ### 2.4 Resolución de Compra — Licitación Pública
 
-Vinculación con Mercado Público diferida al sub-paso 3.5 — reutiliza íntegramente `linkMpProcess`/`readMpProcess` de §2.2. Firma electrónica vía `requestSignature`/`confirmSignature` (Core FirmaGob) en 3.3, 3.9, 3.10, 3.13.
+Vinculación con Mercado Público diferida al sub-paso 3.5 — reutiliza íntegramente `linkMpProcess`/`readMpProcess` de §2.2. Actos administrativos (3.3, 3.10) vía `submitAdministrativeAct` (Core DocDigital). Firma electrónica de acta/contrato vía `requestSignature`/`confirmSignature` (Core FirmaGob) en 3.9, 3.13.
 
 #### `POST /procurement-cases/{id}/tender-bases` — `createTenderBases`
 - **Sub-pasos:** 3.1
@@ -370,9 +370,9 @@ Vinculación con Mercado Público diferida al sub-paso 3.5 — reutiliza íntegr
 - **Sub-pasos:** 3.3
 - **Reglas:** `TenderBases.status = approved` (VB jurídico) requerido (`LEGAL_REVIEW_REQUIRED`)
 - **Respuesta:** `AdministrativeAct` (`act_type = bases_approval`, `status = pending_signature`)
-- **Dependencias:** `requestSignature`, `confirmSignature` (Core FirmaGob, síncrona bloqueante)
-- **Evento emitido:** `AdministrativeActSigned`
-- **Comportamiento ante falla:** FirmaGob no disponible → acto no perfeccionado, reintento; nunca `signed` sin confirmación del servicio
+- **Dependencias:** `submitAdministrativeAct` (Core DocDigital, asíncrona) — decisión DocDigital; **[PENDIENTE P-72]**
+- **Evento emitido:** `AdministrativeActSigned` (al retorno con `external_folio`)
+- **Comportamiento ante falla:** DocDigital no disponible → acto permanece `pending_signature`, reintento / vía alternativa (**P-73**); nunca `signed` sin retorno del acto firmado
 
 #### `POST /administrative-acts/{id}/comptroller-submission` — `submitToComptroller`
 - **Sub-pasos:** 3.4, 3.11 *(mismo mecanismo, distinto `AdministrativeAct` de origen — bases o adjudicación)*
@@ -439,7 +439,9 @@ Vinculación con Mercado Público diferida al sub-paso 3.5 — reutiliza íntegr
   |---|---|---|
   | `justification` si `awarded_offer_id` ≠ primero del ranking | blocking | `AWARD_JUSTIFICATION_REQUIRED` |
   | Revisión jurídica previa registrada | blocking | `LEGAL_REVIEW_REQUIRED` |
-- **Respuesta:** `AdministrativeAct` (`act_type = award` \| `desertion` \| `revocation`); reutiliza `LegalReview` (revisión previa)
+- **Respuesta:** `AdministrativeAct` (`act_type = award` \| `desertion` \| `revocation`, `status = pending_signature`); reutiliza `LegalReview` (revisión previa)
+- **Dependencias:** `submitAdministrativeAct` (Core DocDigital, asíncrona)
+- **Evento emitido:** `AdministrativeActSigned` / `AwardResolutionIssued`
 - **Dependencias:** `requestSignature`, `confirmSignature`; `adjustPreCommitment` (Presupuestos) si `award` — ajuste al monto adjudicado, antes del Compromiso Cierto (3.14)
 - **Evento emitido:** `AwardResolutionIssued`
 - **Edge cases:** deserción → relicitar (nuevo proceso MP, mismo expediente) o Trato Directo por causal de licitación desierta (reversión a `2-modalidad-compra.md` §2.1 con la causal precargada)
@@ -525,8 +527,9 @@ Vinculación con Mercado Público diferida al sub-paso 3.5 — reutiliza íntegr
 
 #### `POST /accruals/{id}/payment-decree` — `issuePaymentDecree`
 - **Sub-pasos:** 5.3
-- **Dependencias:** `requestSignature` (Core (FirmaGob))
-- **Evento emitido:** `PaymentDecreeIssued`
+- **Dependencias:** `submitAdministrativeAct` (Core (DocDigital)) — **[PENDIENTE P-72]**, **P-74**
+- **Evento emitido:** `PaymentDecreeIssued` (tras retorno con `external_folio`)
+- **Comportamiento ante falla:** `DOCDIGITAL_PROVIDER_UNAVAILABLE`; decreto en `pending_signature`
 
 #### `POST /payment-decrees/{id}/execute` — `executePayment`
 - **Sub-pasos:** 5.4
@@ -671,8 +674,19 @@ Ver [`integracion-mercado-publico.md`](../../arquitectura/especificacion/integra
 
 | Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
 |---|---|---|---|
-| `requestSignature` | 1.2, 1.5, 4.1, 5.3, 3.3, 3.9, 3.10, 3.13 *(LP)* | Síncrona bloqueante | `SIGNATURE_PROVIDER_UNAVAILABLE`; documento queda `pending_signature` |
-| `confirmSignature` | 1.2, 1.5, 3.3, 3.9, 3.10, 3.13 *(LP)* | Síncrona bloqueante | `SIGNATURE_REJECTED`; no transiciona estado |
+| `requestSignature` | 1.2, 1.5, 4.1, 3.9, 3.13 *(LP)* | Síncrona bloqueante | `SIGNATURE_PROVIDER_UNAVAILABLE`; documento queda `pending_signature` |
+| `confirmSignature` | 1.2, 1.5, 3.9, 3.13 *(LP)* | Síncrona bloqueante | `SIGNATURE_REJECTED`; no transiciona estado |
+
+Documentos **no** tramitados como acto administrativo DocDigital (CDP, VB, acta de evaluación, contrato municipal). Ver [`integracion-docdigital.md`](../../arquitectura/especificacion/integracion-docdigital.md) §3.
+
+#### DocDigital (C11) — tramitación de actos
+
+| Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
+|---|---|---|---|
+| `submitAdministrativeAct` | 3.3, 3.10 *(LP)*; 5.3 (decreto de pago); TD Resolución Fundada | Asíncrona | `DOCDIGITAL_PROVIDER_UNAVAILABLE`; acto en `pending_signature` |
+| Evento `AdministrativeActSigned` | mismos | Asíncrona | Retorno con `external_folio` y documento firmado |
+
+Decisión: [`2026-07-docdigital-tramitacion-documental.md`](../../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). **[PENDIENTE P-72]** (bloqueante), **P-74** (alcance decreto de pago).
 
 #### Contraloría (sin integración API asumida)
 
@@ -811,7 +825,8 @@ La ficha QA original solo cubrió el piloto Compra Ágil. Las operaciones de Lic
 | 3.7 *(LP)* | `registerGuaranteeCustody` | Tesorería | `GuaranteeRegistered` |
 | 3.8 *(LP)* | — *(lectura MP)* | `readMpProcess` (deseada) | `BidOpeningRecorded` |
 | 3.9 *(LP)* | `designateEvaluationCommittee`, `recordOfferAdmissibility`, `recordEvaluationScores`, `signEvaluationReport` | `requestSignature`, `confirmSignature` | `EvaluationCommitteeDesignated`, `EvaluationCompleted` |
-| 3.10 *(LP)* | `issueAwardResolution` | `requestSignature`, `confirmSignature`, `adjustPreCommitment` (Presupuestos) | `AwardResolutionIssued` |
+| 3.3 *(LP)* | `approveTenderBases` | `submitAdministrativeAct` (Core DocDigital) | `AdministrativeActSigned` |
+| 3.10 *(LP)* | `issueAwardResolution` | `submitAdministrativeAct` (Core DocDigital), `adjustPreCommitment` (Presupuestos) | `AwardResolutionIssued` |
 | 3.11 *(LP)* | `submitToComptroller`, `recordComptrollerOutcome` *(reutiliza 3.4)* | Contraloría (sin integración asumida) | `ComptrollerReviewRecorded` |
 | 3.12 *(LP)* | `registerGuaranteeCustody` *(reutiliza 3.7)* | Tesorería | `GuaranteeRegistered` |
 | 3.13 *(LP)* | `draftContract`, `signContract` | `requestSignature`, `confirmSignature` | `ContractSigned` |
@@ -835,5 +850,5 @@ La ficha QA original solo cubrió el piloto Compra Ágil. Las operaciones de Lic
 | 4.5 | — *(gestión de rechazo, ver 4.2)* | — | `ReceiptRejected` |
 | 5.1 | `performThreeWayMatch` | `getInvoiceForMatch`, MP | `ThreeWayMatchCompleted` |
 | 5.2 | `registerAccrual` | `registerAccrual` | `AccrualRegistered` — **[PENDIENTE P-46]** |
-| 5.3 | `issuePaymentDecree` | `requestSignature` | `PaymentDecreeIssued` |
+| 5.3 | `issuePaymentDecree` | `submitAdministrativeAct` (Core DocDigital) | `PaymentDecreeIssued` |
 | 5.4 | `executePayment` | `executePayment` | `PaymentCompleted` |

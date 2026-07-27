@@ -90,29 +90,29 @@
 | Plataforma | SGM |
 | Optativo | Falso |
 
-**Detalle:** Se genera el Decreto de Pago sobre el Devengado registrado.
+**Detalle:** Se genera el Decreto de Pago sobre el Devengado registrado. **SGM origina el contenido; DocDigital lo tramita** (visación, FEA, enumeración) — decisión canónica DocDigital. `decree_number` es trazabilidad interna; el folio oficial es `external_folio`. Alcance operativo (alta frecuencia) — **[PENDIENTE P-74]**.
 
 **Entidad(es) y campos:**
-- `PaymentDecree` (nueva) — `accrual_id` (ref. `Accrual`), `decree_number` (texto, correlativo), `decree_date` (fecha), `approver_id` (ref. `User`)
+- `PaymentDecree` — `accrual_id` (ref. `Accrual`), `decree_number` (texto, trazabilidad interna), `external_folio` (texto, folio oficial DocDigital), `document_procedure_id`, `decree_date` (fecha), `approver_id` (ref. `User`), `status` (`pending_signature` → `signed`)
 
 **Borde de módulo:**
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Dependencia | `requestSignature` | Core (FirmaGob) | Síncrona bloqueante | Entrada: `document_id` (decreto), `signer_id` |
-| 2 | Evento | `PaymentDecreeIssued` | — | Asíncrona | `PaymentDecree` (`id`, `decree_number`, `decree_date`) |
+| 1 | Dependencia | `submitAdministrativeAct` | Core (DocDigital) | Asíncrona | Entrada: contenido del decreto, `SignatureChain` |
+| 2 | Evento | `PaymentDecreeIssued` / `AdministrativeActSigned` | — | Asíncrona | `PaymentDecree` (`id`, `decree_number`, `external_folio`, `decree_date`) |
 
 **Validaciones:**
 
 | Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
 |---|---|---|---|---|---|---|
 | Emitir decreto de pago | `issuePaymentDecree` | `ACCRUAL_NOT_REGISTERED` | `accrual_id` | Se requiere un devengado registrado en Contabilidad. | blocking | DL 1.263 — fase de devengo |
-| Emitir decreto de pago | `issuePaymentDecree` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida. | blocking | Ley 19.799 — firma electrónica avanzada |
-| Emitir decreto de pago | `issuePaymentDecree` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking | integridad:estado_expediente |
+| Emitir decreto de pago | `issuePaymentDecree` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida del acto tramitado. | blocking | Ley 19.799 — firma electrónica avanzada |
+| Emitir decreto de pago | `issuePaymentDecree` | `DOCDIGITAL_PROVIDER_UNAVAILABLE` | — | DocDigital no está disponible para tramitar el acto. | blocking | integridad:estado_expediente |
 **Edge cases:**
-- FirmaGob no disponible → `issuePaymentDecree` no procede; retorna `SIGNATURE_PROVIDER_UNAVAILABLE`.
+- DocDigital no disponible → decreto queda `pending_signature`; reintento o vía alternativa (**P-73**); no avanza a ejecución de pago sin retorno firmado.
 - Devengado no registrado en Contabilidad → `issuePaymentDecree` rechazado con `ACCRUAL_NOT_REGISTERED`.
-
+- Mecanismo M2M vs. asistido — **[PENDIENTE P-72]**.
 ---
 
 ## 5.4 — Ejecución del pago
@@ -169,7 +169,7 @@
 | 5.1 | Sistema externo | `readMpProcess` | Core (Mercado Público) |
 | 5.1 | Evento | `ThreeWayMatchCompleted` | — |
 | 5.2 | Dependencia + Evento | `registerAccrual`, `AccrualRegistered` | Contabilidad |
-| 5.3 | Dependencia + Evento | `requestSignature`, `PaymentDecreeIssued` | Core (FirmaGob) |
+| 5.3 | Dependencia + Evento | `submitAdministrativeAct`, `PaymentDecreeIssued` | Core (DocDigital) |
 | 5.4 | Dependencia + Evento | `executePayment`, `PaymentCompleted` | Tesorería |
 
 **Etapa anterior:** [4. Recepción Conforme](./4-recepcion-conforme.md) · **Fin del ciclo de compra** — vuelve a [Adquisiciones](../overview.md)

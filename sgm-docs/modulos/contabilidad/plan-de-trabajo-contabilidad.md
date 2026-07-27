@@ -2,9 +2,11 @@
 
 **Proyecto:** SGM — Sistema de Gestión Municipal
 **Módulo:** Contabilidad
-**Versión:** 0.4 (borrador para revisión interna)
+**Versión:** 0.5 (borrador para revisión interna)
 **Fecha:** julio 2026
 **Estado:** propuesta de plan, no validada con DM
+
+**Cambios v0.5:** decisión de frontera **D-5 — DocDigital** (SGM origina decretos; DocDigital tramita y enumera). Referencia canónica: [`arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md`](../../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). Inventario de actos del módulo (baja, donación, cesión, decreto de pago) en [`integracion-docdigital.md`](../../arquitectura/especificacion/integracion-docdigital.md) §3. Reclasificación de la FEA: para actos administrativos es **cableado a DocDigital (C11)**, no construcción de FirmaGob; EEFF siguen sujetos a P-74 (¿DocDigital o C9?). Pendientes C-16…C-18. Estado `pending_signature` obligatorio en máquinas que dependen del acto firmado.
 
 **Cambios v0.4:** tres consecuencias derivadas del diagnóstico corregido en v0.3. Se introduce la categoría de brecha **“expediente sin efecto de dominio”** (§3.2.1), se declara la dependencia **EEFF ← snapshot de cierre** (§3.2.2), y se reclasifica la brecha de firma electrónica avanzada como **cableado y no construcción** (§3.2.3).
 
@@ -32,6 +34,7 @@ Este documento **no** es la especificación. Es el plan que la produce.
 | D-2 | **Alcance del módulo** | Incluye inventario y activo fijo (proceso 28), **factoring y cesión de facturas (proceso 32)**, conciliación bancaria (proceso 37) y reportes externos a CGR y SINIM (procesos 33, 35, 36) |
 | D-3 | **Profundidad** | Módulo completo, con el **núcleo no diferible marcado explícitamente** dentro. Coherente con la regla de no recortar el modelo de datos aunque la implementación sea parcial |
 | D-4 | **Método** | Réplica del método de Adquisiciones y Presupuestos: fichas de proceso por etapa → modelo de entidades en naming técnico inglés → contratos de API → wireframes → especificaciones transversales |
+| D-5 | **Tramitación de decretos (DocDigital)** | Decretos de baja, donación, cesión de factura y decreto de pago (procesos 28 y 32) se originan en SGM y se tramitan en DocDigital. Folio oficial externo; correlativo interno solo trazabilidad. Decisión canónica transversal. El decreto de pago queda bajo **P-74 / C-16** por frecuencia operativa. Condicionado a **P-72**. |
 
 ### 2.1 Devengo dual: qué resuelve y qué problema abre
 
@@ -130,7 +133,7 @@ Regla de uso, igual que en Presupuestos: **fuente de requisitos funcionales cand
 | Estados Financieros a CGR (proceso 35) | **Parcial:** hay `account.report.summary` (PDF + workflow). **No** hay Balance General, Estado de Resultados, Flujos de Efectivo, Cambios en el Patrimonio ni Notas como entidades |
 | Archivo plano mensual a CGR (proceso 33) | Ausente |
 | Informe trimestral SINIM y Ley 20.237 (proceso 36) | **Parcial:** existe PDF trimestral (`account.report.trimestral`). **No** es BEP/FCM/SINIM ni Ley 20.237 estructurados |
-| Firma Electrónica Avanzada sobre EEFF | Ausente en el flujo de reportes. **Capacidad presente en la plataforma**: el factoring usa FirmaGob en decretos TUPA. Brecha de **cableado, no de construcción** — ver §3.2.3 |
+| Firma Electrónica Avanzada sobre EEFF | Ausente en el flujo de reportes. **Capacidad presente en la plataforma** (FirmaGob / DocDigital). Brecha de **cableado** — ver §3.2.3; canal exacto abierto (C-16) |
 | Catastro de bienes inmuebles (28.2.2) | Ausente; solo bienes muebles vía `asset` |
 | Baja de bienes con revisión en terreno (28.2.3) | Solo `state: retired` y wizard; sin el flujo Control + DAF |
 | Certificado de Saldos Bancarios del Tesorero (33.2.2) | No modelado como artefacto; la conciliación existe pero no el certificado que condiciona el cierre |
@@ -172,7 +175,11 @@ Dos consecuencias:
 
 FirmaGob ya opera en la plataforma: los decretos TUPA del factoring lo usan. Lo que falta es conectarlo al flujo de reportes, no incorporarlo.
 
-Reclasificar esta brecha cambia su estimación de esfuerzo de forma relevante y evita sobredimensionar MC-6 en la licitación. Se mantiene, eso sí, la exigencia de verificar la integración de extremo a extremo antes de darla por disponible — el propio antecedente de FirmaGob enseña que configuración presente no equivale a integración funcional.
+**Reclasificación v0.5 (DocDigital):** para los **actos administrativos** del módulo (decretos de baja, donación, cesión, decreto de pago), la FEA llega **incluida en DocDigital** (C11). La brecha no es construir FirmaGob ni siquiera cablear C9 acto a acto: es **cablear la tramitación DocDigital** y verificar extremo a extremo (P-72). C9 permanece para documentos que no sean esos actos.
+
+Los **Estados Financieros (proceso 35)** quedan abiertos: ¿tramitación DocDigital o firma directa C9? — **C-16 / P-74**. Hasta cerrarlo, se mantiene la exigencia de verificación funcional de extremo a extremo antes de dar la FEA por disponible — el propio antecedente de FirmaGob enseña que configuración presente no equivale a integración funcional.
+
+Reclasificar esta brecha cambia su estimación de esfuerzo de forma relevante y evita sobredimensionar MC-6 / MC-7 en la licitación.
 
 ### 3.3 Brecha de cobertura
 
@@ -255,15 +262,17 @@ Naming técnico en inglés, consistente con Adquisiciones y Presupuestos. Lista 
 
 **Registro:** `JournalEntry`, `JournalEntryLine`, `Invoice`, `InvoiceLine`, `InvoiceAllocation`, `EntryTemplate` (plantilla de asiento por tipo de operación), `IncomeOrder` (con reconocimiento dual devengado/percibido), `TaxRoll` (rol), `RollCertification` (certificación de Tesorería)
 
-**Cesión:** `CreditAssignment` (cesión con fecha de conocimiento computada), `AssignmentDecree` (decreto que registra la cesión), `PaymentBeneficiary` (beneficiario efectivo, distinto del acreedor de la obligación), `SIIRegistryQuery` (consulta al Registro Público de Transferencias)
+**Cesión:** `CreditAssignment` (cesión con fecha de conocimiento computada), `AssignmentDecree` (decreto que registra la cesión — **tramitado DocDigital, D-5**; folio = `ExternalFolio`), `PaymentBeneficiary` (beneficiario efectivo, distinto del acreedor de la obligación), `SIIRegistryQuery` (consulta al Registro Público de Transferencias)
 
-**Bienes:** `FixedAsset`, `InventoryItem`, `AssetLocation`, `AssetTransfer`, `AssetRetirement`, `DepreciationSchedule`, `RealEstateRegistry` (catastro de inmuebles)
+**Bienes:** `FixedAsset`, `InventoryItem`, `AssetLocation`, `AssetTransfer`, `AssetRetirement` *(baja con decreto DocDigital)*, `DepreciationSchedule`, `RealEstateRegistry` (catastro de inmuebles)
 
 **Conciliación:** `BankAccount`, `BankStatement`, `BankReconciliation`, `ReconciliationLine`, `Check`, `BankBalanceCertificate`
 
 **Cierre:** `AccountingPeriod`, `PeriodClosure`, `ClosureSnapshot`, `ClosureHistory`, `YearEndTransfer`
 
-**Reporte:** `FinancialStatement` (con sus seis tipos), `StatementNote`, `RegulatoryReport`, `RegulatorySubmission` (envío con acuse y firma)
+**Reporte:** `FinancialStatement` (con sus seis tipos), `StatementNote`, `RegulatoryReport`, `RegulatorySubmission` (envío con acuse y firma — canal FEA: C-16)
+
+**Transversal (plataforma, D-5):** `AdministrativeAct`, `DocumentProcedure`, `SignatureChain`, `ExternalFolio` — no duplicar en el schema del módulo; consumir vía C11.
 
 ---
 
@@ -330,11 +339,11 @@ Duraciones preliminares. F0 no puede saltarse: C-1 condiciona el modelo de dos m
 |---|---|
 | MC-1 Catálogo y configuración | 2 |
 | MC-2 Registro de hechos económicos | 4 (devengo de gasto → factura → ingreso con rol → ingreso sin rol) |
-| MC-3 Bienes | 4 (alta en devengo → traslado → baja con decreto → depreciación) |
+| MC-3 Bienes | 4 (alta en devengo → traslado → baja con decreto DocDigital → depreciación) |
 | MC-4 Conciliación | 2 (elaboración → doble revisión y archivo) |
 | MC-5 Cierres | 2 (mensual con gate de conciliación → anual con traspasos) |
 | MC-6 Reportes externos | 4 (archivo plano CGR → EEFF → SINIM/BEP → Ley 20.237) |
-| MC-7 Cesión y factoring | 3 (detección en Registro SII → decreto de cesión → decreto de pago al cesionario, con suspensión del anterior si existe) |
+| MC-7 Cesión y factoring | 3 (detección en Registro SII → decreto de cesión DocDigital → decreto de pago al cesionario con `pending_signature`, con suspensión del anterior si existe) |
 
 ### F4 — Modelo de datos y contratos · 2 semanas
 
@@ -375,6 +384,9 @@ Duraciones preliminares. F0 no puede saltarse: C-1 condiciona el modelo de dos m
 | **C-9** | Catastro de bienes inmuebles: alcance y relación con activo fijo | F2 | DM |
 | **C-10** | Comportamiento del cierre mensual si Tesorería no emite el Certificado de Saldos Bancarios en plazo | F3 | Equipo + DM |
 | **C-11** | Propiedad del informe del art. 29 d): Contabilidad provee, Control emite. Definir el corte | F2 | DM + Control |
+| **C-16** | Alcance DocDigital en el módulo: ¿EEFF y decreto de pago van por C11 o quedan en C9 / circuito interno? Alineado a P-74 | F2 / MC-6–MC-7 | Equipo + DM |
+| **C-17** | Vía alternativa de decretos contables sin DocDigital (P-73); efecto en suspensión de pago y factoring | F3 | Equipo + Jurídica |
+| **C-18** | Folios históricos de decretos Odoo (`tesoreria_gov_cl` / TUPA factoring) vs. `ExternalFolio` (P-75) | F4 | Equipo interno |
 
 ---
 

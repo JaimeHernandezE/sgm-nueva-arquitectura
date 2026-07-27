@@ -2,9 +2,11 @@
 
 **Proyecto:** SGM — Sistema de Gestión Municipal
 **Módulo:** Presupuestos
-**Versión:** 0.9 (borrador para revisión interna)
+**Versión:** 0.10 (borrador para revisión interna)
 **Fecha:** julio 2026
 **Estado:** propuesta de plan, no validado con DM
+
+**Cambios v0.10:** decisión de frontera **D-4 — DocDigital** (SGM origina actos; DocDigital tramita y enumera). Referencia canónica: [`arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md`](../../arquitectura/decisiones/2026-07-docdigital-tramitacion-documental.md). Ajuste de cadena de firma del decreto (`SignatureChain` de plataforma; `DecreeSignatureChain` como alias de trabajo). `approval_resolution` del as-is deja de ser identificador oficial. Pendientes P-18…P-20 (vía alternativa, alcance/folio, plazos). Inventario de actos del módulo en [`integracion-docdigital.md`](../../arquitectura/especificacion/integracion-docdigital.md) §3.
 
 **Cambios v0.9:** localizada la cadena normativa contable vigente. El Oficio CGR N° 36.640/2007 **está superado**: rige la **Resolución CGR N° 3, de 2020** (NICSP-CGR Sector Municipal, vigente desde el 1 de enero de 2021) y sus oficios. El documento que resuelve P-6 es el **Oficio CGR N° E64.327, de 2020, sobre apertura del ejercicio contable 2021**. Además: **existe el Manual de Imputaciones V21 (2026)** — el V19 con que se trabajó está dos versiones atrás, y SINIM enlaza ambas desde páginas distintas. Y SUBDERE publica el **Informe de Observaciones Nacional BEP**, evidencia directa de la función descrita en §7.2.
 
@@ -41,12 +43,20 @@ Tomadas antes de iniciar el trabajo. Si alguna cambia, el plan se recalcula.
 | D-1 | **Frontera del módulo** | Presupuestos es dueño de la cadena completa de compromiso: disponibilidad → CDP → preobligación → obligación → devengo presupuestario. Adquisiciones, Contabilidad y Tesorería consumen vía contrato versionado. |
 | D-2 | **Alcance de entidades presupuestarias** | Ciclo completo municipal **más** los presupuestos separados de Salud y Educación (servicios traspasados), que son entidades presupuestarias distintas con consolidación propia. SINIM expone además un cuarto sector, **Cementerio** — alcance por confirmar (P-12). |
 | D-3 | **Método** | Réplica del método de Adquisiciones: fichas de proceso por etapa → modelo de entidades en naming técnico inglés → contratos de API → wireframes → especificaciones transversales. |
+| D-4 | **Tramitación de decretos (DocDigital)** | Los decretos que promulgan el presupuesto anual (26.2.7) y de modificación presupuestaria (27.2.4 / 27.2.5) se **originan en SGM** y se **tramitan en DocDigital** (visación, FEA, enumeración, distribución). El folio oficial es el externo; el correlativo interno es solo trazabilidad. Decisión canónica transversal — no se reitera aquí. Cadena de firma municipal = `SignatureChain` (plataforma), implementación del proceso 25 del levantamiento. Condicionado a **P-72** (mecanismo de integración). |
 
 ### Consecuencia inmediata de D-1
 
 Adquisiciones ya declaró la entidad `BudgetPreCommitment` en su modelo preliminar de 14 entidades. Con D-1, esa entidad **pertenece a Presupuestos** y Adquisiciones la referencia por contrato, no la posee.
 
 > **PENDIENTE P-1:** Reconciliar el modelo de Adquisiciones para que `BudgetPreCommitment` pase a ser referencia externa. Revisar también si `ProcurementCase` guarda estado presupuestario que debiera ser proyección de solo lectura.
+
+### Consecuencia inmediata de D-4
+
+1. **Cambio respecto del as-is:** `approval_resolution` (Char con secuencia interna en Odoo) **deja de ser el identificador oficial** del decreto. Se conserva, si aplica, como trazabilidad interna; el folio oficial es `ExternalFolio` asignado por DocDigital (o folio interno solo en vía alternativa — P-18 / P-73).
+2. **Estado de espera:** la transición post-decreto (promulgación → apertura; modificación → registro) pasa por `pending_signature` hasta el retorno del acto firmado (`AdministrativeActSigned` / `DocumentProcedureCompleted`).
+3. **Entidades:** `DecreeSignatureChain` (candidata v0.2–v0.9) se alinea a `SignatureChain` de plataforma; el acto se modela como `AdministrativeAct` (o equivalente presupuestario) con `DocumentProcedure`.
+4. **Contingencia:** municipios sin DocDigital y latencia ante plazos legales (15 dic, 10 días art. 29 c) — P-18, P-20; mismo patrón que §5.1.
 
 ---
 
@@ -93,7 +103,7 @@ Regla de uso: Odoo as-is es **fuente de requisitos funcionales candidatos, nunca
 | Acto de Alcaldía (26.2.5) | El estado `review` es consolidación técnica post-fichas (wizard de departamentos), **no** el acto del alcalde |
 | Acuerdo del Concejo a subtítulo/ítem | Aprueba el presupuesto **entero**; exige PDF/Excel adjunto (`council_approval_document`). El clasificador existe en cuentas, pero no hay entidad de acuerdo granular |
 | Silencio del art. 82 (rige propuesta del alcalde) | No implementado; no hay plazos legales ni transición automática por tiempo |
-| Cadena de firma del decreto (Control / Jurídica / Secretario) | Parcial: Tupa tiene `subir decreto` y FirmaGob en CDP; **no** hay entidad de dominio ni SoD formal de esos roles |
+| Cadena de firma del decreto (Control / Jurídica / Secretario) | Parcial: Tupa tiene `subir decreto` y FirmaGob en CDP; **no** hay entidad de dominio ni SoD formal de esos roles. **To-be:** `SignatureChain` + tramitación DocDigital (D-4), no correlativo oficial interno |
 | Límites 42% (art. 67) y 20% (Ley 18.883) | Ausentes |
 | Series históricas y proyección | Ausentes |
 | Apertura del ejercicio contable | Solo tipo de ajuste `saldo_apertura`; sin traspaso a ingresos por percibir / Deuda Flotante |
@@ -115,7 +125,7 @@ Leyenda de cobertura Odoo: **Sí** = opera el ámbito · **Parcial** = hay rastr
 | **Proyección de gasto en personal y límites legales** | **Sí (26.2.4)** | No (ficha `staff` sin validadores 42%/20%) | **Validador bloqueante; contrato con RRHH** |
 | Revisión del alcalde | Sí (26.2.5) | Parcial: estado `review` ≠ acto de Alcaldía | Modelar acto de Alcaldía aparte de la consolidación técnica |
 | Aprobación Concejo a nivel **subtítulo e ítem**, antes del 15 dic | Sí (26.2.6) | Parcial: estado `council` + adjunto; sin granularidad ni silencio art. 82 | **`CouncilAgreement` + plazos + transición por silencio** |
-| Firma de decreto (Control, Jurídica, Secretario) | Sí (26.2.7) | Parcial: Tupa `subir decreto` / FirmaGob en CDP; `approval_resolution` Char | **Cadena de firma como entidad configurable; SoD** |
+| Firma de decreto (Control, Jurídica, Secretario) | Sí (26.2.7) | Parcial: Tupa `subir decreto` / FirmaGob en CDP; `approval_resolution` Char **como correlativo interno (cambio vs as-is — D-4)** | **`SignatureChain` + DocDigital (C11); estado `pending_signature`; folio = `ExternalFolio`** |
 | **Apertura del ejercicio** (disponibilidad, ingresos por percibir, Deuda Flotante, saldos) | **Sí (26.2.8)** | Parcial: `saldo_apertura` + `approved → in_progress` manual | **Proceso propio `ExerciseOpening`; frontera con Contabilidad** |
 | Modificación presupuestaria | Sí (proceso 27) | Parcial: 3 tipos de ajuste sin gateway Concejo | Cubrir mecánica + atributo `requires_council_agreement` por cuenta (§4.1) |
 | **CDP / disponibilidad** | No (caja `Ejecutar`) | Sí: `availability` + líneas + distribución | **Levantamiento BPMN pendiente** (Odoo es candidato de requisitos) |
@@ -274,7 +284,7 @@ Naming técnico en inglés, consistente con Adquisiciones. Lista de trabajo, no 
 
 **Inversión:** **`InvestmentInitiative`** (correlativo municipal perpetuo, Código INI, tipo de iniciativa, unidad ejecutora, tipo de financiamiento — §5.2), **`InvestmentAnnex`** (anexo al Concejo)
 
-**Formulación y gobernanza:** `BudgetEntity`, `BudgetExercise`, **`BudgetCall`** (convocatoria de estimaciones a las áreas), `BudgetSheet`, `BudgetLine`, `BudgetSheetDistribution`, `MonthlyAllocation`, **`HistoricalExecutionSeries`** (base de proyección), **`PersonnelProjection`**, `CouncilAgreement`, **`DecreeSignatureChain`**, `BudgetAmendment`, `AmendmentLine`
+**Formulación y gobernanza:** `BudgetEntity`, `BudgetExercise`, **`BudgetCall`** (convocatoria de estimaciones a las áreas), `BudgetSheet`, `BudgetLine`, `BudgetSheetDistribution`, `MonthlyAllocation`, **`HistoricalExecutionSeries`** (base de proyección), **`PersonnelProjection`**, `CouncilAgreement`, **`SignatureChain`** *(plataforma; alias de trabajo previo: `DecreeSignatureChain` — D-4)*, `AdministrativeAct` / `DocumentProcedure` *(decreto de promulgación y de modificación; folio oficial externo)*, `BudgetAmendment`, `AmendmentLine`
 
 **Apertura y cierre:** **`ExerciseOpening`**, **`FloatingDebt`** (deuda flotante), **`ReceivableCarryover`** (ingresos por percibir)
 
@@ -571,6 +581,9 @@ Formato ficha idéntico al usado en Adquisiciones: actores, precondiciones, paso
 | **P-15** | Exposición legal por operación, vía alternativa y modo de contingencia (§5.1) | F5 | Equipo + Jurídica | Abierto |
 | **P-16** | Inventario de reglas de clase Criterio y ruta de consolidación GP-4 | F3 / F4 | Equipo + Jurídica | Abierto |
 | **P-17** | Ingesta y gobernanza del Manual de Imputaciones como fuente autoritativa | F1 | Equipo + Depto. Finanzas Municipales | Abierto |
+| **P-18** | Vía alternativa de decretos presupuestarios para municipios sin DocDigital (~20 %); alineado a P-73 de arquitectura y a §5.1 | F3 / MP-1–MP-2 | Equipo + Jurídica | Abierto |
+| **P-19** | Conflicto de folio: migración de `approval_resolution` históricos vs. `ExternalFolio` DocDigital (P-75) | F4 | Equipo interno | Abierto |
+| **P-20** | Efecto de la latencia DocDigital sobre plazos legales del módulo (15 dic art. 82; 10 días art. 29 c) — P-76 | F5 | Equipo + Jurídica | Abierto |
 
 Cada pendiente abierto se documenta abajo con: contexto, pregunta a resolver, opciones candidatas, decisión por defecto si no hay respuesta a tiempo, criterio de cierre e insumos.
 
