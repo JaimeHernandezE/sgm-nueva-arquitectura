@@ -23,7 +23,7 @@ Tratarlos como pendientes sueltos multiplica soluciones incompatibles. Son **un 
 | ID | Manifestación | Origen | Relación |
 |---|---|---|---|
 | **M1** | Efectos presupuestarios desde Adquisiciones (CDP / preobligación / obligación) que en Odoo iban en el mismo commit de aprobación | [`comparativa-odoo-vs-nuevo.md`](../../modulos/adquisiciones/comparativa-odoo-vs-nuevo.md) §3.3; **P-1** (Presupuestos) | Misma familia que C-1 |
-| **M2** | Efectos de Inventario / Activo fijo desde recepción/aprobación | Comparativa §3.3; alcance **X-44** | Condicionado a decisión de alcance; el contrato de borde exige compensación aunque Inventario quede fuera de la licitación |
+| **M2** | Efectos de Inventario / Activo fijo desde recepción/devengo | Comparativa §3.3; proceso 28 (alta al devengar factura — Normativa Contabilidad General); alcance **X-44** | Default de alcance = incluir en núcleo Contabilidad (**a**). Si jefatura elige módulo futuro (**b**), exige compensación explícita de la misma familia que C-1; sin ella contradice este ADR |
 | **M3** | Devengo dual Presupuestos ↔ Contabilidad; momento del devengo (recepción vs three-way match) | **C-1**; **X-46** (antes X-46) | **C-1** es el ancla operativa; **X-46** queda *absorbido / reconciliar bajo C-1* |
 
 ## Consecuencias
@@ -36,4 +36,4 @@ Tratarlos como pendientes sueltos multiplica soluciones incompatibles. Son **un 
 ## Lo que esta decisión no cierra
 
 - El mecanismo concreto (saga vs commit único) — sigue en **C-1**.
-- Si Inventario/Activo fijo entra a las bases — sigue en **X-44** (contradicción con Contabilidad D-2; ver plan general §3).
+- Si Inventario/Activo fijo entra a las bases — **X-44**; default provisional **(a)** (plan general §8). (b) solo con compensación escrita.

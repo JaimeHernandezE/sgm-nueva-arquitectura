@@ -222,7 +222,7 @@ En Odoo, **Presupuesto e Inventario/Activo Fijo se materializan dentro del mismo
 | **A-3** | Distribución presupuestaria multi-línea | `line_distribution_ids` (cuenta, área, programa…) | ¿Vive solo en Presupuestos detrás de `budget_line_id`? — **abierto** |
 | **A-4** | Orden de ingreso de bodega | `numero_orden_ingreso` / `fecha_orden_ingreso` | ¿Campo de Adquisiciones o del proveedor de inventario? — **abierto** |
 | **A-5** | Recompra | `resolucion_original_id` + state `recompra` | ¿Entidad/relación explícita o solo republicación/desierto? — **abierto** |
-| **X-44** | Alcance Inventario / Activo fijo | Creación síncrona de `account.gov.asset` | **Reformulado** (vs Cont D-2); decisión jefatura — plan general §8 |
+| **X-44** | Alcance Inventario / Activo fijo | Creación síncrona de `account.gov.asset` | **Reformulado**; default **(a)** Contabilidad/núcleo (proceso 28 / Normativa Contabilidad General); (b) solo con compensación — plan general §8 |
 | **X-46** | Momento del devengado | Egreso en aprobación RC vs recepción | **Absorbido bajo C-1** / ADR atomicidad |
 | **X-47** | Frontera Pago / Tesorería | Tesorería depende de Adq; pago no está en addons Adq | **Cerrado** — plan Tesorería: pago es de Tesorería; etapa 5 Adq orquesta vía contrato |
 

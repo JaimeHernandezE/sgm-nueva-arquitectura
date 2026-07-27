@@ -132,7 +132,7 @@ Mismo principio que las pruebas de carga — cumple o no cumple:
 
 ## 14. Pendientes abiertos
 
-Los pendientes de este documento están registrados en [`pendientes.md`](../decisiones/pendientes.md): X-21…X-32; **X-77** (completar Anexo A).
+Los pendientes de este documento están registrados en [`pendientes.md`](../decisiones/pendientes.md): **X-21…X-31** (serie seguridad); la resiliencia MP es **X-32** (origen Adquisiciones, no Anexo A); completar Anexo A es **X-77**.
 
 ---
 

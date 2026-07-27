@@ -30,7 +30,7 @@ Este documento **no** es la especificación. Es el plan que la produce.
 
 | # | Decisión | Contenido |
 |---|----------|-----------|
-| D-1 | **Motor de liquidación incluido** | SGM **calcula** las remuneraciones de planta, contrata, honorarios y Código del Trabajo. Cierra **X-80** del documento de alcance mínimo (ex P-20 de ese doc; reservado en plan general). Ver §2.1 |
+| D-1 | **Motor de liquidación incluido** | SGM **calcula** las remuneraciones de planta, contrata, honorarios y Código del Trabajo. **Cierra X-80** (ex P-20 del documento de alcance mínimo). Ver §2.1 |
 | D-2 | **SIAPER como integración** | Los actos de personal se originan en SGM y se registran en SIAPER, con el mismo tratamiento de frontera que DocDigital. Condicionado a verificación de interfaz máquina a máquina. Ver §2.2 y R-2 |
 | D-3 | **Alcance de gestión de personas** | Además del ciclo contractual y la nómina: **evaluación del desempeño** (6), **capacitación y plan anual** (11), **asistencia, horas extras y permisos** (8, 10), **viáticos, cometidos y comisiones** (3) |
 | D-4 | **Tramitación documental** | Los decretos y resoluciones de personal se tramitan en DocDigital, conforme a la decisión transversal. Es el módulo con mayor variedad de actos administrativos del corpus |

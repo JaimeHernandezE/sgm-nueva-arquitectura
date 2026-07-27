@@ -1,9 +1,13 @@
 # Plan de trabajo general — Corpus SGM
 
 **Proyecto:** SGM — Sistema de Gestión Municipal  
-**Versión:** 0.1 (borrador para revisión interna)  
+**Versión:** 0.2 (borrador para revisión interna)  
 **Fecha:** julio 2026  
 **Estado:** consolidación B0 — no validado con DM
+
+**Mantención:** dueño = equipo de arquitectura SGM (SUBDERE). Se actualiza en cada cierre de bloque (B0/B1/B2) y ante cualquier cambio transversal que afecte a más de un módulo o al grafo de pendientes. Los planes de módulo no alteran este documento por su cuenta: proponen el cambio y el dueño lo incorpora.
+
+**Cambios v0.2:** default **X-44 → (a)** (acoplamiento normativo proceso 28); aclaración mapa seguridad X-21…X-31 vs X-32; **X-80** nace cerrado (RRHH D-1); declaración de mantención; nota de verificación «Corregido» = editado en archivo.
 
 **Cambios v0.1:** primera versión. Consolida deuda de consistencia entre módulos, declara decisiones transversales, unifica pendientes con prefijo **X-nn**, define secuencia B0–B2 y grafo de dependencias cruzadas.
 
@@ -34,7 +38,7 @@ Este documento **gobierna el conjunto** del corpus de planificación y especific
 | **Contabilidad** [`plan-de-trabajo-contabilidad.md`](modulos/contabilidad/plan-de-trabajo-contabilidad.md) | 0.6 | 10 procesos; sustancial | C-1…C-18 | Borrador; no validado DM |
 | **Tesorería** [`plan-de-trabajo-tesoreria.md`](modulos/tesoreria/plan-de-trabajo-tesoreria.md) | 0.3 | 5 procesos; ciclo diario fuerte | T-1…T-14 | Borrador; no validado DM |
 | **RRHH** [`plan-de-trabajo-rrhh.md`](modulos/rrhh/plan-de-trabajo-rrhh.md) | 0.3 | 18 procesos; mejor del corpus | R-1…R-14 | Borrador; no validado DM |
-| **Alcance mínimo módulos adyacentes** | — | — | P-18…P-21 del doc → reservados **X-78…X-81** al incorporar | **Ausente del repo** al cerrar v0.1; ubicación destino: [`arquitectura/licitacion/alcance-minimo-modulos-adyacentes.md`](arquitectura/licitacion/alcance-minimo-modulos-adyacentes.md). No inventar contenido. |
+| **Alcance mínimo módulos adyacentes** | — | — | X-78, X-79, X-81 reservados abiertos al incorporar; **X-80 cerrado** (RRHH D-1: motor de liquidación incluido) | **Ausente del repo** al cerrar v0.1; ubicación destino: [`arquitectura/licitacion/alcance-minimo-modulos-adyacentes.md`](arquitectura/licitacion/alcance-minimo-modulos-adyacentes.md). No inventar contenido. |
 | ADR DocDigital | Aceptada (cond. X-72) | — | X-72…X-76 | Canónica |
 | ADR Eliminación Odoo | Aceptada | — | — | Canónica |
 | ADR Ventana de mutabilidad | Aceptada | — | — | Canónica |
@@ -48,6 +52,8 @@ Este documento **gobierna el conjunto** del corpus de planificación y especific
 ## 3. Deuda de consistencia
 
 Cada ítem verificado contra el estado del repo en julio 2026. Acción concreta, documento afectado y estado.
+
+**Convención de estado «Corregido»:** significa que el texto del documento afectado **fue editado** (no solo anotado aquí). Verificado en v0.2 contra el contenido vigente de Presupuestos v0.11 (D-1, §6 RRHH bidireccional) y Contabilidad v0.6 (dos conciliaciones en hallazgo 3 / D-2 / §6).
 
 ### 3.0 Problema canónico: atomicidad de efectos de borde
 
@@ -72,7 +78,7 @@ flowchart TB
 | Manifestación | Acción | Estado |
 |---|---|---|
 | **M1** Adq→Presupuesto (antes mismo commit ORM) | Vincular P-1 y contratos Adq a ADR atomicidad | Abierto vía P-1 / C-1 |
-| **M2** Adq→Inventario/AF | Condicionado a X-44; contrato de borde igual exige compensación | Abierto |
+| **M2** Adq→Inventario/AF | Alta del bien al devengar la factura (Normativa Contabilidad General / proceso 28). Default de alcance en licitación = **(a)** dentro del núcleo Contabilidad — ver §8. Si jefatura eligiera (b), exige mecanismo de compensación escrito (misma familia que C-1) | Abierto (alcance X-44; default (a)) |
 | **M3** Devengo dual + momento del devengo | C-1 abierto; **X-46 absorbido bajo C-1** | Abierto (C-1) |
 
 ### 3.1 Tabla de deuda
@@ -85,7 +91,7 @@ flowchart TB
 | DC-4 | Tesorería hallazgo 1 | Dos conciliaciones: auxiliar diaria Tes + contable mensual Cont | Retro-aplicar en Contabilidad proceso 37 / C-10 | Contabilidad | **Corregido en v0.6** |
 | DC-5 | RRHH proceso 18 / R-7 | Subsidios COMPIN/Isapre = ciclo de ingresos | Remisión a R-7; pendientes espejo sin cerrar R-7 | Contabilidad, Tesorería | **Registrado (espejo)** |
 | DC-6 | DocDigital | ADR a mitad del corpus | Retro-aplicar; IDs → X-72…X-76 | Pres/Cont/Tes/RRHH ya OK; **Adq pendiente de cableado en fichas** | **Parcial** — inventario §3 DocDigital incluye Adq; fichas Adq aún C9 en varios actos |
-| DC-7 | Adq X-44 vs Cont D-2 | Cont D-2 incluye inventario/AF; X-44 dice fuera de los 5 módulos | Reformular: decisión de jefatura; opciones + default | Contabilidad D-2 nota; X-44 | **Reformulado; no cerrado** (jefatura) |
+| DC-7 | Adq X-44 vs Cont D-2 | Cont D-2 incluye inventario/AF; proceso 28 exige alta al devengar factura | Reformular: default **(a)** núcleo Contabilidad; (b) solo con compensación M2 | Contabilidad D-2; X-44; plan general §8 | **Reformulado; default (a); no cerrado** (jefatura) |
 | DC-8 | Adq X-46 | Momento del devengo | Absorbedo por problema canónico / C-1 | Registro X-46; recepción 4.4 | **Absorbido** |
 | DC-9 | Adq X-47 | Frontera Pago/Tesorería | **Cerrar** citando plan Tesorería: Pago pertenece a Tesorería; etapa 5 Adq = orquestación/contrato | Registro; recepción 4.4; comparativa | **Cerrado** |
 | DC-10 | Adq §5 | Cinco decisiones humanas sin ID | Registrar **A-1…A-5** | Plan general §5; comparativa | **Registrado** |
@@ -126,11 +132,13 @@ Registro detallado X-01…X-76: [`arquitectura/decisiones/pendientes.md`](arquit
 
 | Antes | Después | Nota |
 |---|---|---|
-| Arquitectura P-01…P-76 | **X-01…X-76** | 1:1 |
-| Seguridad P-21…P-32 (registro) | **X-21…X-32** | Mismos IDs del registro |
-| Seguridad Anexo A «P-32» (completar hallazgos) | **X-77** | Colisión semántica con X-32 (resiliencia MP) |
+| Arquitectura P-01…P-76 | **X-01…X-76** | 1:1 en el registro |
+| Seguridad P-21…**P-31** (registro) | **X-21…X-31** | Serie de seguridad; **no incluye X-32** |
+| P-32 del registro (resiliencia MP / APIs externas) | **X-32** | Origen Adquisiciones (también citado históricamente desde seguridad §14); **no** es “completar Anexo A” |
+| Seguridad Anexo A «P-32» (completar hallazgos Odoo) | **X-77** | Colisión semántica histórica con X-32; ID propio |
 | Nodo SUBDERE «P-71…P-74» (propuestos, no en registro) | **X-82…X-85** | No pisar X-71…X-74 (Trato Directo / DocDigital) |
-| Alcance mínimo P-18…P-21 | **X-78…X-81** reservados | Documento aún no en repo; no inventar texto |
+| Alcance mínimo P-18, P-19, P-21 | **X-78, X-79, X-81** reservados (abiertos al incorporar) | Documento aún no en repo; no inventar texto |
+| Alcance mínimo P-20 (motor de liquidación) | **X-80** — **cerrado** | Ya cerrado por RRHH D-1; al incorporar el alcance mínimo entra con ese fundamento, no como abierto |
 | Presupuestos P-1…P-20 | **Sin cambio** | Sus refs a DocDigital apuntan a X-73…X-76 |
 
 ### 5.3 Pendientes Adquisiciones A-1…A-5
@@ -149,7 +157,7 @@ Registro detallado X-01…X-76: [`arquitectura/decisiones/pendientes.md`](arquit
 |---|---|---|
 | **X-47** (ex P-47) | **Cerrado** | Plan de Tesorería: el pago es de Tesorería; etapa 5 de Adq orquesta vía contrato. No hay ambigüedad de dueño de módulo. |
 | **X-46** (ex P-46) | **Absorbido bajo C-1** | Mismo problema canónico (M3); no se resuelve aparte |
-| **X-44** (ex P-44) | **Reformulado, abierto** | Contradicción con Contabilidad D-2; decisión de jefatura (opciones en §8) |
+| **X-44** (ex P-44) | **Reformulado, abierto** | Contradicción aparente con Contabilidad D-2; default provisional **(a)** — ver §8 |
 
 ### 5.5 Grafo de dependencias cruzadas
 
@@ -247,7 +255,7 @@ Viven **una sola vez** aquí. Los planes de módulo referencian esta sección (o
 
 | Tema | Opciones | Default provisional |
 |---|---|---|
-| **X-44** Inventario / Activo fijo en licitación | (a) Incluir en Contabilidad/núcleo; (b) módulo futuro + adaptador; (c) solo contrato de borde | **(b)** — coherente con X-44 original; Cont D-2 se lee como *proceso 28 en alcance funcional Contabilidad* sujeto a (a)/(b) |
+| **X-44** Inventario / Activo fijo en licitación | (a) Incluir en Contabilidad/núcleo; (b) módulo futuro + adaptador **con mecanismo de compensación escrito** (familia C-1 / M2); (c) solo contrato de borde (insuficiente solo) | **(a)** — el proceso 28 exige registrar el bien **al devengar la factura**, fundado en la Normativa de Contabilidad General de la Nación (Contabilidad §4). Elegir (b) sin compensación deja el efecto de M2 fuera del sistema y contradice §3.0. Jefatura puede pasar a (b) solo si documenta la compensación. |
 | Modelo de custodia / hospedaje | Modos ya en principios / macro-stack | Sin cambio en B0 |
 | Track GP en bases (Pres P-13) | Declarar obligación SUBDERE vs exigir soporte técnico al adjudicatario | Soporte técnico en bases; operación GP = SUBDERE |
 
@@ -260,10 +268,10 @@ Viven **una sola vez** aquí. Los planes de módulo referencian esta sección (o
 | Riesgo | Por qué es de conjunto | Mitigación |
 |---|---|---|
 | Dependencia de terceros en B1 (DocDigital, SIAPER, formatos CGR/DIPRES) | Bloquea diseño de protocolo en *todos* los módulos con actos o reportes | Contrato funcional sin endpoints hasta verificar; vía asistida documentada (X-73) |
-| Deriva de consistencia si se sigue módulo a módulo sin este documento | Ya ocurrió (R-1, conciliaciones, DocDigital a mitad) | B0 obligatorio; plan general como gate de cambios transversales |
+| Deriva de consistencia si se sigue módulo a módulo sin este documento | Ya ocurrió (R-1, conciliaciones, DocDigital a mitad) | B0 obligatorio; plan general como gate (§1 Mantención: dueño arquitectura; actualización en cierres de bloque y cambios transversales) |
 | Capacidad del equipo vs tamaño del corpus | Cuatro planes + spec Adq + transversales + inventarios Odoo | Priorizar grafo §5.5; no abrir F3 de un módulo si su F0 cruzado está abierto |
-| Subestimar atomicidad de borde | Tres manifestaciones vistas como pendientes baratos | ADR + C-1 en F0 compartido (§6) |
-| Alcance mínimo ausente del repo | RRHH D-1 y Cont F5 citan un documento inexistente aquí | Incorporar archivo antes de cerrar B0 documentalmente; IDs X-78…X-81 |
+| Subestimar atomicidad de borde | Tres manifestaciones vistas como pendientes baratos | ADR + C-1 en F0 compartido (§6); default X-44 = (a) |
+| Alcance mínimo ausente del repo | RRHH D-1 y Cont F5 citan un documento inexistente aquí | Incorporar archivo; X-78/79/81 reservados; **X-80 entra cerrado** (RRHH D-1) |
 
 ---
 
@@ -287,4 +295,5 @@ Viven **una sola vez** aquí. Los planes de módulo referencian esta sección (o
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 0.2 | julio 2026 | X-44 default (a); mapa X-21…X-31 vs X-32; X-80 cerrado; mantención; verificación «Corregido» |
 | 0.1 | julio 2026 | Creación. B0: deuda, ADRs, X-nn, grafo, secuencia B0–B2 |
