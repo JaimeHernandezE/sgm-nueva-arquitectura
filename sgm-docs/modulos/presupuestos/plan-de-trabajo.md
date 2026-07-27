@@ -2,9 +2,17 @@
 
 **Proyecto:** SGM — Sistema de Gestión Municipal
 **Módulo:** Presupuestos
-**Versión:** 0.5 (borrador para revisión interna)
+**Versión:** 0.9 (borrador para revisión interna)
 **Fecha:** julio 2026
 **Estado:** propuesta de plan, no validado con DM
+
+**Cambios v0.9:** localizada la cadena normativa contable vigente. El Oficio CGR N° 36.640/2007 **está superado**: rige la **Resolución CGR N° 3, de 2020** (NICSP-CGR Sector Municipal, vigente desde el 1 de enero de 2021) y sus oficios. El documento que resuelve P-6 es el **Oficio CGR N° E64.327, de 2020, sobre apertura del ejercicio contable 2021**. Además: **existe el Manual de Imputaciones V21 (2026)** — el V19 con que se trabajó está dos versiones atrás, y SINIM enlaza ambas desde páginas distintas. Y SUBDERE publica el **Informe de Observaciones Nacional BEP**, evidencia directa de la función descrita en §7.2.
+
+**Cambios v0.8:** revisados **Inversiones y Código INI** y **Componentes Remuneratorios**. El primero aporta una regla de modificación **tipificada por operación** para el subtítulo 31 (cierra P-3 residual punto 2 para inversión), fija que la formulación llega a **nivel de asignación**, y explica el origen normativo de `codigo_ini`, `codigo_unico_proyecto`, `unidad_ejecutora_id` y `tipo_financiamiento` de Odoo (nueva §5.2). El segundo entrega la tabla concepto remuneratorio → imputación con fuente legal por componente: es la base de cálculo que faltaba para los límites del 42% y 20% (P-10).
+
+**Cambios v0.7:** inspección de las **planillas de carga BEP** (8 archivos, 4 sectores × ingresos/gastos) — cierra la mayor parte de P-8 y aporta evidencia decisiva para P-5 y P-12: cada sector tiene **espacio de códigos propio** (`215`/`115` municipal, `EEE`, `SSS`, `CCC`). Nueva §6.1 con el contrato de reporte como piso del modelo de ejecución. Revisado el **Oficio DCF 3/19**: no contiene el procedimiento de apertura del ejercicio; la fuente correcta para P-6 es el **Oficio CGR N° 36.640/2007**.
+
+**Cambios v0.6:** inspección del **Manual Municipal de Imputaciones Presupuestarias V19** (SUBDERE / SINIM). **Refuta la regla derivada de §4.1**: el nivel que requiere acuerdo del Concejo no es uniforme, es un atributo por cuenta ya enumerado por SUBDERE. `requires_council_agreement` pasa a ser dato del `BudgetClassifier`, no lógica sobre la profundidad del código. Cierra la mayor parte de P-3 y confirma P-12. Nuevo P-17 (ingesta y gobernanza del Manual como fuente autoritativa).
 
 **Cambios v0.5:** dictamen CGR N° 60.449/2008 verificado en fuente primaria — **el levantamiento lo cita incorrectamente** (§4.2; cierra P-9). La fuente real de la obligación trimestral es el art. 29 letra d) LOCM. Se incorporan el plazo de 10 días del art. 29 letra c) con escalamiento a CGR, el criterio de delegación del decreto modificatorio, y la nueva §5.1 (disponibilidad diferenciada por exposición legal y modo de contingencia, P-15). Corrección de trazabilidad en Anexo A.3.
 
@@ -109,7 +117,7 @@ Leyenda de cobertura Odoo: **Sí** = opera el ámbito · **Parcial** = hay rastr
 | Aprobación Concejo a nivel **subtítulo e ítem**, antes del 15 dic | Sí (26.2.6) | Parcial: estado `council` + adjunto; sin granularidad ni silencio art. 82 | **`CouncilAgreement` + plazos + transición por silencio** |
 | Firma de decreto (Control, Jurídica, Secretario) | Sí (26.2.7) | Parcial: Tupa `subir decreto` / FirmaGob en CDP; `approval_resolution` Char | **Cadena de firma como entidad configurable; SoD** |
 | **Apertura del ejercicio** (disponibilidad, ingresos por percibir, Deuda Flotante, saldos) | **Sí (26.2.8)** | Parcial: `saldo_apertura` + `approved → in_progress` manual | **Proceso propio `ExerciseOpening`; frontera con Contabilidad** |
-| Modificación presupuestaria | Sí (proceso 27) | Parcial: 3 tipos de ajuste sin gateway Concejo | Cubrir mecánica + regla §4.1 (subtítulo/ítem → acuerdo) |
+| Modificación presupuestaria | Sí (proceso 27) | Parcial: 3 tipos de ajuste sin gateway Concejo | Cubrir mecánica + atributo `requires_council_agreement` por cuenta (§4.1) |
 | **CDP / disponibilidad** | No (caja `Ejecutar`) | Sí: `availability` + líneas + distribución | **Levantamiento BPMN pendiente** (Odoo es candidato de requisitos) |
 | **Preobligación / obligación** | No (caja `Ejecutar`) | Sí: en puente `account_gov_adquisiciones` | **Levantamiento BPMN pendiente** |
 | **Devengo presupuestario** | No | Sí: `accrued_move_id` → `account.gov.move` | **Levantamiento + frontera Contabilidad** |
@@ -122,8 +130,8 @@ Leyenda de cobertura Odoo: **Sí** = opera el ámbito · **Parcial** = hay rastr
 | Flujo de caja / programación | No | Parcial: `budget.cash.flow` solo computed | Levantar como proceso de programación (no solo vista) |
 | Ingresos propios / FCM / tributos | No | Parcial: `presupuesto.tax.income` | Levantar; frontera con Tesorería |
 | **Salud y Educación** | No | Parcial: códigos de área; no entidades presupuestarias | **Sin cobertura de D-2 en ninguna fuente (P-5)** |
-| **Cementerio (sector SINIM)** | No | No (solo área de catálogo en algunos datos) | **Cuarto sector en SINIM; confirmar alcance (P-12)** |
-| Informes CGR / SINIM / BEP | No | Parcial: 4 informes CGR TXT; SINIM/BEP no | Levantar obligaciones y canales (P-8) |
+| **Cementerio (sector SINIM)** | No | No (solo área de catálogo en algunos datos) | **Confirmado como sector con reglas de imputación propias por cuenta en el Manual V19; confirmar alcance como `BudgetEntity` (P-12)** |
+| Informes CGR / SINIM / BEP | No | Parcial: 4 informes CGR TXT; SINIM/BEP no | **Estructura BEP fijada (§6.1)**; residual canal y periodicidad (P-8) |
 
 ### 3.4 Lectura del cruce Magenta × Odoo
 
@@ -154,7 +162,7 @@ Cada regla normativa se traduce en una regla verificable del motor. Esta tabla e
 | Ley 18.883 art. 2 | Gasto en cargos a contrata ≤ **20% del gasto en remuneraciones de la planta** | Validador bloqueante en formulación. Contrato con RRHH |
 | LOCM art. 81 | Solo presupuestos debidamente financiados; el jefe de la unidad de control **debe representar** el déficit; examen **trimestral** del programa de ingresos y gastos; responsabilidad personal y solidaria de alcalde y concejales | Validador de financiamiento bloqueante; entidad `DeficitRepresentation`; proceso trimestral obligatorio; log inmutable con identificación nominal de quién aprobó qué |
 | LOCM art. 82 letra a) | Alcalde presenta en la **primera semana de octubre**; Concejo se pronuncia **antes del 15 de diciembre**; si no se pronuncia en plazo, **rige lo propuesto por el alcalde** | Máquina de estados con plazos legales parametrizados y **transición automática por silencio**. Único punto del sistema donde el tiempo cambia el estado sin acción humana |
-| Práctica confirmada en levantamiento (26.2.6) | El Concejo aprueba **a nivel de subtítulo e ítem** del clasificador | **Define la granularidad del acuerdo y, por derivación, qué modificación requiere acuerdo del Concejo.** Ver §4.1 |
+| **Manual de Imputaciones V19** (SUBDERE / Depto. Finanzas Municipales) | Enumera **por cuenta** cuáles requieren acuerdo del Concejo: 106 cuentas de gasto, en niveles ítem, asignación, subasignación y subtítulo. Ninguna cuenta de ingreso marcada | **`requires_council_agreement` es atributo del `BudgetClassifier`, no regla sobre la profundidad del código.** El enunciado de 26.2.6 (subtítulo e ítem) es una simplificación. Ver §4.1 |
 | DL 1.263 | Fases del gasto: preventivo, compromiso, devengo, pago | La cadena CDP → preobligación → obligación → devengo **es** la implementación de las fases legales. No es convención de Odoo |
 | DL 3.063 | Ingresos propios, tributos locales, Fondo Común Municipal | Modelo de ingresos con origen tipificado; frontera con Tesorería |
 | Decreto 854/2004 Hacienda (mod. Decreto 1227/2024, vigente para información presupuestaria 2026) | Clasificador presupuestario: subtítulo / ítem / asignación / subasignación | Clasificador **versionado con vigencia temporal**, administrado por SUBDERE como `NormativeParameter`. Cambia por decreto sin nuevo despliegue |
@@ -163,23 +171,52 @@ Cada regla normativa se traduce en una regla verificable del motor. Esta tabla e
 | **LOCM art. 29 letra c)** | La Unidad de Control representa al alcalde los actos que estime ilegales **dentro de 10 días** de tomado conocimiento; si el alcalde no enmienda, **debe remitir a CGR** | Plazo legal computable y **escalamiento automático a un órgano externo**. Segundo punto del sistema donde el tiempo dispara una consecuencia |
 | **LOCM art. 21 letras b) y c)** | SECPLA asesora en la elaboración del presupuesto y evalúa su cumplimiento, informando al Concejo **al menos semestralmente** | Reporte semestral con actor y periodicidad propios, distinto de los trimestrales del art. 29 |
 | **Dictamen CGR N° 60.449/2008** (verificado en fuente primaria) | SECPLA puede **solicitar** modificaciones presupuestarias por su función de asesoría; la DAF también, coordinadamente (art. 27); la **proposición al Concejo la formula el alcalde**; SECPLA puede **dictar el decreto modificatorio** si existe delegación de atribuciones (art. 63 j) y previa aprobación del Concejo | Legitima el modelo de actores del proceso 27 y exige que **la facultad de dictar el decreto sea configurable por municipio** según su acto de delegación |
+| **Normas sobre modificaciones presupuestarias, vía instructivo SUBDERE de inversiones** | Requieren pronunciamiento del Concejo las **"creaciones, supresiones, incrementos o reducciones de asignaciones identificatorias especiales del Subtítulo 31, Iniciativas de Inversión"** | Regla **tipificada por operación**, no solo por monto ni por nivel. Complementa el atributo por cuenta de §4.1: para ST 31, cualquiera de las cuatro operaciones exige acuerdo |
+| **Oficio CGR N° 17.973, de abril de 2008** — Identificación Presupuestaria de Proyectos de Estudios e Inversión Municipal | Crea el **Código INI**, identificador de 12 posiciones para cada iniciativa de inversión | Estructura fija y verificable; explica los campos de iniciativa de inversión heredados en Odoo. Ver §5.2 |
+| **Componentes Remuneratorios** (SUBDERE, cuadro por sector) | Tabla concepto remuneratorio → imputación presupuestaria, con **fuente legal por componente**, para Educación (Ley 19.070), Salud (Ley 19.378), Municipal (Ley 18.883 y Ley 15.076) y Cementerios (Código del Trabajo) | **Base de cálculo de los límites del 42% y 20%** (P-10) y fuente lista de `legal_reference` para validadores de personal. Incluye componentes marcados **"Extrapresupuestaria"**, que deben excluirse de la base |
 | Instrucciones CGR / SUBDERE sobre déficit | Cálculo de déficit preventivo | Fórmula parametrizable, no hardcodeada |
 | SINIM | Reporte periódico y BEP | Contrato de exportación; automatización de canal legal existente |
 
-### 4.1 Resolución del criterio de modificación presupuestaria
+### 4.1 Criterio de modificación presupuestaria: es dato, no regla
 
-En v0.1 este era el pendiente crítico del módulo. El proceso 26 lo destraba:
+#### Lo que se derivó en v0.2 (superado)
 
-> *"Corresponde al Concejo Municipal aprobar a nivel de Subtítulo e Ítem del Clasificador Presupuestario"* (26.2.6)
+Del 26.2.6 —*"Corresponde al Concejo Municipal aprobar a nivel de Subtítulo e Ítem del Clasificador Presupuestario"*— se derivó que alterar un subtítulo o un ítem exige acuerdo del Concejo, y que reasignar entre asignaciones de un mismo ítem se resuelve por decreto. La regla resultaba computable sobre la profundidad del código de cuenta.
 
-**Criterio derivado:** si el Concejo aprueba a nivel de subtítulo e ítem, entonces el acuerdo del Concejo obliga a ese nivel de agregación. En consecuencia:
+**Esa derivación es incorrecta.**
 
-- Modificación que **altera el monto de un subtítulo o de un ítem** → requiere acuerdo del Concejo (art. 65 a).
-- Reasignación **entre asignaciones dentro de un mismo ítem**, sin alterar el total del ítem → decreto alcaldicio, sin acuerdo del Concejo.
+#### Lo que dice el Manual de Imputaciones V19
 
-Esto convierte el gateway `Requiere Aprobación del Concejo` del proceso 27 en **una regla computable sobre el clasificador**, no en un juicio discrecional del DAF. Es probablemente el hallazgo de diseño más valioso del cruce de ambos procesos.
+El [Manual Municipal de Imputaciones Presupuestarias V19](https://www.sinim.gov.cl/archivos/home/664/Manual_de_Imputaciones_Presupuestarias_incorporando_plan_de_cuenta_NICSP_V19.xls), mantenido por el Depto. de Finanzas Municipales, tiene una columna **"Cuenta que requiere Aprobación de Concejo Municipal"** con **106 cuentas de gasto marcadas**. El nivel **no es uniforme**:
 
-> **PENDIENTE P-3 (reformulado, ya no bloqueante):** Confirmar con DM y unidades de Control que la regla derivada corresponde a la práctica, y verificar el tratamiento de casos borde: creación de un ítem nuevo, modificaciones que compensan entre subtítulos con neto cero, y traspasos desde subtítulos de saldo final de caja. Mientras no se confirme, la regla se implementa como parámetro configurable con este valor por defecto.
+| Nivel del clasificador | Cuentas marcadas |
+|---|---|
+| Ítem | 52 |
+| Asignación | 37 |
+| Subasignación | 15 |
+| Subtítulo | 1 — `215.31` CxP Iniciativas de Inversión |
+| Especial | 1 — Saldo Final de Caja |
+
+Los subtítulos 23 (Prestaciones de Seguridad Social), 24 (Transferencias Corrientes) y 31 (Iniciativas de Inversión) tienen marcas a nivel de **asignación**; el 24 llega a **subasignación** — aportes al FCM, a la Asociación Chilena de Municipalidades, y a Educación, Salud y Cementerios. Es coherente: son transferencias e inversión, donde el Concejo ejerce control más fino.
+
+**En la hoja de INGRESOS no hay ninguna cuenta marcada.** El Manual no se pronuncia sobre las cuentas 115.
+
+#### Consecuencia de diseño
+
+`requires_council_agreement` es un **atributo booleano por cuenta del `BudgetClassifier`**, versionado junto con el clasificador. No es una regla computable sobre la profundidad del código.
+
+El gateway `Requiere Aprobación del Concejo` del proceso 27 se resuelve consultando ese atributo en las cuentas afectadas por la modificación. Sigue siendo determinista y auditable —que era el objetivo— pero se alimenta de dato mantenido, no de lógica derivada. Es mejor: absorber un cambio de criterio es actualizar el catálogo, no modificar un validador.
+
+#### Nota sobre la fuente
+
+La marca no está en el texto de la columna, que está vacía: **está codificada como color de fondo de celda** (cian, RGB 0,204,255), con su leyenda en la hoja Introducción. La regla que determina si una modificación presupuestaria municipal requiere acuerdo del Concejo se conserva hoy como un formato de celda en una planilla Excel. Es, en un solo hecho, el argumento de por qué este conocimiento debe vivir en un sistema versionado (§7.2).
+
+#### Dos precisiones del instructivo de inversiones
+
+1. **Para el subtítulo 31 la regla se tipifica por operación**, no por monto: requieren acuerdo del Concejo las *creaciones, supresiones, incrementos o reducciones* de asignaciones del subtítulo. Coincide con que el Manual marque el ST 31 completo y además sus asignaciones. El validador de MP-2 debe evaluar **tipo de operación** además de cuenta afectada.
+2. **La formulación llega hasta nivel de asignación.** El enunciado de 26.2.6 ("el Concejo aprueba a nivel de subtítulo e ítem") describe el nivel de *aprobación*, no el de *formulación*. Son dos granularidades distintas y el modelo debe sostener ambas: se formula a asignación, se acuerda según el atributo por cuenta.
+
+> **PENDIENTE P-3 (residual):** El Manual resuelve el criterio para gastos. Quedan abiertos: (a) el tratamiento de las cuentas de ingreso 115, sobre las que el Manual no se pronuncia; (b) la creación de un ítem nuevo; (c) compensaciones entre subtítulos con neto cero. Ver ficha P-3.
 
 ### 4.2 Corrección: el levantamiento cita mal el dictamen 60.449/2008
 
@@ -235,6 +272,8 @@ El proceso 26 refuerza la distinción: `Registrar` (26.2.8) es el punto donde `B
 
 Naming técnico en inglés, consistente con Adquisiciones. Lista de trabajo, no cerrada. En **negrita** las incorporadas tras el proceso 26.
 
+**Inversión:** **`InvestmentInitiative`** (correlativo municipal perpetuo, Código INI, tipo de iniciativa, unidad ejecutora, tipo de financiamiento — §5.2), **`InvestmentAnnex`** (anexo al Concejo)
+
 **Formulación y gobernanza:** `BudgetEntity`, `BudgetExercise`, **`BudgetCall`** (convocatoria de estimaciones a las áreas), `BudgetSheet`, `BudgetLine`, `BudgetSheetDistribution`, `MonthlyAllocation`, **`HistoricalExecutionSeries`** (base de proyección), **`PersonnelProjection`**, `CouncilAgreement`, **`DecreeSignatureChain`**, `BudgetAmendment`, `AmendmentLine`
 
 **Apertura y cierre:** **`ExerciseOpening`**, **`FloatingDebt`** (deuda flotante), **`ReceivableCarryover`** (ingresos por percibir)
@@ -243,7 +282,7 @@ Naming técnico en inglés, consistente con Adquisiciones. Lista de trabajo, no 
 
 **Control:** `DeficitRepresentation` (con plazo art. 29 c y escalamiento a CGR), `QuarterlyReview`, **`QuarterlyControlReport`** (art. 29 d; reemplaza a `AccruedLiabilitiesReport` de v0.4 — ver §4.2), **`UnfundedRequest`** (peticiones no contempladas), `CashFlowProjection`, `ExecutionSnapshot`, **`ContingencyRecord`** (§5.1)
 
-**Transversal:** `BudgetClassifier` (versionado, subtítulo/ítem/asignación/subasignación), `NormativeParameter` (compartido con Adquisiciones), `CostCenter`, `ManagementArea`, `Program` / `Subprogram`
+**Transversal:** `BudgetClassifier` (versionado, subtítulo/ítem/asignación/subasignación; atributos por cuenta: `requires_council_agreement`, aplicabilidad por sector municipal/educación/salud/cementerio, área de gestión, estado nueva/no usar, oficio de creación — ver §4.1 y Anexo A.5), `NormativeParameter` (compartido con Adquisiciones), `CostCenter`, `ManagementArea`, `Program` / `Subprogram`
 
 **Gobernanza de plataforma (GP):** `NormativeWatch`, `ChangeRequest`, `NormativeRuling`, `ContractVersion`, `EcosystemNotice` — ver §7.7
 
@@ -270,6 +309,40 @@ Esto **no se resuelve con uptime.** Ninguna cifra de disponibilidad elimina el r
 
 > **PENDIENTE P-15:** Clasificar todas las operaciones del módulo por exposición legal, definir la vía alternativa de cada operación crítica, y resolver el punto 4. Requiere criterio jurídico, no solo técnico.
 
+### 5.2 Iniciativas de inversión: identificación y anexo al Concejo
+
+El subtítulo 31 tiene reglas propias de identificación y de presentación que ninguna otra partida comparte.
+
+#### Código Municipal
+
+Cada iniciativa recibe un **código secuencial único de 4 dígitos**, asignado por el municipio. **No se reinicia con el ejercicio**: si hasta 2009 se ejecutaron 23 iniciativas, la primera de 2010 es la `0024`. Es un correlativo perpetuo por municipio, no por presupuesto — dato relevante para el modelo, porque implica que `InvestmentInitiative` no cuelga del `BudgetExercise` sino de la `BudgetEntity`.
+
+#### Código INI (Oficio CGR N° 17.973, de 2008)
+
+Identificador de 12 posiciones que se usa en la ejecución, para el Informe Analítico de Variaciones de la Ejecución Presupuestaria de Iniciativas de Inversión que se remite a Contraloría:
+
+| Posiciones | Componente | Valores |
+|---|---|---|
+| 1–2 | Región | Códigos del Decreto N° 1.439/2000, mod. Decreto Exento N° 910/2007, Ministerio del Interior |
+| 3 | Provincia | ídem |
+| 4–5 | Comuna | ídem |
+| 6 | **Unidad ejecutora** | 1 Gestión Municipal · 2 Educación · 3 Salud · 4 Cementerio |
+| 7 | Tipo de iniciativa | 1 Estudios Básicos · 2 Proyectos · 3 Programas de Inversión |
+| 8–11 | Código único | El Código Municipal de 4 dígitos |
+| 12 | Tipo de financiamiento | 0 Institucional · 1 Gobierno Central · 2 Gobierno Regional · 3 Mixto |
+
+**Origen de campos heredados.** Esta estructura explica `codigo_ini`, `codigo_unico_proyecto`, `unidad_ejecutora_id` y `tipo_financiamiento` (0 Institucional … 3 Mixto) de `budget.sheet` en Odoo: no son invención del proveedor, son la codificación de este oficio. Se conservan, con la codificación como regla verificable.
+
+**Tercera confirmación de los cuatro sectores.** La posición 6 enumera Gestión Municipal, Educación, Salud y Cementerio. Es la tercera fuente independiente —tras el Manual V19 y el BEP— que trata a Cementerio como sector par. Ver P-5 y P-12.
+
+**Inconsistencia menor a resolver.** El tipo de iniciativa admite `3 = Programas de Inversión`, pero el desglose del subtítulo 31 en el clasificador presenta solo los ítems `01 Estudios Básicos` y `02 Proyectos`. Verificar si existe un ítem adicional o si el valor 3 quedó sin correlato.
+
+#### Anexo de Iniciativas de Inversión
+
+Junto con el proyecto de presupuesto se entrega al Concejo un anexo con el detalle por iniciativa: matriz de Código Municipal × las ocho asignaciones del ítem (001 Gastos Administrativos, 002 Consultorías, 003 Terrenos, 004 Obras Civiles, 005 Equipamiento, 006 Equipos, 007 Vehículos, 999 Otros), con totales por fila y por columna.
+
+Es un **entregable obligatorio de MP-1**, con formato definido. Debe especificarse como reporte del módulo, no como documento que el municipio arma por fuera.
+
 ---
 
 ## 6. Contratos inter-módulo
@@ -289,6 +362,36 @@ Insumo para la especificación de independencia modular. Cada uno es un contrato
 
 **Patrón de etapa observada:** el pago (Tesorería) cierra la cadena de compromiso pero no es propiedad de Presupuestos. Se modela igual que Pago en Adquisiciones — Presupuestos consume el evento sin poseer el proceso.
 
+### 6.1 El contrato de reporte como piso del modelo de ejecución
+
+Las planillas de carga BEP definen las magnitudes que el municipio **está obligado a poder informar**. Son, por tanto, el mínimo que el modelo de ejecución debe persistir: si el BEP lo pide, el módulo tiene que producirlo.
+
+**Estructura observada** (formato CSV, separador `;`, versión 2023):
+
+| Archivos | Sector | Prefijo de código | Cuentas |
+|---|---|---|---|
+| `Ingresos_Municipales` / `GTOS_Municipales` | Municipal | `115` / `215` | 154 / 438 |
+| `Ingresos_Educacion` / `GTOS_Educacion` | Educación | `EEE` | 154 / 438 |
+| `Ingresos_Salud` / `GTOS_Salud` | Salud | `SSS` | 154 / 438 |
+| `Ingresos_Cementerio` / `GTOS_Cementerio` | Cementerio | `CCC` | 154 / 438 |
+
+**Magnitudes exigidas.**
+
+| Flujo | Columnas | Correspondencia en el modelo |
+|---|---|---|
+| Gastos | `presup_ini`, `presup_vig`, `obliga_deven`, `deuda_exigible` | Aprobado inicial / vigente con modificaciones / cadena de compromiso devengada / deuda flotante |
+| Ingresos | `presup_ini`, `presup_vig`, `ingresos_percib`, `ingresos_por_percib` | Estimado / vigente / percibido (Tesorería) / por percibir (apertura del ejercicio) |
+
+**Tres consecuencias de diseño.**
+
+1. **`presup_ini` y `presup_vig` son magnitudes distintas y ambas se reportan.** El monto aprobado inicialmente y el vigente tras modificaciones deben persistirse por separado durante todo el ejercicio. Odoo ya lo hace (`approved_amount` / `current_amount`); es requisito, no opción.
+2. **`ingresos_por_percib` y `deuda_exigible` son exactamente los conceptos de la apertura del ejercicio** (26.2.8). El BEP los exige, de modo que `ExerciseOpening` no es un refinamiento opcional: sin él no se puede emitir el reporte obligatorio.
+3. **La desagregación por área de gestión aplica solo al gasto municipal.** El archivo `GTOS_Municipales` tiene 25 columnas: seis áreas —gestión interna, servicios a la comunidad, actividades municipales, programas sociales, deportivos y culturales— por tres magnitudes, más totales. Los otros tres sectores tienen siete columnas, sin desagregación. `ManagementArea` es dimensión **obligatoria en gasto municipal y ausente en los demás sectores**; el modelo debe admitir esa asimetría en lugar de imponer la dimensión a todos.
+
+**Evidencia para P-5 y P-12.** Cada sector tiene archivos propios y **espacio de códigos propio**. No son vistas filtradas de un mismo presupuesto: son entidades presupuestarias con catálogo separado. Esto favorece decididamente la opción 1 de P-5 (entidades independientes) y la opción 1 de P-12 (Cementerio como cuarta `BudgetEntity`), y contradice la lectura de "segmento del presupuesto municipal".
+
+> **Nota de vigencia:** las planillas publicadas corresponden a 2023. La estructura debe reconfirmarse contra la versión vigente antes de fijar el contrato (P-8).
+
 ---
 
 ## 7. Gobernanza de plataforma — track GP
@@ -305,7 +408,9 @@ Esto no es una preferencia de modelo operativo. Es una restricción de derecho a
 
 El Manual de Imputaciones Presupuestarias que mapea clasificador contra plan de cuentas NICSP (Anexo A.2) lo mantiene el **Departamento de Finanzas Municipales de la División de Municipalidades**. La función ya existe dentro de SUBDERE.
 
-El desfase de dos años en esos materiales no es negligencia: es lo que ocurre cuando la función opera sin estar vinculada a un sistema que le exija vigencia. El track GP no crea una capacidad nueva — **formaliza y conecta una existente, y le impone una exigencia de actualidad que hoy no tiene**.
+Más aún: SUBDERE **ya opera un ciclo de observación y respuesta con los municipios sobre datos presupuestarios**. Publica el *Informe de Observaciones Nacional BEP*, con las observaciones levantadas en la revisión de los Balances de Ejecución Presupuestaria y las justificaciones de cada municipio. Eso es, en la práctica, el proceso GP-2 de esta especificación funcionando de forma manual y sobre datos ya cargados, en lugar de como validación en origen.
+
+**Dos consecuencias.** Primero, el track GP no crea una capacidad nueva: **formaliza y conecta una existente, y le impone una exigencia de actualidad y de fuente única que hoy no tiene** — como muestra la coexistencia de dos versiones del Manual de Imputaciones (Anexo A.3). Segundo, el histórico de observaciones al BEP es un **catálogo empírico de los errores que los municipios cometen realmente**, y por tanto insumo directo para priorizar qué validadores construir primero.
 
 ### 7.3 Procesos del track
 
@@ -393,6 +498,7 @@ Duraciones en semanas, preliminares y a ajustar según disponibilidad de DM. Las
 | **Requisito de series históricas** | Retención y consulta de ejecución de ≥2 ejercicios anteriores más el semestre en curso, con corte a julio. Define la política de retención del módulo |
 | Mapa de obligaciones de reporte | CGR, SINIM, BEP, informes trimestrales del art. 29 d) LOCM, informe semestral SECPLA (art. 21 c), Anexos: qué, cuándo, formato |
 | **Verificación de citas normativas del levantamiento** | Contrastar en fuente primaria toda referencia legal o jurisprudencial del Informe 2 antes de convertirla en requisito. Criterio derivado de §4.2 |
+| **Análisis del Informe de Observaciones Nacional BEP** | Catálogo empírico de errores que los municipios cometen al informar ejecución presupuestaria. Insumo para priorizar validadores y para dimensionar el triage de GP-2 (§7.2) |
 
 ### F2 — Levantamiento de procesos faltantes · 3 semanas
 
@@ -450,12 +556,12 @@ Formato ficha idéntico al usado en Adquisiciones: actores, precondiciones, paso
 |---|---|---|---|---|
 | P-1 | Reconciliar `BudgetPreCommitment` con Adquisiciones | F0 / F4 | Equipo interno | Abierto |
 | ~~P-2~~ | Segundo proceso del levantamiento | — | — | **Resuelto** (proceso 26 en v0.2) |
-| P-3 | Regla subtítulo/ítem → acuerdo del Concejo (§4.1) | F3 / MP-2 | DM + Control | Abierto |
+| P-3 | Nivel del clasificador que exige acuerdo del Concejo (§4.1) | F3 / MP-2 | DM + Control | **Resuelto en parte** (v0.6); residual: ingresos 115 |
 | P-4 | Patrón doble raíz `BudgetExercise` / `CommitmentChain` | F3, F4 | Equipo interno | Abierto |
 | P-5 | Consolidación Salud y Educación | F2 | DM | Abierto |
 | P-6 | Apertura del ejercicio y frontera Contabilidad | F2 | DM + Contabilidad | Abierto |
 | P-7 | Tolerancias de monto CDP ↔ obligación ↔ devengo | F3 | Equipo + Adq | Abierto |
-| P-8 | Formato y canal SINIM / CGR / BEP | F1 | SUBDERE / DM | Abierto |
+| P-8 | Formato y canal SINIM / CGR / BEP | F1 | SUBDERE / DM | **Resuelto en parte** (v0.7): estructura BEP fijada; residual canal, vigencia e informes CGR |
 | ~~P-9~~ | Verificar dictamen CGR N° 60.449/2008 | — | — | **Resuelto** (§4.2, v0.5) |
 | P-10 | Momento de evaluación de límites 42% y 20% | F3 | DM + RRHH | Abierto |
 | P-11 | Retención y migración de series históricas | F1 | Equipo interno | Abierto |
@@ -463,6 +569,8 @@ Formato ficha idéntico al usado en Adquisiciones: actores, precondiciones, paso
 | **P-13** | Declaración del track GP en bases de licitación | F5 / bases | Jefatura SUBDERE | Abierto |
 | **P-14** | Clasificar parámetros: mandato propio vs órgano rector (§7.5) | F5 / GP | Equipo + Depto. Finanzas Municipales | Abierto |
 | **P-15** | Exposición legal por operación, vía alternativa y modo de contingencia (§5.1) | F5 | Equipo + Jurídica | Abierto |
+| **P-16** | Inventario de reglas de clase Criterio y ruta de consolidación GP-4 | F3 / F4 | Equipo + Jurídica | Abierto |
+| **P-17** | Ingesta y gobernanza del Manual de Imputaciones como fuente autoritativa | F1 | Equipo + Depto. Finanzas Municipales | Abierto |
 
 Cada pendiente abierto se documenta abajo con: contexto, pregunta a resolver, opciones candidatas, decisión por defecto si no hay respuesta a tiempo, criterio de cierre e insumos.
 
@@ -487,30 +595,29 @@ Cada pendiente abierto se documenta abajo con: contexto, pregunta a resolver, op
 
 ---
 
-### P-3 — Regla subtítulo/ítem → acuerdo del Concejo
+### P-3 — Nivel del clasificador que exige acuerdo del Concejo · **RESUELTO EN PARTE (v0.6)**
 
-**Contexto.** §4.1 deriva del 26.2.6 que el Concejo aprueba a subtítulo e ítem. Eso convierte el gateway del proceso 27 en regla computable. Sin confirmación, MP-2 no puede fijar validadores.
+**Estado.** El Manual de Imputaciones V19 (§4.1) enumera las 106 cuentas de gasto que requieren acuerdo del Concejo. La regla derivada en v0.2 queda superada: el nivel no es uniforme y el criterio es un atributo por cuenta, no una función de la profundidad del código.
 
-**Pregunta.** ¿La práctica municipal y Control confirman que:
-- alterar monto de subtítulo o ítem → acuerdo del Concejo;
-- reasignar entre asignaciones del mismo ítem sin cambiar el total del ítem → solo decreto alcaldicio?
+**Resuelto.**
+- Criterio para cuentas de gasto (215): dato del Manual, cargable como atributo `requires_council_agreement` del `BudgetClassifier`.
+- Caso borde 3 de v0.5 (saldo final de caja): el Manual lo marca explícitamente.
 
-**Casos borde a validar explícitamente.**
-1. Creación de un ítem nuevo (¿siempre Concejo?).
-2. Compensación entre subtítulos con neto cero.
-3. Traspasos desde subtítulos de saldo final de caja.
-4. Modificaciones de ingresos (115) vs egresos (215): ¿misma regla?
+**Residual.**
+1. **Cuentas de ingreso (115).** La hoja INGRESOS del Manual no tiene ninguna marca. ¿Significa que ninguna modificación de ingresos requiere acuerdo, que el criterio no está levantado, o que se rige por otra regla? Es la pregunta abierta principal.
+2. **Creación de un ítem nuevo** no presente en el presupuesto aprobado: ¿acuerdo del Concejo siempre, con independencia de la marca de la cuenta? **Resuelto para el subtítulo 31** (§4.1): creaciones, supresiones, incrementos y reducciones de sus asignaciones requieren acuerdo. Falta determinar si la regla tipificada por operación se generaliza a los demás subtítulos.
+3. **Compensaciones entre subtítulos con neto cero**: ¿basta que ninguna cuenta afectada esté marcada?
+4. **Cuentas no marcadas del todo**: ¿ausencia de marca equivale a "no requiere", o a "no evaluado"? Distinción relevante para el default del validador.
 
-**Opciones.**
-1. Adoptar §4.1 como default parametrizable (`NormativeParameter`).
-2. Granularidad más fina (asignación) o más gruesa (solo subtítulo) según DM.
-3. Criterio discrecional del DAF (rechazado: no es computable ni auditable).
+**Opciones para el punto 4.**
+1. Ausencia de marca = no requiere acuerdo (lectura literal; riesgo de falso negativo si el Manual está incompleto).
+2. Ausencia de marca = no evaluado; el validador emite `advisory` y deja constancia (conservador).
 
-**Default si no hay respuesta a tiempo:** opción 1, marcada como “pendiente de ratificación Control”.
+**Default:** opción 2 para ingresos, opción 1 para gastos, hasta pronunciamiento de DM y Control.
 
-**Criterio de cierre.** Acta con DM + Control que responde los cuatro casos borde y fija el valor del parámetro. Queda reflejado en ficha MP-2 y en `BudgetClassifier`.
+**Criterio de cierre.** Acta con DM + Control que responde los cuatro puntos residuales; atributo cargado y versionado en `BudgetClassifier`; ficha MP-2 con el validador consultando el atributo.
 
-**Insumos.** §4.1; proceso 27; art. 65 LOCM; Decreto 854; jerarquía de cuentas en Odoo (`title`…`level_5`).
+**Insumos.** §4.1; Manual de Imputaciones V19; proceso 27; art. 65 LOCM; P-17.
 
 ---
 
@@ -553,7 +660,9 @@ con la apertura (26.2.8) como interfaz que hace ejecutable el ejercicio y habili
 
 **Criterio de cierre.** Decisión DM por escrito; impacto en `BudgetEntity`, Concejo (¿un acuerdo o tres?) y reportes CGR (`GESTION MUNICIPAL` vs otras entidades en los TXT actuales).
 
-**Insumos.** Art. 65 LOCM; D-2; datos de área Odoo; formato informes CGR (campo entidad).
+**Evidencia nueva (v0.7).** El BEP entrega archivos separados por sector, con espacios de código propios (`115`/`215` municipal, `EEE`, `SSS`, `CCC`) — §6.1. No son vistas filtradas de un mismo presupuesto. Refuerza fuertemente la opción 1. Además, la desagregación por área de gestión existe solo en el gasto municipal, lo que confirma que los sectores no comparten estructura de imputación.
+
+**Insumos.** Art. 65 LOCM; D-2; §6.1; Manual V19 (columnas de sector); datos de área Odoo; formato informes CGR (campo entidad).
 
 ---
 
@@ -572,7 +681,16 @@ con la apertura (26.2.8) como interfaz que hace ejecutable el ejercicio y habili
 
 **Criterio de cierre.** BPMN de apertura firmado con Contabilidad; contrato versionado (comando + evento de confirmación); P-6 cerrado antes de fichas MP-1 etapa apertura.
 
-**Insumos.** 26.2.8; normativa Contabilidad General de la Nación; comportamiento actual `saldo_apertura` / `action_start_progress`.
+**Insumos.** 26.2.8; §6.1 (el BEP exige `ingresos_por_percib` y `deuda_exigible`, luego la apertura es condición del reporte); comportamiento actual `saldo_apertura` / `action_start_progress`.
+
+**Fuente normativa identificada (v0.9).** El Oficio 36.640/2007 está superado por la Resolución CGR N° 3, de 2020 (NICSP-CGR Sector Municipal, vigente desde el 1-I-2021). Los documentos a revisar, en orden de prioridad:
+
+1. **Oficio CGR N° E64.327, de 2020** — instrucciones sobre el ejercicio contable siguiente. Es el documento de **apertura**; debe contener el traspaso a ingresos por percibir y Deuda Flotante.
+2. **Oficio CGR N° E59549, de 2020** — Manual de Procedimientos Contables NICSP-CGR, con los procedimientos identificados por letra.
+3. **Oficio CGR N° E59548, de 2020** — cierre contable, contraparte de la apertura.
+4. **Oficio CGR N° E12203, de 2020** — Instructivo de Primera Adopción, pertinente también a P-11.
+
+Todos disponibles en el índice de SINIM (Anexo A.2). El Oficio DCF 3/19, revisado en v0.7, es anterior a la Resolución N° 3 y no contiene la apertura.
 
 ---
 
@@ -603,17 +721,20 @@ con la apertura (26.2.8) como interfaz que hace ejecutable el ejercicio y habili
 
 ### P-8 — Formato y canal SINIM / CGR / BEP
 
-**Contexto.** Odoo genera TXT de cuatro informes CGR. SINIM y BEP no están en el código. Sin especificar canal y formato, F5 no puede cerrar reportes.
+**Contexto.** Odoo genera TXT de cuatro informes CGR. Sin especificar canal y formato, F5 no puede cerrar reportes.
 
-**Pregunta.** ¿Cuáles son el formato oficial vigente, periodicidad y canal de envío para: Informes CGR 1–4, BEP, SINIM, y el informe de pasivos (P-9)?
+**Resuelto en v0.7 — estructura del BEP.** Inspeccionadas las ocho planillas de carga (§6.1): formato CSV con separador `;`, un archivo por sector y flujo, espacios de código separados por sector, y magnitudes exigidas por flujo. Queda fijado el piso del modelo de ejecución.
 
-**Opciones.** No aplica menú de diseño: es descubrimiento factual.
+**Residual.**
+1. **Vigencia.** Las planillas publicadas son de 2023. Confirmar estructura vigente antes de fijar el contrato.
+2. **Canal y periodicidad.** El formato está claro; el mecanismo de envío y su frecuencia, no.
+3. **Informes CGR 1–4.** Los TXT que genera Odoo siguen siendo candidato de formato, no contrato.
+4. **Informes trimestrales del art. 29 d).** Formato y destinatario no cubiertos por el BEP.
+5. **Semántica de `s_movimiento`.** Columna presente en los ocho archivos, con valor `0` en todas las filas de la plantilla vacía. Determinar si es marca de "sin movimiento" a nivel de cuenta.
 
-**Default mientras tanto:** tratar los TXT de Odoo informes 1–4 como **candidato de formato** a validar con SUBDERE, no como contrato.
+**Criterio de cierre.** Matriz obligación × formato × canal × frecuencia × responsable, validada por SUBDERE/DM; gap list contra lo que genera Odoo; contrato de exportación versionado por año.
 
-**Criterio de cierre.** Matriz obligación × formato × canal × frecuencia × responsable, validada por SUBDERE/DM; gap list vs lo que genera Odoo hoy.
-
-**Insumos.** Informes CGR en `presupuesto_gov_cl`; sitio SINIM; instrucciones déficit SUBDERE; P-9.
+**Insumos.** §6.1; planillas BEP 2023; informes CGR en `presupuesto_gov_cl`; instrucciones déficit SUBDERE; art. 29 d) LOCM.
 
 ---
 
@@ -653,7 +774,16 @@ con la apertura (26.2.8) como interfaz que hace ejecutable el ejercicio y habili
 
 **Criterio de cierre.** Acta DM+RRHH; base de cálculo definida (qué cuenta como ingreso propio percibido; qué como planta/contrata); momento(s) y efecto (bloqueo vs representación art. 81).
 
-**Insumos.** Arts. citados; contrato Tesorería (ingresos percibidos); contrato RRHH; ficha staff Odoo como anti-patrón (sin validador).
+**Insumo nuevo (v0.8) — base de cálculo.** El cuadro **Componentes Remuneratorios** de SUBDERE mapea cada concepto remuneratorio a su imputación presupuestaria, con fuente legal por componente, para los cuatro sectores: Educación (Ley 19.070), Salud (Ley 19.378), Municipal (Ley 18.883 y Ley 15.076 para médicos) y Cementerios (Código del Trabajo). Resuelve buena parte de la pregunta "qué cuenta como gasto en personal":
+
+- **Planta / contrata / otras remuneraciones** se distinguen por imputación: `21.01` planta, `21.02` contrata, `21.03` otras. La base del 20% del art. 2 de la Ley 18.883 es computable sobre esas imputaciones.
+- **Honorarios** tienen imputación propia: suma alzada `2103001`, asimilados a grado `2103002`, suplencias y reemplazos `2103005`, otras `2103999`.
+- **Componentes marcados "Extrapresupuestaria"** —por ejemplo la Asignación Familiar— **deben excluirse de la base**. Es un caso de error probable si la base se calcula por agregación ciega del subtítulo 21.
+- Cada componente trae **fuente legal**, lo que da `legal_reference` listo para los validadores de personal (musts §11).
+
+**Advertencia de ingesta.** El cuadro usa dos formatos de código para lo mismo: punteado (`21.01.001.001`) y concatenado (`2101001019`). Normalizar antes de usar como catálogo.
+
+**Insumos.** Arts. citados; **cuadro Componentes Remuneratorios**; contrato Tesorería (ingresos percibidos); contrato RRHH; ficha staff Odoo como anti-patrón (sin validador).
 
 ---
 
@@ -691,7 +821,11 @@ con la apertura (26.2.8) como interfaz que hace ejecutable el ejercicio y habili
 
 **Criterio de cierre.** Acta DM + Unidad de Información Municipal; impacto en D-2, reportes SINIM y CGR.
 
-**Insumos.** Anexo A.3; datos SINIM; D-2; P-5 (coherencia con Salud/Educación).
+**Evidencia nueva (v0.7).** Cementerio tiene planillas BEP propias con prefijo de código `CCC` y el mismo número de cuentas que los demás sectores (§6.1), y columna propia de aplicabilidad por cuenta en el Manual V19 (Anexo A.4). Es tratado como sector completo por los dos artefactos oficiales, no como área. Refuerza la opción 1 y debilita la opción 2 que estaba como default.
+
+**Tercera confirmación (v0.8).** La posición 6 del Código INI enumera 1 Gestión Municipal, 2 Educación, 3 Salud, 4 Cementerio (§5.2). Tres fuentes oficiales independientes —Manual V19, BEP y Oficio CGR 17.973— tratan a Cementerio como sector par. El default de la opción 2 ya no es sostenible.
+
+**Insumos.** Anexo A.3 y A.4; §5.2; §6.1; datos SINIM; D-2; P-5 (coherencia con Salud/Educación).
 
 ---
 
@@ -749,11 +883,38 @@ con la apertura (26.2.8) como interfaz que hace ejecutable el ejercicio y habili
 
 ---
 
+### P-17 — Ingesta y gobernanza del Manual de Imputaciones
+
+**Contexto.** §4.1. El Manual V19 es la fuente autoritativa de tres atributos por cuenta que el módulo necesita: exigencia de acuerdo del Concejo, aplicabilidad por sector (municipal / educación / salud / cementerio) y por área de gestión, y estado de la cuenta (nueva / no usar / oficio de creación). Hoy vive como planilla Excel, con parte de la información codificada en **formato de celda** y no en datos.
+
+**Pregunta.** ¿Cómo se convierte el Manual en catálogo versionado dentro de SGM, y quién queda responsable de mantenerlo una vez que el sistema lo consume?
+
+**Sub-preguntas.**
+1. **Ingesta inicial:** ¿carga única con curaduría manual, o importador reproducible? La marca por color obliga a leer formato, lo que ningún importador estándar hace por defecto.
+2. **Ciclo de actualización:** el Manual va por versiones (V19). ¿Cada versión genera una versión del `BudgetClassifier` con vigencia temporal (Anexo A.4)?
+3. **Dirección del flujo a futuro:** ¿SGM sigue consumiendo la planilla, o el catálogo pasa a mantenerse en SGM y la planilla se genera desde ahí? Lo segundo elimina la codificación por color y hace del Manual un producto del sistema.
+4. **Ausencia de marca:** ¿"no requiere acuerdo" o "no evaluado"? Ver P-3 residual punto 4.
+
+**Opciones para la sub-pregunta 3.**
+1. SGM consume la planilla en cada versión (menor fricción institucional; perpetúa el formato frágil).
+2. SGM se vuelve el sistema de registro del catálogo y publica la planilla como salida (recomendada a mediano plazo; requiere acuerdo con el Depto. de Finanzas Municipales).
+3. Doble mantención (rechazada: dos fuentes de verdad).
+
+**Default:** opción 1 para la puesta en marcha, con opción 2 declarada como estado objetivo en el track GP.
+
+**Criterio de cierre.** Importador reproducible con pruebas sobre V19; catálogo versionado en `BudgetClassifier`; acuerdo con el Depto. de Finanzas Municipales sobre el flujo objetivo; entrada correspondiente en el mapa de contrapartes (§7.6).
+
+**Urgente (v0.9).** Existe el **Manual V21 (2026)**, dos versiones más nuevo que el V19 sobre el que se hizo el análisis de §4.1 y Anexo A.4. Reconfirmar contra V21 antes de fijar cualquier conclusión: número de cuentas marcadas, niveles, sectores y estado de cuentas. El V21 se describe además como *restrictivo en el uso de cuentas*, lo que sugiere un cambio de criterio respecto de versiones anteriores.
+
+**Insumos.** §4.1; Anexo A.2, A.3 y A.5; Manual V19 (analizado) y **V21 (pendiente)**; P-3; P-12; §7.2.
+
+---
+
 ### Orden sugerido de resolución
 
 ```
 F0:  P-1, P-4
-F1:  P-8, P-11, P-12, (P-10 inicia con RRHH)     · P-9 cerrado en v0.5
+F1:  P-8, P-11, P-12, P-17, (P-10 inicia con RRHH) · P-9 cerrado en v0.5; P-3 parcial en v0.6
 F2:  P-5, P-6
 F3:  P-3, P-7, P-10 (cierre)
 F4:  cierre formal P-1 en modelo de Adquisiciones; ContingencyRecord (P-15)
@@ -777,6 +938,8 @@ F5:  P-13, P-14 (track GP), P-15 (cierre)
 | **SUBDERE crea interpretación normativa de hecho** vía validadores bloqueantes sin respaldo de órgano rector | Medio-alto — atribución que corresponde a CGR | Clasificación de parámetros por clase de autoridad (§7.5, P-14) y vía de escalamiento GP-4 |
 | **Indisponibilidad del sistema en fecha con efecto jurídico** | **Alto — una caída puede consumar un efecto legal (silencio del art. 82, vencimiento del art. 29 c) sin decisión humana** | Disponibilidad diferenciada por exposición legal, vía alternativa documentada y `ContingencyRecord` auditable (§5.1, P-15). El sistema no da por acreditado el silencio sin verificación humana |
 | **Citas normativas del levantamiento tomadas como requisito sin verificar** | Medio-alto — §4.2 muestra un caso confirmado | Verificación en fuente primaria como entregable de F1; incorporado a GP-1 como práctica permanente |
+| **Conocimiento normativo operativo almacenado en formato frágil** | Medio-alto — el criterio de acuerdo del Concejo vive como color de celda en una planilla (§4.1) | Ingesta versionada del Manual con importador reproducible y estado objetivo de mantención en SGM (P-17) |
+| **Análisis construido sobre una versión superada de la fuente** | **Alto — §4.1 y Anexo A.4 se basan en el Manual V19; existe V21 (2026)** | Reconfirmación contra V21 antes de cerrar P-3 y P-17. Regla general: fijar y registrar la versión de cada fuente usada, igual que exige el must §11.2 para parámetros |
 
 ---
 
@@ -822,15 +985,27 @@ El error habitual es tratarlas como una sola. Son tres artefactos con autoridad,
 **Capa 2 — Plan de cuentas (CGR)**
 
 - [Plan de cuentas del sector municipal para NICSP](https://www.sinim.gov.cl/desarrollo_local/clasificador_presupuestario/download/nuevo_clasificador/Plan_de_Cuentas_Sector_Municipal_para_NICSP.pdf)
-- [Oficio DCF 3/19 — Modifica procedimientos contables y catálogo de cuentas para el sector municipal](https://www.sinim.gov.cl/desarrollo_local/clasificador_presupuestario/download/nuevo_clasificador/DCF_3-19_MODIF.PROCED.CONTABLES-CTAS_SECTOR_MUNICIPAL_1.pdf)
+**Cadena vigente (NICSP-CGR Sector Municipal).** El Oficio CGR N° 36.640, de 2007, que estableció el Manual de Procedimientos Contables y el Catálogo del Plan de Cuentas, **está superado**. Rige:
+
+- **Resolución CGR N° 3, de 2020** — aprueba la Normativa del Sistema de Contabilidad General de la Nación, NICSP-CGR Chile Sector Municipal. **Vigente desde el 1 de enero de 2021**
+- [Oficio CGR N° E11061, de 2020](https://www.sinim.gov.cl/archivos/home/758/Of_CGR_%20E11061_de_2020.pdf) — aprueba el plan de cuentas del sector municipal conforme a la Resolución N° 3. Es el oficio que cita el encabezado del Manual de Imputaciones
+- [Oficio CGR N° E59541, de 2020](https://www.sinim.gov.cl/archivos/home/758/Of_E59541_de_2020_Complementa_Plan_de_Cuenta.pdf) — complementa el plan de cuentas
+- [Oficio CGR N° E59549, de 2020](https://www.sinim.gov.cl/archivos/home/758/Of_E59549_de_2020_Manual_de_Procedimientos_SM.pdf) — **Manual de Procedimientos Contables para el Sector Municipal (NICSP-CGR)**
+- [Oficio CGR N° E59548, de 2020](https://www.sinim.gov.cl/archivos/home/758/Of_E59548_de_2020_Cierre_Sector_Municipal_anio_2020.pdf) — instrucciones sobre **cierre** contable
+- [Oficio CGR N° E64.327, de 2020](https://www.sinim.gov.cl/archivos/home/758/Oficio_CGR_E64.327_Apertura_Municipal_2021.pdf) — instrucciones sobre el ejercicio contable siguiente. **Es el documento de apertura; fuente directa de P-6**
+- Oficio CGR N° E12203, de 2020 — Instructivo de Primera Adopción NICSP-CGR. Relevante para la estrategia de puesta en marcha (P-11)
+
+Índice de la serie: [SINIM — Oficios de cierre 2020, modificación plan de cuentas y manual de procedimientos](https://www.sinim.gov.cl/documento_importante.php?id=758)
+- [Oficio DCF 3/19 — Modifica procedimientos contables y catálogo de cuentas para el sector municipal](https://www.sinim.gov.cl/desarrollo_local/clasificador_presupuestario/download/nuevo_clasificador/DCF_3-19_MODIF.PROCED.CONTABLES-CTAS_SECTOR_MUNICIPAL_1.pdf) — Oficio N° 32.228 de 17-XII-2019, vigente desde el ejercicio contable 2020. Revisado: modifica el procedimiento E-09 (transferencias con condición), suspende F-06 y F-07 y reactiva F-03 (anticipos a contratistas), y crea/suspende cuentas de transferencias de educación. **No contiene el procedimiento de apertura**
 - [Dictamen CGR N° 75.992/2010](https://www.sinim.gov.cl/desarrollo_local/clasificador_presupuestario/download/nuevo_clasificador/Dictamen_75992-2010.pdf) e instructivos de creación de cuentas específicas (DAC72, 101916, 022703, 022704)
 
 **Capa 3 — Puente operativo (SUBDERE / SINIM)**
 
 - [Documentos del nuevo Clasificador Presupuestario](https://www.sinim.gov.cl/desarrollo_local/clasificador_presupuestario/documentos_nclasificador.html) — índice mantenido por el Depto. de Finanzas Municipales
-- [Manual de Imputaciones Presupuestarias incorporando plan de cuentas NICSP, V19](https://www.sinim.gov.cl/archivos/home/664/Manual_de_Imputaciones_Presupuestarias_incorporando_plan_de_cuenta_NICSP_V19.xls) — **artefacto de referencia para la carga inicial de `BudgetClassifier`**
+- [Manual de Imputaciones Presupuestarias incorporando plan de cuentas NICSP, V19](https://www.sinim.gov.cl/archivos/home/664/Manual_de_Imputaciones_Presupuestarias_incorporando_plan_de_cuenta_NICSP_V19.xls) — **fuente autoritativa de los atributos por cuenta del `BudgetClassifier`** (ver A.4). Inspeccionado: 3 hojas, 463 cuentas de gasto y 176 de ingreso. No cita el DS 854 ni el Decreto 1227/2024; se construye sobre oficios y dictámenes de CGR (últimos citados: E308931/2023 y E486016/2024). Última modificación del archivo: agosto de 2025
 - [Convertidor Municipal](https://www.sinim.gov.cl/desarrollo_local/clasificador_presupuestario/download/nuevo_clasificador/Convertidor_Municipal_04022008.xls) — conversión desde el clasificador anterior; útil solo para migración histórica
-- [Inversiones Municipales — Código INI](https://www.sinim.gov.cl/desarrollo_local/clasificador_presupuestario/download/nuevo_clasificador/Inversiones_y_codigo_INI.pdf) — corresponde a `codigo_ini` en las fichas de Odoo
+- [Inversiones Municipales — Presupuesto y Código INI](https://www.sinim.gov.cl/desarrollo_local/clasificador_presupuestario/download/nuevo_clasificador/Inversiones_y_codigo_INI.pdf) — **revisado en v0.8.** Regla de modificación tipificada por operación para el ST 31; formulación a nivel de asignación; Código Municipal correlativo perpetuo; estructura del Código INI (Oficio CGR N° 17.973, de 2008); formato del anexo al Concejo. Ver §5.2
+- [Componentes Remuneratorios — Sectores Municipal, Educación, Salud, Cementerio](https://www.sinim.gov.cl/desarrollo_local/clasificador_presupuestario/download/nuevo_clasificador/Componentes_remuneratorios_(cuadro).pdf) — **revisado en v0.8.** Concepto remuneratorio → imputación, con fuente legal por componente. Base de cálculo de los límites del 42% y 20% (P-10)
 
 **Datos y reporte**
 
@@ -842,15 +1017,37 @@ El error habitual es tratarlas como una sola. Son tres artefactos con autoridad,
 
 **Cementerio como cuarto sector.** El clasificador de SINIM filtra por MUNICIPAL, SALUD, EDUCACION y **CEMENTERIO**. El levantamiento y Odoo solo contemplan el municipal (área de catálogo ≠ entidad). Ver P-12.
 
-**Trazabilidad de los materiales publicados.** Conviene separar lo verificado de lo inferido:
+**Dos versiones vigentes del mismo artefacto.** Corregido en v0.9. No se trata de desfase sino de **inconsistencia interna de la publicación**:
 
-- **Verificable:** los enlaces rotulados "Archivo de carga BEP actualizado" en la página de Documentos del Clasificador Presupuestario apuntan a `BEP_Planillas_Excel_2023.rar` y `BEP_Planillas_csv_2023.rar`.
-- **No verificado:** si el Manual de Imputaciones V19 incorpora el Decreto 1227/2024. Comprobación pendiente en P-8.
+- La página [Documentos del nuevo Clasificador Presupuestario](https://www.sinim.gov.cl/desarrollo_local/clasificador_presupuestario/documentos_nclasificador.html) enlaza el **Manual V19**.
+- La portada de SINIM destaca el **[Manual V21 (2026), con cambios NICSP incorporados](https://www.sinim.gov.cl/archivos/home/664/Manual_de_Imputaciones_Presupuestarias_incorporando_plan_de_cuenta_NICSP_V21.xls)**, descrito como *"restrictivo en el uso de cuentas, todas debidamente individualizadas"*.
+
+Dos rutas del mismo sitio institucional entregan versiones distintas del artefacto que define, entre otras cosas, qué modificaciones presupuestarias requieren acuerdo del Concejo. **Todo el análisis de §4.1 y Anexo A.4 se hizo sobre V19 y debe reconfirmarse contra V21.**
+
+Esto es un argumento más fuerte que el de latencia para §7.2: la función existe y produce el artefacto actualizado, pero sin un sistema que sea la única fuente, conviven copias divergentes sin que nadie lo advierta.
+
+**Trazabilidad de lo revisado.** Conviene separar lo verificado de lo inferido:
+
+- **Verificable:** los enlaces rotulados "Archivo de carga BEP actualizado" en la página de Documentos del Clasificador Presupuestario apuntan a `BEP_Planillas_Excel_2023.rar` y `BEP_Planillas_csv_2023.rar`. Inspeccionadas en v0.7: ocho archivos CSV, estructura documentada en §6.1.
+- **Verificado en v0.6:** el Manual V19 **no cita** el DS 854 ni el Decreto 1227/2024; se construye sobre oficios y dictámenes de CGR. Como el Manual es la capa 3 y rastrea el catálogo de cuentas de CGR, la ausencia de cita no prueba que el contenido del decreto no esté reflejado: para afirmarlo hay que identificar los ítems que agregó el 1227 y buscarlos en la planilla. **Pendiente acotado.**
 - **No es evidencia de desfase:** que los datos de ejecución lleguen a 2025, que corresponde al rezago normal del reporte municipal.
 
 Si el contrato de reporte se especifica contra estos archivos, hay que asumir versionado por año. Refuerza P-8.
 
-### A.4 Regla de gobernanza derivada
+### A.4 El Manual de Imputaciones como fuente de atributos del clasificador
+
+Además de mapear clasificador contra plan de cuentas, el Manual V19 aporta atributos por cuenta que ninguna otra fuente entrega:
+
+| Atributo | Columna del Manual | Uso en el módulo |
+|---|---|---|
+| `requires_council_agreement` | "Cuenta que requiere Aprobación de Concejo Municipal" — **codificada por color de celda**, no por texto | Gateway del proceso 27 (§4.1, P-3) |
+| Aplicabilidad por sector | Sector MUNICIPAL / EDUCACION / SALUD / CEMENTERIO (S/N) | `BudgetEntity` y alcance D-2 (P-5, P-12) |
+| Aplicabilidad por área de gestión | Gestión Interna, Servicios a la Comunidad, Actividades Municipales, Programas Sociales / Recreacionales / Culturales (S/N) | Imputación por área; corresponde a `account.gov.area` en Odoo |
+| Estado de la cuenta | "Cuenta Nueva / NO USAR" y "Oficio de creación y/o eliminación" | Vigencia temporal por cuenta; validador de imputación a cuenta descontinuada |
+
+**Advertencia de ingesta.** La marca de acuerdo del Concejo está en el **formato** de la celda (fondo cian, RGB 0,204,255), no en su contenido; la columna de texto está vacía. Un importador que lea solo valores perderá los 106 registros. Ver P-17.
+
+### A.5 Regla de gobernanza derivada
 
 La evidencia de más de veinte años de modificaciones sucesivas al DS 854 confirma el criterio del §11.2: el clasificador **no puede ser una tabla estática del sistema**. Debe ser `NormativeParameter` / catálogo versionado con vigencia temporal, versión, y capacidad de convivencia de dos versiones simultáneas — un ejercicio en curso opera con la versión vigente al momento de su apertura, mientras el ejercicio siguiente se formula con la versión nueva.
 
