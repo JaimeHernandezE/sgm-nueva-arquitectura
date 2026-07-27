@@ -1,11 +1,12 @@
 # Módulo: Contabilidad
 
-Inventario Odoo en curso. Macroprocesos, contratos y dominio nuevo aún pendientes.
+Inventario Odoo y plan de trabajo de especificación en curso. Macroprocesos, contratos y dominio nuevo aún pendientes.
 
 ## Documentos
 
 | Documento | Descripción |
 |-----------|-------------|
+| [`plan-de-trabajo-contabilidad.md`](plan-de-trabajo-contabilidad.md) | Plan de especificación (v0.3): diagnóstico Magenta × Odoo, MC-1…MC-7, fases, pendientes C-nn |
 | [`modelos-odoo.md`](modelos-odoo.md) | Modelos, relaciones y flujos de estado en Odoo (`account_gov_cl` + puentes Adq/HR/Inventario + Tesorería con prefijo `account.gov.*`) |
 
 ## Referencias
