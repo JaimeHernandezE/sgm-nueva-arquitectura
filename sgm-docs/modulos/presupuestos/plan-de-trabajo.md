@@ -2,11 +2,13 @@
 
 **Proyecto:** SGM — Sistema de Gestión Municipal
 **Módulo:** Presupuestos
-**Versión:** 0.3 (borrador para revisión interna)
+**Versión:** 0.4 (borrador para revisión interna)
 **Fecha:** julio 2026
 **Estado:** propuesta de plan, no validado con DM
 
-**Cambios v0.3:** diagnóstico Odoo contrastado con el ORM real (§3.2–3.4); pendientes abiertos (§8) expandidos con contexto, pregunta a resolver, opciones, criterio de cierre e insumos.
+**Cambios v0.4:** nuevo §7 — track GP de gobernanza de plataforma (procesos en SUBDERE). Renumeración de §7–§10 a §8–§11. Anexo A (jerarquía clasificador / plan de cuentas). P-12 Cementerio; P-13/P-14 del track GP. Ajuste D-2.
+
+**Cambios v0.3:** diagnóstico Odoo contrastado con el ORM real (§3.2–3.4); pendientes abiertos expandidos con contexto, pregunta, opciones, criterio de cierre e insumos; criterio de fundamento normativo alineado a [`musts-arquitectura.md`](../../arquitectura/especificacion/musts-arquitectura.md) §11.
 
 **Cambios v0.2:** incorporación del proceso 26 (Presupuesto: Elaboración) del levantamiento Magenta. Resuelve P-2, destraba parcialmente P-3 y P-6, y agrega cinco requisitos normativos y funcionales no detectados en v0.1.
 
@@ -27,7 +29,7 @@ Tomadas antes de iniciar el trabajo. Si alguna cambia, el plan se recalcula.
 | # | Decisión | Contenido |
 |---|----------|-----------|
 | D-1 | **Frontera del módulo** | Presupuestos es dueño de la cadena completa de compromiso: disponibilidad → CDP → preobligación → obligación → devengo presupuestario. Adquisiciones, Contabilidad y Tesorería consumen vía contrato versionado. |
-| D-2 | **Alcance de entidades presupuestarias** | Ciclo completo municipal **más** los presupuestos separados de Salud y Educación (servicios traspasados), que son entidades presupuestarias distintas con consolidación propia. |
+| D-2 | **Alcance de entidades presupuestarias** | Ciclo completo municipal **más** los presupuestos separados de Salud y Educación (servicios traspasados), que son entidades presupuestarias distintas con consolidación propia. SINIM expone además un cuarto sector, **Cementerio** — alcance por confirmar (P-12). |
 | D-3 | **Método** | Réplica del método de Adquisiciones: fichas de proceso por etapa → modelo de entidades en naming técnico inglés → contratos de API → wireframes → especificaciones transversales. |
 
 ### Consecuencia inmediata de D-1
@@ -116,6 +118,7 @@ Leyenda de cobertura Odoo: **Sí** = opera el ámbito · **Parcial** = hay rastr
 | Flujo de caja / programación | No | Parcial: `budget.cash.flow` solo computed | Levantar como proceso de programación (no solo vista) |
 | Ingresos propios / FCM / tributos | No | Parcial: `presupuesto.tax.income` | Levantar; frontera con Tesorería |
 | **Salud y Educación** | No | Parcial: códigos de área; no entidades presupuestarias | **Sin cobertura de D-2 en ninguna fuente (P-5)** |
+| **Cementerio (sector SINIM)** | No | No (solo área de catálogo en algunos datos) | **Cuarto sector en SINIM; confirmar alcance (P-12)** |
 | Informes CGR / SINIM / BEP | No | Parcial: 4 informes CGR TXT; SINIM/BEP no | Levantar obligaciones y canales (P-8) |
 
 ### 3.4 Lectura del cruce Magenta × Odoo
@@ -173,7 +176,7 @@ Esto convierte el gateway `Requiere Aprobación del Concejo` del proceso 27 en *
 
 ## 5. Arquitectura funcional propuesta
 
-Cuatro macroprocesos más una capa transversal. Cada macroproceso se descompone en etapas con ficha, réplica del patrón de Adquisiciones.
+Cuatro macroprocesos municipales, una capa transversal y un track de gobernanza en SUBDERE. Cada macroproceso se descompone en etapas con ficha, réplica del patrón de Adquisiciones.
 
 ```
 MP-1  Formulación, aprobación y apertura     (proceso 26; art. 82: oct → 15 dic → apertura)
@@ -182,7 +185,11 @@ MP-3  Ejecución y control de disponibilidad  (CDP → preobligación → obliga
 MP-4  Seguimiento, control y reporte         (examen trimestral art. 81, pasivos, déficit, BEP, SINIM, CGR)
 
 TR    Clasificador presupuestario y parámetros normativos (Decreto 854, versionado)
+
+GP    Gobernanza de plataforma — procesos que corren en SUBDERE, no en el municipio (§7)
 ```
+
+Los cuatro macroprocesos describen lo que ocurre **dentro** del municipio. El track GP describe lo que sostiene el modelo normativo en el tiempo. Sin GP, la especificación describe un sistema que nadie mantiene.
 
 ### Patrón raíz propuesto
 
@@ -211,6 +218,8 @@ Naming técnico en inglés, consistente con Adquisiciones. Lista de trabajo, no 
 
 **Transversal:** `BudgetClassifier` (versionado, subtítulo/ítem/asignación/subasignación), `NormativeParameter` (compartido con Adquisiciones), `CostCenter`, `ManagementArea`, `Program` / `Subprogram`
 
+**Gobernanza de plataforma (GP):** `NormativeWatch`, `ChangeRequest`, `NormativeRuling`, `ContractVersion`, `EcosystemNotice` — ver §7.7
+
 ---
 
 ## 6. Contratos inter-módulo
@@ -232,7 +241,84 @@ Insumo para la especificación de independencia modular. Cada uno es un contrato
 
 ---
 
-## 7. Plan por fases
+## 7. Gobernanza de plataforma — track GP
+
+Los macroprocesos MP-1 a MP-4 corren dentro del municipio. Ninguno corre en SUBDERE. Este track especifica los procesos que sostienen el modelo normativo en el tiempo.
+
+### 7.1 Premisa: función estructuralmente no licitable
+
+Un proveedor **no puede** hacer una consulta a Contraloría en nombre de SUBDERE, ni responder a un municipio que su solicitud no procede según la norma, ni negociar con Hacienda una modificación del clasificador. La función no requiere competencia técnica sino **personalidad institucional**, y el mandato no es transferible por contrato.
+
+Esto no es una preferencia de modelo operativo. Es una restricción de derecho administrativo que la especificación debe reconocer.
+
+### 7.2 Estado actual: incipiente, no inexistente
+
+El Manual de Imputaciones Presupuestarias que mapea clasificador contra plan de cuentas NICSP (Anexo A.2) lo mantiene el **Departamento de Finanzas Municipales de la División de Municipalidades**. La función ya existe dentro de SUBDERE.
+
+El desfase de dos años en esos materiales no es negligencia: es lo que ocurre cuando la función opera sin estar vinculada a un sistema que le exija vigencia. El track GP no crea una capacidad nueva — **formaliza y conecta una existente, y le impone una exigencia de actualidad que hoy no tiene**.
+
+### 7.3 Procesos del track
+
+| Proceso | Disparador | Actores | Salida | Exigencia temporal |
+|---|---|---|---|---|
+| **GP-1 Vigilancia normativa** | Publicación en Diario Oficial; dictamen CGR; instructivo de órgano rector | SUBDERE (experto municipal) | Evaluación de impacto: qué parámetros, contratos o validadores se afectan | Continua; barrido con periodicidad definida |
+| **GP-2 Triage de solicitudes de cambio** | Solicitud de un municipio o de un tercero del ecosistema | SUBDERE + municipio solicitante | Resolución fundada según taxonomía §7.4 | Plazo de respuesta comprometido |
+| **GP-3 Versionado de contratos y aviso al ecosistema** | Resultado de GP-1 o GP-2 que altera un contrato de API | SUBDERE + desarrollo + terceros | Nueva versión de contrato, clasificación *breaking* / no *breaking*, preaviso | Preaviso mínimo antes de entrada en vigencia |
+| **GP-4 Consulta a órgano rector** | Ambigüedad normativa detectada en GP-1 o GP-2 | SUBDERE → CGR / Hacienda / órgano competente | Pronunciamiento que consolida el criterio | Sujeta a plazos del órgano consultado |
+
+### 7.4 Taxonomía de triage (GP-2)
+
+Toda solicitud de cambio se clasifica en una de cuatro categorías. La taxonomía define el perfil del cargo tanto como el proceso.
+
+| # | Categoría | Resolución |
+|---|---|---|
+| 1 | La norma lo exige o lo permite | Cambio de parámetro o de contrato. Entra a GP-3 |
+| 2 | La norma es ambigua | **No se resuelve internamente.** Escala a GP-4 antes de actuar. Entretanto, parámetro configurable con valor por defecto marcado |
+| 3 | No es normativo, es práctica local | Configurable por municipio si el contrato lo admite; en caso contrario se rechaza |
+| 4 | Contradice la norma | Se rechaza con fundamento jurídico explícito y trazable |
+
+**El grueso de las solicitudes caerá en las categorías 3 y 4.** El trabajo principal de esta función es rechazar con fundamento, y es precisamente lo que un desarrollador no puede hacer por falta de autoridad. Es también el mecanismo que evita el modo de falla clásico de los ERP municipales: sin nadie facultado para rechazar, cada municipio obtiene su variante y a los pocos años existen trescientos sistemas distintos con el mismo nombre.
+
+### 7.5 Dos clases de parámetro normativo
+
+Distinción que la especificación debe hacer explícita y que hoy no está en `NormativeParameter`:
+
+| Clase | Origen de la autoridad | Ejemplos | Quién puede modificar |
+|---|---|---|---|
+| **Mandato propio** | SUBDERE por su rol de órgano de información municipal | Formatos de reporte, periodicidad de carga, catálogos operativos | SUBDERE, con doble control |
+| **Respaldo de órgano rector** | Deriva de norma de Hacienda, CGR u otro | Clasificador (DS 854), umbrales legales (42%, 20%), plazos del art. 82, criterio de §4.1 | SUBDERE solo tras acto del órgano competente; el sistema registra la referencia |
+
+> **Advertencia de diseño:** el criterio derivado en §4.1 —subtítulo e ítem definen si una modificación requiere acuerdo del Concejo— pertenece a la segunda clase y fue resuelto internamente. Si SGM lo codifica en un validador bloqueante, SUBDERE estaría creando interpretación normativa de hecho, atribución que corresponde a Contraloría. La salida correcta no es omitirlo, sino escalarlo por GP-4 para consolidarlo. Mientras tanto se mantiene configurable, como ya establece P-3. El `legal_reference` del validador ([`musts-arquitectura.md`](../../arquitectura/especificacion/musts-arquitectura.md) §11) debe apuntar a la norma marco **y**, cuando exista, al `NormativeRuling` que lo consolidó.
+
+### 7.6 Mapa de contrapartes institucionales
+
+La relación con cada contraparte es un activo que también debe mantenerse. Para Presupuestos:
+
+| Contraparte | Materia | Módulos afectados |
+|---|---|---|
+| Contraloría General de la República | Dictámenes, normativa contable, plan de cuentas NICSP, informes, cálculo de déficit | Presupuestos, Contabilidad |
+| Ministerio de Hacienda / DIPRES | Clasificador presupuestario (DS 854) y sus modificaciones | Presupuestos, Contabilidad |
+| SUBDERE — Depto. de Finanzas Municipales | Manual de imputaciones, BEP, SINIM | Presupuestos (contraparte interna) |
+| Tesorería General de la República | Ingresos, FCM | Presupuestos, Tesorería |
+| Servicio de Impuestos Internos | Tributos locales, avalúos | Tesorería, Presupuestos |
+| ChileCompra | Ley 19.886 y normativa de compras | Adquisiciones |
+| MINSAL / MINEDUC | Presupuestos de servicios traspasados | Presupuestos (Salud, Educación) |
+
+### 7.7 Entidades del track
+
+`NormativeWatch` (evento normativo detectado y su evaluación de impacto), `ChangeRequest` (solicitud con categoría de triage y resolución fundada), `NormativeRuling` (pronunciamiento de órgano rector que consolida un criterio), `ContractVersion`, `EcosystemNotice`
+
+### 7.8 Consecuencia para las bases de licitación
+
+El track GP no se licita: se especifica como **obligación de SUBDERE** y como supuesto operativo del sistema. Lo que sí debe estar en las bases es que el sistema entregado soporte técnicamente estos procesos — administración de parámetros con vigencia temporal, versionado de contratos con preaviso, y trazabilidad de cada validador a su fuente normativa ([`musts-arquitectura.md`](../../arquitectura/especificacion/musts-arquitectura.md) §11).
+
+> **PENDIENTE P-13:** Definir si el track GP se declara en las bases como obligación de SUBDERE, y con qué nivel de detalle. Declararlo compromete a la institución; omitirlo deja el sistema sin mantenedor por defecto.
+
+> **PENDIENTE P-14:** Catalogar, para todos los parámetros normativos del módulo, cuáles pertenecen a mandato propio y cuáles requieren respaldo de órgano rector (§7.5).
+
+---
+
+## 8. Plan por fases
 
 Duraciones en semanas, preliminares y a ajustar según disponibilidad de DM. Las fases 1 y 2 pueden solaparse parcialmente; la fase 3 no puede empezar antes de cerrar P-4.
 
@@ -252,7 +338,7 @@ Duraciones en semanas, preliminares y a ajustar según disponibilidad de DM. Las
 |---|---|
 | Ficha normativa del módulo | Tabla §4 ampliada, con artículo específico y regla verificable por cada validador |
 | Confirmación del criterio de modificación | P-3 reformulado: validar la regla derivada de §4.1 y sus casos borde con DM y Control |
-| Especificación del clasificador | `BudgetClassifier` versionado según Decreto 854; modelo de vigencia temporal y gobernanza de cambios; soporte a la regla de §4.1 |
+| Especificación del clasificador | `BudgetClassifier` versionado según Decreto 854 y Anexo A (tres capas); modelo de vigencia temporal y gobernanza de cambios; soporte a la regla de §4.1 |
 | **Especificación de límites de gasto en personal** | Validadores del 42% (art. 67 LOCM) y 20% (art. 2 Ley 18.883): base de cálculo, momento de evaluación, efecto al incumplir |
 | **Requisito de series históricas** | Retención y consulta de ejecución de ≥2 ejercicios anteriores más el semestre en curso, con corte a julio. Define la política de retención del módulo |
 | Mapa de obligaciones de reporte | CGR, SINIM, BEP, pasivos acumulados (dictamen 60.449/2008), Anexos: qué, cuándo, formato |
@@ -299,11 +385,12 @@ Formato ficha idéntico al usado en Adquisiciones: actores, precondiciones, paso
 | Especificación de seguridad | RBAC a nivel de operación; segregación de funciones — quien formula no aprueba, quien emite CDP no obliga; el rol de Control tiene facultad de representación que ningún otro rol puede sobrescribir; **cadena de firma configurable por municipio (alcalde o administrador, validación del Secretario Municipal) con subrogancias de expiración automática** |
 | Especificación de escalabilidad | Capa de lectura separada para reportes agregados y series históricas; volumetría de la cadena de compromiso, que es el punto de alto volumen |
 | Wireframes SVG | Vista de ejercicio presupuestario, ficha por área, y expediente de cadena de compromiso, con codificación semántica consistente con Adquisiciones |
+| **Especificación del track GP** | Los cuatro procesos de §7 con ficha propia, taxonomía de triage, clasificación de parámetros por clase de autoridad (P-14), y mapa de contrapartes. Insumo directo de las bases |
 | Documento consolidado en `sgm-docs/` | Integración final y revisión cruzada |
 
 ---
 
-## 8. Pendientes abiertos
+## 9. Pendientes abiertos
 
 Índice rápido:
 
@@ -320,6 +407,9 @@ Formato ficha idéntico al usado en Adquisiciones: actores, precondiciones, paso
 | P-9 | Verificar dictamen CGR N° 60.449/2008 | F1 | Equipo interno | Abierto |
 | P-10 | Momento de evaluación de límites 42% y 20% | F3 | DM + RRHH | Abierto |
 | P-11 | Retención y migración de series históricas | F1 | Equipo interno | Abierto |
+| **P-12** | Sector **Cementerio** (cuarto sector SINIM) | F1 | DM + Unidad de Información Municipal | Abierto |
+| **P-13** | Declaración del track GP en bases de licitación | F5 / bases | Jefatura SUBDERE | Abierto |
+| **P-14** | Clasificar parámetros: mandato propio vs órgano rector (§7.5) | F5 / GP | Equipo + Depto. Finanzas Municipales | Abierto |
 
 Cada pendiente abierto se documenta abajo con: contexto, pregunta a resolver, opciones candidatas, decisión por defecto si no hay respuesta a tiempo, criterio de cierre e insumos.
 
@@ -533,33 +623,90 @@ con la apertura (26.2.8) como interfaz que hace ejecutable el ejercicio y habili
 
 ---
 
+### P-12 — Sector Cementerio
+
+**Contexto.** El clasificador SINIM filtra por MUNICIPAL, SALUD, EDUCACION y **CEMENTERIO** (Anexo A.3). El levantamiento Magenta y Odoo solo modelan el municipal (Odoo tiene código de área “Cementerios”, no entidad presupuestaria). D-2 menciona el sector como alcance por confirmar.
+
+**Pregunta.** ¿Cementerio es entidad presupuestaria separada (`BudgetEntity`) con ejercicio y reporte propios, o desagregación del presupuesto municipal?
+
+**Opciones.**
+1. Cuarta `BudgetEntity` paralela a Salud/Educación.
+2. Segmento del presupuesto municipal (área/programa), sin acuerdo de Concejo propio.
+3. Fuera de alcance SGM v1; solo catálogo de área.
+
+**Default si DM no responde:** opción 2 en modelo (área), con nota de extensión a entidad si SINIM/CGR lo exigen como sector.
+
+**Criterio de cierre.** Acta DM + Unidad de Información Municipal; impacto en D-2, reportes SINIM y CGR.
+
+**Insumos.** Anexo A.3; datos SINIM; D-2; P-5 (coherencia con Salud/Educación).
+
+---
+
+### P-13 — Declaración del track GP en las bases
+
+**Contexto.** §7.8: el track GP no se licita como desarrollo; es obligación institucional de SUBDERE. Sin declararlo, el sistema se entrega sin mantenedor del modelo normativo (riesgo §10).
+
+**Pregunta.** ¿Con qué nivel de detalle se declara GP en las bases: solo supuesto operativo + soporte técnico del sistema, o también obligaciones de proceso/plazos de SUBDERE?
+
+**Opciones.**
+1. Bases: soporte técnico obligatorio (parámetros con vigencia, versionado, trazabilidad) + GP como obligación SUBDERE en anexo institucional.
+2. Solo soporte técnico; GP queda en plan interno (más débil).
+3. Licitar parte de GP (rechazado: §7.1 — no transferible).
+
+**Default:** opción 1.
+
+**Criterio de cierre.** Decisión de jefatura; texto propuesto para bases; alineación con [`principios-no-negociables.md`](../../arquitectura/licitacion/principios-no-negociables.md).
+
+**Insumos.** §7; F5 entregable GP; P-14.
+
+---
+
+### P-14 — Clasificar parámetros por clase de autoridad
+
+**Contexto.** §7.5 distingue mandato propio vs respaldo de órgano rector. Sin catálogo, validadores bloqueantes pueden crear interpretación normativa de hecho (advertencia §7.5 / P-3).
+
+**Pregunta.** Para cada `NormativeParameter` / umbral / criterio del módulo (42%, 20%, art. 82, §4.1, clasificador, formatos BEP/SINIM…): ¿mandato propio o requiere `NormativeRuling`?
+
+**Opciones.** No aplica menú: es inventario factual + clasificación jurídica.
+
+**Default mientras se completa:** todo umbral LOCM/DS 854 / CGR = órgano rector; formatos de carga SUBDERE = mandato propio.
+
+**Criterio de cierre.** Tabla parámetro × clase × órgano competente × referencia; integrada a fichas GP y a `legal_reference` de validadores.
+
+**Insumos.** §4; §7.5; Anexo A; catálogo `NormativeParameter` de Adquisiciones/Presupuestos.
+
+---
+
 ### Orden sugerido de resolución
 
 ```
 F0:  P-1, P-4
-F1:  P-9 → P-8, P-11, (P-10 inicia con RRHH)
+F1:  P-9 → P-8, P-11, P-12, (P-10 inicia con RRHH)
 F2:  P-5, P-6
 F3:  P-3, P-7, P-10 (cierre)
 F4:  cierre formal P-1 en modelo de Adquisiciones
+F5:  P-13, P-14 (track GP)
 ```
 
 ---
 
-## 9. Riesgos
+## 10. Riesgos
 
 | Riesgo | Impacto | Mitigación |
 |---|---|---|
 | El levantamiento cubre ~35–40% de la superficie funcional | Alto — subestimación del esfuerzo | F2 explícita y con holgura; no asumir que Adquisiciones es predictor de esfuerzo |
 | **El módulo no es operable sin histórico** (P-11) | **Alto — afecta la estrategia de puesta en marcha, no solo la especificación** | Definir en F1 la carga inicial de series históricas; el primer ejercicio en el sistema nuevo formula sin base propia |
-| Dependencia de DM para P-3, P-5, P-6, P-8, P-10 | Alto — bloquea F3 | Formalizar el convenio como dependencia dura; especificar con parámetro configurable y valor por defecto marcado cuando no haya respuesta en plazo |
+| Dependencia de DM para P-3, P-5, P-6, P-8, P-10, P-12 | Alto — bloquea F3 | Formalizar el convenio como dependencia dura; especificar con parámetro configurable y valor por defecto marcado cuando no haya respuesta en plazo |
 | Tomar Odoo as-is como contrato de campos | Medio — arrastra decisiones del proveedor anterior | Regla explícita §3.2; tablas §3.2–3.4; contrastar siempre contra el ORM, nunca contra el export de BD |
 | La costura con Adquisiciones se define tarde | Alto — obliga a rehacer el modelo de Adquisiciones | P-1 resuelto en F0, antes de avanzar |
 | Presupuestos de Salud y Educación tratados como caso borde | Medio — son entidades presupuestarias completas | Alcance fijado en D-2; etapa propia en F2 |
 | La apertura del ejercicio cruza la frontera con Contabilidad | Medio — riesgo de doble propiedad del dato | P-6 resuelto en F2, con Contabilidad presente en el levantamiento |
+| **El sistema se entrega sin mantenedor del modelo normativo** | **Alto — modo de falla de largo plazo del proyecto, no solo de este módulo** | Track GP especificado en F5 y declarado en las bases (P-13). Si no se resuelve explícitamente, se materializa por omisión al cerrar el proyecto |
+| **SUBDERE crea interpretación normativa de hecho** vía validadores bloqueantes sin respaldo de órgano rector | Medio-alto — atribución que corresponde a CGR | Clasificación de parámetros por clase de autoridad (§7.5, P-14) y vía de escalamiento GP-4 |
 
 ---
 
-## 10. Criterios de término del módulo
+## 11. Criterios de término del módulo
 
 1. Todo validador bloqueante declara fundamento en `legal_reference`: cita de artículo/decreto/dictamen cuando la regla es normativa, o `integridad:<motivo>` cuando es invariante de proceso sin ancla legal única. El fundamento normativo se muestra en el helper de validación al funcionario ([`musts-arquitectura.md`](../../arquitectura/especificacion/musts-arquitectura.md) §11).
 2. Ningún umbral, plazo o clasificación normativa está hardcodeado; todos son `NormativeParameter` con vigencia temporal. Incluye el 42%, el 20%, los plazos del art. 82 y el clasificador del Decreto 854.
@@ -568,13 +715,69 @@ F4:  cierre formal P-1 en modelo de Adquisiciones
 5. La especificación permite construir el módulo sin consultar el código de Odoo.
 6. Segregación de funciones verificable: formulación, aprobación, emisión de CDP, obligación y control son roles distintos, y el motor lo impone.
 7. La cadena de firma del decreto es configurable por municipio sin modificar código.
+8. Cada parámetro normativo está clasificado como de mandato propio o de respaldo de órgano rector, y ninguno de la segunda clase se modifica sin acto del órgano competente registrado en el sistema (P-14).
+9. Los cuatro procesos del track GP tienen ficha propia y el sistema los soporta técnicamente: vigencia temporal de parámetros, versionado de contratos con preaviso, y trazabilidad de cada validador a su fuente (§7, P-13).
+
+---
+
+## Anexo A — Fuentes normativas del clasificador presupuestario
+
+Insumo directo de la especificación de `BudgetClassifier` y de la capa transversal TR.
+
+### A.1 Las tres capas y quién manda en cada una
+
+El error habitual es tratarlas como una sola. Son tres artefactos con autoridad, jerarquía y ciclo de actualización distintos.
+
+| Capa | Artefacto | Autoridad | Qué define |
+|---|---|---|---|
+| **1. Clasificador presupuestario** | Decreto Supremo N° 854/2004 y sus modificaciones | **Ministerio de Hacienda** | Conceptos de ingreso y gasto. Jerarquía subtítulo / ítem / asignación / subasignación. Aplica a todo el sector público, incluidas las municipalidades |
+| **2. Plan de cuentas contable** | Normativa del Sistema de Contabilidad General de la Nación; plan de cuentas municipal para NICSP; oficios de la División de Contabilidad | **Contraloría General de la República** | Cuentas contables. Jerarquía propia, distinta del clasificador. Gobierna el asiento que origina el devengo |
+| **3. Puente operativo** | Manual de Imputaciones Presupuestarias incorporando plan de cuentas NICSP | **SUBDERE** (Depto. de Finanzas Municipales, vía SINIM) | Tabla de correspondencia clasificador ↔ plan de cuentas. Es el artefacto que los municipios usan en la práctica |
+
+**Implicancia de diseño:** `BudgetClassifier` (capa 1) y el plan de cuentas (capa 2) son **catálogos independientes con una relación de mapeo explícita** (capa 3), no dos vistas de la misma jerarquía. Modelarlos como uno solo hace imposible absorber una modificación de Hacienda que no venga acompañada de una de Contraloría, o viceversa. Odoo colapsa ambos en `account.gov.account` con dominios `115%` / `215%`, lo que es una simplificación que no se debe heredar.
+
+### A.2 Referencias
+
+**Capa 1 — Clasificador (Hacienda)**
+
+- [Decreto 854/2004, Ministerio de Hacienda — Determina clasificaciones presupuestarias](https://www.bcn.cl/leychile/navegar?idNorma=233184) · BCN LeyChile. **Usar el texto consolidado de LeyChile, no PDFs sueltos.**
+- Modificaciones relevantes: Decreto (H) 324/2008, Decreto (H) 885/2009, Decreto 1227/2024 (aplicable a información presupuestaria 2026), entre otras.
+
+**Capa 2 — Plan de cuentas (CGR)**
+
+- [Plan de cuentas del sector municipal para NICSP](https://www.sinim.gov.cl/desarrollo_local/clasificador_presupuestario/download/nuevo_clasificador/Plan_de_Cuentas_Sector_Municipal_para_NICSP.pdf)
+- [Oficio DCF 3/19 — Modifica procedimientos contables y catálogo de cuentas para el sector municipal](https://www.sinim.gov.cl/desarrollo_local/clasificador_presupuestario/download/nuevo_clasificador/DCF_3-19_MODIF.PROCED.CONTABLES-CTAS_SECTOR_MUNICIPAL_1.pdf)
+- [Dictamen CGR N° 75.992/2010](https://www.sinim.gov.cl/desarrollo_local/clasificador_presupuestario/download/nuevo_clasificador/Dictamen_75992-2010.pdf) e instructivos de creación de cuentas específicas (DAC72, 101916, 022703, 022704)
+
+**Capa 3 — Puente operativo (SUBDERE / SINIM)**
+
+- [Documentos del nuevo Clasificador Presupuestario](https://www.sinim.gov.cl/desarrollo_local/clasificador_presupuestario/documentos_nclasificador.html) — índice mantenido por el Depto. de Finanzas Municipales
+- [Manual de Imputaciones Presupuestarias incorporando plan de cuentas NICSP, V19](https://www.sinim.gov.cl/archivos/home/664/Manual_de_Imputaciones_Presupuestarias_incorporando_plan_de_cuenta_NICSP_V19.xls) — **artefacto de referencia para la carga inicial de `BudgetClassifier`**
+- [Convertidor Municipal](https://www.sinim.gov.cl/desarrollo_local/clasificador_presupuestario/download/nuevo_clasificador/Convertidor_Municipal_04022008.xls) — conversión desde el clasificador anterior; útil solo para migración histórica
+- [Inversiones Municipales — Código INI](https://www.sinim.gov.cl/desarrollo_local/clasificador_presupuestario/download/nuevo_clasificador/Inversiones_y_codigo_INI.pdf) — corresponde a `codigo_ini` en las fichas de Odoo
+
+**Datos y reporte**
+
+- [SINIM — Clasificador presupuestario (datos de ejecución por municipio)](https://datos.sinim.gov.cl/clasificador_presupuestario.php)
+- [SINIM — Evolución presupuestaria](https://datos.sinim.gov.cl/evolucion_presupuestaria.php)
+- [SINIM — Diccionario del clasificador presupuestario](https://datos.sinim.gov.cl/dicc_clasificador_presupuestario.php)
+
+### A.3 Dos hallazgos del anexo
+
+**Cementerio como cuarto sector.** El clasificador de SINIM filtra por MUNICIPAL, SALUD, EDUCACION y **CEMENTERIO**. El levantamiento y Odoo solo contemplan el municipal (área de catálogo ≠ entidad). Ver P-12.
+
+**Desfase de los materiales publicados.** Las planillas de carga BEP publicadas corresponden a 2023 y los datos de ejecución llegan a 2025 en primera edición. Si el contrato de reporte se especifica contra estos archivos, hay que asumir latencia y versionado por año. Refuerza P-8.
+
+### A.4 Regla de gobernanza derivada
+
+La evidencia de más de veinte años de modificaciones sucesivas al DS 854 confirma el criterio del §11.2: el clasificador **no puede ser una tabla estática del sistema**. Debe ser `NormativeParameter` / catálogo versionado con vigencia temporal, versión, y capacidad de convivencia de dos versiones simultáneas — un ejercicio en curso opera con la versión vigente al momento de su apertura, mientras el ejercicio siguiente se formula con la versión nueva.
 
 ---
 
 ## Fuentes
 
 - Informe 2 — Anexo procesos: Levantamiento de procesos y diseño de Servicios, Magenta / C Amable para SUBDERE (procesos 26 y 27)
-- `modelos-odoo.md` — inventario as-is reconstruido desde `presupuesto_gov_cl` y `account_gov_adquisiciones`
+- [`modelos-odoo.md`](modelos-odoo.md) — inventario as-is reconstruido desde `presupuesto_gov_cl` y `account_gov_adquisiciones`
 - [Ley N° 18.695, Orgánica Constitucional de Municipalidades](https://www.bcn.cl/leychile/navegar?idNorma=30077) — arts. 65, 67, 81, 82
 - [Ley N° 18.883, Estatuto Administrativo para Funcionarios Municipales](https://www.leychile.cl/leychile/navegar?idNorma=30256) — art. 2
 - [Decreto 854/2004, Ministerio de Hacienda — Determina clasificaciones presupuestarias](https://www.bcn.cl/leychile/navegar?idNorma=233184)
@@ -582,3 +785,4 @@ F4:  cierre formal P-1 en modelo de Adquisiciones
 - [SUBDERE — Instrucciones para el cálculo del déficit municipal](https://municipalidades.subdere.gob.cl/descargas/20_12_2024_Instrucciones_calculo_deficit_municipal_2024.pdf)
 - [CGR — Base de jurisprudencia administrativa](https://www.contraloria.cl/web/cgr/buscar-jurisprudencia) — para verificación de P-9
 - [SINIM — Sistema Nacional de Información Municipal](https://www.sinim.gov.cl/)
+- Anexo A de este plan — jerarquía clasificador / plan de cuentas / puente SUBDERE

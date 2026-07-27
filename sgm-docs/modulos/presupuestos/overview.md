@@ -6,7 +6,7 @@ Inventario Odoo y plan de trabajo de especificación en curso. Macroprocesos, co
 
 | Documento | Descripción |
 |-----------|-------------|
-| [`plan-de-trabajo.md`](plan-de-trabajo.md) | Plan de especificación (v0.3): diagnóstico Magenta × Odoo, macroprocesos, fases, pendientes abiertos |
+| [`plan-de-trabajo.md`](plan-de-trabajo.md) | Plan de especificación (v0.4): diagnóstico Magenta × Odoo, track GP, Anexo A clasificador, fases, pendientes abiertos |
 | [`modelos-odoo.md`](modelos-odoo.md) | Modelos, relaciones y flujos de estado en Odoo (`presupuesto_gov_cl` + puente `account_gov_adquisiciones`) |
 
 ## Referencias
