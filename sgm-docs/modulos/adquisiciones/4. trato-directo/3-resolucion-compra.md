@@ -35,12 +35,11 @@
 
 **Validaciones:**
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Registrar envío a Contraloría | `submitToComptroller` | `MISSING_REQUIRED_FIELD` | `submitted_at` | El campo Fecha de envío es obligatorio. | blocking |
-| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `outcome` | El campo Resultado de Contraloría es obligatorio. | blocking |
-| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `official_document_ref` | El oficio o documento de respaldo es obligatorio. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Registrar envío a Contraloría | `submitToComptroller` | `MISSING_REQUIRED_FIELD` | `submitted_at` | El campo Fecha de envío es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `outcome` | El campo Resultado de Contraloría es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `official_document_ref` | El oficio o documento de respaldo es obligatorio. | blocking | integridad:campo_requerido |
 **Edge cases:**
 - Representación/reparo → proceso se cae; obligación de licitar (overview TD). El expediente no avanza a 3.2; se abre tarea de reversión a etapa 2.
 - Canal de consulta de estado CGR — **[PENDIENTE P-64]** (mismo que LP; no asumir API).
@@ -77,15 +76,14 @@
 
 **Validaciones:** *(reutiliza íntegramente 2.3)*
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Vincular proceso MP | `linkMpProcess` | `MISSING_REQUIRED_FIELD` | `mp_process_id` | El campo Código / ID de proceso MP es obligatorio. | blocking |
-| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_NOT_FOUND` | `mp_process_id` | El proceso MP no existe o el código es inválido. | blocking |
-| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_ORGANISM_MISMATCH` | `mp_process_id` | El organismo comprador del proceso MP no coincide con el municipio. | blocking |
-| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_TYPE_MISMATCH` | `mp_process_id` | El tipo de proceso MP no coincide con la modalidad confirmada. | blocking |
-| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_ALREADY_LINKED` | `mp_process_id` | El código MP ya está vinculado a otro expediente. | blocking |
-| Vincular proceso MP | `linkMpProcess` | `MP_PROVIDER_UNAVAILABLE` | — | Mercado Público no está disponible para validar el vínculo. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Vincular proceso MP | `linkMpProcess` | `MISSING_REQUIRED_FIELD` | `mp_process_id` | El campo Código / ID de proceso MP es obligatorio. | blocking | integridad:campo_requerido |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_NOT_FOUND` | `mp_process_id` | El proceso MP no existe o el código es inválido. | blocking | integridad:campo_requerido |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_ORGANISM_MISMATCH` | `mp_process_id` | El organismo comprador del proceso MP no coincide con el municipio. | blocking | integridad:campo_requerido |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_TYPE_MISMATCH` | `mp_process_id` | El tipo de proceso MP no coincide con la modalidad confirmada. | blocking | integridad:estado_expediente |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_ALREADY_LINKED` | `mp_process_id` | El código MP ya está vinculado a otro expediente. | blocking | integridad:campo_requerido |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROVIDER_UNAVAILABLE` | — | Mercado Público no está disponible para validar el vínculo. | blocking | integridad:estado_expediente |
 **Edge cases:**
 - Los cuatro bloqueos de 2.3 aplican idénticos.
 - Publicación fuera del plazo de 24 h → riesgo administrativo; SGM no bloquea por reloj legal (fuera de alcance de control automático) pero el expediente deja trazabilidad de `mp_linked_at` vs. fecha de firma del acto — **[PENDIENTE P-71]** si se exige control bloqueante de plazo.
@@ -126,13 +124,12 @@
 
 **Validaciones:**
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `MP_PROCESS_NOT_PUBLISHED` | — | El proceso MP vinculado no figura como Publicado; no se registra Compromiso Cierto. | blocking |
-| Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `BUDGET_UNAVAILABLE` | — | La línea presupuestaria no tiene saldo disponible para el monto real de la OC. | blocking |
-| Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `MP_PROVIDER_UNAVAILABLE` | — | Mercado Público no está disponible para leer el estado de la OC. | blocking |
-| Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `PRE_COMMITMENT_INACTIVE` | — | La preobligación ya no está activa; no se puede registrar el compromiso cierto. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `MP_PROCESS_NOT_PUBLISHED` | — | El proceso MP vinculado no figura como Publicado; no se registra Compromiso Cierto. | blocking | Ley 19.886 — publicidad en Mercado Público |
+| Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `BUDGET_UNAVAILABLE` | — | La línea presupuestaria no tiene saldo disponible para el monto real de la OC. | blocking | DL 1.263 — fase de compromiso presupuestario |
+| Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `MP_PROVIDER_UNAVAILABLE` | — | Mercado Público no está disponible para leer el estado de la OC. | blocking | integridad:estado_expediente |
+| Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `PRE_COMMITMENT_INACTIVE` | — | La preobligación ya no está activa; no se puede registrar el compromiso cierto. | blocking | integridad:estado_expediente |
 **Edge cases:**
 - Monto real ≠ preobligación → mismo ajuste que CA §3.4 (**[PENDIENTE P-40]** si falta saldo).
 - Preobligación revertida — código `PRE_COMMITMENT_INACTIVE`.
@@ -169,10 +166,9 @@
 
 **Validaciones:** Sin validaciones de formulario de captura MP — decisión de navegación tras sync; obligatoriedad de `decision` es de UI local. Si `decision = cancel` → `releasePreCommitment`.
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Confirmar decisión (cancelar) | `releasePreCommitment` | `BUDGET_PROVIDER_UNAVAILABLE` | — | El proveedor de presupuesto no está disponible. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Confirmar decisión (cancelar) | `releasePreCommitment` | `BUDGET_PROVIDER_UNAVAILABLE` | — | El proveedor de presupuesto no está disponible. | blocking | integridad:estado_expediente |
 **Edge cases:**
 - Camino exacto post-rechazo (¿reinicio desde 2.1 con nueva Resolución Fundada? ¿cancelación total?) — **[PENDIENTE P-69]** validar con unidad de negocio / división de municipalidades. Mientras tanto el prototipo expone las dos opciones propuestas sin cerrar la regla de negocio.
 

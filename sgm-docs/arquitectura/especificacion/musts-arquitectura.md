@@ -98,7 +98,23 @@ Los BPMN de la especificación son notación, no tecnología: definen el flujo q
 
 Lectura de diseño que conecta con los contratos: en los BPMN, cada cruce de carril entre unidades que corresponden a módulos distintos es un borde de contrato. El recorrido de los 17 sub-pasos de Compra Ágil identifica simultáneamente los contratos (documento API-first) y los estados/transiciones de esta sección.
 
-## 11. Resumen: qué va a las bases
+## 11. Fundamento normativo en validadores bloqueantes
+
+Todo validador con `severity: blocking` declara un **fundamento** en el campo `legal_reference` del `ValidationIssue` / `ErrorResponse` ([`estandares-api.md`](./estandares-api.md) §3). El funcionario municipal debe poder argumentar el bloqueo; el frontend muestra el fundamento normativo en el helper/modal de validación.
+
+| Clase | Valor de `legal_reference` | Cuándo |
+|---|---|---|
+| **Normativo** | Cita de artículo, decreto o dictamen (ej. `Ley 19.886 art. 8`; `LOCM art. 67`; opcionalmente clave `NormativeParameter` entre paréntesis) | La regla codifica una obligación legal, umbral normativo o segregación exigida por control |
+| **Integridad** | Prefijo canónico `integridad:<motivo>` (ej. `integridad:campo_requerido`, `integridad:estado_expediente`) | Invariante de proceso o de datos **sin** ancla legal única — no inventar artículos falsos |
+
+Reglas verificables en recepción:
+
+1. Ningún `blocking` viaja con `legal_reference` vacío o ausente.
+2. Las fichas §3.6 y `contracts.md` llevan la misma columna **Fundamento** ([`plantilla-maestra-sgm.md`](../instrucciones/plantilla-maestra-sgm.md) §3.6).
+3. En UI, las citas **normativas** se muestran al usuario; los valores `integridad:*` no se muestran (solo el mensaje `rule`).
+4. Los `advisory` con respaldo legal **deberían** llevar cita cuando aporta al funcionario; si no, pueden omitirla.
+
+## 12. Resumen: qué va a las bases
 
 Todo lo anterior se traduce en cláusulas de bases bajo la lógica de propiedades verificables:
 
@@ -112,7 +128,8 @@ Todo lo anterior se traduce en cláusulas de bases bajo la lógica de propiedade
 8. Notificaciones sobre eventos de dominio, con servicio transversal y canales desacoplados; eventos expuestos como webhooks con scopes para sistemas externos.
 9. Flujos con estados y transiciones explícitos, estado consultable vía API, transiciones auditadas, timers configurables y trazabilidad demostrable contra el BPMN de la especificación — sin exigir motor BPM.
 10. Especificaciones de seguridad según [`seguridad.md`](./seguridad.md) §13.
+11. Validadores bloqueantes con fundamento (`legal_reference` normativo o `integridad:*`) visible al funcionario cuando es normativo (§11).
 
-## 12. Pendientes abiertos
+## 13. Pendientes abiertos
 
 Los pendientes de este documento están registrados en [`pendientes.md`](../decisiones/pendientes.md): P-05, P-06, P-07, P-08, P-09, P-10, P-11, P-12.

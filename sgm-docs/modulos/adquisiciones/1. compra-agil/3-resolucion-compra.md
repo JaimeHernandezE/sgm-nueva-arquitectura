@@ -141,10 +141,9 @@
 
 **Validaciones:**
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `BUDGET_UNAVAILABLE` | — | La línea presupuestaria no tiene saldo disponible para el monto real de la OC. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `BUDGET_UNAVAILABLE` | — | La línea presupuestaria no tiene saldo disponible para el monto real de la OC. | blocking | DL 1.263 — fase de compromiso presupuestario |
 **Edge cases:**
 - **Monto real > preobligación y la línea no tiene saldo para la diferencia** → `commitBudget` responde `BUDGET_UNAVAILABLE` (`severity: blocking`). Situación anómala grave (la OC ya está aceptada, el vínculo legal existe, pero el compromiso contable no puede registrarse): tarea urgente a DAF Finanzas para regularización presupuestaria (modificación/suplemento) — **[PENDIENTE P-40]** el procedimiento de regularización no puede resolverlo el sistema solo, pero debe impedir que pase silenciosamente.
 - Monto real < preobligación → compromiso por el real y **liberación automática del excedente** de la preobligación (regla estándar, sin intervención).
@@ -216,11 +215,10 @@
 
 **Validaciones:**
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Confirmar decisión | `releasePreCommitment` | `MISSING_REQUIRED_FIELD` | `decision` | El campo Decisión es obligatorio. | blocking |
-| Confirmar decisión (cancelar) | `releasePreCommitment` | `BUDGET_PROVIDER_UNAVAILABLE` | — | El proveedor de presupuesto no está disponible. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Confirmar decisión | `releasePreCommitment` | `MISSING_REQUIRED_FIELD` | `decision` | El campo Decisión es obligatorio. | blocking | integridad:campo_requerido |
+| Confirmar decisión (cancelar) | `releasePreCommitment` | `BUDGET_PROVIDER_UNAVAILABLE` | — | El proveedor de presupuesto no está disponible. | blocking | integridad:estado_expediente |
 **Edge cases:**
 - Republicación reiterada sin resultado (2+ intentos) → advertencia asesora sugiriendo reevaluar condiciones o modalidad; candidato a métrica de reportería (procesos desiertos por unidad/rubro).
 - Cancelación con preobligación ya vencida de saldo anual → coordinar con regla de cierre presupuestario — **[PENDIENTE P-41]** con Finanzas.

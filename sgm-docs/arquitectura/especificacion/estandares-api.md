@@ -32,7 +32,7 @@ Para fallas de negocio o de proveedor con un único código (ej. saldo insuficie
   "error_code": "BUDGET_UNAVAILABLE",
   "field": "budget_line_id",
   "rule": "La línea presupuestaria no tiene saldo disponible para el monto solicitado",
-  "legal_reference": "…cuando aplique…",
+  "legal_reference": "DL 1.263 — fase de compromiso presupuestario",
   "severity": "blocking"
 }
 ```
@@ -42,12 +42,12 @@ Para fallas de negocio o de proveedor con un único código (ej. saldo insuficie
 | `error_code` | Sí | Identificador estable en `SCREAMING_SNAKE_CASE` |
 | `field` | No | Campo o recurso que originó el error, si aplica |
 | `rule` | Sí | Mensaje legible de la regla violada |
-| `legal_reference` | No | Ancla normativa cuando la regla tiene respaldo legal |
+| `legal_reference` | **Sí si `severity: blocking`** | Fundamento: cita normativa **o** `integridad:<motivo>` (ver §3.3). En `advisory` es recomendado cuando aporta al funcionario |
 | `severity` | Sí | `blocking` (impide avanzar) o `advisory` (informa sin bloquear) |
 
 ### 3.2 Varias reglas de validación (`ValidationErrorResponse`)
 
-Cuando una operación de escritura (típicamente un submit de formulario) viola **una o más** reglas de campo/documento, la API responde con un agregado. Cada ítem es un `ValidationIssue` (mismos campos que `ErrorResponse`). El frontend muestra **todos** los `issues` (modal o listado); si hay al menos uno `blocking`, no avanza.
+Cuando una operación de escritura (típicamente un submit de formulario) viola **una o más** reglas de campo/documento, la API responde con un agregado. Cada ítem es un `ValidationIssue` (mismos campos que `ErrorResponse`). El frontend muestra **todos** los `issues` (modal o listado); si hay al menos uno `blocking`, no avanza. Las citas normativas de `legal_reference` se muestran al funcionario; los valores `integridad:*` no.
 
 ```json
 {
@@ -59,12 +59,14 @@ Cuando una operación de escritura (típicamente un submit de formulario) viola 
       "error_code": "MISSING_REQUIRED_FIELD",
       "field": "requesting_unit",
       "rule": "El campo Unidad solicitante es obligatorio.",
+      "legal_reference": "integridad:campo_requerido",
       "severity": "blocking"
     },
     {
-      "error_code": "MISSING_REQUIRED_FIELD",
-      "field": "description",
-      "rule": "El campo Descripción es obligatorio.",
+      "error_code": "FOUNDED_RESOLUTION_REQUIRED",
+      "field": "founded_resolution_attachment",
+      "rule": "Trato directo requiere resolución fundada adjunta.",
+      "legal_reference": "Ley 19.886 — causal de trato directo; ⚠ P-36 catálogo de artículos",
       "severity": "blocking"
     }
   ]
@@ -87,6 +89,17 @@ Cuando una operación de escritura (típicamente un submit de formulario) viola 
 **Nunca** un `400`/`422` sin cuerpo. La validación bloqueante vive en el servidor; el frontend solo la refleja. Esquemas OpenAPI compartidos: [`openapi/comunes.yaml`](./openapi/comunes.yaml) (`ErrorResponse`, `ValidationIssue`, `ValidationErrorResponse`).
 
 Las fichas de sub-paso documentan el catálogo por acción de UI en §3.6 Validaciones ([`plantilla-maestra-sgm.md`](../instrucciones/plantilla-maestra-sgm.md)); cada código debe existir en `contracts.md` y en OpenAPI.
+
+### 3.3 Convención de `legal_reference` (fundamento)
+
+Must transversal: [`musts-arquitectura.md`](./musts-arquitectura.md) §11.
+
+| Clase | Formato | UI al funcionario |
+|---|---|---|
+| Normativo | Texto de cita (ley, decreto, dictamen; opcionalmente `NormativeParameter.key`) | Se muestra bajo el mensaje como «Fundamento: …» |
+| Integridad | `integridad:<motivo>` — motivos canónicos: `campo_requerido`, `estado_expediente`, `documento_requerido`, `rol_operacion` | **No** se muestra; solo `rule` |
+
+Prohibido: `blocking` con `legal_reference` ausente, `null` o string vacío. Si la cita exacta está pendiente (ej. P-36), el valor no queda vacío: se usa la norma marco más la marca `⚠ P-NN`.
 
 ## 4. Paginación, filtrado y orden
 

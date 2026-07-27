@@ -27,14 +27,13 @@
 
 **Validaciones:**
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Guardar borrador | `createTenderBases` | `MISSING_REQUIRED_FIELDS` | `technical_bases_ref` | Los documentos de bases técnicas y administrativas son obligatorios. | blocking |
-| Guardar borrador | `createTenderBases` | `MISSING_REQUIRED_FIELDS` | `administrative_bases_ref` | Los documentos de bases técnicas y administrativas son obligatorios. | blocking |
-| Guardar borrador | `createTenderBases` | `CRITERIA_WEIGHTS_INVALID` | `criteria[].weight_percent` | La suma de las ponderaciones de los criterios debe ser 100 %. | blocking |
-| Enviar a revisión jurídica | `submitBasesForLegalReview` | `INVALID_STATUS` | `status` | Solo se pueden enviar a revisión bases en estado borrador. | blocking |
-| Enviar a revisión jurídica | `submitBasesForLegalReview` | `CRITERIA_WEIGHTS_INVALID` | `criteria[].weight_percent` | La suma de las ponderaciones de los criterios debe ser 100 %. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Guardar borrador | `createTenderBases` | `MISSING_REQUIRED_FIELDS` | `technical_bases_ref` | Los documentos de bases técnicas y administrativas son obligatorios. | blocking | integridad:campo_requerido |
+| Guardar borrador | `createTenderBases` | `MISSING_REQUIRED_FIELDS` | `administrative_bases_ref` | Los documentos de bases técnicas y administrativas son obligatorios. | blocking | integridad:campo_requerido |
+| Guardar borrador | `createTenderBases` | `CRITERIA_WEIGHTS_INVALID` | `criteria[].weight_percent` | La suma de las ponderaciones de los criterios debe ser 100 %. | blocking | integridad:campo_requerido |
+| Enviar a revisión jurídica | `submitBasesForLegalReview` | `INVALID_STATUS` | `status` | Solo se pueden enviar a revisión bases en estado borrador. | blocking | integridad:estado_expediente |
+| Enviar a revisión jurídica | `submitBasesForLegalReview` | `CRITERIA_WEIGHTS_INVALID` | `criteria[].weight_percent` | La suma de las ponderaciones de los criterios debe ser 100 %. | blocking | integridad:campo_requerido |
 **Edge cases:** modificación de bases después de enviadas a revisión → vuelve a `draft` con versionamiento del documento.
 
 ---
@@ -56,12 +55,11 @@
 
 **Validaciones:**
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Registrar revisión jurídica | `recordLegalReview` | `INVALID_STATUS` | `status` | Las bases deben estar en revisión jurídica. | blocking |
-| Registrar revisión jurídica | `recordLegalReview` | `MISSING_REQUIRED_FIELD` | `outcome` | El campo Resultado de la revisión es obligatorio. | blocking |
-| Registrar revisión jurídica | `recordLegalReview` | `MISSING_REQUIRED_FIELD` | `observations` | Las observaciones son obligatorias si el resultado es con observaciones. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Registrar revisión jurídica | `recordLegalReview` | `INVALID_STATUS` | `status` | Las bases deben estar en revisión jurídica. | blocking | integridad:estado_expediente |
+| Registrar revisión jurídica | `recordLegalReview` | `MISSING_REQUIRED_FIELD` | `outcome` | El campo Resultado de la revisión es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar revisión jurídica | `recordLegalReview` | `MISSING_REQUIRED_FIELD` | `observations` | Las observaciones son obligatorias si el resultado es con observaciones. | blocking | integridad:campo_requerido |
 **Edge cases:** observaciones reiteradas (3+ ciclos) → visible en reportería de tiempos por etapa.
 
 ---
@@ -83,12 +81,11 @@
 
 **Validaciones:**
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Aprobar bases (firmar acto) | `approveTenderBases` | `LEGAL_REVIEW_REQUIRED` | — | Se requiere visto bueno jurídico de las bases antes de aprobarlas. | blocking |
-| Aprobar bases (firmar acto) | `approveTenderBases` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida. | blocking |
-| Aprobar bases (firmar acto) | `approveTenderBases` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Aprobar bases (firmar acto) | `approveTenderBases` | `LEGAL_REVIEW_REQUIRED` | — | Se requiere visto bueno jurídico de las bases antes de aprobarlas. | blocking | Ley 19.886 — bases de licitación |
+| Aprobar bases (firmar acto) | `approveTenderBases` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida. | blocking | Ley 19.799 — firma electrónica avanzada |
+| Aprobar bases (firmar acto) | `approveTenderBases` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking | integridad:estado_expediente |
 **Edge cases:** falla de FirmaGob → acto no perfeccionado, reintento; nunca "firmado" sin confirmación del servicio.
 
 ---
@@ -110,12 +107,11 @@
 
 **Validaciones:**
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Registrar envío a Contraloría | `submitToComptroller` | `MISSING_REQUIRED_FIELD` | `submitted_at` | El campo Fecha de envío es obligatorio. | blocking |
-| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `outcome` | El campo Resultado de Contraloría es obligatorio. | blocking |
-| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `official_document_ref` | El oficio o documento de respaldo es obligatorio. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Registrar envío a Contraloría | `submitToComptroller` | `MISSING_REQUIRED_FIELD` | `submitted_at` | El campo Fecha de envío es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `outcome` | El campo Resultado de Contraloría es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `official_document_ref` | El oficio o documento de respaldo es obligatorio. | blocking | integridad:campo_requerido |
 **Edge cases:** representación → reversión trazada a 3.1; los `CaseStep` reflejan el reintento sin perder historia.
 
 ---
@@ -134,15 +130,14 @@
 
 **Validaciones:** *(reutiliza íntegramente 2.3)*
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Vincular proceso MP | `linkMpProcess` | `MISSING_REQUIRED_FIELD` | `mp_process_id` | El campo Código / ID de proceso MP es obligatorio. | blocking |
-| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_NOT_FOUND` | `mp_process_id` | El proceso MP no existe o el código es inválido. | blocking |
-| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_ORGANISM_MISMATCH` | `mp_process_id` | El organismo comprador del proceso MP no coincide con el municipio. | blocking |
-| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_TYPE_MISMATCH` | `mp_process_id` | El tipo de proceso MP no coincide con la modalidad confirmada. | blocking |
-| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_ALREADY_LINKED` | `mp_process_id` | El código MP ya está vinculado a otro expediente. | blocking |
-| Vincular proceso MP | `linkMpProcess` | `MP_PROVIDER_UNAVAILABLE` | — | Mercado Público no está disponible para validar el vínculo. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Vincular proceso MP | `linkMpProcess` | `MISSING_REQUIRED_FIELD` | `mp_process_id` | El campo Código / ID de proceso MP es obligatorio. | blocking | integridad:campo_requerido |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_NOT_FOUND` | `mp_process_id` | El proceso MP no existe o el código es inválido. | blocking | integridad:campo_requerido |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_ORGANISM_MISMATCH` | `mp_process_id` | El organismo comprador del proceso MP no coincide con el municipio. | blocking | integridad:campo_requerido |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_TYPE_MISMATCH` | `mp_process_id` | El tipo de proceso MP no coincide con la modalidad confirmada. | blocking | integridad:estado_expediente |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_ALREADY_LINKED` | `mp_process_id` | El código MP ya está vinculado a otro expediente. | blocking | integridad:campo_requerido |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROVIDER_UNAVAILABLE` | — | Mercado Público no está disponible para validar el vínculo. | blocking | integridad:estado_expediente |
 **Edge cases:** los cuatro bloqueos de 2.3 aplican idénticos (no encontrado, organismo distinto, tipo incoherente, ya vinculado).
 
 ---
@@ -163,10 +158,9 @@
 
 **Validaciones:**
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Registrar aclaración | `recordClarification` | `MISSING_REQUIRED_FIELD` | `clarification_document_ref` | El documento de aclaración a las bases es obligatorio. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Registrar aclaración | `recordClarification` | `MISSING_REQUIRED_FIELD` | `clarification_document_ref` | El documento de aclaración a las bases es obligatorio. | blocking | integridad:campo_requerido |
 **Edge cases:** aclaración que modifica sustantivamente las bases → puede requerir acto administrativo complementario y extensión de plazo. **[PENDIENTE P-65]** criterio jurídico de cuándo una aclaración exige acto formal.
 
 ---
@@ -188,13 +182,12 @@
 
 **Validaciones:**
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `provider_rut` | El campo Proveedor es obligatorio. | blocking |
-| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `instrument_type` | El campo Tipo de instrumento es obligatorio. | blocking |
-| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `amount` | El campo Monto es obligatorio. | blocking |
-| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `expiry_date` | El campo Fecha de vencimiento es obligatorio. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `provider_rut` | El campo Proveedor es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `instrument_type` | El campo Tipo de instrumento es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `amount` | El campo Monto es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `expiry_date` | El campo Fecha de vencimiento es obligatorio. | blocking | integridad:campo_requerido |
 **Edge cases:** garantía vencida o por monto insuficiente → oferta inadmisible (insumo de 3.9); devolución a oferentes no adjudicados tras la adjudicación (tarea con timer — plata de terceros retenida sin razón es hallazgo de auditoría).
 
 ---
@@ -236,17 +229,16 @@
 
 **Validaciones:**
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Designar comisión | `designateEvaluationCommittee` | `CONFLICT_DECLARATION_REQUIRED` | `members[].conflict_declaration_ref` | Cada integrante debe declarar ausencia de conflictos de interés. | blocking |
-| Designar comisión | `designateEvaluationCommittee` | `COMMITTEE_MEMBER_CONFLICT` | `members[].user_id` | El integrante no puede ser el requirente de la SOLPED ni quien elaboró las bases técnicas. | blocking |
-| Designar comisión | `designateEvaluationCommittee` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida del acto de designación. | blocking |
-| Registrar admisibilidad | `recordOfferAdmissibility` | `MISSING_REQUIRED_FIELD` | `offers[].inadmissibility_cause` | La causal de inadmisibilidad es obligatoria si la oferta es inadmisible. | blocking |
-| Registrar puntajes | `recordEvaluationScores` | `SCORES_INCONSISTENT_WITH_CRITERIA` | `scores` | Los puntajes no cuadran con las ponderaciones de los criterios de las bases. | blocking |
-| Firmar acta de evaluación | `signEvaluationReport` | `SCORES_INCONSISTENT_WITH_CRITERIA` | — | No se puede firmar el acta mientras los puntajes sean inconsistentes con los criterios. | blocking |
-| Firmar acta de evaluación | `signEvaluationReport` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida de los integrantes. | blocking |
-| Firmar acta de evaluación | `signEvaluationReport` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Designar comisión | `designateEvaluationCommittee` | `CONFLICT_DECLARATION_REQUIRED` | `members[].conflict_declaration_ref` | Cada integrante debe declarar ausencia de conflictos de interés. | blocking | Ley 19.886 — integridad comisión evaluadora |
+| Designar comisión | `designateEvaluationCommittee` | `COMMITTEE_MEMBER_CONFLICT` | `members[].user_id` | El integrante no puede ser el requirente de la SOLPED ni quien elaboró las bases técnicas. | blocking | Ley 19.886 — incompatibilidad comisión evaluadora |
+| Designar comisión | `designateEvaluationCommittee` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida del acto de designación. | blocking | Ley 19.799 — firma electrónica avanzada |
+| Registrar admisibilidad | `recordOfferAdmissibility` | `MISSING_REQUIRED_FIELD` | `offers[].inadmissibility_cause` | La causal de inadmisibilidad es obligatoria si la oferta es inadmisible. | blocking | integridad:campo_requerido |
+| Registrar puntajes | `recordEvaluationScores` | `SCORES_INCONSISTENT_WITH_CRITERIA` | `scores` | Los puntajes no cuadran con las ponderaciones de los criterios de las bases. | blocking | integridad:campo_requerido |
+| Firmar acta de evaluación | `signEvaluationReport` | `SCORES_INCONSISTENT_WITH_CRITERIA` | — | No se puede firmar el acta mientras los puntajes sean inconsistentes con los criterios. | blocking | integridad:campo_requerido |
+| Firmar acta de evaluación | `signEvaluationReport` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida de los integrantes. | blocking | Ley 19.799 — firma electrónica avanzada |
+| Firmar acta de evaluación | `signEvaluationReport` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking | integridad:estado_expediente |
 **Edge cases:** integrante con conflicto sobreviniente → reemplazo por acto modificatorio, trazado; empate en ranking → criterio de desempate debe estar en las bases (validación en 3.1: bases sin criterio de desempate generan advertencia).
 
 ---
@@ -267,15 +259,14 @@
 
 **Validaciones:**
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Dictar resolución | `issueAwardResolution` | `LEGAL_REVIEW_REQUIRED` | — | Se requiere revisión jurídica previa registrada. | blocking |
-| Dictar resolución | `issueAwardResolution` | `MISSING_REQUIRED_FIELD` | `resolution_type` | El campo Tipo de resolución es obligatorio. | blocking |
-| Dictar resolución | `issueAwardResolution` | `MISSING_REQUIRED_FIELD` | `awarded_offer_id` | La oferta adjudicada es obligatoria si el tipo es adjudicación. | blocking |
-| Dictar resolución | `issueAwardResolution` | `AWARD_JUSTIFICATION_REQUIRED` | `justification` | La fundamentación es obligatoria si se adjudica a una oferta distinta del primero del ranking. | blocking |
-| Dictar resolución | `issueAwardResolution` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida. | blocking |
-| Dictar resolución | `issueAwardResolution` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Dictar resolución | `issueAwardResolution` | `LEGAL_REVIEW_REQUIRED` | — | Se requiere revisión jurídica previa registrada. | blocking | Ley 19.886 — bases de licitación |
+| Dictar resolución | `issueAwardResolution` | `MISSING_REQUIRED_FIELD` | `resolution_type` | El campo Tipo de resolución es obligatorio. | blocking | integridad:campo_requerido |
+| Dictar resolución | `issueAwardResolution` | `MISSING_REQUIRED_FIELD` | `awarded_offer_id` | La oferta adjudicada es obligatoria si el tipo es adjudicación. | blocking | integridad:campo_requerido |
+| Dictar resolución | `issueAwardResolution` | `AWARD_JUSTIFICATION_REQUIRED` | `justification` | La fundamentación es obligatoria si se adjudica a una oferta distinta del primero del ranking. | blocking | Ley 19.886 — resolución de adjudicación |
+| Dictar resolución | `issueAwardResolution` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida. | blocking | Ley 19.799 — firma electrónica avanzada |
+| Dictar resolución | `issueAwardResolution` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking | integridad:estado_expediente |
 **Edge cases:** deserción → decisión posterior: relicitar (nuevo proceso MP, mismo expediente) o Trato Directo por causal de licitación desierta (reversión a etapa 2 con la causal precargada — ver `procesos-transversales/2-modalidad-compra.md` §2.1); adjudicación distinta del ranking → fundamentación obligatoria y visible en auditoría.
 
 ---
@@ -293,12 +284,11 @@
 
 **Validaciones:** *(reutiliza 3.4)*
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Registrar envío a Contraloría | `submitToComptroller` | `MISSING_REQUIRED_FIELD` | `submitted_at` | El campo Fecha de envío es obligatorio. | blocking |
-| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `outcome` | El campo Resultado de Contraloría es obligatorio. | blocking |
-| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `official_document_ref` | El oficio o documento de respaldo es obligatorio. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Registrar envío a Contraloría | `submitToComptroller` | `MISSING_REQUIRED_FIELD` | `submitted_at` | El campo Fecha de envío es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `outcome` | El campo Resultado de Contraloría es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `official_document_ref` | El oficio o documento de respaldo es obligatorio. | blocking | integridad:campo_requerido |
 ---
 
 ## 3.12 — Garantía de Fiel Cumplimiento
@@ -314,13 +304,12 @@
 
 **Validaciones:** *(reutiliza 3.7 — `registerGuaranteeCustody`)*
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `provider_rut` | El campo Proveedor es obligatorio. | blocking |
-| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `instrument_type` | El campo Tipo de instrumento es obligatorio. | blocking |
-| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `amount` | El campo Monto es obligatorio. | blocking |
-| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `expiry_date` | El campo Fecha de vencimiento es obligatorio. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `provider_rut` | El campo Proveedor es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `instrument_type` | El campo Tipo de instrumento es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `amount` | El campo Monto es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar en custodia | `registerGuaranteeCustody` | `MISSING_REQUIRED_FIELD` | `expiry_date` | El campo Fecha de vencimiento es obligatorio. | blocking | integridad:campo_requerido |
 **Edge cases:** adjudicatario no entrega garantía en plazo → tratamiento como no suscripción (ver 3.13).
 
 ---
@@ -340,15 +329,14 @@
 
 **Validaciones:**
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Guardar borrador de contrato | `draftContract` | `MISSING_REQUIRED_FIELD` | `awarded_offer_ref` | La referencia a la oferta adjudicada es obligatoria. | blocking |
-| Guardar borrador de contrato | `draftContract` | `MISSING_REQUIRED_FIELD` | `amount` | El campo Monto del contrato es obligatorio. | blocking |
-| Guardar borrador de contrato | `draftContract` | `MISSING_REQUIRED_FIELD` | `start_date` | El campo Fecha de inicio es obligatorio. | blocking |
-| Guardar borrador de contrato | `draftContract` | `MISSING_REQUIRED_FIELD` | `end_date` | El campo Fecha de término es obligatorio. | blocking |
-| Firmar contrato | `signContract` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida del municipio. | blocking |
-| Firmar contrato | `signContract` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Guardar borrador de contrato | `draftContract` | `MISSING_REQUIRED_FIELD` | `awarded_offer_ref` | La referencia a la oferta adjudicada es obligatoria. | blocking | integridad:campo_requerido |
+| Guardar borrador de contrato | `draftContract` | `MISSING_REQUIRED_FIELD` | `amount` | El campo Monto del contrato es obligatorio. | blocking | integridad:campo_requerido |
+| Guardar borrador de contrato | `draftContract` | `MISSING_REQUIRED_FIELD` | `start_date` | El campo Fecha de inicio es obligatorio. | blocking | integridad:campo_requerido |
+| Guardar borrador de contrato | `draftContract` | `MISSING_REQUIRED_FIELD` | `end_date` | El campo Fecha de término es obligatorio. | blocking | integridad:campo_requerido |
+| Firmar contrato | `signContract` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida del municipio. | blocking | Ley 19.799 — firma electrónica avanzada |
+| Firmar contrato | `signContract` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking | integridad:estado_expediente |
 **Edge cases (crítico):** **adjudicatario no suscribe en plazo** → cobro/ejecución de la Garantía de Seriedad (3.7, `status = executed`, borde a Tesorería) y facultad de **readjudicar al siguiente del ranking** (reejecuta 3.10 con el acta vigente) o declarar desierta. Camino de primera clase, no nota al pie.
 
 ---
@@ -367,9 +355,9 @@
 
 **Validaciones:** Sin captura de formulario — sync automático; códigos de dependencia:
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| — (automático) | `syncPurchaseOrderAccepted` / `commitBudget` | `BUDGET_UNAVAILABLE` | — | No hay saldo presupuestario para registrar el compromiso cierto. | blocking |
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| — (automático) | `syncPurchaseOrderAccepted` / `commitBudget` | `BUDGET_UNAVAILABLE` | — | No hay saldo presupuestario para registrar el compromiso cierto. | blocking | DL 1.263 — fase de compromiso presupuestario |
 
 **Edge cases:** rechazo de OC post-contrato → anomalía grave (hay contrato suscrito): tarea a jurídica, no auto-resolución; comparte mecánica con CA 3.5 solo si no hay contrato.
 

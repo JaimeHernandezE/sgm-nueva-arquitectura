@@ -561,7 +561,7 @@ F4:  cierre formal P-1 en modelo de Adquisiciones
 
 ## 10. Criterios de término del módulo
 
-1. Todo validador bloqueante del motor tiene trazabilidad a un artículo normativo específico.
+1. Todo validador bloqueante declara fundamento en `legal_reference`: cita de artículo/decreto/dictamen cuando la regla es normativa, o `integridad:<motivo>` cuando es invariante de proceso sin ancla legal única. El fundamento normativo se muestra en el helper de validación al funcionario ([`musts-arquitectura.md`](../../arquitectura/especificacion/musts-arquitectura.md) §11).
 2. Ningún umbral, plazo o clasificación normativa está hardcodeado; todos son `NormativeParameter` con vigencia temporal. Incluye el 42%, el 20%, los plazos del art. 82 y el clasificador del Decreto 854.
 3. Los ocho contratos inter-módulo están versionados y clasificados por modo de invocación.
 4. Cada etapa tiene ficha completa; ningún paso queda descrito como "según práctica municipal".

@@ -17,17 +17,16 @@
 
 **Reglas del gateway de validación:**
 
-| # | Regla | Resultado si falla | `error_code` | Severidad |
-|---|---|---|---|---|
-| V1 | Monto total estimado ≤ 100 UTM para Compra Ágil | Compra Ágil no seleccionable | `MODALITY_AMOUNT_EXCEEDED` | `blocking` |
-| V2 | Si el bien/servicio existe en catálogo Convenio Marco (con cobertura regional), CM es primera opción legal | Elegir otra modalidad exige `catalog_bypass_justification` (ej. precio externo menor con igualación rechazada) | `FRAMEWORK_AGREEMENT_FIRST_OPTION` | `blocking` sin justificación |
-| V3 | Trato Directo requiere causal legal del catálogo (art. Ley 19.886) + Resolución Fundada adjunta (heredada de 1.1 o adjuntada aquí) | TD no confirmable | `DIRECT_PROCUREMENT_CAUSE_REQUIRED` | `blocking` |
-| V4 | Monto > 100 UTM y sin CM aplicable → Licitación Pública es la vía general | Sugerencia de LP al usuario | `PUBLIC_TENDER_SUGGESTED` | `advisory` |
-| V5 | TD con monto > 8.000 UTM → advertencia de Toma de Razón de Contraloría (plazos de semanas) | Informa, no bloquea | `COMPTROLLER_REVIEW_REQUIRED` | `advisory` |
-| V6 *(propuesta, no confirmada en fuente)* | Detección de posible fraccionamiento: compras similares de la misma unidad en ventana reciente cuya suma supera 100 UTM | Advertencia con detalle de las compras relacionadas | `SPLITTING_SUSPECTED` | `advisory` |
-| V7 | LP: derivación automática del **tramo de licitación** según monto en UTM, informando el **plazo mínimo de publicación** asociado al tramo (los plazos crecen con el monto, hasta 20–30 días corridos en tramos superiores) | Informa tramo y plazo mínimo al confirmar LP — el usuario conoce la duración comprometida antes de derivar al subproceso | `TENDER_TIER_INFO` | `advisory` |
-| V8 | LP: **garantías exigibles según monto** — seriedad de la oferta y fiel cumplimiento sobre sus respectivos umbrales | Informa qué garantías exigirá el subproceso (impacta a los oferentes y los tiempos) | `TENDER_GUARANTEES_REQUIRED` | `advisory` |
-
+| # | Regla | Resultado si falla | `error_code` | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|
+| V1 | Monto total estimado ≤ 100 UTM para Compra Ágil | Compra Ágil no seleccionable | `MODALITY_AMOUNT_EXCEEDED` | `blocking` | Ley 19.886 — umbral Compra Ágil en UTM (`NormativeParameter`); ⚠ P-37 |
+| V2 | Si el bien/servicio existe en catálogo Convenio Marco (con cobertura regional), CM es primera opción legal | Elegir otra modalidad exige `catalog_bypass_justification` (ej. precio externo menor con igualación rechazada) | `FRAMEWORK_AGREEMENT_FIRST_OPTION` | `blocking` sin justificación | Ley 19.886 / DS 661/2024 — Convenio Marco primera opción (`NormativeParameter`) |
+| V3 | Trato Directo requiere causal legal del catálogo (art. Ley 19.886) + Resolución Fundada adjunta (heredada de 1.1 o adjuntada aquí) | TD no confirmable | `DIRECT_PROCUREMENT_CAUSE_REQUIRED` | `blocking` | Ley 19.886 — causal de trato directo; ⚠ P-36 |
+| V4 | Monto > 100 UTM y sin CM aplicable → Licitación Pública es la vía general | Sugerencia de LP al usuario | `PUBLIC_TENDER_SUGGESTED` | `advisory` | Ley 19.886 — Licitación Pública como vía general |
+| V5 | TD con monto > 8.000 UTM → advertencia de Toma de Razón de Contraloría (plazos de semanas) | Informa, no bloquea | `COMPTROLLER_REVIEW_REQUIRED` | `advisory` | Normativa Contraloría — Toma de Razón (`NormativeParameter`); ⚠ P-37 |
+| V6 *(propuesta, no confirmada en fuente)* | Detección de posible fraccionamiento: compras similares de la misma unidad en ventana reciente cuya suma supera 100 UTM | Advertencia con detalle de las compras relacionadas | `SPLITTING_SUSPECTED` | `advisory` | Ley 19.886 — prohibición de fraccionamiento (propuesta V6) |
+| V7 | LP: derivación automática del **tramo de licitación** según monto en UTM, informando el **plazo mínimo de publicación** asociado al tramo (los plazos crecen con el monto, hasta 20–30 días corridos en tramos superiores) | Informa tramo y plazo mínimo al confirmar LP — el usuario conoce la duración comprometida antes de derivar al subproceso | `TENDER_TIER_INFO` | `advisory` | Ley 19.886 / DS 661/2024 — tramos de licitación (`NormativeParameter`); ⚠ P-37 |
+| V8 | LP: **garantías exigibles según monto** — seriedad de la oferta y fiel cumplimiento sobre sus respectivos umbrales | Informa qué garantías exigirá el subproceso (impacta a los oferentes y los tiempos) | `TENDER_GUARANTEES_REQUIRED` | `advisory` | Ley 19.886 — garantías según umbral (`NormativeParameter`); ⚠ P-37 |
 > **Asimetría del gateway (deliberada y legalmente correcta):** Licitación Pública es la vía general de la Ley 19.886 y **nunca se bloquea** — es procedente a cualquier monto, incluso bajo 100 UTM (licitación voluntaria). Las validaciones bloqueantes existen solo para las tres modalidades excepcionales, que requieren acreditar procedencia (umbral, catálogo, causal). Las validaciones de LP son de **derivación**: no cuestionan la elección, sino que informan sus consecuencias (tramo, plazos, garantías) en el momento de decidir.
 
 > **Parámetros normativos configurables:** la lógica de las reglas V1–V8 vive en código; los **valores numéricos** (umbral de Compra Ágil, umbral de Toma de Razón, tramos de licitación, umbrales de garantías, ventana de fraccionamiento) viven en configuración administrable — entidad `NormativeParameter`. Reglas de gobernanza: (a) administración a **nivel plataforma por SUBDERE**, nunca por tenant — son valores legales nacionales, distintos de los parámetros operativos por municipio como los timers de escalamiento; (b) cada valor tiene **vigencia temporal** (`valid_from`): las validaciones usan el valor vigente a la fecha de la decisión, y `ModalityDecision.validation_results` congela los valores aplicados para auditoría retrospectiva; (c) el cambio de un parámetro normativo es un **acto auditado con doble control** (quien propone no aprueba) y emite evento `NormativeParameterChanged`. Con esto, un cambio legal de umbral se aplica por configuración con fecha de vigencia, sin despliegue de código.
@@ -53,22 +52,21 @@
 
 **Validaciones:** *(gateway V1–V8 → acción Confirmar modalidad; detalle normativo arriba)*
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Confirmar modalidad | `confirmProcurementModality` | `MISSING_REQUIRED_FIELD` | `selected_modality` | El campo Modalidad de compra es obligatorio. | blocking |
-| Confirmar modalidad | `confirmProcurementModality` | `MODALITY_AMOUNT_EXCEEDED` | `selected_modality` | Compra Ágil no procede: el monto estimado supera el umbral en UTM vigente. | blocking |
-| Confirmar modalidad | `confirmProcurementModality` | `FRAMEWORK_AGREEMENT_FIRST_OPTION` | `catalog_bypass_justification` | Existe cobertura en Convenio Marco; se exige justificación para elegir otra modalidad. | blocking |
-| Confirmar modalidad | `confirmProcurementModality` | `DIRECT_PROCUREMENT_CAUSE_REQUIRED` | `direct_procurement_cause` | Trato Directo requiere causal legal y resolución fundada. | blocking |
-| Confirmar modalidad | `confirmProcurementModality` | `UTM_VALUE_UNAVAILABLE` | — | No hay valor UTM vigente para evaluar umbrales. | blocking |
-| Confirmar modalidad | `confirmProcurementModality` | `MODALITY_ALREADY_CONFIRMED` | — | La modalidad ya está confirmada en este expediente. | blocking |
-| Confirmar modalidad | `confirmProcurementModality` | `PUBLIC_TENDER_SUGGESTED` | `selected_modality` | Se sugiere Licitación Pública según monto y cobertura de catálogo. | advisory |
-| Confirmar modalidad | `confirmProcurementModality` | `COMPTROLLER_REVIEW_REQUIRED` | `selected_modality` | El monto puede exigir Toma de Razón de Contraloría. | advisory |
-| Confirmar modalidad | `confirmProcurementModality` | `SPLITTING_SUSPECTED` | — | Posible fraccionamiento detectado en compras recientes de la unidad. | advisory |
-| Confirmar modalidad | `confirmProcurementModality` | `TENDER_TIER_INFO` | `selected_modality` | Tramo de licitación y plazo mínimo de publicación informados. | advisory |
-| Confirmar modalidad | `confirmProcurementModality` | `TENDER_GUARANTEES_REQUIRED` | `selected_modality` | Se informarán garantías exigibles según monto. | advisory |
-| Confirmar modalidad | `confirmProcurementModality` | `CATALOG_STALE` | — | Catálogo CM fuera de ventana de frescura; V2 se evalúa con advertencia. | advisory |
-| Confirmar modalidad | `confirmProcurementModality` | `AGILE_PURCHASE_AVAILABLE` | `selected_modality` | Existe Compra Ágil como vía más expedita para este monto. | advisory |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Confirmar modalidad | `confirmProcurementModality` | `MISSING_REQUIRED_FIELD` | `selected_modality` | El campo Modalidad de compra es obligatorio. | blocking | integridad:campo_requerido |
+| Confirmar modalidad | `confirmProcurementModality` | `MODALITY_AMOUNT_EXCEEDED` | `selected_modality` | Compra Ágil no procede: el monto estimado supera el umbral en UTM vigente. | blocking | Ley 19.886 — umbral Compra Ágil en UTM (`NormativeParameter`); ⚠ P-37 |
+| Confirmar modalidad | `confirmProcurementModality` | `FRAMEWORK_AGREEMENT_FIRST_OPTION` | `catalog_bypass_justification` | Existe cobertura en Convenio Marco; se exige justificación para elegir otra modalidad. | blocking | Ley 19.886 / DS 661/2024 — Convenio Marco primera opción (`NormativeParameter`) |
+| Confirmar modalidad | `confirmProcurementModality` | `DIRECT_PROCUREMENT_CAUSE_REQUIRED` | `direct_procurement_cause` | Trato Directo requiere causal legal y resolución fundada. | blocking | Ley 19.886 — causal de trato directo; ⚠ P-36 |
+| Confirmar modalidad | `confirmProcurementModality` | `UTM_VALUE_UNAVAILABLE` | — | No hay valor UTM vigente para evaluar umbrales. | blocking | integridad:estado_expediente |
+| Confirmar modalidad | `confirmProcurementModality` | `MODALITY_ALREADY_CONFIRMED` | — | La modalidad ya está confirmada en este expediente. | blocking | integridad:campo_requerido |
+| Confirmar modalidad | `confirmProcurementModality` | `PUBLIC_TENDER_SUGGESTED` | `selected_modality` | Se sugiere Licitación Pública según monto y cobertura de catálogo. | advisory | Ley 19.886 — Licitación Pública como vía general |
+| Confirmar modalidad | `confirmProcurementModality` | `COMPTROLLER_REVIEW_REQUIRED` | `selected_modality` | El monto puede exigir Toma de Razón de Contraloría. | advisory | Normativa Contraloría — Toma de Razón (`NormativeParameter`); ⚠ P-37 |
+| Confirmar modalidad | `confirmProcurementModality` | `SPLITTING_SUSPECTED` | — | Posible fraccionamiento detectado en compras recientes de la unidad. | advisory | Ley 19.886 — prohibición de fraccionamiento (propuesta V6) |
+| Confirmar modalidad | `confirmProcurementModality` | `TENDER_TIER_INFO` | `selected_modality` | Tramo de licitación y plazo mínimo de publicación informados. | advisory | Ley 19.886 / DS 661/2024 — tramos de licitación (`NormativeParameter`); ⚠ P-37 |
+| Confirmar modalidad | `confirmProcurementModality` | `TENDER_GUARANTEES_REQUIRED` | `selected_modality` | Se informarán garantías exigibles según monto. | advisory | Ley 19.886 — garantías según umbral (`NormativeParameter`); ⚠ P-37 |
+| Confirmar modalidad | `confirmProcurementModality` | `CATALOG_STALE` | — | Catálogo CM fuera de ventana de frescura; V2 se evalúa con advertencia. | advisory | — |
+| Confirmar modalidad | `confirmProcurementModality` | `AGILE_PURCHASE_AVAILABLE` | `selected_modality` | Existe Compra Ágil como vía más expedita para este monto. | advisory | — |
 **Edge cases:**
 - Modalidad de la SOLPED contradice el gateway (ej. venía como Compra Ágil y el monto supera 100 UTM) → el sistema no permite ratificar; usuario debe seleccionar modalidad válida; el cambio queda en auditoría con ambos valores.
 - Ítem en catálogo CM pero usuario selecciona otra modalidad sin justificación → `FRAMEWORK_AGREEMENT_FIRST_OPTION` (`severity: blocking`).
@@ -109,13 +107,12 @@
 
 **Validaciones:**
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Aprobar modalidad | `approveModalityDecision` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida. | blocking |
-| Aprobar modalidad | `approveModalityDecision` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking |
-| Aprobar modalidad | `approveModalityDecision` | `SEGREGATION_OF_DUTIES_VIOLATION` | `approver_id` | Quien aprueba no puede ser quien decidió la modalidad en 2.1. | blocking |
-| Rechazar modalidad | `rejectModalityDecision` | `MISSING_REQUIRED_FIELD` | `comments` | El campo Comentarios es obligatorio al rechazar. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Aprobar modalidad | `approveModalityDecision` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida. | blocking | Ley 19.799 — firma electrónica avanzada |
+| Aprobar modalidad | `approveModalityDecision` | `SIGNATURE_PROVIDER_UNAVAILABLE` | — | FirmaGob no está disponible. | blocking | integridad:estado_expediente |
+| Aprobar modalidad | `approveModalityDecision` | `SEGREGATION_OF_DUTIES_VIOLATION` | `approver_id` | Quien aprueba no puede ser quien decidió la modalidad en 2.1. | blocking | Control interno — segregación de funciones; ⚠ P-25 |
+| Rechazar modalidad | `rejectModalityDecision` | `MISSING_REQUIRED_FIELD` | `comments` | El campo Comentarios es obligatorio al rechazar. | blocking | integridad:campo_requerido |
 **Edge cases:**
 - Rechazo de jefatura → `ModalityDecision` queda sin efecto; el flujo retorna a 2.1 para nueva selección (los `CaseStep` instanciados se anulan con auditoría).
 - Quien aprueba es quien decidió en 2.1 → evaluar si aplica segregación (`SEGREGATION_OF_DUTIES_VIOLATION`) — por confirmar con DM junto con la existencia del paso.
@@ -160,15 +157,14 @@ Registrado y validado el código — sea la ejecución inmediata o diferida —,
 
 **Validaciones:**
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Vincular proceso MP | `linkMpProcess` | `MISSING_REQUIRED_FIELD` | `mp_process_id` | El campo Código / ID de proceso MP es obligatorio. | blocking |
-| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_NOT_FOUND` | `mp_process_id` | El proceso MP no existe o el código es inválido. | blocking |
-| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_ORGANISM_MISMATCH` | `mp_process_id` | El organismo comprador del proceso MP no coincide con el municipio. | blocking |
-| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_TYPE_MISMATCH` | `mp_process_id` | El tipo de proceso MP no coincide con la modalidad confirmada. | blocking |
-| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_ALREADY_LINKED` | `mp_process_id` | El código MP ya está vinculado a otro expediente. | blocking |
-| Vincular proceso MP | `linkMpProcess` | `MP_PROVIDER_UNAVAILABLE` | — | Mercado Público no está disponible para validar el vínculo. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Vincular proceso MP | `linkMpProcess` | `MISSING_REQUIRED_FIELD` | `mp_process_id` | El campo Código / ID de proceso MP es obligatorio. | blocking | integridad:campo_requerido |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_NOT_FOUND` | `mp_process_id` | El proceso MP no existe o el código es inválido. | blocking | integridad:campo_requerido |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_ORGANISM_MISMATCH` | `mp_process_id` | El organismo comprador del proceso MP no coincide con el municipio. | blocking | integridad:campo_requerido |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_TYPE_MISMATCH` | `mp_process_id` | El tipo de proceso MP no coincide con la modalidad confirmada. | blocking | integridad:estado_expediente |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROCESS_ALREADY_LINKED` | `mp_process_id` | El código MP ya está vinculado a otro expediente. | blocking | integridad:campo_requerido |
+| Vincular proceso MP | `linkMpProcess` | `MP_PROVIDER_UNAVAILABLE` | — | Mercado Público no está disponible para validar el vínculo. | blocking | integridad:estado_expediente |
 **Edge cases:**
 - Código MP inexistente o con formato inválido → `MP_PROCESS_NOT_FOUND` (`severity: blocking`); no se persiste el vínculo.
 - Código MP pertenece a otro organismo comprador (RUT no coincide con el municipio tenant) → `MP_PROCESS_ORGANISM_MISMATCH` (`severity: blocking`).

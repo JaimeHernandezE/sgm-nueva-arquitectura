@@ -72,6 +72,12 @@ components:
         legal_reference:
           type: string
           nullable: true
+          description: >
+            Fundamento del error. Obligatorio cuando severity=blocking
+            (musts-arquitectura.md §11; estandares-api.md §3.3).
+            Normativo: cita de ley/decreto/dictamen (se muestra al funcionario).
+            Integridad: prefijo integridad:<motivo> (no se muestra en UI).
+            Prohibido string vacío en blocking.
         severity:
           $ref: '#/components/schemas/Severity'
     ValidationIssue:
@@ -90,6 +96,12 @@ components:
         legal_reference:
           type: string
           nullable: true
+          description: >
+            Fundamento del error. Obligatorio cuando severity=blocking
+            (musts-arquitectura.md §11; estandares-api.md §3.3).
+            Normativo: cita de ley/decreto/dictamen (se muestra al funcionario).
+            Integridad: prefijo integridad:<motivo> (no se muestra en UI).
+            Prohibido string vacío en blocking.
         severity:
           $ref: '#/components/schemas/Severity'
     ValidationErrorResponse:
@@ -111,6 +123,12 @@ components:
         legal_reference:
           type: string
           nullable: true
+          description: >
+            Fundamento del error. Obligatorio cuando severity=blocking
+            (musts-arquitectura.md §11; estandares-api.md §3.3).
+            Normativo: cita de ley/decreto/dictamen (se muestra al funcionario).
+            Integridad: prefijo integridad:<motivo> (no se muestra en UI).
+            Prohibido string vacío en blocking.
         severity:
           $ref: '#/components/schemas/Severity'
         issues:

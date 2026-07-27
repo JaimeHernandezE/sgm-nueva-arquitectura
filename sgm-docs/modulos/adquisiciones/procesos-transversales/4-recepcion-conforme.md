@@ -33,16 +33,15 @@
 
 **Validaciones:**
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Registrar recepción | `registerReceipt` | `MISSING_REQUIRED_FIELD` | `purchase_order_id` | Debe existir una OC aceptada asociada. | blocking |
-| Registrar recepción | `registerReceipt` | `MISSING_REQUIRED_FIELD` | `received_date` | El campo Fecha de recepción es obligatorio. | blocking |
-| Registrar recepción | `registerReceipt` | `MISSING_REQUIRED_FIELD` | `lines` | Debe registrarse al menos una línea de recepción. | blocking |
-| Registrar recepción | `registerReceipt` | `MISSING_REQUIRED_FIELD` | `lines[].quantity_received` | El campo Cantidad recibida es obligatorio. | blocking |
-| Registrar recepción | `registerReceipt` | `RECEIPT_EXCEEDS_ORDER` | `lines[].quantity_received` | La cantidad recibida supera la cantidad pendiente de la línea de OC. | blocking |
-| Registrar recepción | `registerReceipt` | `MISSING_REQUIRED_FIELD` | `supporting_document_ref` | El documento de respaldo es obligatorio para recepción de servicios. | blocking |
-| Registrar recepción | `registerReceipt` | `INVALID_STATUS` | — | La OC debe estar aceptada antes de confirmar la recepción. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Registrar recepción | `registerReceipt` | `MISSING_REQUIRED_FIELD` | `purchase_order_id` | Debe existir una OC aceptada asociada. | blocking | integridad:campo_requerido |
+| Registrar recepción | `registerReceipt` | `MISSING_REQUIRED_FIELD` | `received_date` | El campo Fecha de recepción es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar recepción | `registerReceipt` | `MISSING_REQUIRED_FIELD` | `lines` | Debe registrarse al menos una línea de recepción. | blocking | integridad:campo_requerido |
+| Registrar recepción | `registerReceipt` | `MISSING_REQUIRED_FIELD` | `lines[].quantity_received` | El campo Cantidad recibida es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar recepción | `registerReceipt` | `RECEIPT_EXCEEDS_ORDER` | `lines[].quantity_received` | La cantidad recibida supera la cantidad pendiente de la línea de OC. | blocking | integridad:estado_expediente |
+| Registrar recepción | `registerReceipt` | `MISSING_REQUIRED_FIELD` | `supporting_document_ref` | El documento de respaldo es obligatorio para recepción de servicios. | blocking | integridad:campo_requerido |
+| Registrar recepción | `registerReceipt` | `INVALID_STATUS` | — | La OC debe estar aceptada antes de confirmar la recepción. | blocking | integridad:estado_expediente |
 **Edge cases:**
 - Entrega sin OC asociada localizable → no se puede registrar recepción; el flujo correcto es regularizar la compra primero (control anti compra-de-hecho).
 - Cantidad recibida > cantidad pendiente de la línea → `RECEIPT_EXCEEDS_ORDER` (`severity: blocking`); las sobre-entregas no se recepcionan silenciosamente.
@@ -78,13 +77,12 @@
 
 **Validaciones:**
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Confirmar conformidad | `confirmReceipt` | `SEGREGATION_OF_DUTIES_VIOLATION` | `confirmed_by` | Quien confirma no puede ser quien aprobó la compra. | blocking |
-| Confirmar conformidad | `confirmReceipt` | `MISSING_REQUIRED_FIELD` | `conformity` | El campo Resultado de conformidad es obligatorio. | blocking |
-| Confirmar conformidad | `confirmReceipt` | `MISSING_REQUIRED_FIELD` | `lines[].rejection_reason` | El motivo de rechazo es obligatorio si hay cantidad rechazada. | blocking |
-| Confirmar conformidad | `confirmReceipt` | `MISSING_REQUIRED_FIELD` | `observations` | Las observaciones son obligatorias si la recepción no es conforme. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Confirmar conformidad | `confirmReceipt` | `SEGREGATION_OF_DUTIES_VIOLATION` | `confirmed_by` | Quien confirma no puede ser quien aprobó la compra. | blocking | Control interno — segregación de funciones; ⚠ P-25 |
+| Confirmar conformidad | `confirmReceipt` | `MISSING_REQUIRED_FIELD` | `conformity` | El campo Resultado de conformidad es obligatorio. | blocking | integridad:campo_requerido |
+| Confirmar conformidad | `confirmReceipt` | `MISSING_REQUIRED_FIELD` | `lines[].rejection_reason` | El motivo de rechazo es obligatorio si hay cantidad rechazada. | blocking | integridad:campo_requerido |
+| Confirmar conformidad | `confirmReceipt` | `MISSING_REQUIRED_FIELD` | `observations` | Las observaciones son obligatorias si la recepción no es conforme. | blocking | integridad:campo_requerido |
 **Edge cases:**
 - Unidad requirente no valida en plazo (bien retenido en Bodega) → timer de escalamiento — **[PENDIENTE P-33]**.
 - Conformidad otorgada y luego se detecta vicio oculto → procedimiento de reversión de conformidad con efectos sobre devengado/pago según el estado del ciclo — **[PENDIENTE P-43]**, caso real y delicado, no dejar como supuesto.
@@ -182,11 +180,10 @@
 
 **Validaciones:**
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Registrar gestión de rechazo | `registerReceiptRejection` | `MISSING_REQUIRED_FIELD` | `resolution_type` | El campo Tipo de resolución es obligatorio. | blocking |
-| Registrar gestión de rechazo | `registerReceiptRejection` | `MISSING_REQUIRED_FIELD` | `resolution_deadline` | El campo Plazo de resolución es obligatorio. | blocking |
-
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Registrar gestión de rechazo | `registerReceiptRejection` | `MISSING_REQUIRED_FIELD` | `resolution_type` | El campo Tipo de resolución es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar gestión de rechazo | `registerReceiptRejection` | `MISSING_REQUIRED_FIELD` | `resolution_deadline` | El campo Plazo de resolución es obligatorio. | blocking | integridad:campo_requerido |
 **Edge cases:**
 - Reposición recibida → nueva recepción (4.1) referenciando el `ReceiptRejectionCase` — el ciclo se reutiliza, no se duplica.
 - Proveedor no repone en plazo → escalamiento; insumo para reportería de comportamiento de proveedores (candidato a métrica del ecosistema).

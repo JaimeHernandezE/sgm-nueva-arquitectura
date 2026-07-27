@@ -112,8 +112,7 @@ export function demoValidation(operationId, overrides = {}) {
 }
 
 /**
- * Modal demo de ValidationErrorResponse (estandares-api §3.2).
- * @param {{ title?: string, operationId?: string, issues: Array<{ error_code: string, field?: string|null, rule: string, severity: 'blocking'|'advisory' }> }} opts
+ * @param {{ title?: string, operationId?: string, issues: Array<{ error_code: string, field?: string|null, rule: string, legal_reference?: string|null, severity: 'blocking'|'advisory' }> }} opts
  */
 export function showValidationIssues({ title = 'Validaciones', operationId, issues }) {
   const existing = document.getElementById('validation-issues-modal');
@@ -123,9 +122,18 @@ export function showValidationIssues({ title = 'Validaciones', operationId, issu
     .map((issue) => {
       const sev = issue.severity === 'advisory' ? 'advisory' : 'blocking';
       const sevLabel = sev === 'blocking' ? 'Bloqueante' : 'Advertencia';
+      const legal = issue.legal_reference;
+      const showLegal =
+        typeof legal === 'string' &&
+        legal.trim() !== '' &&
+        !legal.startsWith('integridad:');
+      const legalHtml = showLegal
+        ? `<span class="validation-issue__legal">Fundamento: ${legal}</span>`
+        : '';
       return `<li class="validation-issue validation-issue--${sev}">
         <span class="validation-issue__sev">${sevLabel}</span>
         <span class="validation-issue__rule">${issue.rule}</span>
+        ${legalHtml}
         ${issue.field ? `<span class="validation-issue__field"><code>${issue.field}</code></span>` : ''}
       </li>`;
     })

@@ -60,7 +60,7 @@ Implementación en [`sgm-prototipos/shared/forms.css`](../../../sgm-prototipos/s
 
 ## Badges de severidad en tablas de validación
 
-Toda tabla de reglas de validación (`contracts.md`, columna Severidad: `blocking`/`advisory`) se muestra en el prototipo como **badge en español**, nunca como texto plano ni en el vocabulario en inglés del contrato:
+Toda tabla de reglas de validación (`contracts.md` / ficha §3.6, columna Severidad: `blocking`/`advisory`) se muestra en el prototipo como **badge en español**, nunca como texto plano ni en el vocabulario en inglés del contrato:
 
 | Severidad (`contracts.md`) | Badge | Clase |
 |---|---|---|
@@ -68,6 +68,17 @@ Toda tabla de reglas de validación (`contracts.md`, columna Severidad: `blockin
 | `advisory` | Advertencia (ámbar) | `badge badge--advisory` |
 
 Implementación en [`sgm-prototipos/shared/forms.css`](../../../sgm-prototipos/shared/forms.css) (mismos colores que usa `tone` para la columna Resultado evaluada en vivo: bloqueante `#a33333`, advertencia `#8c6d1f` — consistencia visual entre severidad fija y resultado dinámico, sin fusionar ambas columnas). Ejemplo: [`21-ratificacion-modalidad.html`](../../../sgm-prototipos/modulos/adquisiciones/procesos-transversales/21-ratificacion-modalidad.html), tabla "Resultado del gateway de validación".
+
+## Fundamento normativo en el helper de validación
+
+Must: [`musts-arquitectura.md`](../especificacion/musts-arquitectura.md) §11; payload: [`estandares-api.md`](../especificacion/estandares-api.md) §3.3.
+
+El modal/listado de `ValidationIssue` (`showValidationIssues`) muestra bajo cada mensaje `rule`:
+
+- Si `legal_reference` es **normativo** (no empieza por `integridad:`): línea secundaria «Fundamento: {cita}» — el funcionario puede argumentar el bloqueo.
+- Si `legal_reference` es `integridad:*` o está ausente: **no** se muestra fundamento (solo `rule` + badge de severidad).
+
+Prototipo: [`form-shell.js`](../../../sgm-prototipos/shared/form-shell.js) + catálogo [`validation-demos.js`](../../../sgm-prototipos/shared/validation-demos.js). Estilo: `.validation-issue__legal`.
 
 ## Contraejemplos
 

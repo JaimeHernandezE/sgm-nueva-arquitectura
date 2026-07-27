@@ -378,6 +378,13 @@
   font-weight: 500;
 }
 
+.validation-issue__legal {
+  grid-column: 2;
+  font-size: 12px;
+  color: var(--text-muted, #555);
+  font-style: italic;
+}
+
 .validation-issue__field {
   grid-column: 2;
   font-size: 12px;

@@ -55,6 +55,8 @@ Los módulos funcionales **no** implementan clientes de object storage ni adapta
 
 Toda regla de negocio bloqueante vive en el backend; el frontend solo la refleja. Las respuestas de error son verbosas y estructuradas según el esquema único definido en [`estandares-api.md`](../especificacion/estandares-api.md) §3 — nunca un 400/422 sin cuerpo.
 
+Todo validador `blocking` declara **fundamento** en `legal_reference` (cita normativa o `integridad:<motivo>`). Las citas normativas se muestran al funcionario en el helper de validación para que pueda argumentar el bloqueo. Norma: [`musts-arquitectura.md`](../especificacion/musts-arquitectura.md) §11.
+
 ## 8. Trazabilidad de extremo a extremo (patrón expediente)
 
 Toda compra se estructura como un **Expediente de Compra** (`ProcurementCase`) con folio único legible, creado al iniciar la solicitud y vigente hasta el pago. Toda entidad del ciclo de compra debe llevar referencia directa al expediente (`procurement_case_id` desnormalizado, además de sus FKs directas). Ninguna entidad futura del ciclo puede romper esta cadena. El folio debe ser visible en toda pantalla relacionada al proceso.

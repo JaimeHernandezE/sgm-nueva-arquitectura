@@ -97,15 +97,16 @@ Reglas:
 
 ### 3.6 Validaciones (obligatoria en formularios; "Sin validaciones de formulario" si no aplica)
 
-Catálogo accionable de reglas que el **backend** evalúa al invocar una operación de escritura (o al intentar avanzar con un botón del formulario). El frontend solo refleja el resultado; no es la fuente de verdad. Norma de payload: [`estandares-api.md`](../especificacion/estandares-api.md) §3 (`ValidationIssue` / `ValidationErrorResponse`).
+Catálogo accionable de reglas que el **backend** evalúa al invocar una operación de escritura (o al intentar avanzar con un botón del formulario). El frontend solo refleja el resultado; no es la fuente de verdad. Norma de payload: [`estandares-api.md`](../especificacion/estandares-api.md) §3 (`ValidationIssue` / `ValidationErrorResponse`). Fundamento: [`musts-arquitectura.md`](../especificacion/musts-arquitectura.md) §11.
 
 **Cuándo es obligatoria:** todo sub-paso con formulario o acciones de escritura en SGM (botones que invocan operaciones del contrato). Si el sub-paso es solo lectura, consulta o automático sin captura → declarar `Sin validaciones de formulario`.
 
 Formato (tabla; una fila por regla; agrupar por acción de UI):
 
-| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad |
-|---|---|---|---|---|---|
-| Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `requesting_unit` | El campo Unidad solicitante es obligatorio. | blocking |
+| Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
+|---|---|---|---|---|---|---|
+| Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `requesting_unit` | El campo Unidad solicitante es obligatorio. | blocking | `integridad:campo_requerido` |
+| Enviar a aprobación | `submitPurchaseRequest` | `FOUNDED_RESOLUTION_REQUIRED` | `founded_resolution_attachment` | Trato directo requiere resolución fundada adjunta. | blocking | `Ley 19.886 — causal de trato directo; ⚠ P-36` |
 
 | Columna | Contenido |
 |---|---|
@@ -115,11 +116,13 @@ Formato (tabla; una fila por regla; agrupar por acción de UI):
 | **Campo** | Path del campo en el payload (`requesting_unit`, `lines[0].quantity`, …) o `—` si es regla de documento/estado |
 | **Mensaje (`rule`)** | Texto legible que verá el usuario (mismo valor que viaja en la API) |
 | **Severidad** | `blocking` (impide avanzar) \| `advisory` (informa sin bloquear) — enum `Severity` |
+| **Fundamento (`legal_reference`)** | Obligatorio si `blocking`: cita normativa **o** `integridad:<motivo>`. En `advisory`, citar cuando aporte al funcionario. Ver [`estandares-api.md`](../especificacion/estandares-api.md) §3.3 |
 
 Reglas:
-- Toda fila debe existir (o agregarse) en la tabla de reglas de la operación en `contracts.md` y tener ejemplo o esquema en OpenAPI (`422` con `issues[]` cuando hay varias).
-- Prohibido inventar reglas solo en el prototipo: el modal de demo lista el mismo conjunto documentado aquí.
-- Ante varias reglas `blocking`, la API responde `422` con `ValidationErrorResponse` (`issues[]`); el prototipo muestra **todas** en un modal o listado.
+- Toda fila `blocking` debe tener fundamento no vacío. Normativo = artículo/decreto/dictamen (opcionalmente clave `NormativeParameter`); integridad = `integridad:campo_requerido` \| `integridad:estado_expediente` \| `integridad:documento_requerido` \| `integridad:rol_operacion` (u otro motivo documentado). Si la cita exacta está en un pendiente (P-NN), el valor incluye la norma marco y `⚠ P-NN` — no se deja en blanco.
+- Toda fila debe existir (o agregarse) en la tabla de reglas de la operación en `contracts.md` (misma columna Fundamento) y tener ejemplo o esquema en OpenAPI (`422` con `issues[]` cuando hay varias).
+- Prohibido inventar reglas solo en el prototipo: el modal de demo lista el mismo conjunto documentado aquí, incluyendo `legal_reference`.
+- Ante varias reglas `blocking`, la API responde `422` con `ValidationErrorResponse` (`issues[]`); el prototipo muestra **todas** en un modal o listado. Las citas normativas se muestran al funcionario; `integridad:*` no.
 - No sustituye §3.7 Edge cases: la tabla es el catálogo de códigos; los edge cases narran caminos no felices y fallas de proveedor.
 
 ### 3.7 Edge cases
@@ -145,7 +148,7 @@ Cada archivo de etapa termina con:
 Documento único por módulo, en `modulos/<módulo>/contracts.md`. Es la vista de arquitectura del módulo: qué expone, qué ofrece, qué necesita, qué anuncia. Se alimenta de los mapas de bordes de los macroprocesos del módulo. Cuatro secciones fijas (detalle metodológico en `contrato-api-first.md`):
 
 1. **Entidades que expone:** entidades del dominio visibles fuera del borde, con esquema (referencia a `entidades-core.md` + qué subconjunto de campos cruza el borde). Toda entidad que cruza el borde es candidata a payload de API.
-2. **Operaciones que ofrece:** endpoints con verbo, ruta, payload de entrada, respuesta, códigos de error posibles y reglas de negocio que valida (clasificación bloqueante/asesora y ancla normativa cuando aplique).
+2. **Operaciones que ofrece:** endpoints con verbo, ruta, payload de entrada, respuesta, códigos de error posibles y reglas de negocio que valida (clasificación bloqueante/asesora y **fundamento** `legal_reference` obligatorio en `blocking` — [`musts-arquitectura.md`](../especificacion/musts-arquitectura.md) §11).
 3. **Dependencias que requiere:** contratos de proveedor expresados como interfaces — operación, entrada, respuesta esperada, comportamiento ante falla o rechazo. Nunca como llamadas a un módulo concreto: el proveedor puede ser otro módulo SGM o un sistema municipal externo.
 4. **Eventos que emite:** hechos de dominio observables, con esquema del evento.
 

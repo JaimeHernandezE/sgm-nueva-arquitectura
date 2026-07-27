@@ -10,6 +10,8 @@
 
 **Alcance:** las etapas transversales (1, 2, 4) y la etapa 3 de Compra Ágil (§2.3), Licitación Pública (§2.4), Convenio Marco (§2.7) y Trato Directo (§2.8) están cubiertas. Pendientes humanos de TD: P-69 (rechazo OC), P-70 (polling/webhook), P-71 (plazo 24 h).
 
+**Fundamento en validadores:** todo `blocking` en `ValidationIssue` / `ErrorResponse` lleva `legal_reference` (cita normativa o `integridad:<motivo>`). Catálogo completo con columna Fundamento en las fichas §3.6; el backend debe poblar el mismo valor al emitir `422`. Norma: [`musts-arquitectura.md`](../../arquitectura/especificacion/musts-arquitectura.md) §11 · [`estandares-api.md`](../../arquitectura/especificacion/estandares-api.md) §3.3.
+
 ---
 
 ## 1. Entidades que expone
@@ -123,7 +125,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 - **Sub-pasos:** 1.1
 - **Entrada:** `PurchaseRequest` + `PurchaseRequestLine[]` (`currency` a nivel de documento; `unit_price` **neto** en esa moneda; `tax_code` por línea)
 - **Respuesta:** `PurchaseRequest` con `status = draft`
-- **Errores de validación:** ante varias reglas fallidas → `422` `ValidationErrorResponse` (`error_code: VALIDATION_FAILED`, `issues[]`). Norma: [`estandares-api.md`](../../arquitectura/especificacion/estandares-api.md) §3.2.
+- **Errores de validación:** ante varias reglas fallidas → `422` `ValidationErrorResponse` (`error_code: VALIDATION_FAILED`, `issues[]` con `legal_reference` obligatorio en cada issue `blocking`). Norma: [`estandares-api.md`](../../arquitectura/especificacion/estandares-api.md) §3.2–3.3; fundamento por código en ficha SOLPED §3.6.
 - **Reglas:**
   | Regla | Severidad | Campo | QA | Error |
   |---|---|---|---|---|
