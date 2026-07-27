@@ -1,11 +1,12 @@
 # Módulo: Presupuestos
 
-Inventario inicial de modelos Odoo documentado. Macroprocesos, contratos y dominio nuevo aún pendientes.
+Inventario Odoo y plan de trabajo de especificación en curso. Macroprocesos, contratos y dominio nuevo aún pendientes.
 
 ## Documentos
 
 | Documento | Descripción |
 |-----------|-------------|
+| [`plan-de-trabajo.md`](plan-de-trabajo.md) | Plan de especificación (v0.3): diagnóstico Magenta × Odoo, macroprocesos, fases, pendientes abiertos |
 | [`modelos-odoo.md`](modelos-odoo.md) | Modelos, relaciones y flujos de estado en Odoo (`presupuesto_gov_cl` + puente `account_gov_adquisiciones`) |
 
 ## Referencias
