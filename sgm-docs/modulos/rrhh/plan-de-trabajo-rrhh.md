@@ -8,7 +8,7 @@
 
 **Gobierno del corpus:** [`../../plan-general.md`](../../plan-general.md). Criterios de calidad: plan general §7. Ventana de mutabilidad y patrones: ADRs en `arquitectura/decisiones/`.
 
-**Cambios v0.3 (B0 plan general):** R-1 reflejado en Presupuestos v0.11 (contrato bidireccional). Remisión Cont/Tes a **R-7** (ciclo subsidios). Prefijo transversal **X-nn**; alcance mínimo P-20 → **X-80** reservado. Criterios de calidad remiten al plan general.
+**Cambios v0.3 (B0 plan general):** R-1 reflejado en Presupuestos v0.11 (contrato bidireccional). Remisión Cont/Tes a **R-7** (ciclo subsidios). Prefijo transversal **X-nn**; alcance mínimo P-20 → **X-80**, cerrado por este mismo D-1 (ver §2.1). Criterios de calidad remiten al plan general.
 
 **Cambios v0.2:** contraste del diagnóstico §3.2–3.3 contra el ORM del stack RRHH. Se corrige permisos ≠ `hr.holiday.request` (traslado de feriado; permisos = `hr.leave`); se matiza HE (resolución + checklist, sin hard-stop en liquidación); se reclasifican informe de honorarios, retenciones judiciales, Previred y viáticos con la lente de *expediente sin efecto de dominio*; se añaden PMG, portal/autoservicio y modelos de reporte (`report.transparency`, `report.ine`); conteo de addons alineado al inventario (13). Nueva §3.2.1. Sin renumerar R-1…R-14.
 
