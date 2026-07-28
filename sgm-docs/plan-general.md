@@ -284,7 +284,7 @@ Viven **una sola vez** aquí. Los planes de módulo referencian esta sección (o
 | Dos conciliaciones | Tesorería §3.1 hallazgo 1 |
 | Subsidios COMPIN | RRHH R-7, proceso 18 |
 | Mismo commit Odoo Pres+Inventario | Adq comparativa §3.3 |
-| P-44 / P-46 / P-47 | Adq comparativa §5; pendientes.md; recepción 4.3–4.4 |
+| X-44 / X-46 / X-47 (ex P-44 / P-46 / P-47) | Adq comparativa §5; pendientes.md; recepción 4.3–4.4 |
 | DocDigital | ADR 2026-07-docdigital |
 | Ventana mutabilidad | Tesorería T-3; cuatro entidades |
 | Colisión P-nn | pendientes.md vs Pres P-1…P-20; seguridad Anexo A; nodo §9 |
