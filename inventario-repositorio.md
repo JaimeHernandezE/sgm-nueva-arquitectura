@@ -1,6 +1,6 @@
 # Inventario verificable del repositorio SGM (nueva-arquitectura)
 
-**Fecha del inventario:** 30 de julio de 2026  
+**Fecha del inventario:** 30 de julio de 2026 (actualizado 31 de julio de 2026: `alcance-minimo-modulos-adyacentes.md`; integración de `estandar-pruebas.md`)  
 **Alcance:** contenido versionado del repositorio, excluidos `.git/`, artefactos de build y `node_modules/` (este último no existe en el árbol).  
 **Naturaleza:** acta de lo construido como archivo. No es README ni guía de uso.
 
@@ -10,19 +10,19 @@
 
 | Métrica | Valor | Cómo se obtuvo |
 |---|---:|---|
-| Archivos de especificación **sustantivas** (`.md`, sin README, sin wireframes, sin glosarios auxiliares, sin stubs OpenAPI, sin `MANIFEST`/README de prototipos) | **81** | Clasificación por ruta + conteo `Get-ChildItem` |
-| Líneas de esas 81 | **15686** | `(Get-Content).Count` por archivo, suma |
-| Palabras de esas 81 | **165959** | Tokens separados por whitespace, suma |
-| Archivos de especificación **+ wireframes de contenido** (81 + 70) | **151** | Idem; wireframes sin sus 2 README |
-| Líneas de esas 151 | **20162** | Suma |
-| Palabras de esas 151 | **193820** | Suma |
-| Total `.md` en el repo (antes de este inventario) | **164** / **20856** líneas | Incluye README, glosarios, wireframe README, prototipos md |
+| Archivos de especificación **sustantivas** (`.md`, sin README, sin wireframes, sin glosarios auxiliares, sin stubs OpenAPI, sin `MANIFEST`/README de prototipos) | **83** | Clasificación por ruta + conteo `Get-ChildItem` (incluye alcance-mínimo y `estandar-pruebas.md`) |
+| Líneas de esas 83 | **16200** | `(Get-Content).Count` por archivo, suma (reconteo 31 jul 2026) |
+| Palabras de esas 83 | **171620** | Tokens separados por whitespace, suma |
+| Archivos de especificación **+ wireframes de contenido** (83 + 70) | **153** | Idem; wireframes sin sus 2 README |
+| Líneas de esas 153 | **20676** | Suma |
+| Palabras de esas 153 | **199481** | Suma |
+| Total `.md` en el repo (antes de este inventario) | **166** / **21371** líneas | Incluye README, glosarios, wireframe README, prototipos md |
 | Wireframes de contenido (`.md`) | **70** / **4476** líneas | Bajo `**/wireframes/`, excluye README |
 | Prototipos HTML | **73** / **9800** líneas | `sgm-prototipos/**/*.html` |
 | OpenAPI / YAML de contrato | **17** `.yaml` + **2** `.yml` CI | Conteo por extensión |
 | Fixtures YAML Adquisiciones | **6** | Carpeta `fixtures/` (5 expedientes + escenarios) |
-| Pendientes — ocurrencias de marca en corpus `sgm-docs`+`bd-export-odoo` | P **193** · C **132** · T **88** · R **82** · A **18** · X **852** | Regex `(?<![A-Z])[PCTRAX]-\d+` |
-| Pendientes — IDs únicos (mismo corpus) | P **30** · C **18** · T **14** · R **14** · A **5** · X **85** | Distinct sobre el mismo match; ver nota §1.1 |
+| Pendientes — ocurrencias de marca en corpus `sgm-docs`+`bd-export-odoo` | P **195** · C **132** · T **88** · R **82** · A **18** · X **900** | Regex `(?<![A-Z])[PCTRAX]-\d+` (reconteo 31 jul 2026 tras estandar-pruebas + registro X-86…X-93) |
+| Pendientes — IDs únicos (mismo corpus) | P **30** · C **18** · T **14** · R **14** · A **5** · X **93** | Distinct; registro tabular X-01…X-93 |
 | Entidades modelo canónico propuestas | Core **37** + plataforma **27** encabezados `###` | `entidades-core.md`, `entidades-plataforma.md`; 4 nombres en ambos (ver §1.2) |
 | Decisiones de partida D-n / DC-n (filas de tabla) | Pres **4** · Cont **5** · Tes **6** · RRHH **6** · plan-general **11** (DC) · entregable-licitación **7** (D-01…07) | Filas `| D-… |` / `| DC-… |` |
 | Macroprocesos nombrados | MC-1…MC-7 · MT-1…MT-7 · MR-1…MR-7 | Distinct en `sgm-docs` |
@@ -34,8 +34,8 @@
 | Último commit (HEAD) | **2026-07-28 14:20:59 -0400** | `git log -1` |
 | Modelos Odoo en `bd-export-odoo` | **55** (10 módulos con diccionario) | Encabezados `####` de modelo |
 | Modelos en inventarios `modelos-odoo.md` (módulos) | Cont **42** · Tes **17** · Pres **13** · RRHH **7** (excl. `_inherit`) | Encabezados `###` de modelo; hay solapes entre módulos |
-| Archivos totales (sin `.git`, sin este inventario ni auxiliares `_t_*`) | **298** | `Get-ChildItem -Recurse -File` |
-| Archivos de contenido (md/html/js/css/yaml/yml/json/csv/drawio/mdc) | **296** (164 md + 132 otros) | Anexo §8 |
+| Archivos totales (sin `.git`, sin este inventario ni auxiliares `_t_*`) | **300** | `Get-ChildItem -Recurse -File` |
+| Archivos de contenido (md/html/js/css/yaml/yml/json/csv/drawio/mdc) | **298** (166 md + 132 otros) | Anexo §8 |
 
 ### 1.1 Nota sobre pendientes (ocurrencias ≠ IDs de serie)
 
@@ -45,7 +45,7 @@ Serie canónica declarada en planes / registro:
 
 | Prefijo | Serie declarada en documentos de origen | Filas en registro tabular central |
 |---|---|---|
-| X- | X-01…X-85 | **85** filas en `sgm-docs/arquitectura/decisiones/pendientes.md` |
+| X- | X-01…X-93 | **93** filas en `sgm-docs/arquitectura/decisiones/pendientes.md` |
 | P- | P-1…P-20 (plan Presupuestos / plan-general) | Marcadores `> **PENDIENTE P-…**` y tablas |
 | C- | C-1…C-18 | Marcadores en plan Contabilidad |
 | T- | T-1…T-14 | Marcadores en plan Tesorería |
@@ -152,11 +152,11 @@ Propósito overview Adq: «Todo el ciclo de compras públicas municipales, desde
 
 **Qué pregunta responde:** ¿Qué servicios compartidos, seguridad, API e integraciones debe ofrecer la plataforma con independencia del módulo?
 
-Incluye: `arquitectura/especificacion/*` (10), `plataforma/*` sustantivo (5), `modelo-datos/entidades-*.md` (2).
+Incluye: `arquitectura/especificacion/*` (11, incluido `estandar-pruebas.md`), `plataforma/*` sustantivo (5), `modelo-datos/entidades-*.md` (2).
 
-Documentos con más líneas: `estandares-api.md` (328), `plataforma-core.md` (270), `entidades-core.md` (629), `entidades-plataforma.md` (443), `plataforma/contracts.md` (381), `seguridad.md` (162), `integracion-docdigital.md` (181).
+Documentos con más líneas: `estandares-api.md` (328), `plataforma-core.md` (270), `estandar-pruebas.md` (273), `entidades-core.md` (629), `entidades-plataforma.md` (443), `plataforma/contracts.md` (381), `seguridad.md` (162), `integracion-docdigital.md` (181).
 
-Estados frecuentes en cabecera: «borrador», «borrador condicionado a X-72», «borrador X-24», «borrador X-06».
+Estados frecuentes en cabecera: «borrador», «borrador condicionado a X-72», «borrador X-24», «borrador X-06». `estandar-pruebas.md`: borrador julio 2026, no validado con DM.
 
 ### 2.4 Decisiones de arquitectura (ADR y afines)
 
@@ -172,7 +172,7 @@ Estados frecuentes en cabecera: «borrador», «borrador condicionado a X-72», 
 | `sgm-docs/arquitectura/decisiones/decisiones-macro-stack.md` | Decisiones macro: elección de stack… | borrador | — | 136 |
 | `sgm-docs/arquitectura/decisiones/nodo-integracion-subdere.md` | Nodo de integración SUBDERE… | borrador | julio 2026 | 206 |
 | `sgm-docs/arquitectura/decisiones/brechas-estandarizacion-ntdee-pisee.md` | Brechas NTDEE / PISEE | propuesta / borrador | julio 2026 | 222 |
-| `sgm-docs/arquitectura/decisiones/pendientes.md` | Pendientes de arquitectura — registro único | registro X-01…X-85 | — | 95 |
+| `sgm-docs/arquitectura/decisiones/pendientes.md` | Pendientes de arquitectura — registro único | registro X-01…X-93 | — | 103 |
 | `sgm-docs/arquitectura/decisiones/Nota-sobre-rentas.md` | Nota de decisión — Módulo Rentas… | dirigida a jefatura | julio 2026 | 126 |
 
 ### 2.5 Inventarios del sistema anterior (Odoo)
@@ -207,7 +207,8 @@ Estados frecuentes en cabecera: «borrador», «borrador condicionado a X-72», 
 | `patron-formularios-secciones.md` | Patrón: secciones… | 101 | norma de prototipos |
 | `patron-edicion-anclas-firma.md` | Patrón: edición de anclas… | 101 | norma de prototipos |
 | `patron-vista-expediente.md` | Patrón: vista de expediente… | 88 | propuesta a validar |
-| `arquitectura/licitacion/entregable-licitacion.md` | Entregable exigible de licitación… | 439 | borrador v2; 7 decisiones D-01…D-07 |
+| `arquitectura/licitacion/alcance-minimo-modulos-adyacentes.md` | Alcance mínimo de módulos adyacentes | 230 | v0.2 / propuesta de alcance, no validada con DM; X-78…X-81 |
+| `arquitectura/licitacion/entregable-licitacion.md` | Entregable exigible de licitación… | 441 | borrador v2; 7 decisiones D-01…D-07 |
 | `principios-no-negociables.md` | Principios de Arquitectura No Negociables | 66 | — |
 | `sandbox-desarrolladores.md` | Sandbox de desarrolladores SGM | 123 | borrador; cierra detalle X-16 |
 
@@ -254,7 +255,7 @@ HTML por área: Compra Ágil 6; Convenio Marco 8; Licitación Pública 14; Trato
 | CI | `.gitlab-ci.yml`; `.github/workflows/pages-prototipos.yml` |
 | Reglas agente | `.cursor/rules/*.mdc` (3) |
 
-### 2.11 Tabla de las 81 especificaciones sustantivas
+### 2.11 Tabla de las 83 especificaciones sustantivas
 
 | Ruta | H1 | Líneas | H2 | Versión/estado (cabecera) |
 |---|---|---:|---:|---|
@@ -281,22 +282,24 @@ HTML por área: Compra Ágil 6; Convenio Marco 8; Licitación Pública 14; Trato
 | ``sgm-docs/arquitectura/decisiones/decisiones-macro-stack.md`` | Decisiones macro: elección de stack para el nuevo SGM | 136 | 10 |  |
 | ``sgm-docs/arquitectura/decisiones/nodo-integracion-subdere.md`` | Nodo de integración SUBDERE y su relación con la licitación SGM | 206 | 11 |  |
 | ``sgm-docs/arquitectura/decisiones/Nota-sobre-rentas.md`` | Nota de decisión — Módulo Rentas en el alcance de SGM | 126 | 11 |  |
-| ``sgm-docs/arquitectura/decisiones/pendientes.md`` | Pendientes de arquitectura — registro único | 95 | 0 |  |
+| ``sgm-docs/arquitectura/decisiones/pendientes.md`` | Pendientes de arquitectura — registro único | 103 | 0 |  |
 | ``sgm-docs/arquitectura/especificacion/catalogo-documentos-firmables.md`` | Catálogo de documentos firmables | 71 | 4 | v1 — poblado con Adquisiciones; otros módulos sin entradas aún.   > |
 | ``sgm-docs/arquitectura/especificacion/catalogo-roles.md`` | Catálogo de roles (borrador X-24) | 212 | 9 | borrador para discusión interna con el equipo / DM.   > |
 | ``sgm-docs/arquitectura/especificacion/contrato-api-first.md`` | Contrato API-first: punto de partida | 95 | 8 |  |
 | ``sgm-docs/arquitectura/especificacion/estandares-api.md`` | Estándares del contrato API | 328 | 15 |  |
 | ``sgm-docs/arquitectura/especificacion/estandar-firma-electronica.md`` | Estándar de Firma Electrónica — SGM | 149 | 9 |  |
+| ``sgm-docs/arquitectura/especificacion/estandar-pruebas.md`` | Estándar de pruebas y verificación — SGM | 273 | 12 | borrador (julio 2026). Propuesta de estándar, no validada con DM |
 | ``sgm-docs/arquitectura/especificacion/integracion-docdigital.md`` | Integración SGM ↔ DocDigital | 181 | 8 |  |
 | ``sgm-docs/arquitectura/especificacion/integracion-mercado-publico.md`` | Integración SGM ↔ Mercado Público | 58 | 7 |  |
-| ``sgm-docs/arquitectura/especificacion/musts-arquitectura.md`` | Musts de arquitectura: escalabilidad y requisitos no funcionales veri... | 135 | 13 |  |
+| ``sgm-docs/arquitectura/especificacion/musts-arquitectura.md`` | Musts de arquitectura: escalabilidad y requisitos no funcionales veri... | 136 | 13 |  |
 | ``sgm-docs/arquitectura/especificacion/plataforma-core.md`` | Plataforma core: servicios transversales del SGM | 270 | 14 |  |
 | ``sgm-docs/arquitectura/especificacion/seguridad.md`` | Especificaciones de seguridad — SGM | 162 | 15 |  |
 | ``sgm-docs/arquitectura/instrucciones/patron-edicion-anclas-firma.md`` | Patrón: edición de anclas de firma en plantillas | 101 | 6 | Norma de prototipos — exigible en pantallas de configuración de plantillas/anclas.  ---... |
 | ``sgm-docs/arquitectura/instrucciones/patron-formularios-secciones.md`` | Patrón: secciones y subtítulos en formularios | 101 | 9 | Norma de prototipos — exigible en toda pantalla `form-card` nueva o existente.  ## Prob... |
 | ``sgm-docs/arquitectura/instrucciones/patron-vista-expediente.md`` | Patrón: vista de expediente detallada | 88 | 5 | Propuesta a validar con el equipo (junto con el shell de expediente del prototipo).  ##... |
 | ``sgm-docs/arquitectura/instrucciones/plantilla-maestra-sgm.md`` | Plantilla Maestra de Documentación — SGM | 389 | 9 |  |
-| ``sgm-docs/arquitectura/licitacion/entregable-licitacion.md`` | Entregable exigible de licitación: API, contratos y sandbox | 439 | 14 |  |
+| ``sgm-docs/arquitectura/licitacion/alcance-minimo-modulos-adyacentes.md`` | Alcance mínimo de módulos adyacentes | 230 | 10 | 0.2 (borrador para revisión interna) / propuesta de alcance, no validada con DM |
+| ``sgm-docs/arquitectura/licitacion/entregable-licitacion.md`` | Entregable exigible de licitación: API, contratos y sandbox | 441 | 14 |  |
 | ``sgm-docs/arquitectura/licitacion/principios-no-negociables.md`` | Principios de Arquitectura No Negociables | 66 | 9 |  |
 | ``sgm-docs/arquitectura/licitacion/sandbox-desarrolladores.md`` | Sandbox de desarrolladores SGM | 123 | 9 |  |
 | ``sgm-docs/modelo-datos/entidades-core.md`` | Entidades Core del Modelo de Datos | 629 | 3 |  |
@@ -434,7 +437,7 @@ Leyenda: **existe** = hay archivo(s) de ese tipo; **parcial** = hay material per
 | Prototipos HTML | existe (50 bajo `modulos/adquisiciones`) | no existe | no existe | no existe | no existe | no existe | existe (municipal/shell/subdere) |
 | ADR / decisión de alcance | menciones en ADRs transversales | vía plan + plan-general | C-1 / ADR atomicidad | D-6 DocDigital en plan | R-2 SIAPER | existe solo `Nota-sobre-rentas.md` | 5 ADR + decisiones |
 | Analítica / QA / fixtures | existe | no existe | no existe | no existe | no existe | no existe | no existe |
-| Documento `alcance-minimo-modulos-adyacentes.md` | — | — | — | — | — | — | **no existe** (referenciado en plan-general; X-78…X-81 reservados) |
+| Documento `alcance-minimo-modulos-adyacentes.md` | — | — | — | — | — | — | existe `arquitectura/licitacion/alcance-minimo-modulos-adyacentes.md` (v0.2; X-78…X-81) |
 
 ---
 
@@ -506,9 +509,26 @@ De `brechas-etapa3-modalidades.md` §4:
 | X-70 | Polling vs webhook MP | ChileCompra / plataforma |
 | X-71 | Control bloqueante plazo 24 h TD | DM / jurídica |
 
-Registro completo X-01…X-85: `sgm-docs/arquitectura/decisiones/pendientes.md`.
+Registro completo X-01…X-93: `sgm-docs/arquitectura/decisiones/pendientes.md`.
 
-X-47 y X-80 constan cerrados en el registro / plan-general. X-46 absorbido bajo C-1. X-78, X-79, X-81 reservados a documento de alcance mínimo **ausente**.
+X-47 y X-80 constan cerrados en el registro / plan-general. X-46 absorbido bajo C-1. X-78, X-79, X-81 se desarrollan en `arquitectura/licitacion/alcance-minimo-modulos-adyacentes.md` (X-80 cerrado allí también, como antecedente de RRHH D-1).
+
+### 6.3 Pendientes del estándar de pruebas (X-86…X-93)
+
+Origen: `sgm-docs/arquitectura/especificacion/estandar-pruebas.md` §11 (registrados en `pendientes.md`).
+
+| ID | Materia | Perfil / naturaleza de cierre |
+|---|---|---|
+| X-86 | Inventario derivado como denominador de cobertura | Trabajo de especificación |
+| X-87 | Efecto de dominio verificable en fichas (plantilla §3.6) | Trabajo de especificación |
+| X-88 | Calendario de días hábiles | Decisión técnica + fuente normativa |
+| X-89 | Puntos de inyección de falla (T6) | Bloqueado por C-1 |
+| X-90 | Calibración de coberturas antes de bases | Jefatura / bases |
+| X-91 | Régimen contractual ante prueba fallida (alinear con X-10) | Jefatura / jurídica |
+| X-92 | Anonimización staging (Ley 21.719) | Jurídica |
+| X-93 | Extensión del estándar a módulos sin spec | Trabajo de especificación |
+
+**Veredicto de coherencia (31 jul 2026):** el estándar es coherente con musts §6–§7/§10.6/§11, entregable §4.3/§5.4/§9.4, sandbox §4/§7, ADRs de ventana/atomicidad, hallazgos Cont/Tes y seguridad H-2. No redefine T10/T11; introduce T2 (efecto de dominio) como hueco que el corpus ya diagnosticaba.
 
 ---
 
@@ -516,20 +536,19 @@ X-47 y X-80 constan cerrados en el registro / plan-general. X-46 absorbido bajo 
 
 1. **Código de aplicación** del SGM nuevo (0 `.py` / `.ts` / `.sql` de producto).
 2. **Carpeta `sgm-docs/modulos/rentas/`** — solo existe la nota a jefatura.
-3. **`sgm-docs/arquitectura/licitacion/alcance-minimo-modulos-adyacentes.md`** — citado en plan-general; no está en el disco.
-4. **Planes de trabajo** para Adquisiciones (el módulo tiene spec, no plan).
-5. **Fichas de proceso nuevas, OpenAPI, wireframes y prototipos** para Presupuestos, Contabilidad, Tesorería y RRHH.
-6. **QA P0/P1 dedicada** para Convenio Marco, Licitación Pública y Trato Directo — `brechas-etapa3-modalidades.md` la declara pendiente; solo hay `ficha-qa-adquisiciones.csv`.
-7. **Specs Playwright / e2e versionadas** — el mismo archivo de brechas indica que no hay specs Playwright en el repo.
-8. **Diccionarios bd-export** para L10N_CL_HR_SCALE, INVENTORY_GOV_CL, AUTOSERVICIO_GOV_CL (citados en intro, sin archivo de módulo).
-9. **README en la raíz** del monorepo.
-10. **Validación con DM** — los planes y varios specs se autodeclaran no validados.
+3. **Planes de trabajo** para Adquisiciones (el módulo tiene spec, no plan).
+4. **Fichas de proceso nuevas, OpenAPI, wireframes y prototipos** para Presupuestos, Contabilidad, Tesorería y RRHH.
+5. **QA P0/P1 dedicada** para Convenio Marco, Licitación Pública y Trato Directo — `brechas-etapa3-modalidades.md` la declara pendiente; solo hay `ficha-qa-adquisiciones.csv`.
+6. **Suite de código de pruebas versionada** — existe el estándar [`estandar-pruebas.md`](sgm-docs/arquitectura/especificacion/estandar-pruebas.md); no hay suite ejecutable (ni specs Playwright) en el repo.
+7. **Diccionarios bd-export** para L10N_CL_HR_SCALE, INVENTORY_GOV_CL, AUTOSERVICIO_GOV_CL (citados en intro, sin archivo de módulo).
+8. **README en la raíz** del monorepo.
+9. **Validación con DM** — los planes y varios specs se autodeclaran no validados (incluye alcance-mínimo v0.2 y `estandar-pruebas.md`).
 
 ---
 
 ## 8. Anexo — Índice de archivos de contenido
 
-### 8.1 Todos los `.md` (164) — líneas
+### 8.1 Todos los `.md` (166) — líneas
 
 | Líneas | Ruta |
 |---:|---|
@@ -556,22 +575,24 @@ X-47 y X-80 constan cerrados en el registro / plan-general. X-46 absorbido bajo 
 | 136 | ``sgm-docs/arquitectura/decisiones/decisiones-macro-stack.md`` |
 | 206 | ``sgm-docs/arquitectura/decisiones/nodo-integracion-subdere.md`` |
 | 126 | ``sgm-docs/arquitectura/decisiones/Nota-sobre-rentas.md`` |
-| 95 | ``sgm-docs/arquitectura/decisiones/pendientes.md`` |
+| 103 | ``sgm-docs/arquitectura/decisiones/pendientes.md`` |
 | 71 | ``sgm-docs/arquitectura/especificacion/catalogo-documentos-firmables.md`` |
 | 212 | ``sgm-docs/arquitectura/especificacion/catalogo-roles.md`` |
 | 95 | ``sgm-docs/arquitectura/especificacion/contrato-api-first.md`` |
 | 328 | ``sgm-docs/arquitectura/especificacion/estandares-api.md`` |
 | 149 | ``sgm-docs/arquitectura/especificacion/estandar-firma-electronica.md`` |
+| 273 | ``sgm-docs/arquitectura/especificacion/estandar-pruebas.md`` |
 | 181 | ``sgm-docs/arquitectura/especificacion/integracion-docdigital.md`` |
 | 58 | ``sgm-docs/arquitectura/especificacion/integracion-mercado-publico.md`` |
-| 135 | ``sgm-docs/arquitectura/especificacion/musts-arquitectura.md`` |
+| 136 | ``sgm-docs/arquitectura/especificacion/musts-arquitectura.md`` |
 | 270 | ``sgm-docs/arquitectura/especificacion/plataforma-core.md`` |
 | 162 | ``sgm-docs/arquitectura/especificacion/seguridad.md`` |
 | 101 | ``sgm-docs/arquitectura/instrucciones/patron-edicion-anclas-firma.md`` |
 | 101 | ``sgm-docs/arquitectura/instrucciones/patron-formularios-secciones.md`` |
 | 88 | ``sgm-docs/arquitectura/instrucciones/patron-vista-expediente.md`` |
 | 389 | ``sgm-docs/arquitectura/instrucciones/plantilla-maestra-sgm.md`` |
-| 439 | ``sgm-docs/arquitectura/licitacion/entregable-licitacion.md`` |
+| 230 | ``sgm-docs/arquitectura/licitacion/alcance-minimo-modulos-adyacentes.md`` |
+| 441 | ``sgm-docs/arquitectura/licitacion/entregable-licitacion.md`` |
 | 66 | ``sgm-docs/arquitectura/licitacion/principios-no-negociables.md`` |
 | 123 | ``sgm-docs/arquitectura/licitacion/sandbox-desarrolladores.md`` |
 | 61 | ``sgm-docs/arquitectura/README.md`` |
@@ -860,17 +881,17 @@ X-47 y X-80 constan cerrados en el registro / plan-general. X-46 absorbido bajo 
 
 ### Archivos leídos en profundidad (no solo listados)
 
-`plan-general.md`; cinco ADR `2026-07-*`; `pendientes.md`; `Nota-sobre-rentas.md`; planes Pres/Cont/Tes/RRHH; `entidades-core.md` / `entidades-plataforma.md`; `brechas-etapa3-modalidades.md`; `comparativa-odoo-vs-nuevo.md`; `bd-sgm.md`; `seguridad.md`; cabeceras de specs de arquitectura y Adq; metadatos mecánicos de los 164 `.md`.
+`plan-general.md`; cinco ADR `2026-07-*`; `pendientes.md` (X-01…X-93); `Nota-sobre-rentas.md`; `alcance-minimo-modulos-adyacentes.md`; `estandar-pruebas.md` (coherencia verificada e integrado 31 jul 2026); planes Pres/Cont/Tes/RRHH; `entidades-core.md` / `entidades-plataforma.md`; `brechas-etapa3-modalidades.md`; `comparativa-odoo-vs-nuevo.md`; `bd-sgm.md`; `seguridad.md`; cabeceras de specs de arquitectura y Adq; metadatos mecánicos de los 166 `.md` del corpus.
 
 ---
 
 ## 10. Autoverificación
 
-1. **¿Hay cifra sin rastro a comando o archivo?** Las de la §1 remiten a comando o conteo descrito. La deduplicación de normas es manual sobre el output del regex (59→36).
-2. **¿Rutas citadas existen?** Las de artefactos inventariados salen del filesystem. Las de §7 se comprobaron inexistentes (`alcance-minimo-modulos-adyacentes.md`, `modulos/rentas`).
-3. **¿Adjetivos valorativos?** Evitados en la voz del inventario. «Borrador» / «aceptada» aparecen solo como metadato del archivo fuente.
-4. **¿Trabajo futuro presentado como hecho?** No: planes y borradores se listan como archivos; la matriz §3 marca «no existe» / «parcial»; §6 y §7 listan no resuelto y vacíos.
-5. **¿La matriz muestra vacíos con la misma claridad que logros?** Sí: columnas Pres/Cont/Tes/RRHH/Rentas contrastan con Adquisiciones; Rentas y alcance mínimo figuran explícitamente.
+1. **¿Hay cifra sin rastro a comando o archivo?** Las de la §1 remiten a comando o conteo descrito. Tras integrar `estandar-pruebas.md`, se recontearon specs sustantivas (83 / 16200 / 171620), totales `.md` (166 / 21371) y pendientes X (900 occ / 93 IDs).
+2. **¿Rutas citadas existen?** `estandar-pruebas.md`, alcance-mínimo y registro X-86…X-93 existen. Sigue inexistente `modulos/rentas`.
+3. **¿Adjetivos valorativos?** Evitados en la voz del inventario. El veredicto «coherente» en §6.3 es factual respecto a alineación de referencias, no un juicio de calidad.
+4. **¿Trabajo futuro presentado como hecho?** No: el estándar de pruebas existe como documento; la suite de código no. X-86…X-93 figuran abiertos.
+5. **¿La matriz muestra vacíos con la misma claridad que logros?** Sí; §7 distingue estándar existente vs suite ausente.
 
 ---
 

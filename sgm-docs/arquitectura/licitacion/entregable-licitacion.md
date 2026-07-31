@@ -344,6 +344,8 @@ Lista consolidada para traducir a cláusulas de licitación. Detalle normativo e
 - [ ] Evidencia de migraciones multi-tenant a escala de referencia.
 - [ ] Reproducción de fixtures por la contraparte técnica contra el ambiente de recepción (`estandares-api.md` §6.3).
 
+Complemento del checklist (suite entregable, pruebas de efecto T2, validadores T3, estados negativos T4, fronteras temporales T5, atomicidad T6, aislamiento T8, autorización T9): [`../especificacion/estandar-pruebas.md`](../especificacion/estandar-pruebas.md) §9.
+
 ### 9.5 Propiedad y portabilidad
 
 - [ ] Código en repositorio SUBDERE; motor en infraestructura SUBDERE ([`principios-no-negociables.md`](./principios-no-negociables.md) §2, §5).

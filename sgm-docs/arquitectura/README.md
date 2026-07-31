@@ -16,6 +16,7 @@ Documentación transversal de arquitectura, organizada por propósito.
 ### Plan general del corpus
 
 - [`../plan-general.md`](../plan-general.md) — gobierna consistencia entre módulos, grafo de pendientes y secuencia B0–B2
+- [`../../anatomia-y-arquitectura.md`](../../anatomia-y-arquitectura.md) — anatomía de la especificación (Compra Ágil), enfoques de arquitectura y pendientes por naturaleza del bloqueo
 
 ### decisiones/
 
@@ -33,7 +34,7 @@ Documentación transversal de arquitectura, organizada por propósito.
 - [`principios-no-negociables.md`](./licitacion/principios-no-negociables.md) — cláusulas no delegables en bases
 - [`entregable-licitacion.md`](./licitacion/entregable-licitacion.md) — modelo de entregable (API + sandbox)
 - [`sandbox-desarrolladores.md`](./licitacion/sandbox-desarrolladores.md) — detalle operativo del sandbox (X-16)
-- `alcance-minimo-modulos-adyacentes.md` — **pendiente de incorporar al repo** (destino previsto aquí; IDs X-78…X-81)
+- [`alcance-minimo-modulos-adyacentes.md`](./licitacion/alcance-minimo-modulos-adyacentes.md) — piso irreducible Cont/Tes/RRHH para Adq+Pres (X-78…X-81)
 
 ### especificacion/
 
@@ -41,6 +42,7 @@ Documentación transversal de arquitectura, organizada por propósito.
 - [`seguridad.md`](./especificacion/seguridad.md) — especificaciones de seguridad
 - [`musts-arquitectura.md`](./especificacion/musts-arquitectura.md) — NFRs verificables
 - [`estandares-api.md`](./especificacion/estandares-api.md) — estándares API y OpenAPI / fixtures
+- [`estandar-pruebas.md`](./especificacion/estandar-pruebas.md) — estándar de pruebas y verificación (T1–T12; X-86…X-93)
 - [`contrato-api-first.md`](./especificacion/contrato-api-first.md) — metodología contract-first
 - [`catalogo-roles.md`](./especificacion/catalogo-roles.md) — catálogo RBAC transversal (X-24)
 - [`catalogo-documentos-firmables.md`](./especificacion/catalogo-documentos-firmables.md) — tipología de documentos firmables (anclas + roles)

@@ -4,7 +4,7 @@ Registro centralizado de pendientes transversales del corpus. Prefijo **X-nn** (
 
 **Convención:** Presupuestos conserva **P-nn**; Contabilidad **C-nn**; Tesorería **T-nn**; RRHH **R-nn**; Adquisiciones decisiones humanas **A-nn**. Ver [`../../plan-general.md`](../../plan-general.md) §5.
 
-**Cambios julio 2026 (B0):** renumeración P→X; **X-47 cerrado** (plan Tesorería); **X-46 absorbido bajo C-1**; **X-44 reformulado** (contradicción Cont D-2); **X-77** (anexo seguridad); **X-82…X-85** (nodo SUBDERE); **X-78…X-81** reservados para alcance mínimo.
+**Cambios julio 2026 (B0):** renumeración P→X; **X-47 cerrado** (plan Tesorería); **X-46 absorbido bajo C-1**; **X-44 reformulado** (contradicción Cont D-2); **X-77** (anexo seguridad); **X-82…X-85** (nodo SUBDERE); **X-78…X-81** en alcance mínimo (archivo en repo); **X-86…X-93** (estándar de pruebas).
 
 | ID | Pendiente | Documento(s) origen | Dependencia externa | Estado |
 |---|---|---|---|---|
@@ -85,11 +85,19 @@ Registro centralizado de pendientes transversales del corpus. Prefijo **X-nn** (
 | X-75 | Conflicto de folio: reconciliar correlativo interno del as-is Odoo (`approval_resolution`, decretos tesorería) con `ExternalFolio`; actos históricos migrados | integracion-docdigital.md; entidades-core (`AdministrativeAct`, `PaymentDecree`) | ninguna | Abierto |
 | X-76 | Plazos de tramitación externa DocDigital: efecto de la latencia sobre operaciones con plazo legal (presupuesto antes del 15 dic, representación en 10 días, otros) | integracion-docdigital.md; presupuestos §5.1 | jurídica / DM | Abierto |
 | X-77 | Completar Anexo A de seguridad con demás hallazgos Odoo de seguridad (colisión semántica histórica con X-32) | seguridad.md Anexo A | ninguna | Abierto |
-| X-78 | *(Reservado)* Pendiente P-18 del documento de alcance mínimo — incorporar al cerrar el archivo en el repo | alcance-minimo-modulos-adyacentes.md | — | Reservado |
-| X-79 | *(Reservado)* Pendiente P-19 del documento de alcance mínimo | alcance-minimo-modulos-adyacentes.md | — | Reservado |
-| X-80 | Motor de liquidación incluido en SGM (ex P-20 del alcance mínimo). **Cerrado** por RRHH D-1 antes de incorporar el documento al repo; al agregar el archivo, este ID entra cerrado con ese fundamento | alcance-minimo-modulos-adyacentes.md; rrhh plan D-1; plan-general §5.2 | — | **Cerrado** (RRHH D-1) |
-| X-81 | *(Reservado)* Pendiente P-21 del documento de alcance mínimo | alcance-minimo-modulos-adyacentes.md | — | Reservado |
+| X-78 | Definir la lista cerrada de servicios transversales y su propiedad, antes de escribir el alcance por módulo | licitacion/alcance-minimo-modulos-adyacentes.md §2 | ninguna | Abierto |
+| X-79 | Propiedad de la recepción y aceptación de DTE (Contabilidad, Tesorería o transversal) e integración requerida (SII / plataformas) | licitacion/alcance-minimo-modulos-adyacentes.md §3.4 | jurídica / Contabilidad | Abierto |
+| X-80 | Motor de liquidación incluido en SGM (ex P-20 del alcance mínimo). **Cerrado** por RRHH D-1; el archivo de alcance conserva el enunciado original como antecedente | licitacion/alcance-minimo-modulos-adyacentes.md; rrhh plan D-1; plan-general §5.2 | — | **Cerrado** (RRHH D-1) |
+| X-81 | Mecanismo formal para declarar alcance parcial en las bases (qué se implementa, qué se contrata sin implementación, condición de activación) | licitacion/alcance-minimo-modulos-adyacentes.md §6 | jefatura / bases | Abierto |
 | X-82 | Nodo SUBDERE: criterio jurídico consumo municipal vía PISEE vs canal propio | nodo-integracion-subdere.md §9 | jurídica / SGD | Abierto (propuesto) |
 | X-83 | Nodo SUBDERE: inventario de plataformas e integraciones | nodo-integracion-subdere.md §9 | Camila / equipo | Abierto (propuesto) |
 | X-84 | Nodo SUBDERE: producto institucional vs capacidad interna | nodo-integracion-subdere.md §9 | jefatura | Abierto (propuesto) |
 | X-85 | Nodo SUBDERE: propiedades verificables de extensibilidad Opción C en bases | nodo-integracion-subdere.md §9 | arquitectura | Abierto (propuesto) |
+| X-86 | Inventario derivado de la especificación (validadores, transiciones, efectos, eventos, plazos) como denominador de cobertura de pruebas | especificacion/estandar-pruebas.md §3, §11 | ninguna | Abierto |
+| X-87 | Efecto de dominio declarado en forma verificable por API en las fichas (ajuste plantilla-maestra §3.6) | especificacion/estandar-pruebas.md §4.2, §11 | ninguna | Abierto |
+| X-88 | Origen y custodia del calendario de días hábiles e inhábiles (candidato: `NormativeParameter` anual) | especificacion/estandar-pruebas.md §4.5, §11 | técnica + fuente normativa | Abierto |
+| X-89 | Puntos de inyección de falla exigibles para pruebas de atomicidad (T6). **Bloqueado por C-1** | especificacion/estandar-pruebas.md §4.6, §11; 2026-07-atomicidad-efectos-borde.md | C-1 | Abierto (bloqueado por C-1) |
+| X-90 | Calibración de los niveles de cobertura de pruebas antes de las bases | especificacion/estandar-pruebas.md §5, §11 | jefatura / bases | Abierto |
+| X-91 | Régimen contractual ante prueba fallida en recepción (qué se rechaza, qué se subsana, incumplimiento sostenido). Alinear con **X-10** / musts §6 | especificacion/estandar-pruebas.md §6, §11 | jefatura / jurídica | Abierto |
+| X-92 | Procedimiento de anonimización para staging (campos, técnica, quién certifica). Criterio Ley 21.719 | especificacion/estandar-pruebas.md §8, §11 | jurídica | Abierto |
+| X-93 | Verificar si el estándar de pruebas debe extenderse a los módulos aún sin especificación | especificacion/estandar-pruebas.md §11 | ninguna | Abierto |

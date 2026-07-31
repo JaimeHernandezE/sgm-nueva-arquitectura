@@ -65,6 +65,7 @@ Los valores exactos son de referencia y deben calibrarse antes de las bases; lo 
 
 - La recepción del sistema incluye pruebas de carga ejecutadas por el proveedor **en presencia de la contraparte técnica**, contra el escenario de la sección 1: N municipios concurrentes con perfil de pico, no de promedio.
 - El plan de pruebas (herramienta, escenarios, datos sintéticos, criterios de éxito ligados a los SLOs de la sección 6) forma parte de los entregables y se aprueba antes de ejecutarse.
+- Detalle de la suite exigible (conformidad, **efecto de dominio**, validadores, estados, plazos, atomicidad, aislamiento, autorización) y de los criterios que no se redefinen aquí: [`estandar-pruebas.md`](./estandar-pruebas.md).
 - Mismo principio que el resto de la recepción: cumple o no cumple, sin "rendimiento razonable" difuso.
 
 ## 8. Observabilidad exigida
