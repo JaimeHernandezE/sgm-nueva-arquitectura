@@ -1,4 +1,4 @@
-# Wireframe: Generación de preobligación
+﻿# Wireframe: Generación de preobligación
 
 **Sub-paso:** 1.6 — Generación de preobligación  
 **Rol:** Firmante CDP (`adq.firmante_cdp`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)  
@@ -14,7 +14,7 @@
 +----------------------------------------------------------+
 | Preobligación                                             |
 | CDP vigente           CDP-2026-00891  (firmado 02/07/26)  |
-| Línea presupuestaria (solo lectura)  Cuenta / Programa ...   |
+| Imputación presupuestaria (solo lectura)  Cuenta / Programa ...   |
 | Monto preobligación * [ $ ____________ ]                |
 | Año fiscal *          [ 2026 ]                          |
 +----------------------------------------------------------+
@@ -31,7 +31,7 @@
 | Campo UI | Entidad.campo | Obligatorio |
 |---|---|---|
 | CDP vigente | `BudgetPreCommitment.budget_availability_certificate_id` | Sí (solo lectura) |
-| Línea presupuestaria | `BudgetPreCommitment.budget_line_id` | No (solo lectura, heredada) |
+| Imputación presupuestaria | `BudgetPreCommitment.budget_line_id` | No (solo lectura, heredada) |
 | Monto preobligación | `BudgetPreCommitment.estimated_amount` | Sí |
 | Año fiscal | `BudgetPreCommitment.fiscal_year` | Sí |
 | Ref. asiento | respuesta `registerPreObligation` | No (generado por sistema) |

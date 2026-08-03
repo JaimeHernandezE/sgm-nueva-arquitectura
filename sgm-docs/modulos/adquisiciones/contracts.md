@@ -1,4 +1,4 @@
-# Contrato del módulo: Adquisiciones
+﻿# Contrato del módulo: Adquisiciones
 
 > Piloto: macroproceso **Compra Ágil** (SOLPED → Pago). Etapas 1 (SOLPED), 2 (Modalidad de Compra) y 4 (Recepción Conforme) son transversales a las 4 modalidades; etapa 3 (Resolución de Compra) es específica por modalidad.
 > Estado: borrador funcional derivado de fichas de flujo y ficha QA.
@@ -145,7 +145,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Desviación precio vs referencia dentro de tolerancia | blocking ⚠ | `lines[].unit_price` | — | `PRICE_DEVIATION_EXCEEDED` |
   | Si `purchase_modality = direct_procurement`, `founded_resolution_attachment` presente | blocking | `founded_resolution_attachment` | — | `FOUNDED_RESOLUTION_REQUIRED` |
   | Si se agrega adjunto, tipo / descripción / archivo presentes | blocking | `attachments[].*` | — | `MISSING_REQUIRED_FIELD` |
-- **Dependencias invocadas:** `getPriceReference`, `previewBudgetAvailability` *(informativa, bajo demanda desde enlace UI)*; `searchProducts` *(typeahead de `product_code` — **[PENDIENTE X-94]**)*; `listUnitOfMeasures` *(catálogo de plataforma)*. Verificación de stock/catálogo CM: sub-paso **1.0** (optativo).
+- **Dependencias invocadas:** `getPriceReference`, `getBudgetLine` / `previewBudgetAvailability` *(al seleccionar imputación presupuestaria — descripción + saldo)*; `searchProducts` *(typeahead de `product_code` — **[PENDIENTE X-94]**)*; `listUnitOfMeasures` *(catálogo de plataforma)*. Verificación de stock/catálogo CM: sub-paso **1.0** (optativo).
 - **Notas:**
   - Unidades: `requesting_unit` y `destination_unit` se autoasignan por `RoleAssignment`. Con `adq.solicitante` ambas quedan fijas a su unidad; con `adq.solicitante_daf` ambas son **modificables** en el tenant. Ver [`catalogo-roles.md`](../../arquitectura/especificacion/catalogo-roles.md) §3.1.
   - `product_code` en línea: typeahead busca por código o palabra vía `searchProducts`; si el usuario elige un hit del catálogo, se persiste el código (y puede prellenar `item_description`). Catálogo / entidad `Product` **[PENDIENTE X-94]** — campo opcional hasta entonces.
@@ -155,13 +155,20 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   - Si `currency` ≠ CLP, la tasa en 1.1 es referencial; el hito que congela la tasa para compromiso está pendiente (ficha 1-solped).
   - ⚠ Pendiente normativo: umbrales de modalidad (UTM) ¿neto o bruto?
 
-#### `GET /budget-lines/{id}/preview-availability` — `previewBudgetAvailability`
-- **Sub-pasos:** 1.1, 1.2 *(autoconsulta informativa; no avanza el flujo)*
-- **Entrada:** `budget_line_id`, `fiscal_year`, `amount` (opcional — monto estimado de la SOLPED **bruto en CLP**)
-- **Respuesta:** `available_balance`, `committed_by_others`, `projected_balance` (misma forma que `checkBudgetAvailability`)
-- **Reglas:** solo lectura; no persiste verificación ni afecta `PurchaseRequest.status`; requiere RBAC de consulta sobre la línea
+#### `GET /budget-lines/{id}` — `getBudgetLine`
+- **Sub-pasos:** 1.1, 1.2 *(al seleccionar `proposed_budget_line_id`)*
+- **Respuesta:** subset de `BudgetLine` — al menos `id`, `code`, `description` (descripción de la cuenta). Canónico en Presupuestos ([`entidades-presupuestos.md`](../../modelo-datos/entidades-presupuestos.md)).
 - **Dependencias:** Presupuestos (cacheada)
-- **Comportamiento ante falla:** error en panel/modal; la pantalla de creación o aprobación continúa operativa
+- **Comportamiento ante falla:** mensaje junto al selector; no bloquea el borrador
+
+#### `GET /budget-lines/{id}/preview-availability` — `previewBudgetAvailability`
+- **Sub-pasos:** 1.1, 1.2 *(autoconsulta informativa; se dispara al seleccionar la línea y/o desde panel de detalle)*
+- **Entrada:** `budget_line_id`, `fiscal_year`, `amount` (opcional — monto estimado de la SOLPED **bruto en CLP**)
+- **Respuesta:** `available_balance` (**saldo** mostrado junto al selector), `committed_by_others`, `projected_balance` (misma forma que `checkBudgetAvailability`); puede enriquecerse con `account_code` / `account_description` si `getBudgetLine` no se invocó por separado
+- **Reglas:** solo lectura; no persiste verificación ni afecta `PurchaseRequest.status`; requiere RBAC de consulta sobre la línea
+- **UI 1.1:** al elegir `proposed_budget_line_id`, mostrar en solo lectura **descripción de la cuenta** + **saldo** (Presupuestos). No sustituye 1.3.
+- **Dependencias:** Presupuestos (cacheada)
+- **Comportamiento ante falla:** error en panel/modal o bloque bajo el selector; la pantalla de creación o aprobación continúa operativa
 - **Nota B0 (CDP / personal):** esta operación es **informativa** en el flujo de Adquisiciones. La **disponibilidad bloqueante** y el **CDP de gasto en personal** (RRHH procesos 1–4, 8; cometidos 3.2.4) son contratos distintos Presupuestos↔RRHH (**R-1**). No asumir que `previewBudgetAvailability` cubre contratación de personal.
 
 #### `POST /purchase-requests/{id}/submit` — `submitPurchaseRequest`
@@ -636,7 +643,8 @@ Contrato del core: [`plataforma/contracts.md`](../../plataforma/contracts.md) §
 | Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
 |---|---|---|---|
 | `checkBudgetAvailability` | 1.3, 1.5, 1.6 | Síncrona bloqueante | Error `BUDGET_PROVIDER_UNAVAILABLE`; operación no procede |
-| `previewBudgetAvailability` | 1.1, 1.2 | Cacheada / informativa | Error en panel de autoconsulta; no bloquea creación ni aprobación |
+| `getBudgetLine` | 1.1, 1.2 | Cacheada | Descripción de cuenta al seleccionar línea propuesta; error no bloquea borrador |
+| `previewBudgetAvailability` | 1.1, 1.2 | Cacheada / informativa | Saldo al seleccionar línea / panel detalle; no bloquea creación ni aprobación |
 | `createBudgetPreCommitment` | 1.6 | Síncrona bloqueante | Rechazo → `BUDGET_UNAVAILABLE`; sin efecto parcial |
 | `commitBudget` | 3.4 *(CA)*, 3.14 *(LP)*, 3.7 *(CM)*, 3.3 *(TD)* | Síncrona bloqueante | Rechazo → `BUDGET_UNAVAILABLE`; OC queda `commitment_pending` — regularización pendiente (**[PENDIENTE X-40]**). Reemplaza el par anterior `convertPreCommitmentToCommitment`+`registerBudgetCommitment`. |
 | `releasePreCommitment` | 3.6 | Síncrona bloqueante | Error `BUDGET_PROVIDER_UNAVAILABLE`; cancelación no se persiste sin liberación confirmada |
@@ -824,7 +832,7 @@ La ficha QA original solo cubrió el piloto Compra Ágil. Las operaciones de Lic
 | 0.1 | `listProcurementCases`, `getProcurementCase` | — | — |
 | 0.2 | — *(navegación a 1.0/1.1)* | evaluación capacidades Inventario/CM | — |
 | 1.0 | — *(consulta deps)* | `checkStockAvailability`, `checkCatalogAvailability` *(cond.)* | — |
-| 1.1 | `createPurchaseRequest`, `submitPurchaseRequest` | `getPriceReference`, `previewBudgetAvailability`, `searchProducts` *(**[X-94]**)*, `listUnitOfMeasures` | — |
+| 1.1 | `createPurchaseRequest`, `submitPurchaseRequest` | `getPriceReference`, `getBudgetLine`, `previewBudgetAvailability`, `searchProducts` *(**[X-94]**)*, `listUnitOfMeasures` | — |
 | 1.2 | `approvePurchaseRequest`, `rejectPurchaseRequest` | `requestSignature`, `confirmSignature`, `previewBudgetAvailability` | `PurchaseRequestApproved` |
 | 1.3 | `verifyBudgetAvailability` | `checkBudgetAvailability` | — |
 | 1.4 | `requestBudgetFinancing` | — | `BudgetFinancingRequested` |

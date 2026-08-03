@@ -80,56 +80,7 @@
                 <th>Severidad</th>
               </tr>
             </thead>
-            <tbody id="gateway-body">
-              <tr data-rule="V1">
-                <td>V1</td>
-                <td>Monto ≤ 100 UTM para Compra Ágil</td>
-                <td class="gw-result">—</td>
-                <td><span class="badge badge--blocking">Bloqueante</span></td>
-              </tr>
-              <tr data-rule="V2">
-                <td>V2</td>
-                <td>Catálogo CM es primera opción sin justificación</td>
-                <td class="gw-result">—</td>
-                <td><span class="badge badge--blocking">Bloqueante</span></td>
-              </tr>
-              <tr data-rule="V3">
-                <td>V3</td>
-                <td>Trato Directo requiere causal + Resolución Fundada</td>
-                <td class="gw-result">—</td>
-                <td><span class="badge badge--blocking">Bloqueante</span></td>
-              </tr>
-              <tr data-rule="V4">
-                <td>V4</td>
-                <td>Monto &gt; 100 UTM sin CM aplicable → sugiere LP</td>
-                <td class="gw-result">—</td>
-                <td><span class="badge badge--advisory">Advertencia</span></td>
-              </tr>
-              <tr data-rule="V5">
-                <td>V5</td>
-                <td>TD &gt; 8.000 UTM → advierte Toma de Razón</td>
-                <td class="gw-result">—</td>
-                <td><span class="badge badge--advisory">Advertencia</span></td>
-              </tr>
-              <tr data-rule="V6">
-                <td>V6</td>
-                <td>Detección de posible fraccionamiento <em>(propuesta)</em></td>
-                <td class="gw-result">Sin compras relacionadas detectadas (demo)</td>
-                <td><span class="badge badge--advisory">Advertencia</span></td>
-              </tr>
-              <tr data-rule="V7">
-                <td>V7</td>
-                <td>LP: tramo de licitación + plazo mínimo de publicación</td>
-                <td class="gw-result">—</td>
-                <td><span class="badge badge--advisory">Advertencia</span></td>
-              </tr>
-              <tr data-rule="V8">
-                <td>V8</td>
-                <td>LP: garantías exigibles según monto</td>
-                <td class="gw-result">—</td>
-                <td><span class="badge badge--advisory">Advertencia</span></td>
-              </tr>
-            </tbody>
+            <tbody id="gateway-body"></tbody>
           </table>
 
           <div class="form-row hidden" id="td-cause-row">
@@ -159,8 +110,13 @@
 
   <script type="module">
     import { initAppShell } from '../../../shared/app-shell.js';
-    import { getExpedienteId, renderBreadcrumb, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
+    import { getExpedienteId, renderBreadcrumb, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
+    import {
+      gatewayTableBodyHtml,
+      initModalityGateway,
+      UTM_VALUE_DEMO,
+    } from '../../../shared/modality-gateway.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -175,140 +131,49 @@
 
     bootstrapFormPage('modalidad');
 
-    const UTM_VALUE = 65084; // demo, cacheado — no representa el valor real vigente
-    const AGILE_LIMIT_UTM = 100;
-    const COMPTROLLER_LIMIT_UTM = 8000;
+    document.getElementById('gateway-body').innerHTML = gatewayTableBodyHtml();
+    document.getElementById('utm-value').textContent = new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP',
+      maximumFractionDigits: 0,
+    }).format(UTM_VALUE_DEMO);
 
     const montoInput = document.getElementById('monto-input');
     const modalitySelect = document.getElementById('modality-select');
     const catalogCheck = document.getElementById('catalog-cm-check');
-    const tdCauseRow = document.getElementById('td-cause-row');
     const tdCause = document.getElementById('td-cause');
-    const cmJustificationRow = document.getElementById('cm-justification-row');
     const cmJustification = document.getElementById('cm-justification');
-    const utmEquivEl = document.getElementById('utm-equiv');
-    const utmDownBanner = document.getElementById('utm-unavailable-banner');
-    const utmPanel = document.getElementById('utm-panel');
+    const jefaturaApprovalCheck = document.getElementById('jefatura-approval-check');
     const confirmBtn = document.getElementById('confirm');
     const simulateUtmDownBtn = document.getElementById('simulate-utm-down');
-
-    let utmAvailable = true;
-
-    function setResult(rule, text, tone) {
-      const row = document.querySelector(`tr[data-rule="${rule}"] .gw-result`);
-      if (!row) return;
-      row.textContent = text;
-      row.style.color = tone === 'block' ? '#a33333' : tone === 'ok' ? '#2f6e2f' : tone === 'advisory' ? '#8c6d1f' : '#999999';
-      row.style.fontWeight = tone === 'block' ? 'bold' : 'normal';
-    }
-
-    function recompute() {
-      const monto = Number(montoInput.value) || 0;
-      const modality = modalitySelect.value;
-      const catalogCM = catalogCheck.checked;
-
-      tdCauseRow.classList.toggle('hidden', modality !== 'direct_procurement');
-      cmJustificationRow.classList.toggle('hidden', !(catalogCM && modality !== 'framework_agreement'));
-
-      if (!utmAvailable) {
-        utmEquivEl.textContent = 'no disponible';
-        setResult('V1', 'UTM_VALUE_UNAVAILABLE', 'block');
-        confirmBtn.disabled = true;
-        return;
-      }
-
-      const montoUtm = monto / UTM_VALUE;
-      utmEquivEl.textContent = `${montoUtm.toFixed(2)} UTM`;
-
-      let blocked = false;
-
-      // V1 — Compra Ágil ≤ 100 UTM
-      if (modality === 'agile_purchase') {
-        if (montoUtm <= AGILE_LIMIT_UTM) {
-          setResult('V1', 'OK', 'ok');
-        } else {
-          setResult('V1', 'MODALITY_AMOUNT_EXCEEDED — Compra Ágil no seleccionable', 'block');
-          blocked = true;
-        }
-      } else {
-        setResult('V1', 'N/A', 'na');
-      }
-
-      // V2 — catálogo CM primera opción
-      if (catalogCM && modality !== 'framework_agreement') {
-        if (cmJustification.value.trim()) {
-          setResult('V2', 'OK — con justificación de bypass', 'ok');
-        } else {
-          setResult('V2', 'FRAMEWORK_AGREEMENT_FIRST_OPTION — falta justificación', 'block');
-          blocked = true;
-        }
-      } else {
-        setResult('V2', 'N/A', 'na');
-      }
-
-      // V3 — Trato Directo requiere causal
-      if (modality === 'direct_procurement') {
-        if (tdCause.value.trim()) {
-          setResult('V3', 'OK — causal registrada', 'ok');
-        } else {
-          setResult('V3', 'DIRECT_PROCUREMENT_CAUSE_REQUIRED', 'block');
-          blocked = true;
-        }
-      } else {
-        setResult('V3', 'N/A', 'na');
-      }
-
-      // V4 — sugerencia LP
-      if (modality !== 'public_tender' && !catalogCM && montoUtm > AGILE_LIMIT_UTM) {
-        setResult('V4', 'PUBLIC_TENDER_SUGGESTED — informativo', 'advisory');
-      } else {
-        setResult('V4', 'N/A', 'na');
-      }
-
-      // V5 — Toma de Razón TD
-      if (modality === 'direct_procurement' && montoUtm > COMPTROLLER_LIMIT_UTM) {
-        setResult('V5', 'COMPTROLLER_REVIEW_REQUIRED — informativo', 'advisory');
-      } else {
-        setResult('V5', 'N/A', 'na');
-      }
-
-      // V7 / V8 — solo Licitación Pública
-      if (modality === 'public_tender') {
-        setResult('V7', 'TENDER_TIER_INFO — tramo y plazo mínimo informados', 'advisory');
-        setResult('V8', 'TENDER_GUARANTEES_REQUIRED — garantías informadas', 'advisory');
-        if (montoUtm <= AGILE_LIMIT_UTM) {
-          setResult('V4', 'AGILE_PURCHASE_AVAILABLE — existe modalidad más expedita', 'advisory');
-        }
-      } else {
-        setResult('V7', 'N/A', 'na');
-        setResult('V8', 'N/A', 'na');
-      }
-
-      confirmBtn.disabled = blocked;
-    }
-
-    montoInput.addEventListener('input', recompute);
-    modalitySelect.addEventListener('change', recompute);
-    catalogCheck.addEventListener('change', recompute);
-    tdCause.addEventListener('input', recompute);
-    cmJustification.addEventListener('input', recompute);
-
-    simulateUtmDownBtn.addEventListener('click', () => {
-      utmAvailable = !utmAvailable;
-      utmDownBanner.classList.toggle('hidden', utmAvailable);
-      utmPanel.classList.toggle('hidden', !utmAvailable);
-      simulateUtmDownBtn.textContent = utmAvailable ? 'Simular caída de UTM (demo)' : 'Restablecer UTM (demo)';
-      recompute();
-    });
-
-    const jefaturaApprovalCheck = document.getElementById('jefatura-approval-check');
     const nextStepPanel = document.getElementById('next-step-panel');
     const nextStepText = document.getElementById('next-step-text');
     const nextStepLink = document.getElementById('next-step-link');
+
+    const gateway = initModalityGateway({
+      getMontoClp: () => Number(montoInput.value) || 0,
+      modalitySelect,
+      catalogCheck,
+      tdCause,
+      cmJustification,
+      tdCauseRow: document.getElementById('td-cause-row'),
+      cmJustificationRow: document.getElementById('cm-justification-row'),
+      utmEquivEl: document.getElementById('utm-equiv'),
+      utmPanel: document.getElementById('utm-panel'),
+      utmDownBanner: document.getElementById('utm-unavailable-banner'),
+      gatewayBody: document.getElementById('gateway-body'),
+      confirmBtn,
+      simulateUtmDownBtn,
+    });
+
+    montoInput.addEventListener('input', () => gateway.recompute());
+
     confirmBtn.addEventListener('click', () => {
       demoValidation('confirmProcurementModality');
       document.getElementById('header-badge').textContent = 'Confirmada';
-      [montoInput, modalitySelect, catalogCheck, tdCause, cmJustification, jefaturaApprovalCheck].forEach((el) => { el.disabled = true; });
+      [montoInput, modalitySelect, catalogCheck, tdCause, cmJustification, jefaturaApprovalCheck].forEach((el) => {
+        if (el) el.disabled = true;
+      });
       confirmBtn.disabled = true;
       simulateUtmDownBtn.disabled = true;
 
@@ -321,8 +186,6 @@
       }
       nextStepPanel.classList.remove('hidden');
     });
-
-    recompute();
   </script>
 </body>
 </html>

@@ -40,21 +40,9 @@ export function applySolpedPreset() {
   const header = document.querySelector('.form-card__header > span:first-child');
   setText(header, `SOLPED #${preset.solpedNumber} — Nueva solicitud`);
 
-  const unitSelect = document.querySelector('.form-card__body .form-row select');
-  if (unitSelect && s.unit) {
-    [...unitSelect.options].forEach((opt) => {
-      if (opt.textContent.includes(s.unit) || s.unit.includes(opt.textContent)) {
-        unitSelect.value = opt.value || opt.textContent;
-      }
-    });
-    if (!unitSelect.value && unitSelect.options.length) {
-      const match = [...unitSelect.options].find((o) => o.textContent === s.unit);
-      if (match) unitSelect.value = match.value;
-    }
-  }
+  // Unidad solicitante / destino: las fija el rol en 1.1 (applyUnitsByRole), no el preset.
 
-  const textInputs = document.querySelectorAll('.form-card__body input[type="text"]');
-  if (textInputs[0]) setValue(textInputs[0], s.description);
+  setValue(document.getElementById('solped-description'), s.description);
   const textarea = document.querySelector('.form-card__body textarea');
   if (textarea) setValue(textarea, s.justification);
   const dateInput = document.querySelector('.form-card__body input[type="date"]');
@@ -62,12 +50,16 @@ export function applySolpedPreset() {
   setSelect(document.getElementById('purchase-modality'), s.purchaseModality);
 
   const lineTable = document.getElementById('solped-lines');
-  const lineInputs = lineTable
-    ? lineTable.querySelectorAll('tbody input')
-    : document.querySelectorAll('.form-table tbody input');
-  if (lineInputs[0]) setValue(lineInputs[0], s.lineDescription);
-  if (lineInputs[1]) setValue(lineInputs[1], s.lineQty);
-  if (lineInputs[2]) setValue(lineInputs[2], s.linePrice);
+  const lineRow = lineTable?.querySelector('tbody .solped-line')
+    || lineTable?.querySelector('tbody tr');
+  if (lineRow) {
+    if (s.lineProductCode != null) {
+      setValue(lineRow.querySelector('[name="line-product-code"]'), s.lineProductCode);
+    }
+    setValue(lineRow.querySelector('[name="line-description"]'), s.lineDescription);
+    setValue(lineRow.querySelector('[name="line-quantity"]'), s.lineQty);
+    setValue(lineRow.querySelector('[name="line-price"]'), s.linePrice);
+  }
   lineTable?.dispatchEvent(new Event('solped-lines:recalc', { bubbles: true }));
 
   const resolutionRow = document.getElementById('resolution-row');

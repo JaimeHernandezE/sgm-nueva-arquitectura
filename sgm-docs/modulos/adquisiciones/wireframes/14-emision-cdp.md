@@ -1,4 +1,4 @@
-# Wireframe: Emisión de CDP firmado
+﻿# Wireframe: Emisión de CDP firmado
 
 **Sub-paso:** 1.5 — Emisión de CDP firmado  
 **Rol:** Firmante CDP (`adq.firmante_cdp`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)  
@@ -14,7 +14,7 @@
 +----------------------------------------------------------+
 | Datos del CDP                                             |
 | Verificado por:  María López (1.3)                        |
-| Línea presupuestaria (solo lectura) [ Cuenta / Programa ... ]  |
+| Imputación presupuestaria (solo lectura) [ Cuenta / Programa ... ]  |
 | Monto certificado *     [ $ ____________ ]                |
 | Año fiscal *            [ 2026 ]                          |
 +----------------------------------------------------------+
@@ -52,7 +52,7 @@ Visible cuando FirmaGob no está disponible o el usuario elige «Registrar CDP f
 
 | Campo UI | Entidad.campo | Obligatorio |
 |---|---|---|
-| Línea presupuestaria | `BudgetAvailabilityCertificate.budget_line_id` | No (solo lectura, heredada de 1.3) |
+| Imputación presupuestaria | `BudgetAvailabilityCertificate.budget_line_id` | No (solo lectura, heredada de 1.3) |
 | Monto certificado | `BudgetAvailabilityCertificate.certified_amount` | Sí |
 | Año fiscal | `BudgetAvailabilityCertificate.fiscal_year` | Sí |
 | Nº correlativo CDP | `BudgetAvailabilityCertificate.certificate_number` | Sí (modo escaneado) |

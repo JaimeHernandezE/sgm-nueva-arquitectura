@@ -143,7 +143,7 @@
 
 | Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
 |---|---|---|---|---|---|---|
-| Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `BUDGET_UNAVAILABLE` | — | La línea presupuestaria no tiene saldo disponible para el monto real de la OC. | blocking | DL 1.263 — fase de compromiso presupuestario |
+| Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `BUDGET_UNAVAILABLE` | — | La imputación presupuestaria no tiene saldo disponible para el monto real de la OC. | blocking | DL 1.263 — fase de compromiso presupuestario |
 **Edge cases:**
 - **Monto real > preobligación y la línea no tiene saldo para la diferencia** → `commitBudget` responde `BUDGET_UNAVAILABLE` (`severity: blocking`). Situación anómala grave (la OC ya está aceptada, el vínculo legal existe, pero el compromiso contable no puede registrarse): tarea urgente a DAF Finanzas para regularización presupuestaria (modificación/suplemento) — **[PENDIENTE X-40]** el procedimiento de regularización no puede resolverlo el sistema solo, pero debe impedir que pase silenciosamente.
 - Monto real < preobligación → compromiso por el real y **liberación automática del excedente** de la preobligación (regla estándar, sin intervención).

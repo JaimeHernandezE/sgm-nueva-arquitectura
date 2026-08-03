@@ -15,7 +15,7 @@ export const VALIDATION_DEMOS = {
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'destination_unit', rule: 'El campo Unidad de destino es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'description', rule: 'El campo Descripción es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'justification', rule: 'El campo Justificación es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
-      { error_code: 'MISSING_REQUIRED_FIELD', field: 'requested_date', rule: 'El campo Fecha de necesidad es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
+      { error_code: 'MISSING_REQUIRED_FIELD', field: 'requested_date', rule: 'El campo Fecha solicitada es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
     ],
   },
   createPurchaseRequest: {
@@ -43,9 +43,9 @@ export const VALIDATION_DEMOS = {
   verifyBudgetAvailability: {
     title: 'Validaciones — Verificar disponibilidad',
     issues: [
-      { error_code: 'MISSING_REQUIRED_FIELD', field: 'budget_line_id', rule: 'El campo Línea presupuestaria es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
+      { error_code: 'MISSING_REQUIRED_FIELD', field: 'budget_line_id', rule: 'El campo Imputación presupuestaria es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'amount', rule: 'El campo Monto es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
-      { error_code: 'BUDGET_UNAVAILABLE', field: 'budget_line_id', rule: 'La línea presupuestaria no tiene saldo disponible para el monto solicitado.', legal_reference: 'DL 1.263 — fase de compromiso presupuestario', severity: 'blocking' },
+      { error_code: 'BUDGET_UNAVAILABLE', field: 'budget_line_id', rule: 'La imputación presupuestaria no tiene saldo disponible para el monto solicitado.', legal_reference: 'DL 1.263 — fase de compromiso presupuestario', severity: 'blocking' },
     ],
   },
   requestBudgetFinancing: {
@@ -72,7 +72,7 @@ export const VALIDATION_DEMOS = {
     title: 'Validaciones — Generar preobligación',
     issues: [
       { error_code: 'CDP_REQUIRED', field: 'budget_availability_certificate_id', rule: 'Se requiere un CDP vigente para generar la preobligación.', legal_reference: 'DL 1.263 — certificado de disponibilidad presupuestaria', severity: 'blocking' },
-      { error_code: 'BUDGET_UNAVAILABLE', field: 'budget_line_id', rule: 'La línea presupuestaria no tiene saldo disponible para el monto estimado.', legal_reference: 'DL 1.263 — fase de compromiso presupuestario', severity: 'blocking' },
+      { error_code: 'BUDGET_UNAVAILABLE', field: 'budget_line_id', rule: 'La imputación presupuestaria no tiene saldo disponible para el monto estimado.', legal_reference: 'DL 1.263 — fase de compromiso presupuestario', severity: 'blocking' },
     ],
   },
   confirmProcurementModality: {
@@ -157,7 +157,7 @@ export const VALIDATION_DEMOS = {
   syncPurchaseOrderAccepted: {
     title: 'Validaciones — Sync OC aceptada',
     issues: [
-      { error_code: 'BUDGET_UNAVAILABLE', field: 'budget_line_id', rule: 'La línea presupuestaria no tiene saldo disponible para el compromiso.', legal_reference: 'DL 1.263 — fase de compromiso presupuestario', severity: 'blocking' },
+      { error_code: 'BUDGET_UNAVAILABLE', field: 'budget_line_id', rule: 'La imputación presupuestaria no tiene saldo disponible para el compromiso.', legal_reference: 'DL 1.263 — fase de compromiso presupuestario', severity: 'blocking' },
       { error_code: 'MP_PROCESS_NOT_PUBLISHED', field: null, rule: 'El proceso MP vinculado no figura como Publicado; no se registra Compromiso Cierto.', legal_reference: 'Ley 19.886 — publicidad en Mercado Público', severity: 'blocking' },
       { error_code: 'PRE_COMMITMENT_INACTIVE', field: null, rule: 'La preobligación ya no está activa; no se puede registrar el compromiso cierto.', legal_reference: 'integridad:estado_expediente', severity: 'blocking' },
       { error_code: 'MP_PROVIDER_UNAVAILABLE', field: null, rule: 'Mercado Público no está disponible para leer el estado de la OC.', legal_reference: 'integridad:estado_expediente', severity: 'blocking' },

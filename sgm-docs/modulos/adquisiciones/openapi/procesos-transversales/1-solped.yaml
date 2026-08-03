@@ -1,4 +1,4 @@
-openapi: 3.1.0
+﻿openapi: 3.1.0
 info:
   title: SGM Adquisiciones — fragmento
   version: 0.1.0
@@ -161,7 +161,7 @@ paths:
                         severity: blocking
                       - error_code: MISSING_REQUIRED_FIELD
                         field: requested_date
-                        rule: El campo Fecha de necesidad es obligatorio.
+                        rule: El campo Fecha solicitada es obligatorio.
                         severity: blocking
                 foundedResolution:
                   summary: Trato directo sin resolución fundada
@@ -537,7 +537,7 @@ paths:
           required: true
           schema:
             type: string
-          description: Identificador de línea presupuestaria.
+          description: Identificador de imputación presupuestaria.
         - name: fiscal_year
           in: query
           required: true

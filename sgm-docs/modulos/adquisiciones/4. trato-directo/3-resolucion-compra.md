@@ -127,7 +127,7 @@
 | Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
 |---|---|---|---|---|---|---|
 | Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `MP_PROCESS_NOT_PUBLISHED` | — | El proceso MP vinculado no figura como Publicado; no se registra Compromiso Cierto. | blocking | Ley 19.886 — publicidad en Mercado Público |
-| Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `BUDGET_UNAVAILABLE` | — | La línea presupuestaria no tiene saldo disponible para el monto real de la OC. | blocking | DL 1.263 — fase de compromiso presupuestario |
+| Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `BUDGET_UNAVAILABLE` | — | La imputación presupuestaria no tiene saldo disponible para el monto real de la OC. | blocking | DL 1.263 — fase de compromiso presupuestario |
 | Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `MP_PROVIDER_UNAVAILABLE` | — | Mercado Público no está disponible para leer el estado de la OC. | blocking | integridad:estado_expediente |
 | Sincronizar OC aceptada | `syncPurchaseOrderAccepted` | `PRE_COMMITMENT_INACTIVE` | — | La preobligación ya no está activa; no se puede registrar el compromiso cierto. | blocking | integridad:estado_expediente |
 **Edge cases:**

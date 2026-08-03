@@ -3,7 +3,7 @@ export const formPresets = {
   'ADQ-2026-00123': {
     solpedNumber: '1234',
     solped: {
-      unit: 'Unidad Solicitante',
+      unit: 'Unidad X',
       description: 'Adquisición de insumos de oficina',
       justification: 'Reposición de stock según plan anual.',
       date: '2026-06-24',
@@ -15,7 +15,7 @@ export const formPresets = {
       estimatedAmount: '1250000',
     },
     modalidad: {
-      unit: 'Unidad Solicitante',
+      unit: 'Unidad X',
       modalityLabel: 'Compra Ágil (provisional)',
       monto: '1250000',
       modality: 'agile_purchase',
@@ -180,7 +180,7 @@ export const formPresets = {
   'ADQ-2026-00142': {
     solpedNumber: '1420',
     solped: {
-      unit: 'Unidad Solicitante',
+      unit: 'Unidad X',
       description: 'Equipamiento audiovisual sala de consejo',
       justification: 'Renovación de proyección y audio para sesiones del concejo municipal.',
       date: '2026-07-18',
@@ -199,7 +199,7 @@ export const formPresets = {
       projected: '-2.310.000',
     },
     modalidad: {
-      unit: 'Unidad Solicitante',
+      unit: 'Unidad X',
       modalityLabel: 'Compra Ágil (provisional)',
       monto: '2450000',
       modality: 'agile_purchase',

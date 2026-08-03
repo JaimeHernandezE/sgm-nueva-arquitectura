@@ -72,7 +72,7 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 | `purchase_modality` | Modalidad de compra | enum, **opcional** | **Opcional** — indicación provisional de modalidad. Valores: `agile_purchase`, `framework_agreement`, `public_tender`, `direct_procurement`. Confirmable en etapa 2. |
 | `founded_resolution_attachment` | Resolución fundada | ref. `DocumentRef` | **Obligatorio si** `purchase_modality = direct_procurement`. Resolución Fundada — almacenada vía C10 (`storeDocument`). |
 | `currency` | Moneda | enum | **Obligatorio** (default `CLP`). Valores: `CLP`, `UF`, `UTM`, `USD`. Moneda del documento; todas las líneas se expresan en ella. No se mezclan monedas en una misma SOLPED. |
-| `proposed_budget_line_id` | Línea presupuestaria propuesta | ref. `BudgetLine` | **Opcional** — pista para autoconsulta (1.1, 1.2); no sustituye verificación en 1.3 |
+| `proposed_budget_line_id` | Imputación presupuestaria propuesta | ref. `BudgetLine` | **Opcional** — pista para autoconsulta (1.1, 1.2); no sustituye verificación en 1.3. **Al seleccionar** una imputación, la UI obtiene de Presupuestos (borde de módulo) la **descripción de la cuenta** y el **saldo** (vía `getBudgetLine` + `previewBudgetAvailability` / respuesta enriquecida) y los muestra en solo lectura junto al selector. |
 | `proposed_fiscal_year` | Año fiscal propuesto | número | **Opcional** — año fiscal asociado a la línea propuesta |
 | `status` | Estado | enum | **Obligatorio**. Valores: `draft`, `pending_approval`, `pending_finance`, `quoting_in_progress`, `quote_void`, … |
 
@@ -147,7 +147,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `procurement_case_id` | Expediente de compra | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
 | `purchase_request_id` | SOLPED | ref. `PurchaseRequest` | **Obligatorio** |
 | `certificate_number` | Número de certificado | texto | **Obligatorio** (generado por sistema en modo electrónico; ingreso manual en escaneado) |
-| `budget_line_id` | Línea presupuestaria | ref. `BudgetLine` | **Obligatorio** |
+| `budget_line_id` | Imputación presupuestaria | ref. `BudgetLine` | **Obligatorio** |
 | `certified_amount` | Monto certificado | número | **Obligatorio** |
 | `fiscal_year` | Año fiscal | número | **Obligatorio** |
 | `verified_by` | Verificado por | ref. `User` | **Obligatorio** — formulador DAF (sub-paso 1.3) |
@@ -172,7 +172,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `procurement_case_id` | Expediente de compra | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
 | `purchase_request_id` | SOLPED | ref. `PurchaseRequest` | **Obligatorio** |
 | `budget_availability_certificate_id` | CDP | ref. `BudgetAvailabilityCertificate` | **Obligatorio** — requiere CDP vigente |
-| `budget_line_id` | Línea presupuestaria | ref. `BudgetLine` | **Obligatorio** |
+| `budget_line_id` | Imputación presupuestaria | ref. `BudgetLine` | **Obligatorio** |
 | `estimated_amount` | Monto estimado | número | **Obligatorio** |
 | `fiscal_year` | Año fiscal | número | **Obligatorio** |
 | `status` | Estado | enum | **Obligatorio**. Valores: `active`, … |

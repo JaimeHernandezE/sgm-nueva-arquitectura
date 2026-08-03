@@ -1,4 +1,4 @@
-# 1. SOLPED
+﻿# 1. SOLPED
 
 *Proceso transversal — documentado en el piloto [Compra Ágil](../1.%20compra-agil/overview.md). Aplica conceptualmente a las 4 modalidades; extensión a otras modalidades pendiente de validación del piloto.*
 
@@ -59,12 +59,12 @@
 | Plataforma | SGM |
 | Optativo | Falso |
 
-**Detalle:** La Unidad Solicitante (o DAF) crea la SOLPED en el SGM. Hay dos unidades: **`requesting_unit` (Unidad solicitante)** y **`destination_unit` (Unidad de destino)** — para quién es la compra. Ambas se autoasignan según el `RoleAssignment`. Con rol básico (`adq.solicitante`) coinciden y **no son editables**; con rol DAF (`adq.solicitante_daf`) el default es la unidad DAF y **ambos selectores permiten elegir cualquier unidad del tenant**. Puede indicar opcionalmente la **modalidad de compra** prevista (`purchase_modality`): Compra Ágil, Convenio Marco, Licitación Pública o Trato Directo. Es una indicación provisional — puede confirmarse o cambiarse al inicio de la etapa 2 (Modalidad de Compra). Si se selecciona Trato Directo, es obligatorio adjuntar la **Resolución Fundada** (`founded_resolution_attachment`). La SOLPED declara una **moneda de documento** (`currency`: CLP, UF, UTM o USD; default CLP); todas las líneas se expresan en esa moneda (no se mezclan monedas en una misma solicitud). Si la moneda no es CLP, la UI muestra el total bruto convertido a CLP con tasa referencial del día (orientativa). El **precio se ingresa siempre neto**; cada línea lleva un **código de impuesto** (`tax_code`: IVA 19% por defecto, Exento u Otro) y el sistema calcula subtotal neto, impuestos y total bruto. El municipio es consumidor final (IVA es costo): la autoconsulta y el precompromiso orientativo usan el **total bruto**. Además puede adjuntar **documentos de respaldo** opcionales (`PurchaseRequestAttachment`): cotizaciones, fotos referenciales del producto, fichas técnicas u otros antecedentes, cada uno con tipo, descripción y archivo (`document_ref` vía `storeDocument` del core).
+**Detalle:** La Unidad Solicitante (o DAF) crea la SOLPED en el SGM. Hay dos unidades: **`requesting_unit` (Unidad solicitante)** y **`destination_unit` (Unidad de destino)** — para quién es la compra. Ambas se autoasignan según el `RoleAssignment`. Con rol básico (`adq.solicitante`) coinciden y **no son editables**; con rol DAF (`adq.solicitante_daf`) el default es la unidad DAF y **ambos selectores permiten elegir cualquier unidad del tenant**. Puede indicar opcionalmente la **modalidad de compra** prevista (`purchase_modality`): Compra Ágil, Convenio Marco, Licitación Pública o Trato Directo. Es una indicación provisional — puede confirmarse o cambiarse al inicio de la etapa 2 (Modalidad de Compra). **Al seleccionar** una modalidad, la UI muestra una **preview del gateway V1–V8** (mismo validador interactivo que en 2.1, con monto = total bruto de la SOLPED en CLP); es **informativa** y no bloquea guardar ni enviar — la confirmación formal sigue en 2.1. Si se selecciona Trato Directo, es obligatorio adjuntar la **Resolución Fundada** (`founded_resolution_attachment`). La SOLPED declara una **moneda de documento** (`currency`: CLP, UF, UTM o USD; default CLP); todas las líneas se expresan en esa moneda (no se mezclan monedas en una misma solicitud). Si la moneda no es CLP, la UI muestra el total bruto convertido a CLP con tasa referencial del día (orientativa). El **precio se ingresa siempre neto**; cada línea lleva un **código de impuesto** (`tax_code`: IVA 19% por defecto, Exento u Otro) y el sistema calcula subtotal neto, impuestos y total bruto. El municipio es consumidor final (IVA es costo): la autoconsulta y el precompromiso orientativo usan el **total bruto**. Además puede adjuntar **documentos de respaldo** opcionales (`PurchaseRequestAttachment`): cotizaciones, fotos referenciales del producto, fichas técnicas u otros antecedentes, cada uno con tipo, descripción y archivo (`document_ref` vía `storeDocument` del core).
 
-**Autoconsulta de saldo presupuestario (informativa):** si el usuario conoce la línea presupuestaria de destino, el formulario ofrece un **enlace informativo** («Consultar saldo en línea presupuestaria») que abre un panel lateral o modal. Allí puede indicar `budget_line_id`, año fiscal y —opcionalmente— el monto estimado de la SOLPED (**total bruto en equivalente CLP**) para obtener una **vista previa de saldo** vía `previewBudgetAvailability` (Presupuestos). Es **solo lectura**: no registra verificación, no avanza el flujo y **no sustituye** el sub-paso 1.3. El solicitante puede guardar la línea indicada como pista en `proposed_budget_line_id` (opcional) para prellenar la consulta y mostrarla al aprobador en 1.2.
+**Autoconsulta de saldo presupuestario (informativa):** el formulario permite indicar opcionalmente una **imputación presupuestaria propuesta** (`proposed_budget_line_id`) y año fiscal. **Al seleccionar** una imputación, SGM consulta Presupuestos y muestra en solo lectura la **descripción de la cuenta** y el **saldo** disponible (y, si aplica, comprometido/proyectado) — dependencia `getBudgetLine` / `previewBudgetAvailability`. Es **solo lectura**: no registra verificación, no avanza el flujo y **no sustituye** el sub-paso 1.3. Un enlace «Detalle de saldo» puede abrir el panel con monto estimado de la SOLPED (**total bruto en equivalente CLP**) para la vista proyectada. La imputación queda como pista para prellenar la consulta al aprobador en 1.2.
 
 **Entidad(es) y campos:**
-- `PurchaseRequest` — `requesting_unit` (ref., **obligatorio** — autoasignado según `RoleAssignment`; con `adq.solicitante` fija; con `adq.solicitante_daf` modificable en el tenant), `destination_unit` (ref., **obligatorio** — unidad de destino; con `adq.solicitante` = misma que solicitante; con `adq.solicitante_daf` = seleccionable en el tenant — [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) §3.1), `description` (texto, **obligatorio**), `justification` (texto, **obligatorio**), `requested_date` (fecha, **obligatorio**), `purchase_modality` (enum, **opcional**: `agile_purchase` \| `framework_agreement` \| `public_tender` \| `direct_procurement`), `founded_resolution_attachment` (`DocumentRef`, **obligatorio si** `purchase_modality = direct_procurement` — subida previa vía `storeDocument` del core), `currency` (enum, **obligatorio**, default `CLP`: `CLP` \| `UF` \| `UTM` \| `USD`), `proposed_budget_line_id` (ref. `BudgetLine`, **opcional**), `proposed_fiscal_year` (número, **opcional**), `status` (enum, **obligatorio**: `draft`)
+- `PurchaseRequest` — `requesting_unit` (ref., **obligatorio** — autoasignado según `RoleAssignment`; con `adq.solicitante` fija; con `adq.solicitante_daf` modificable en el tenant), `destination_unit` (ref., **obligatorio** — unidad de destino; con `adq.solicitante` = misma que solicitante; con `adq.solicitante_daf` = seleccionable en el tenant — [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) §3.1), `description` (texto, **obligatorio**), `justification` (texto, **obligatorio**), `requested_date` (fecha, **obligatorio**), `purchase_modality` (enum, **opcional**: `agile_purchase` \| `framework_agreement` \| `public_tender` \| `direct_procurement`), `founded_resolution_attachment` (`DocumentRef`, **obligatorio si** `purchase_modality = direct_procurement` — subida previa vía `storeDocument` del core), `currency` (enum, **obligatorio**, default `CLP`: `CLP` \| `UF` \| `UTM` \| `USD`), `proposed_budget_line_id` (ref. `BudgetLine`, **opcional** — al seleccionar, UI muestra descripción de cuenta y saldo desde Presupuestos), `proposed_fiscal_year` (número, **opcional**), `status` (enum, **obligatorio**: `draft`)
 - `PurchaseRequestLine` (1 SOLPED → N líneas, ≥1) — `product_code` (texto, **opcional** hasta catálogo — **[PENDIENTE X-94]**; UI typeahead busca por código o palabra; si elige hit del catálogo, persiste código y puede prellenar descripción), `item_description` (texto, **obligatorio**), `quantity` (número, **obligatorio**), `unit_of_measure` (ref. `UnitOfMeasure`, **obligatorio** — catálogo de plataforma vía `listUnitOfMeasures`; administrable en consola municipal), `unit_price` (número, **obligatorio**, **neto**, en `PurchaseRequest.currency`), `tax_code` (enum, **obligatorio**, default `iva_19`: `iva_19` \| `exempt` \| `other`), `price_source` (ref. `PriceReference`, **obligatorio**)
 - `PurchaseRequestAttachment` (1 SOLPED → 0..N, **opcional**) — `attachment_type` (enum, **obligatorio**: `quote` \| `product_reference_photo` \| `technical_sheet` \| `other`), `description` (texto, **obligatorio**), `document_ref` (`DocumentRef`, **obligatorio** — vía `storeDocument` del core)
 - `PriceReference` — `item_code` / `item_description_hash` (texto, **obligatorio**), `source` (enum, **obligatorio**), `reference_price` (número, **obligatorio**), `reference_date` (fecha, **obligatorio**), `currency` (enum, **obligatorio**, default CLP)
@@ -76,7 +76,8 @@
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
 | 1 | Sistema externo | `getPriceReference` | Core (SII) | Cacheada | `PriceReference` (`item_code`, `reference_price`, `reference_date`, `source`) |
-| 2 | Dependencia | `previewBudgetAvailability` | Presupuestos | Cacheada / informativa | Entrada: `budget_line_id`, `fiscal_year`, `amount` (opcional) — Respuesta: `available_balance`, `committed_by_others`, `projected_balance` — sin efecto en el expediente |
+| 2 | Dependencia | `getBudgetLine` | Presupuestos | Cacheada / informativa | Al seleccionar `proposed_budget_line_id`: `code`, `description` (descripción de la cuenta) |
+| 3 | Dependencia | `previewBudgetAvailability` | Presupuestos | Cacheada / informativa | Al seleccionar línea (y en panel detalle): `available_balance`, `committed_by_others`, `projected_balance` — sin efecto en el expediente |
 
 > La verificación de stock / catálogo CM se anticipa en el sub-paso **1.0** (optativo). En 1.1 solo se refleja el contexto si el usuario llegó desde 1.0 con hallazgo CM (advertencia no bloqueante en modalidad).
 
@@ -90,7 +91,7 @@
 | Guardar borrador | `createPurchaseRequest` | `DESTINATION_UNIT_OUT_OF_SCOPE` | `destination_unit` | No puede indicar una unidad de destino distinta a la de su asignación de rol. | blocking | integridad:alcance_rbac |
 | Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `description` | El campo Descripción es obligatorio. | blocking | integridad:campo_requerido |
 | Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `justification` | El campo Justificación es obligatorio. | blocking | integridad:campo_requerido |
-| Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `requested_date` | El campo Fecha de necesidad es obligatorio. | blocking | integridad:campo_requerido |
+| Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `requested_date` | El campo Fecha solicitada es obligatorio. | blocking | integridad:campo_requerido |
 | Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines` | Debe existir al menos una línea de bien o servicio. | blocking | integridad:campo_requerido |
 | Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines[].item_description` | El campo Descripción del ítem es obligatorio. | blocking | integridad:campo_requerido |
 | Guardar borrador | `createPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines[].quantity` | El campo Cantidad es obligatorio. | blocking | integridad:campo_requerido |
@@ -109,7 +110,7 @@
 | Enviar a aprobación | `submitPurchaseRequest` | `DESTINATION_UNIT_OUT_OF_SCOPE` | `destination_unit` | No puede indicar una unidad de destino distinta a la de su asignación de rol. | blocking | integridad:alcance_rbac |
 | Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `description` | El campo Descripción es obligatorio. | blocking | integridad:campo_requerido |
 | Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `justification` | El campo Justificación es obligatorio. | blocking | integridad:campo_requerido |
-| Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `requested_date` | El campo Fecha de necesidad es obligatorio. | blocking | integridad:campo_requerido |
+| Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `requested_date` | El campo Fecha solicitada es obligatorio. | blocking | integridad:campo_requerido |
 | Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines` | Debe existir al menos una línea de bien o servicio. | blocking | integridad:campo_requerido |
 | Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines[].item_description` | El campo Descripción del ítem es obligatorio. | blocking | integridad:campo_requerido |
 | Enviar a aprobación | `submitPurchaseRequest` | `MISSING_REQUIRED_FIELD` | `lines[].quantity` | El campo Cantidad es obligatorio. | blocking | integridad:campo_requerido |
@@ -153,7 +154,7 @@
 | Plataforma | SGM |
 | Optativo | Falso |
 
-**Detalle:** Jefatura de la unidad revisa y aprueba la SOLPED antes de que pase a Finanzas. La aprobación requiere firma electrónica avanzada conforme a normativa (QA ítems 5, 7). Dispone del mismo **enlace informativo de autoconsulta de saldo** que en 1.1 (`previewBudgetAvailability`): si la SOLPED trae `proposed_budget_line_id`, el panel se prellena; el aprobador puede consultar saldo antes de firmar sin que ello constituya verificación formal (eso ocurre en 1.3, a cargo de DAF Finanzas).
+**Detalle:** Jefatura de la unidad revisa y aprueba la SOLPED antes de que pase a Finanzas. La aprobación requiere firma electrónica avanzada conforme a normativa (QA ítems 5, 7). Si la SOLPED trae `proposed_budget_line_id`, se muestran (solo lectura, desde Presupuestos) la **descripción de la cuenta** y el **saldo** (`getBudgetLine` / `previewBudgetAvailability`); el aprobador puede abrir el detalle proyectado antes de firmar sin que ello constituya verificación formal (eso ocurre en 1.3, a cargo de DAF Finanzas).
 
 **Entidad(es) y campos:**
 - `PurchaseRequestApproval` — `purchase_request_id` (ref., **obligatorio**), `approver_id` (ref. `User`, **obligatorio**), `decision` (enum, **obligatorio**: `approved`, `rejected`), `disposition` (enum, **obligatorio si** `decision = rejected`: `return_to_draft` \| `cancel`), `decision_date` (fecha, **obligatorio**), `comments` (texto, **obligatorio si** `decision = rejected`)
@@ -166,7 +167,7 @@
 |---|---|---|---|---|---|
 | 1 | Dependencia | `requestSignature` | Core (FirmaGob) | Síncrona bloqueante | Entrada: `document_id`, `document_type`, `signer_id` — Respuesta: `signature_request_id`, `status` |
 | 2 | Dependencia | `confirmSignature` | Core (FirmaGob) | Síncrona bloqueante | Entrada: `signature_request_id` — Respuesta: `signed_at`, `certificate_ref` |
-| 3 | Dependencia | `previewBudgetAvailability` | Presupuestos | Cacheada / informativa | Misma entrada y respuesta que en 1.1 — consulta opcional desde pantalla de aprobación |
+| 3 | Dependencia | `getBudgetLine` / `previewBudgetAvailability` | Presupuestos | Cacheada / informativa | Descripción de cuenta + saldo si hay `proposed_budget_line_id`; detalle proyectado opcional |
 | 4 | Evento | `PurchaseRequestApproved` | — (consumidores: Presupuestos, auditoría) | Asíncrona | `PurchaseRequest` (`id`, `requesting_unit`, `destination_unit`, `status`), `PurchaseRequestApproval` |
 
 **Validaciones:**
@@ -217,10 +218,10 @@
 
 | Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
 |---|---|---|---|---|---|---|
-| Confirmar verificación | `verifyBudgetAvailability` | `MISSING_REQUIRED_FIELD` | `budget_line_id` | El campo Línea presupuestaria es obligatorio. | blocking | integridad:campo_requerido |
+| Confirmar verificación | `verifyBudgetAvailability` | `MISSING_REQUIRED_FIELD` | `budget_line_id` | El campo Imputación presupuestaria es obligatorio. | blocking | integridad:campo_requerido |
 | Confirmar verificación | `verifyBudgetAvailability` | `MISSING_REQUIRED_FIELD` | `amount` | El campo Monto es obligatorio. | blocking | integridad:campo_requerido |
 | Confirmar verificación | `verifyBudgetAvailability` | `MISSING_REQUIRED_FIELD` | `fiscal_year` | El campo Año fiscal es obligatorio. | blocking | integridad:campo_requerido |
-| Confirmar verificación | `verifyBudgetAvailability` | `BUDGET_UNAVAILABLE` | `budget_line_id` | La línea presupuestaria no tiene saldo disponible para el monto solicitado. | blocking | DL 1.263 — fase de compromiso presupuestario |
+| Confirmar verificación | `verifyBudgetAvailability` | `BUDGET_UNAVAILABLE` | `budget_line_id` | La imputación presupuestaria no tiene saldo disponible para el monto solicitado. | blocking | DL 1.263 — fase de compromiso presupuestario |
 | Confirmar verificación | `verifyBudgetAvailability` | `BUDGET_PROVIDER_UNAVAILABLE` | — | El proveedor de Presupuestos no está disponible. | blocking | integridad:estado_expediente |
 | Confirmar verificación | `verifyBudgetAvailability` | `INVALID_STATUS` | `status` | La SOLPED debe estar en pendiente de Finanzas. | blocking | integridad:estado_expediente |
 | Rechazar verificación | `verifyBudgetAvailability` | `MISSING_REQUIRED_FIELD` | `comments` | El campo Comentarios es obligatorio al rechazar. | blocking | integridad:campo_requerido |
@@ -306,13 +307,13 @@ En ambos caminos se ejecuta `checkBudgetAvailability` antes de cerrar el paso. E
 |---|---|---|---|---|---|---|
 | Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `VERIFICATION_REQUIRED` | — | Debe existir verificación presupuestaria confirmada en 1.3. | blocking | DL 1.263 — disponibilidad previa al CDP |
 | Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `SEGREGATION_OF_DUTIES_VIOLATION` | `signed_by` | El firmante CDP no puede ser la misma persona que verificó en 1.3. | blocking | Control interno — segregación de funciones; ⚠ X-25 |
-| Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `BUDGET_UNAVAILABLE` | `budget_line_id` | La línea presupuestaria no tiene saldo disponible al revalidar. | blocking | DL 1.263 — fase de compromiso presupuestario |
+| Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `BUDGET_UNAVAILABLE` | `budget_line_id` | La imputación presupuestaria no tiene saldo disponible al revalidar. | blocking | DL 1.263 — fase de compromiso presupuestario |
 | Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `SIGNATURE_REQUIRED` | — | Se requiere firma electrónica avanzada válida. | blocking | Ley 19.799 — firma electrónica avanzada |
 | Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `MISSING_REQUIRED_FIELD` | `certified_amount` | El campo Monto certificado es obligatorio. | blocking | integridad:campo_requerido |
 | Emitir CDP (firma electrónica) | `issueBudgetAvailabilityCertificate` | `MISSING_REQUIRED_FIELD` | `fiscal_year` | El campo Año fiscal es obligatorio. | blocking | integridad:campo_requerido |
 | Registrar CDP escaneado | `registerScannedBudgetAvailabilityCertificate` | `VERIFICATION_REQUIRED` | — | Debe existir verificación presupuestaria confirmada en 1.3. | blocking | DL 1.263 — disponibilidad previa al CDP |
 | Registrar CDP escaneado | `registerScannedBudgetAvailabilityCertificate` | `SEGREGATION_OF_DUTIES_VIOLATION` | `signed_by` | El firmante CDP no puede ser la misma persona que verificó en 1.3. | blocking | Control interno — segregación de funciones; ⚠ X-25 |
-| Registrar CDP escaneado | `registerScannedBudgetAvailabilityCertificate` | `BUDGET_UNAVAILABLE` | `budget_line_id` | La línea presupuestaria no tiene saldo disponible al revalidar. | blocking | DL 1.263 — fase de compromiso presupuestario |
+| Registrar CDP escaneado | `registerScannedBudgetAvailabilityCertificate` | `BUDGET_UNAVAILABLE` | `budget_line_id` | La imputación presupuestaria no tiene saldo disponible al revalidar. | blocking | DL 1.263 — fase de compromiso presupuestario |
 | Registrar CDP escaneado | `registerScannedBudgetAvailabilityCertificate` | `SCANNED_CDP_INVALID` | `scanned_certificate_attachment` | El adjunto del CDP escaneado es inválido o inconsistente. | blocking | integridad:documento_requerido |
 | Registrar CDP escaneado | `registerScannedBudgetAvailabilityCertificate` | `MISSING_REQUIRED_FIELD` | `scanned_certificate_attachment` | El campo Adjunto del CDP escaneado es obligatorio. | blocking | integridad:campo_requerido |
 **Edge cases:**
@@ -354,7 +355,7 @@ En ambos caminos se ejecuta `checkBudgetAvailability` antes de cerrar el paso. E
 | Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
 |---|---|---|---|---|---|---|
 | Generar preobligación | `createBudgetPreCommitment` | `CDP_REQUIRED` | `budget_availability_certificate_id` | Se requiere un CDP vigente para generar la preobligación. | blocking | DL 1.263 — certificado de disponibilidad presupuestaria |
-| Generar preobligación | `createBudgetPreCommitment` | `BUDGET_UNAVAILABLE` | `budget_line_id` | La línea presupuestaria no tiene saldo disponible para el monto estimado. | blocking | DL 1.263 — fase de compromiso presupuestario |
+| Generar preobligación | `createBudgetPreCommitment` | `BUDGET_UNAVAILABLE` | `budget_line_id` | La imputación presupuestaria no tiene saldo disponible para el monto estimado. | blocking | DL 1.263 — fase de compromiso presupuestario |
 | Generar preobligación | `createBudgetPreCommitment` | `ACCOUNTING_PROVIDER_UNAVAILABLE` | — | El proveedor de Contabilidad no está disponible. | blocking | integridad:estado_expediente |
 | Generar preobligación | `createBudgetPreCommitment` | `INVALID_STATUS` | `status` | La SOLPED debe estar en pendiente de Finanzas. | blocking | integridad:estado_expediente |
 | Generar preobligación | `createBudgetPreCommitment` | `MISSING_REQUIRED_FIELD` | `estimated_amount` | El campo Monto estimado es obligatorio. | blocking | integridad:campo_requerido |
@@ -388,7 +389,8 @@ En ambos caminos se ejecuta `checkBudgetAvailability` antes de cerrar el paso. E
 | 1.0 | Dependencia *(propuesta / X-44)* | `checkStockAvailability` | Inventario *(omitible)* |
 | 1.0 | Dependencia *(condicional sync ChileCompra)* | `checkCatalogAvailability` | Catálogo CM espejado |
 | 1.1 | Sistema externo | `getPriceReference` | Core (SII) |
-| 1.1 | Dependencia | `previewBudgetAvailability` | Presupuestos *(informativa)* |
+| 1.1 | Dependencia | `getBudgetLine` | Presupuestos *(descripción al seleccionar)* |
+| 1.1 | Dependencia | `previewBudgetAvailability` | Presupuestos *(saldo / informativa)* |
 | 1.2 | Dependencia | `requestSignature`, `confirmSignature` | Core (FirmaGob) |
 | 1.2 | Dependencia | `previewBudgetAvailability` | Presupuestos *(informativa)* |
 | 1.2 | Evento | `PurchaseRequestApproved` | — |

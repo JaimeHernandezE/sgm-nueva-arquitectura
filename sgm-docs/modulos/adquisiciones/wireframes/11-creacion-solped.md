@@ -1,8 +1,8 @@
-# Wireframe: Creación de SOLPED
+﻿# Wireframe: Creación de SOLPED
 
 **Sub-paso:** 1.1 — Creación de solicitud  
 **Rol:** Solicitante (`adq.solicitante`) o Solicitante DAF (`adq.solicitante_daf`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) §3.1  
-**Operaciones:** `createPurchaseRequest`, `submitPurchaseRequest`, `previewBudgetAvailability` *(informativa)*
+**Operaciones:** `createPurchaseRequest`, `submitPurchaseRequest`, `getBudgetLine`, `previewBudgetAvailability` *(informativa — al seleccionar línea)*
 
 ## Layout
 
@@ -44,6 +44,10 @@
 |                       Licitación Pública / Trato Directo  |
 | Resolución Fundada *  [ Subir → storeDocument (core) ]     |
 | (visible y obligatorio solo si Modalidad = Trato Directo)|
+| Causal TD * / checkbox catálogo CM / justif. bypass (V2)  |
+| — Al seleccionar modalidad: preview gateway V1–V8         |
+|   (mismo validador interactivo que 2.1; informativo)      |
+|   Monto = total bruto SOLPED en CLP · UTM · tabla V1–V8   |
 +----------------------------------------------------------+
 | Documentos de respaldo (opcional)                         |
 | Tipos: cotizaciones, fotos referenciales del producto,    |
@@ -55,9 +59,11 @@
 | [+ Agregar adjunto]                                       |
 +----------------------------------------------------------+
 | Pista presupuestaria (opcional)                           |
-| Línea presupuestaria       [ (opcional) Cuenta/Programa v ]|
+| Imputación presupuestaria       [ (opcional) 22.01.03      v ]|
+|   → Descripción cuenta: Insumos de oficina   (Presupuestos)|
+|   → Saldo disponible: $ 2.100.000            (informativo)|
 | Año fiscal propuesto (opcional) [ 2026 ]                  |
-| [ Consultar saldo en línea presupuestaria ]  (enlace → panel)|
+| [ Detalle de saldo… ]  (panel: proyectado vs monto SOLPED)|
 +----------------------------------------------------------+
 | [ Guardar borrador ]              [ Enviar a aprobación ] |
 +----------------------------------------------------------+
@@ -72,10 +78,13 @@
 | Descripción | `PurchaseRequest.description` | Sí |
 | Justificación | `PurchaseRequest.justification` | Sí |
 | Fecha solicitada | `PurchaseRequest.requested_date` | Sí |
-| Modalidad de compra | `PurchaseRequest.purchase_modality` | No (indicación provisional; confirmable en etapa 2). Si proviene de 1.0 con hit CM: sugerencia + advertencia no bloqueante |
+| Modalidad de compra | `PurchaseRequest.purchase_modality` | No (indicación provisional; confirmable en etapa 2). Si proviene de 1.0 con hit CM: sugerencia + advertencia no bloqueante. Al seleccionar: **preview** del gateway V1–V8 (mismo que 2.1; no bloquea 1.1) |
 | Resolución Fundada | `PurchaseRequest.founded_resolution_attachment` | Sí si modalidad = Trato Directo |
+| Causal TD / justif. bypass CM | — (UI demo gateway) | Condicionales al preview V3 / V2 |
 | Moneda | `PurchaseRequest.currency` | Sí (default CLP). Una sola moneda por documento; las líneas heredan |
-| Línea presupuestaria (opcional) | `PurchaseRequest.proposed_budget_line_id` | No |
+| Imputación presupuestaria (opcional) | `PurchaseRequest.proposed_budget_line_id` | No — al seleccionar: muestra **descripción de la cuenta** y **saldo** desde Presupuestos (`getBudgetLine` + `previewBudgetAvailability`); no sustituye 1.3 |
+| Descripción de la cuenta (lectura) | `BudgetLine.description` (Presupuestos) | — (derivado al seleccionar) |
+| Saldo disponible (lectura) | `previewBudgetAvailability.available_balance` | — (derivado al seleccionar; informativo) |
 | Año fiscal propuesto | `PurchaseRequest.proposed_fiscal_year` | No |
 | Líneas tabla | `PurchaseRequestLine` | ≥1 línea |
 | Código de producto | `PurchaseRequestLine.product_code` | No (opcional hasta catálogo **[X-94]**). Typeahead: busca por código o palabra; si elige hit, persiste código y puede prellenar descripción |
@@ -108,7 +117,7 @@
 | Consulta de saldo (informativa)                    [ X ] |
 +----------------------------------------------------------+
 | Criterios de consulta                                     |
-| Línea presupuestaria *  [ Cuenta / Programa ...    v ]   |
+| Imputación presupuestaria *  [ Cuenta / Programa ...    v ]   |
 | Año fiscal *              [ 2026 ]                        |
 | Monto estimado SOLPED     [ $ 267.750 ] (precargado = bruto CLP) |
 +----------------------------------------------------------+
@@ -136,7 +145,8 @@
 
 | Acción panel | Operación | Notas |
 |---|---|---|
-| Consultar | `previewBudgetAvailability` | No bloquea el borrador ni la aprobación |
+| Seleccionar línea (formulario) | `getBudgetLine` + `previewBudgetAvailability` | Muestra descripción de cuenta + saldo bajo el selector |
+| Detalle / Consultar | `previewBudgetAvailability` | Panel con monto estimado; no bloquea el borrador ni la aprobación |
 
 ## Estados de pantalla
 

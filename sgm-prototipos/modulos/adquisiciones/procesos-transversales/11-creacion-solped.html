@@ -151,6 +151,10 @@
 
         <section class="form-section">
           <h3 class="form-section__title">Modalidad prevista (opcional)</h3>
+          <p class="form-section__hint">
+            Indicación provisional — se confirma o cambia en etapa 2. Al elegir una modalidad,
+            se muestra el mismo gateway V1–V8 que en 2.1 (informativo aquí; no bloquea guardar/enviar la SOLPED).
+          </p>
           <div class="form-row">
             <label>Modalidad de compra (opcional)</label>
             <select id="purchase-modality">
@@ -165,6 +169,46 @@
           <div id="resolution-row" class="form-row hidden">
             <label>Resolución Fundada (obligatorio si Trato Directo) <span class="required">*</span></label>
             <button class="btn btn--secondary" type="button">Subir archivo</button>
+          </div>
+          <div class="form-row hidden" id="td-cause-row">
+            <label>Causal de Trato Directo <span class="required">*</span></label>
+            <textarea id="td-cause" placeholder="Cite el literal del artículo 8 que funda el Trato Directo…"></textarea>
+          </div>
+          <div class="form-row">
+            <label>
+              <input type="checkbox" id="catalog-cm-check" style="width:auto;display:inline-block;margin-right:6px;" />
+              ¿Ítem disponible en catálogo Convenio Marco? <em>(demo — ilustra V2)</em>
+            </label>
+          </div>
+          <div class="form-row hidden" id="cm-justification-row">
+            <label>Justificación de bypass de catálogo CM <span class="required">*</span></label>
+            <textarea id="cm-justification" placeholder="Ej.: precio externo menor con igualación rechazada por el proveedor de catálogo…"></textarea>
+          </div>
+
+          <div id="modality-gateway-section" hidden>
+            <div class="info-panel" id="utm-panel">
+              Monto estimado (total bruto SOLPED en CLP): <strong id="modality-monto-clp">—</strong><br />
+              Valor UTM del mes (cacheado, fuente SII): <strong id="utm-value">$ 65.084</strong><br />
+              Equivalente del monto en UTM: <strong id="utm-equiv">—</strong>
+            </div>
+            <h3 class="form-section__title" style="margin-top:1rem;">Preview del gateway de validación (V1–V8)</h3>
+            <table class="form-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Regla</th>
+                  <th>Resultado</th>
+                  <th>Severidad</th>
+                </tr>
+              </thead>
+              <tbody id="gateway-body"></tbody>
+            </table>
+            <div class="banner banner--info hidden" id="utm-unavailable-banner">
+              <strong>UTM_VALUE_UNAVAILABLE</strong> — fuente UTM no disponible y sin valor cacheado del mes en curso; el gateway no puede evaluar V1 hasta restablecerse.
+            </div>
+            <p style="margin-top:0.75rem;">
+              <button class="btn btn--secondary" type="button" id="simulate-utm-down">Simular caída de UTM (demo)</button>
+            </p>
           </div>
         </section>
 
@@ -204,18 +248,24 @@
         <section class="form-section">
           <h3 class="form-section__title">Pista presupuestaria (opcional)</h3>
           <div class="form-row">
-            <label>Línea presupuestaria (opcional)</label>
-            <select>
+            <label>Imputación presupuestaria (opcional)</label>
+            <select id="proposed-budget-line">
               <option value="">(opcional) Cuenta/Programa</option>
-              <option>22.01.03 — Insumos oficina</option>
+              <option value="bl-2210-001" selected>22.01.03 — Insumos oficina</option>
+              <option value="bl-2210-003">22.04.01 — Mantención flota</option>
             </select>
+          </div>
+          <div class="info-panel info-panel--ok" id="budget-line-summary" hidden>
+            <strong>Descripción de la cuenta:</strong> <span id="budget-line-description">—</span><br />
+            <strong>Saldo disponible:</strong> <span id="budget-line-balance">—</span>
+            <span class="muted"> · vía Presupuestos (informativo; no sustituye 1.3)</span>
           </div>
           <div class="form-row">
             <label>Año fiscal propuesto (opcional)</label>
-            <input type="number" value="2026" />
+            <input type="number" id="proposed-fiscal-year" value="2026" />
           </div>
           <p>
-            <button class="btn btn--link" type="button" id="balance-trigger">Consultar saldo en línea presupuestaria</button>
+            <button class="btn btn--link" type="button" id="balance-trigger">Detalle de saldo…</button>
           </p>
         </section>
       </div>
@@ -237,7 +287,7 @@
       </div>
       <div class="modal__body">
         <div class="form-row">
-          <label>Línea presupuestaria <span class="required">*</span></label>
+          <label>Imputación presupuestaria <span class="required">*</span></label>
           <select><option>22.01.03 — Insumos oficina</option></select>
         </div>
         <div class="form-row">
@@ -270,6 +320,11 @@
     import { getFormPreset } from '../../../shared/form-presets.js';
     import { getSimulationFromUrl } from '../../../shared/roles.js';
     import { unitOfMeasureOptionsHtml } from '../../../shared/demo-data/plataforma.js';
+    import {
+      gatewayTableBodyHtml,
+      initModalityGateway,
+      UTM_VALUE_DEMO,
+    } from '../../../shared/modality-gateway.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -304,19 +359,19 @@
           destinationHint.textContent = 'Unidad de destino — seleccionable: indique la unidad beneficiaria de la compra.';
         }
       } else {
+        // Solicitante básico (y resto de roles en demo 1.1): unidad del actor = Unidad X
         requesting.value = 'unidad-x';
         destination.value = 'unidad-x';
         requesting.disabled = true;
         destination.disabled = true;
         if (requestingHint) {
-          requestingHint.textContent = 'Unidad solicitante — Solicitante básico: autoasignada a su unidad; no editable.';
+          requestingHint.textContent = 'Unidad solicitante — Solicitante básico: autoasignada a Unidad X; no editable.';
         }
         if (destinationHint) {
           destinationHint.textContent = 'Unidad de destino — autoasignada a la misma unidad; un solicitante básico no puede elegir otra.';
         }
       }
     }
-    applyUnitsByRole();
 
     // Selectores de unidad de medida desde catálogo de plataforma (listUnitOfMeasures)
     document.querySelectorAll('select[name="line-unit"]').forEach((sel) => {
@@ -324,8 +379,62 @@
       sel.innerHTML = unitOfMeasureOptionsHtml(current === 'Un' ? 'unit' : current);
     });
 
+    /** Demo Presupuestos: descripción + saldo al seleccionar proposed_budget_line_id */
+    const BUDGET_LINES_DEMO = {
+      'bl-2210-001': {
+        code: '22.01.03',
+        description: 'Insumos de oficina — programa administración',
+        available_balance: 2100000,
+      },
+      'bl-2210-003': {
+        code: '22.04.01',
+        description: 'Mantención de flota municipal',
+        available_balance: 320000,
+      },
+    };
+
+    function formatClpBalance(n) {
+      return new Intl.NumberFormat('es-CL', {
+        style: 'currency',
+        currency: 'CLP',
+        maximumFractionDigits: 0,
+      }).format(n);
+    }
+
+    function refreshBudgetLineSummary() {
+      const sel = document.getElementById('proposed-budget-line');
+      const panel = document.getElementById('budget-line-summary');
+      const descEl = document.getElementById('budget-line-description');
+      const balEl = document.getElementById('budget-line-balance');
+      if (!sel || !panel) return;
+      const id = sel.value;
+      if (!id || !BUDGET_LINES_DEMO[id]) {
+        panel.hidden = true;
+        return;
+      }
+      const row = BUDGET_LINES_DEMO[id];
+      descEl.textContent = row.description;
+      balEl.textContent = formatClpBalance(row.available_balance);
+      panel.hidden = false;
+      demoAction('getBudgetLine + previewBudgetAvailability (' + id + ')');
+    }
+
+    document.getElementById('proposed-budget-line')?.addEventListener('change', refreshBudgetLineSummary);
+    refreshBudgetLineSummary();
+
     initModalityToggle('purchase-modality', 'resolution-row');
     bootstrapFormPage('solped');
+    applyUnitsByRole();
+
+    document.getElementById('gateway-body').innerHTML = gatewayTableBodyHtml();
+    document.getElementById('utm-value').textContent = new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP',
+      maximumFractionDigits: 0,
+    }).format(UTM_VALUE_DEMO);
+
+    let lastGrossClp = 0;
+    let modalityGateway = null;
 
     /** Tasas fijas de demo · vigentes 2026-07-20 (referenciales; no congelan compromiso). */
     const FX_DATE = '2026-07-20';
@@ -445,6 +554,10 @@
       if (balanceAmount && !balanceAmount.dataset.locked) {
         balanceAmount.value = formatClp(totalGrossClp);
       }
+      lastGrossClp = totalGrossClp;
+      const montoClpEl = document.getElementById('modality-monto-clp');
+      if (montoClpEl) montoClpEl.textContent = formatClp(totalGrossClp);
+      modalityGateway?.recompute();
       const removeButtons = linesBody.querySelectorAll('[data-remove-line]');
       removeButtons.forEach((btn) => {
         btn.disabled = removeButtons.length <= 1;
@@ -535,6 +648,23 @@
     updateCurrencyChrome();
     recalcLines();
 
+    modalityGateway = initModalityGateway({
+      getMontoClp: () => lastGrossClp,
+      modalitySelect: document.getElementById('purchase-modality'),
+      catalogCheck: document.getElementById('catalog-cm-check'),
+      tdCause: document.getElementById('td-cause'),
+      cmJustification: document.getElementById('cm-justification'),
+      tdCauseRow: document.getElementById('td-cause-row'),
+      cmJustificationRow: document.getElementById('cm-justification-row'),
+      utmEquivEl: document.getElementById('utm-equiv'),
+      utmPanel: document.getElementById('utm-panel'),
+      utmDownBanner: document.getElementById('utm-unavailable-banner'),
+      gatewayBody: document.getElementById('gateway-body'),
+      gatewaySection: document.getElementById('modality-gateway-section'),
+      simulateUtmDownBtn: document.getElementById('simulate-utm-down'),
+      hideWhenIdle: true,
+    });
+
     const budget = preset.budgetVerification;
     if (budget?.insufficient) {
       const amount = document.getElementById('balance-amount');
@@ -578,8 +708,11 @@
       if (params.get('cm') === '1') {
         const modality = document.getElementById('purchase-modality');
         const warn = document.getElementById('cm-modality-warning');
+        const catalogCheck = document.getElementById('catalog-cm-check');
+        if (catalogCheck) catalogCheck.checked = true;
         modality.value = 'framework_agreement';
         modality.dispatchEvent(new Event('change'));
+        catalogCheck?.dispatchEvent(new Event('change'));
         const code = params.get('cmCode') || '—';
         const price = params.get('cmPrice');
         const agreement = params.get('cmAgreement') || '—';

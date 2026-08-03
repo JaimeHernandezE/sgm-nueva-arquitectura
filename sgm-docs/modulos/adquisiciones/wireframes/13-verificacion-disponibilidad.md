@@ -1,4 +1,4 @@
-# Wireframe: Verificación de disponibilidad presupuestaria
+﻿# Wireframe: Verificación de disponibilidad presupuestaria
 
 **Sub-paso:** 1.3 — Verificación de disponibilidad presupuestaria  
 **Rol:** Formulador DAF / verificación (`adq.formulador_presupuesto`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)  
@@ -13,7 +13,7 @@
 | SOLPED #1420 — Verificación presupuestaria                |
 +----------------------------------------------------------+
 | Verificación presupuestaria                               |
-| Línea presupuestaria *    [ 22.01.03 — Insumos …     v ]  |
+| Imputación presupuestaria *    [ 22.01.03 — Insumos …     v ]  |
 | Monto estimado *          [ $ 2.450.000 ]                 |
 | Año fiscal *              [ 2026 ]                        |
 +----------------------------------------------------------+
@@ -36,7 +36,7 @@
 
 | Campo UI | Entidad.campo | Obligatorio |
 |---|---|---|
-| Línea presupuestaria | `BudgetLine` (consulta) | Sí |
+| Imputación presupuestaria | `BudgetLine` (consulta) | Sí |
 | Monto estimado | entrada de verificación | Sí |
 | Año fiscal | entrada de verificación | Sí |
 | Comentarios | entrada `verifyBudgetAvailability` | Sí si rechazo |

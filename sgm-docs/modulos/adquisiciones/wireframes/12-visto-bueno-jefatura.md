@@ -1,4 +1,4 @@
-# Wireframe: Visto bueno de jefatura
+﻿# Wireframe: Visto bueno de jefatura
 
 **Sub-paso:** 1.2 — Visto bueno de jefatura  
 **Rol:** Aprobador de unidad (`adq.aprobador_unidad`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)
@@ -12,9 +12,9 @@
 +----------------------------------------------------------+
 | Contexto SOLPED                                           |
 | Unidad: ... | Monto total: $XXX | Líneas: 3               |
-| Línea presup. indicada: Cuenta 22.01.03 (opcional)        |
+| Imputación presup. indicada: Cuenta 22.01.03 (opcional)        |
 | [ Ver formulario 1.1 ]                                    |
-| [ Consultar saldo en línea presupuestaria ]  (enlace)     |
+| [ Consultar saldo en imputación presupuestaria ]  (enlace)     |
 +----------------------------------------------------------+
 | Seguimiento de firmas                                     |
 | +------------------+--------+-------------+               |
@@ -56,7 +56,8 @@ Tras firmar (vuelve a la pantalla):
 | Decisión (aprobar/rechazar) | `PurchaseRequestApproval.decision` | Sí |
 | Comentarios | `PurchaseRequestApproval.comments` | Sí si rechazo |
 | Estado firma | respuesta `confirmSignature` | Sí (camino aprobación) |
-| Línea presup. indicada | `PurchaseRequest.proposed_budget_line_id` | No (solo lectura) |
+| Imputación presup. indicada | `PurchaseRequest.proposed_budget_line_id` | No (solo lectura) — con descripción de cuenta + saldo desde Presupuestos |
+| Descripción de cuenta / saldo | `BudgetLine.description` / `previewBudgetAvailability.available_balance` | No (solo lectura) |
 
 ## Acciones
 
@@ -69,7 +70,7 @@ Tras firmar (vuelve a la pantalla):
 | Rechazar | `rejectPurchaseRequest` (`disposition = cancel`) | — (`ProcurementCase.status = cancelled`; sin corrección) |
 | Rechazar y enviar a borrador | `rejectPurchaseRequest` (`disposition = return_to_draft`) | — (`PurchaseRequest.status = draft`; vuelve a 1.1 editable) |
 | Ver formulario 1.1 | — (navegación) | Solo lectura del formulario de creación SOLPED |
-| Consultar saldo (panel) | `previewBudgetAvailability` | Informativa — mismo panel que 1.1 |
+| Consultar saldo (panel) | `getBudgetLine` + `previewBudgetAvailability` | Informativa — descripción + saldo; mismo comportamiento que 1.1 |
 
 ## Estados de pantalla
 
