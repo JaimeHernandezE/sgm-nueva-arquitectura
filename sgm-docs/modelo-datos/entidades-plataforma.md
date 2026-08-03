@@ -165,6 +165,45 @@ Parámetro normativo de plataforma (umbrales UTM, tramos de licitación, etc.). 
 | `key` | texto | **Obligatorio** |
 | `value` | JSON | **Obligatorio** |
 
+### `UnitOfMeasure`
+**Visibilidad:** expuesta — catálogo operativo de **plataforma** (lectura por módulos; administración en consola municipal)
+
+Unidades de medida reutilizables (SOLPED, recepción, inventario futuro, etc.). La plataforma entrega un **semilla inicial**; el administrador municipal puede **agregar, renombrar o desactivar** entradas sin cambio de código de módulos. Origen UI: [`plataforma/wireframes/municipal/10-unidades-medida.md`](../plataforma/wireframes/municipal/10-unidades-medida.md).
+
+| Campo | Label (ES) | Tipo | Notas |
+|---|---|---|---|
+| `id` | Identificador | UUID / texto | **Obligatorio** (generado por sistema) |
+| `tenant_id` | Municipio | ref. `Tenant` | **Obligatorio** — catálogo por tenant (semilla clonada al aprovisionar) |
+| `code` | Código | texto | **Obligatorio** — estable, snake/corto (`bag`, `box`, `ream`, `g`, `l`, `unit`). Único por tenant. |
+| `name` | Nombre | texto | **Obligatorio** — etiqueta UI (`Bolsa`, `Caja`, `Resma`, `Gramo`, `Litro`, `Unidad`) |
+| `symbol` | Símbolo | texto | **Opcional** — forma corta en tablas (`Un`, `Kg`, `L`, `g`) |
+| `status` | Estado | enum | **Obligatorio**. `active` \| `inactive`. Solo `active` aparecen en selectores de módulos. |
+| `source` | Origen | enum | **Obligatorio**. `platform_seed` (viene de la plantilla de plataforma) \| `tenant_custom` (alta municipal). |
+| `sort_order` | Orden | número | **Opcional** — orden en selectores |
+
+**Semilla inicial de plataforma** (ampliable vía consola):
+
+| `code` | `name` | `symbol` |
+|---|---|---|
+| `unit` | Unidad | Un |
+| `bag` | Bolsa | Bolsa |
+| `box` | Caja | Caja |
+| `ream` | Resma | Resma |
+| `pack` | Paquete | Paq. |
+| `pair` | Par | Par |
+| `set` | Juego | Juego |
+| `g` | Gramo | g |
+| `kg` | Kilogramo | Kg |
+| `l` | Litro | L |
+| `ml` | Mililitro | ml |
+| `m` | Metro | m |
+| `m2` | Metro cuadrado | m² |
+| `cm` | Centímetro | cm |
+| `hr` | Hora | Hr |
+| `service` | Servicio | Serv. |
+
+> Los módulos **no** hardcodean la lista: consumen `listUnitOfMeasures` (solo `status = active`). Alta futura = `createUnitOfMeasure` en plataforma.
+
 ### `AuditRecord` / `ApiClient`
 Ver `plataforma-core.md` §4 y `plataforma/contracts.md`.
 

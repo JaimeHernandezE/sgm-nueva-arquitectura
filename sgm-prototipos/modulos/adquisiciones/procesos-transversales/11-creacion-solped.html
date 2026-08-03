@@ -108,9 +108,7 @@
                 <td><input type="number" name="line-quantity" min="0" step="1" value="50" /></td>
                 <td>
                   <select name="line-unit">
-                    <option>Un</option>
-                    <option>Kg</option>
-                    <option>Hr</option>
+                    <!-- opciones vía listUnitOfMeasures (catálogo plataforma) -->
                   </select>
                 </td>
                 <td><input type="number" name="line-price" min="0" step="1" value="4500" /></td>
@@ -271,6 +269,7 @@
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
     import { getFormPreset } from '../../../shared/form-presets.js';
     import { getSimulationFromUrl } from '../../../shared/roles.js';
+    import { unitOfMeasureOptionsHtml } from '../../../shared/demo-data/plataforma.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -318,6 +317,12 @@
       }
     }
     applyUnitsByRole();
+
+    // Selectores de unidad de medida desde catálogo de plataforma (listUnitOfMeasures)
+    document.querySelectorAll('select[name="line-unit"]').forEach((sel) => {
+      const current = sel.value || 'unit';
+      sel.innerHTML = unitOfMeasureOptionsHtml(current === 'Un' ? 'unit' : current);
+    });
 
     initModalityToggle('purchase-modality', 'resolution-row');
     bootstrapFormPage('solped');
@@ -465,9 +470,7 @@
         <td><input type="number" name="line-quantity" min="0" step="1" value="${data.quantity ?? ''}" /></td>
         <td>
           <select name="line-unit">
-            <option${data.unit === 'Un' || !data.unit ? ' selected' : ''}>Un</option>
-            <option${data.unit === 'Kg' ? ' selected' : ''}>Kg</option>
-            <option${data.unit === 'Hr' ? ' selected' : ''}>Hr</option>
+            ${unitOfMeasureOptionsHtml(data.unit || 'unit')}
           </select>
         </td>
         <td><input type="number" name="line-price" min="0" step="${meta.step}" value="${data.price ?? ''}" /></td>

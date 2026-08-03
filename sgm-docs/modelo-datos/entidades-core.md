@@ -66,4 +66,4 @@ Estos puntos aparecen repetidos en más de una entidad/subproceso y son candidat
 
 Varias entidades viven hoy en [`entidades-adquisiciones.md`](entidades-adquisiciones.md) como **definición provisional** (`BudgetAvailabilityCertificate`, `BudgetPreCommitment`, `BudgetCommitment`, `Accrual`, `PaymentDecree`, `Payment`) hasta documentar Presupuestos / Contabilidad / Tesorería.
 
-Referencias externas asumidas (aún sin definición de dominio en este índice): `BudgetLine`, `Invoice`. Identidad y orgánico: `User`, `OrganizationalUnit` en plataforma.
+Referencias externas asumidas (aún sin definición de dominio en este índice): `BudgetLine`, `Invoice`. Identidad y orgánico: `User`, `OrganizationalUnit` en plataforma. Catálogos de plataforma: `UnitOfMeasure` (unidades de medida — administrable en consola municipal).

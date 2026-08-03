@@ -333,6 +333,44 @@ export const tenantParameters = [
   { key: 'timer_escalamiento_horas', value: '48', platform_default: '72' },
 ];
 
+/** Semilla UnitOfMeasure (plataforma) — listUnitOfMeasures / consola municipal 10. */
+export const unitOfMeasures = [
+  { code: 'unit', name: 'Unidad', symbol: 'Un', status: 'active', source: 'platform_seed', sort_order: 10 },
+  { code: 'bag', name: 'Bolsa', symbol: 'Bolsa', status: 'active', source: 'platform_seed', sort_order: 20 },
+  { code: 'box', name: 'Caja', symbol: 'Caja', status: 'active', source: 'platform_seed', sort_order: 30 },
+  { code: 'ream', name: 'Resma', symbol: 'Resma', status: 'active', source: 'platform_seed', sort_order: 40 },
+  { code: 'pack', name: 'Paquete', symbol: 'Paq.', status: 'active', source: 'platform_seed', sort_order: 50 },
+  { code: 'pair', name: 'Par', symbol: 'Par', status: 'active', source: 'platform_seed', sort_order: 60 },
+  { code: 'set', name: 'Juego', symbol: 'Juego', status: 'active', source: 'platform_seed', sort_order: 70 },
+  { code: 'g', name: 'Gramo', symbol: 'g', status: 'active', source: 'platform_seed', sort_order: 80 },
+  { code: 'kg', name: 'Kilogramo', symbol: 'Kg', status: 'active', source: 'platform_seed', sort_order: 90 },
+  { code: 'l', name: 'Litro', symbol: 'L', status: 'active', source: 'platform_seed', sort_order: 100 },
+  { code: 'ml', name: 'Mililitro', symbol: 'ml', status: 'active', source: 'platform_seed', sort_order: 110 },
+  { code: 'm', name: 'Metro', symbol: 'm', status: 'active', source: 'platform_seed', sort_order: 120 },
+  { code: 'm2', name: 'Metro cuadrado', symbol: 'm²', status: 'active', source: 'platform_seed', sort_order: 130 },
+  { code: 'cm', name: 'Centímetro', symbol: 'cm', status: 'active', source: 'platform_seed', sort_order: 140 },
+  { code: 'hr', name: 'Hora', symbol: 'Hr', status: 'active', source: 'platform_seed', sort_order: 150 },
+  { code: 'service', name: 'Servicio', symbol: 'Serv.', status: 'active', source: 'platform_seed', sort_order: 160 },
+];
+
+export function activeUnitOfMeasures() {
+  return unitOfMeasures
+    .filter((u) => u.status === 'active')
+    .slice()
+    .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0) || a.name.localeCompare(b.name, 'es'));
+}
+
+export function unitOfMeasureOptionsHtml(selectedCode = 'unit') {
+  return activeUnitOfMeasures()
+    .map(
+      (u) =>
+        `<option value="${u.code}"${u.code === selectedCode ? ' selected' : ''}>${u.name}${
+          u.symbol && u.symbol !== u.name ? ` (${u.symbol})` : ''
+        }</option>`,
+    )
+    .join('');
+}
+
 export const tenantIntegrations = [
   { provider_id: 'mercado_publico', enabled: true, params: 'organismo: 1234' },
   { provider_id: 'firma_gob', enabled: true, params: '(defaults plataforma)' },

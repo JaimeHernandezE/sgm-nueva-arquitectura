@@ -43,6 +43,7 @@ Fuente de pantallas: `plataforma-core.md` §9. Wireframes: [`wireframes/`](./wir
 | Subrogancias | [`municipal/03-subrogancias.md`](./wireframes/municipal/03-subrogancias.md) | *(inferidas)* CRUD `Delegation` |
 | Excepciones SoD | [`municipal/04-excepciones-sod.md`](./wireframes/municipal/04-excepciones-sod.md) | *(inferidas)* CRUD `SodException` |
 | Parámetros operativos | [`municipal/05-parametros-operativos.md`](./wireframes/municipal/05-parametros-operativos.md) | `getTenantParameter`; *(inferidas)* `listTenantParameters`, `upsertTenantParameter` |
+| Unidades de medida | [`municipal/10-unidades-medida.md`](./wireframes/municipal/10-unidades-medida.md) | `listUnitOfMeasures`; *(inferidas)* `createUnitOfMeasure`, `updateUnitOfMeasure` — catálogo ampliable (SOLPED y otros) |
 | Integraciones del municipio | [`municipal/06-integraciones-municipio.md`](./wireframes/municipal/06-integraciones-municipio.md) | `upsertTenantIntegration`, `rotateIntegrationCredential`; *(inferida)* `listTenantIntegrations` |
 | Almacenamiento de documentos | [`municipal/07-almacenamiento-documentos.md`](./wireframes/municipal/07-almacenamiento-documentos.md) | `upsertTenantStorage`; *(inferida)* `getTenantStorage` |
 | Recertificación de accesos | [`municipal/08-recertificacion-accesos.md`](./wireframes/municipal/08-recertificacion-accesos.md) | *(inferida)* `listAccessRecertificationReport` |

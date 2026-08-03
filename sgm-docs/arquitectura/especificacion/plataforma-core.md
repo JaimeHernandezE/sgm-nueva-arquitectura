@@ -85,6 +85,7 @@ Entidades transversales que hoy las fichas usan de forma implícita (columnas Un
 | `ApiClient` | Credencial M2M: sistema municipal o tercero del ecosistema, con scopes por módulo y municipio, rotación y revocación | Expuesta (administración) |
 | `NormativeParameter` | Canónica en `entidades-plataforma.md`; administración SUBDERE, lectura por todos los módulos | Expuesta (lectura) |
 | `TenantParameter` | Parámetro operativo por tenant (perfil de recepción **X-42**, visto bueno pre-OC **X-39**), distinto de `NormativeParameter` | Expuesta (administración municipal) |
+| `UnitOfMeasure` | Catálogo de unidades de medida (semilla plataforma + altas municipales); selectores de SOLPED y otros formularios | Expuesta |
 | `AuditRecord` | Registro de auditoría según `seguridad.md` §5.2 | Expuesta (scope restringido) |
 | `EventSubscription` | Suscripción de un consumidor (servicio de notificaciones, webhook de tercero) a eventos de dominio | Expuesta (administración) |
 | `Notification` | Ítem de bandeja/campanita por destinatario, derivado de evento de dominio | Expuesta (destinatario) |
@@ -226,6 +227,7 @@ Dos consolas, ambas consumidoras sin privilegios del contrato del core (§2). Se
 | Subrogancias | `Delegation` con vencimiento obligatorio |
 | Excepciones SoD | Configuración explícita y auditada (**X-25**) |
 | Parámetros operativos | `TenantParameter` dentro del catálogo de plataforma |
+| Unidades de medida | `UnitOfMeasure` — semilla plataforma; alta/desactivación municipal (`municipal/10`) |
 | Integraciones del municipio | `TenantIntegrationConfig` (MP, FirmaGob, DocDigital si aplica); `SignatureChain` |
 | Almacenamiento de documentos | `TenantStorageConfig`: bucket propio (`tenant_owned`) o DMS (`external_dms`) |
 | Recertificación de accesos | Reporte de cuentas y última actividad (`seguridad.md` §9.4) |

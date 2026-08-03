@@ -145,10 +145,11 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Desviación precio vs referencia dentro de tolerancia | blocking ⚠ | `lines[].unit_price` | — | `PRICE_DEVIATION_EXCEEDED` |
   | Si `purchase_modality = direct_procurement`, `founded_resolution_attachment` presente | blocking | `founded_resolution_attachment` | — | `FOUNDED_RESOLUTION_REQUIRED` |
   | Si se agrega adjunto, tipo / descripción / archivo presentes | blocking | `attachments[].*` | — | `MISSING_REQUIRED_FIELD` |
-- **Dependencias invocadas:** `getPriceReference`, `previewBudgetAvailability` *(informativa, bajo demanda desde enlace UI)*; `searchProducts` *(typeahead de `product_code` — **[PENDIENTE X-94]**)*. Verificación de stock/catálogo CM: sub-paso **1.0** (optativo).
+- **Dependencias invocadas:** `getPriceReference`, `previewBudgetAvailability` *(informativa, bajo demanda desde enlace UI)*; `searchProducts` *(typeahead de `product_code` — **[PENDIENTE X-94]**)*; `listUnitOfMeasures` *(catálogo de plataforma)*. Verificación de stock/catálogo CM: sub-paso **1.0** (optativo).
 - **Notas:**
   - Unidades: `requesting_unit` y `destination_unit` se autoasignan por `RoleAssignment`. Con `adq.solicitante` ambas quedan fijas a su unidad; con `adq.solicitante_daf` ambas son **modificables** en el tenant. Ver [`catalogo-roles.md`](../../arquitectura/especificacion/catalogo-roles.md) §3.1.
   - `product_code` en línea: typeahead busca por código o palabra vía `searchProducts`; si el usuario elige un hit del catálogo, se persiste el código (y puede prellenar `item_description`). Catálogo / entidad `Product` **[PENDIENTE X-94]** — campo opcional hasta entonces.
+  - `unit_of_measure` en línea: ref. al catálogo de plataforma `UnitOfMeasure` (`listUnitOfMeasures`, solo activas). Semilla (unidad, bolsa, caja, resma, g, kg, L, …) ampliable en consola municipal sin cambiar Adquisiciones.
   - Precio siempre neto (convención de plataforma); no se captura «neto/bruto» como elección del usuario.
   - Totales derivados: neto, impuestos, bruto. Autoconsulta y precompromiso orientativo usan **bruto** en CLP (municipio = consumidor final).
   - Si `currency` ≠ CLP, la tasa en 1.1 es referencial; el hito que congela la tasa para compromiso está pendiente (ficha 1-solped).
@@ -721,6 +722,12 @@ Registro manual del envío y del resultado, con documento de respaldo — no hay
 |---|---|---|---|
 | `searchProducts` | 1.1 (typeahead `product_code`) | Cacheada | Catálogo `Product` no definido; prototipo usa datos demo. Query `q` = código o palabra; si hay hit y el usuario elige, se persiste `product_code` (puede prellenar `item_description`). |
 
+#### Catálogos operativos de plataforma
+
+| Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
+|---|---|---|---|
+| `listUnitOfMeasures` | 1.1 (selector `unit_of_measure`) | Cacheada | Catálogo `UnitOfMeasure` en plataforma; semilla + altas municipales. Solo `status=active`. |
+
 ### 3.5 Core — documentos (C10)
 
 Patrón upload-then-reference: el cliente sube vía `storeDocument` → recibe `DocumentRef` → el módulo persiste solo el ref en operaciones de negocio. Sin endpoints multipart en el borde de Adquisiciones.
@@ -817,7 +824,7 @@ La ficha QA original solo cubrió el piloto Compra Ágil. Las operaciones de Lic
 | 0.1 | `listProcurementCases`, `getProcurementCase` | — | — |
 | 0.2 | — *(navegación a 1.0/1.1)* | evaluación capacidades Inventario/CM | — |
 | 1.0 | — *(consulta deps)* | `checkStockAvailability`, `checkCatalogAvailability` *(cond.)* | — |
-| 1.1 | `createPurchaseRequest`, `submitPurchaseRequest` | `getPriceReference`, `previewBudgetAvailability`, `searchProducts` *(**[X-94]**)* | — |
+| 1.1 | `createPurchaseRequest`, `submitPurchaseRequest` | `getPriceReference`, `previewBudgetAvailability`, `searchProducts` *(**[X-94]**)*, `listUnitOfMeasures` | — |
 | 1.2 | `approvePurchaseRequest`, `rejectPurchaseRequest` | `requestSignature`, `confirmSignature`, `previewBudgetAvailability` | `PurchaseRequestApproved` |
 | 1.3 | `verifyBudgetAvailability` | `checkBudgetAvailability` | — |
 | 1.4 | `requestBudgetFinancing` | — | `BudgetFinancingRequested` |

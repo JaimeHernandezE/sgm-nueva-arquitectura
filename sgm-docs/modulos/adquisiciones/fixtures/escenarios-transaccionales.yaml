@@ -23,7 +23,7 @@ scenarios:
         lines:
           - item_description: Resma papel carta
             quantity: 50
-            unit_of_measure: unit
+            unit_of_measure: ream
             unit_price: 4500
             price_source: price-ref-001
     response:

@@ -526,6 +526,7 @@ components:
           exclusiveMinimum: true
         unit_of_measure:
           type: string
+          description: Código UnitOfMeasure del catálogo de plataforma (listUnitOfMeasures)
         unit_price:
           type: number
           format: double

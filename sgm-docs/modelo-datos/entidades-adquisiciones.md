@@ -98,7 +98,7 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 | `product_code` | Código de producto | texto | **Opcional** mientras el catálogo de productos no esté definido (**[PENDIENTE X-94]**). UI: typeahead que busca por **código o palabra**; si el usuario elige un hit del catálogo, se persiste el código y puede prellenar `item_description`. Sin catálogo, el campo admite ingreso libre / vacío. |
 | `item_description` | Descripción del ítem | texto | **Obligatorio** |
 | `quantity` | Cantidad | número | **Obligatorio** |
-| `unit_of_measure` | Unidad de medida | ref. `UnitOfMeasure` | **Obligatorio** |
+| `unit_of_measure` | Unidad de medida | ref. `UnitOfMeasure` | **Obligatorio** — código/`id` del catálogo de plataforma (`listUnitOfMeasures`, solo activas). Catálogo administrable en consola municipal — ver [`entidades-plataforma.md`](entidades-plataforma.md) `UnitOfMeasure`. |
 | `unit_price` | Precio unitario neto | número | **Obligatorio** — **neto**, expresado en `PurchaseRequest.currency`. Convención de plataforma: el usuario no elige neto/bruto |
 | `tax_code` | Impuesto | enum | **Obligatorio** (default `iva_19`). Valores: `iva_19`, `exempt`, `other`. Permite mezclar líneas afectas y exentas en la misma SOLPED. Catálogo ampliable — pendiente |
 | `price_source` | Fuente de precio | ref. `PriceReference` | **Obligatorio** — valor obtenido vía core `getPriceReference` (C9) |

@@ -8,8 +8,9 @@ Mapeo entre el término técnico usado en las entidades (`modelo-datos/entidades
 | `CaseStep` | Paso de Expediente | Instancia de cada etapa del expediente; estado, responsable y tiempos |
 | `BudgetAvailabilityCertificate` | Certificado de Disponibilidad Presupuestaria (CDP) | Emitido y firmado por aprobador DAF; precede a la preobligación |
 | `PurchaseRequest` | SOLPED (Solicitud de Pedido) | |
-| `PurchaseRequestLine` | Línea de SOLPED | Incluye `product_code` (typeahead; catálogo **[X-94]**) |
+| `UnitOfMeasure` | Unidad de medida | Catálogo de plataforma; semilla + altas municipales (`listUnitOfMeasures`) |
 | `Product` | Producto (catálogo) | **[PENDIENTE X-94]** — base aún sin definición |
+| `PurchaseRequestLine` | Línea de SOLPED | Incluye `product_code` (typeahead; catálogo **[X-94]**) y `unit_of_measure` → `UnitOfMeasure` |
 | `BudgetPreCommitment` | Preobligación / Pre-afectación presupuestaria | Requiere CDP vigente; se contabiliza en Contabilidad |
 | `BudgetCommitment` | Compromiso Cierto / Obligación | Hito contable disparado por OC Aceptada |
 | `PurchaseOrder` | Orden de Compra (OC) | |

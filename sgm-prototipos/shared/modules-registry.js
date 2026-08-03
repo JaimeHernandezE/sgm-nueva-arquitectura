@@ -69,6 +69,7 @@ export const plataformaMunicipalNav = [
   { id: '03-subrogancias', label: 'Subrogancias', path: 'plataforma/municipal/03-subrogancias.html' },
   { id: '04-sod', label: 'Excepciones SoD', path: 'plataforma/municipal/04-excepciones-sod.html' },
   { id: '05-parametros', label: 'Parámetros operativos', path: 'plataforma/municipal/05-parametros-operativos.html' },
+  { id: '10-uom', label: 'Unidades de medida', path: 'plataforma/municipal/10-unidades-medida.html' },
   { id: '06-integraciones', label: 'Integraciones', path: 'plataforma/municipal/06-integraciones-municipio.html' },
   { id: '07-storage', label: 'Almacenamiento', path: 'plataforma/municipal/07-almacenamiento-documentos.html' },
   { id: '08-recert', label: 'Recertificación', path: 'plataforma/municipal/08-recertificacion-accesos.html' },

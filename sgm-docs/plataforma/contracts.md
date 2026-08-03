@@ -23,6 +23,7 @@
 | `ApiClient` | Expuesta (admin) | `id`, `name`, `scopes`, `tenant_ids`, `status`, `created_at` |
 | `NormativeParameter` | Expuesta (lectura) | `id`, `key`, `value`, `valid_from`, `valid_until`, `legal_reference` |
 | `TenantParameter` | Expuesta | `id`, `tenant_id`, `key`, `value` |
+| `UnitOfMeasure` | Expuesta | `id`, `tenant_id`, `code`, `name`, `symbol`, `status`, `source`, `sort_order` |
 | `AuditRecord` | Expuesta (scope restringido) | `id`, `timestamp`, `actor_id`, `action`, `resource_type`, `resource_id`, `payload_summary` |
 | `EventSubscription` | Expuesta (admin) | `id`, `tenant_id`, `event_types`, `delivery_url`, `scopes`, `status`, `created_at` |
 | `Notification` | Expuesta (destinatario) | `id`, `module`, `kind`, `title`, `body`, `source_event_type`, `resource_type`, `resource_id`, `deep_link`, `read_at`, `created_at` |
@@ -104,6 +105,24 @@ Rutas sin prefijo de tenant hasta resolver **[X-03]**.
 #### `GET /tenant-parameters/{key}` — `getTenantParameter`
 - **Respuesta:** `TenantParameter` del tenant del token
 - **Errores:** `TENANT_PARAMETER_NOT_FOUND`
+
+### 2.4bis Catálogo de unidades de medida
+
+Catálogo operativo de plataforma. Semilla inicial al aprovisionar el tenant; el administrador municipal agrega o desactiva entradas según necesidad. Los módulos (p. ej. SOLPED) solo leen unidades `active`.
+
+#### `GET /unit-of-measures` — `listUnitOfMeasures`
+- **Uso:** selectores de módulos + consola municipal.
+- **Entrada:** query opcional `status` (`active` por defecto en módulos; `all` en admin).
+- **Respuesta:** colección de `UnitOfMeasure` del tenant, ordenada por `sort_order` / `name`.
+
+#### `POST /unit-of-measures` — `createUnitOfMeasure` *(inferida — detalle HTTP en §2.11 / X-48)*
+- **Uso:** alta en consola municipal (`municipal/10-unidades-medida`).
+- **Entrada:** `code`, `name`, `symbol` (opcional), `sort_order` (opcional). `source` = `tenant_custom`; `status` = `active`.
+- **Errores:** `UNIT_OF_MEASURE_CODE_DUPLICATE`, `VALIDATION_ERROR`
+
+#### `PATCH /unit-of-measures/{id}` — `updateUnitOfMeasure` *(inferida)*
+- **Entrada:** `name`, `symbol`, `sort_order`, `status` (`active` \| `inactive`). No se cambia `code` tras el alta.
+- **Errores:** `UNIT_OF_MEASURE_NOT_FOUND`
 
 ### 2.5 Tenants
 
@@ -320,6 +339,9 @@ Operaciones citadas en wireframes de [`overview.md`](./overview.md) / [`wirefram
 | `revokeSodException` | idem | |
 | `listTenantParameters` | `municipal/05-parametros-operativos` | Catálogo permitido |
 | `upsertTenantParameter` | idem | |
+| `listUnitOfMeasures` | `municipal/10-unidades-medida` · consumo módulos (SOLPED) | Solo `active` en selectores |
+| `createUnitOfMeasure` | `municipal/10-unidades-medida` | Alta `tenant_custom` |
+| `updateUnitOfMeasure` | idem | Nombre / símbolo / desactivar |
 | `listTenantIntegrations` | `municipal/06-integraciones-municipio` | |
 | `getTenantStorage` | `municipal/07-almacenamiento-documentos` | Lectura config C10 |
 | `listAccessRecertificationReport` | `municipal/08-recertificacion-accesos` | Reporte §9.4 seguridad |

@@ -9,7 +9,7 @@ Wireframes de baja fidelidad de las pantallas de administración del core de pla
 | Consola / superficie | Pantallas |
 |---|---|
 | SUBDERE | [`subdere/`](./subdere/) — 01 a 07 |
-| Municipal | [`municipal/`](./municipal/) — 01 a 09 |
+| Municipal | [`municipal/`](./municipal/) — 01 a 10 |
 | Shell | [`shell/`](./shell/) — campanita, bandeja, mis datos, chat FAB, listado chats · prototipos en `sgm-prototipos/` |
 
 Índice narrativo: [`../overview.md`](../overview.md). Notificaciones: [`../notificaciones/overview.md`](../notificaciones/overview.md). Mensajería: [`../mensajeria/overview.md`](../mensajeria/overview.md). Marco: [`plataforma-core.md`](../../arquitectura/especificacion/plataforma-core.md) §9.

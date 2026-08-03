@@ -81,7 +81,7 @@
 | Código de producto | `PurchaseRequestLine.product_code` | No (opcional hasta catálogo **[X-94]**). Typeahead: busca por código o palabra; si elige hit, persiste código y puede prellenar descripción |
 | Descripción línea | `PurchaseRequestLine.item_description` | Sí |
 | Cantidad línea | `PurchaseRequestLine.quantity` | Sí |
-| Unidad de medida | `PurchaseRequestLine.unit_of_measure` | Sí |
+| Unidad de medida | `PurchaseRequestLine.unit_of_measure` | Sí — ref. catálogo plataforma `UnitOfMeasure` (`listUnitOfMeasures`, solo activas; administrable en consola municipal) |
 | Precio unitario neto | `PurchaseRequestLine.unit_price` | Sí (neto; en moneda del documento). Convención de plataforma: siempre se ingresa neto |
 | Impuesto | `PurchaseRequestLine.tax_code` | Sí (default `iva_19`). Valores: `iva_19`, `exempt`, `other` — catálogo ampliable |
 | Subtotal neto línea | calculado UI (`quantity × unit_price`) | No (derivado) |
@@ -153,6 +153,7 @@
 - Precio con desviación > tolerancia ⚠ → banner `PRICE_DEVIATION_EXCEEDED` (bloqueante cuando se defina regla; validación de servidor, no columna en tabla).
 - Cantidad = 0 → `INVALID_QUANTITY` (QA 53 P0).
 - Tabla de líneas: agregar/eliminar filas (≥1); columna **Código de producto** con typeahead (busca por código o palabra); si hay hit en catálogo y el usuario elige, se guarda el código y puede prellenar la descripción. Catálogo **[PENDIENTE X-94]**.
+- **Unidad de medida** desde catálogo de plataforma `UnitOfMeasure` (`listUnitOfMeasures`); semilla incluye bolsa, caja, resma, gramo, litro, etc. Ampliable en consola municipal sin cambiar Adquisiciones.
 - Subtotal neto y totales (neto / impuestos / bruto) se recalculan en cliente.
 - Precio siempre neto; selector de impuesto por línea (default IVA 19%). No hay pregunta «¿neto o bruto?».
 - Si moneda ≠ CLP: mostrar «Total bruto en CLP» con tasa referencial; la autoconsulta de saldo usa el **bruto** en CLP (municipio = consumidor final; IVA es costo).

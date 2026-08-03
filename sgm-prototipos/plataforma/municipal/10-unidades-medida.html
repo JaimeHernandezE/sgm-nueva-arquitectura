@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unidades de medida — Consola municipal</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="../../shared/forms.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="app-main">
+      <div class="page">
+        <div id="breadcrumb"></div>
+        <div class="form-card">
+          <div class="form-card__header"><span>Unidades de medida</span></div>
+          <div class="form-card__body">
+            <section class="form-section">
+              <h3 class="form-section__title">Catálogo del municipio</h3>
+              <p class="form-section__hint">
+                Semilla de plataforma + altas locales. Los módulos (p. ej. SOLPED) solo muestran unidades activas vía
+                <code>listUnitOfMeasures</code>.
+              </p>
+              <table class="form-table" id="uom-table">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Símbolo</th>
+                    <th>Origen</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </section>
+            <section class="form-section">
+              <h3 class="form-section__title">Agregar / editar</h3>
+              <div class="form-row">
+                <label>Código <span class="required">*</span></label>
+                <input type="text" id="uom-code" placeholder="ej. bag" />
+                <p class="form-section__hint">Solo editable en alta; estable para API.</p>
+              </div>
+              <div class="form-row">
+                <label>Nombre <span class="required">*</span></label>
+                <input type="text" id="uom-name" placeholder="ej. Bolsa" />
+              </div>
+              <div class="form-row">
+                <label>Símbolo (opcional)</label>
+                <input type="text" id="uom-symbol" placeholder="ej. Bolsa" />
+              </div>
+              <div class="form-row">
+                <label>Estado <span class="required">*</span></label>
+                <select id="uom-status">
+                  <option value="active" selected>Activa</option>
+                  <option value="inactive">Inactiva</option>
+                </select>
+              </div>
+            </section>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn--secondary" type="button" id="btn-new">Nueva unidad</button>
+            <button class="btn btn--primary" type="button" id="btn-save">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script type="module">
+    import { initAppShell, renderPlataformaBreadcrumb } from '../../shared/app-shell.js';
+    import { demoAction } from '../../shared/form-shell.js';
+    import { unitOfMeasures } from '../../shared/demo-data/plataforma.js';
+
+    initAppShell({ activeModule: 'plataforma', console: 'municipal', activeNav: '10-uom' });
+    document.getElementById('breadcrumb').innerHTML = renderPlataformaBreadcrumb({
+      consoleLabel: 'Consola municipal',
+      screenLabel: 'Unidades de medida',
+    });
+
+    const sourceLabel = { platform_seed: 'plataforma', tenant_custom: 'municipal' };
+    const statusLabel = { active: 'Activa', inactive: 'Inactiva' };
+    let editingCode = null;
+
+    function renderTable() {
+      const tbody = document.querySelector('#uom-table tbody');
+      tbody.innerHTML = unitOfMeasures
+        .slice()
+        .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+        .map(
+          (u) => `<tr data-code="${u.code}" style="cursor:pointer;">
+            <td><code>${u.code}</code></td>
+            <td>${u.name}</td>
+            <td>${u.symbol || '—'}</td>
+            <td>${sourceLabel[u.source] || u.source}</td>
+            <td>${statusLabel[u.status] || u.status}</td>
+          </tr>`,
+        )
+        .join('');
+      demoAction('listUnitOfMeasures');
+    }
+
+    function clearForm(isNew) {
+      editingCode = null;
+      document.getElementById('uom-code').value = '';
+      document.getElementById('uom-code').readOnly = false;
+      document.getElementById('uom-name').value = '';
+      document.getElementById('uom-symbol').value = '';
+      document.getElementById('uom-status').value = 'active';
+      if (isNew) demoAction('createUnitOfMeasure (form)');
+    }
+
+    document.querySelector('#uom-table tbody').addEventListener('click', (e) => {
+      const tr = e.target.closest('tr[data-code]');
+      if (!tr) return;
+      const u = unitOfMeasures.find((x) => x.code === tr.dataset.code);
+      if (!u) return;
+      editingCode = u.code;
+      document.getElementById('uom-code').value = u.code;
+      document.getElementById('uom-code').readOnly = true;
+      document.getElementById('uom-name').value = u.name;
+      document.getElementById('uom-symbol').value = u.symbol || '';
+      document.getElementById('uom-status').value = u.status;
+      demoAction('getUnitOfMeasure (' + u.code + ')');
+    });
+
+    document.getElementById('btn-new').addEventListener('click', () => clearForm(true));
+    document.getElementById('btn-save').addEventListener('click', () => {
+      demoAction(editingCode ? 'updateUnitOfMeasure' : 'createUnitOfMeasure');
+    });
+
+    renderTable();
+  </script>
+</body>
+</html>
