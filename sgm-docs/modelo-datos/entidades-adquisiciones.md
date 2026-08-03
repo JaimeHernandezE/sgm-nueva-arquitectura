@@ -89,12 +89,13 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 | `document_ref` | Documento | ref. `DocumentRef` | **Obligatorio** — almacenado vía C10 (`storeDocument`) |
 
 ### `PurchaseRequestLine`
-**Visibilidad:** expuesta — campos en contrato: `id`, `purchase_request_id`, `item_description`, `quantity`, `unit_of_measure`, `unit_price`, `tax_code`, `price_source`
+**Visibilidad:** expuesta — campos en contrato: `id`, `purchase_request_id`, `product_code`, `item_description`, `quantity`, `unit_of_measure`, `unit_price`, `tax_code`, `price_source`
 
 1:N con `PurchaseRequest`.
 
 | Campo | Label (ES) | Tipo | Notas |
 |---|---|---|---|
+| `product_code` | Código de producto | texto | **Opcional** mientras el catálogo de productos no esté definido (**[PENDIENTE X-94]**). UI: typeahead que busca por **código o palabra**; si el usuario elige un hit del catálogo, se persiste el código y puede prellenar `item_description`. Sin catálogo, el campo admite ingreso libre / vacío. |
 | `item_description` | Descripción del ítem | texto | **Obligatorio** |
 | `quantity` | Cantidad | número | **Obligatorio** |
 | `unit_of_measure` | Unidad de medida | ref. `UnitOfMeasure` | **Obligatorio** |
@@ -103,6 +104,9 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 | `price_source` | Fuente de precio | ref. `PriceReference` | **Obligatorio** — valor obtenido vía core `getPriceReference` (C9) |
 
 > Totales derivados (UI/servicio): subtotal neto = `quantity × unit_price`; impuesto de línea = subtotal × tasa(`tax_code`); total bruto del documento = suma(neto) + suma(impuestos). El municipio es **consumidor final** (IVA es costo): el precompromiso presupuestario orientativo usa el **total bruto**.
+
+### `Product` *(pendiente)*
+**Visibilidad:** — **[PENDIENTE X-94]** — catálogo / base de datos de productos aún sin definición (campos, dueño de módulo, fuente ChileCompra vs. municipal, etc.). La operación de búsqueda prevista es `searchProducts` (`q` = código o palabra). Hasta cerrar X-94, `PurchaseRequestLine.product_code` permanece opcional y el typeahead de 1.1 usa datos demo.
 
 ### `PriceReference`
 **Visibilidad:** interna — DTO de validación embebido en línea; datos desde core `getPriceReference` (C9 → SII u otra fuente oficial); usada en validación de `createPurchaseRequest`; no cruza borde como entidad independiente

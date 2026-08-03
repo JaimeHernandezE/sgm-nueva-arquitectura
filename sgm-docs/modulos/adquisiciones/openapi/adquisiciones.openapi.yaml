@@ -511,6 +511,12 @@ components:
           type: string
         purchase_request_id:
           type: string
+        product_code:
+          type: string
+          nullable: true
+          description: >
+            Código de producto (typeahead searchProducts por código o palabra).
+            Opcional hasta definición del catálogo Product [PENDIENTE X-94].
         item_description:
           type: string
         quantity:
@@ -608,6 +614,10 @@ components:
               - unit_price
               - tax_code
             properties:
+              product_code:
+                type: string
+                nullable: true
+                description: Código de producto (typeahead; catálogo pendiente X-94)
               item_description:
                 type: string
               quantity:

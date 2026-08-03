@@ -65,7 +65,7 @@
 
 **Entidad(es) y campos:**
 - `PurchaseRequest` — `requesting_unit` (ref., **obligatorio** — autoasignado según `RoleAssignment`; con `adq.solicitante` fija; con `adq.solicitante_daf` modificable en el tenant), `destination_unit` (ref., **obligatorio** — unidad de destino; con `adq.solicitante` = misma que solicitante; con `adq.solicitante_daf` = seleccionable en el tenant — [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) §3.1), `description` (texto, **obligatorio**), `justification` (texto, **obligatorio**), `requested_date` (fecha, **obligatorio**), `purchase_modality` (enum, **opcional**: `agile_purchase` \| `framework_agreement` \| `public_tender` \| `direct_procurement`), `founded_resolution_attachment` (`DocumentRef`, **obligatorio si** `purchase_modality = direct_procurement` — subida previa vía `storeDocument` del core), `currency` (enum, **obligatorio**, default `CLP`: `CLP` \| `UF` \| `UTM` \| `USD`), `proposed_budget_line_id` (ref. `BudgetLine`, **opcional**), `proposed_fiscal_year` (número, **opcional**), `status` (enum, **obligatorio**: `draft`)
-- `PurchaseRequestLine` (1 SOLPED → N líneas, ≥1) — `item_description` (texto, **obligatorio**), `quantity` (número, **obligatorio**), `unit_of_measure` (ref., **obligatorio**), `unit_price` (número, **obligatorio**, **neto**, en `PurchaseRequest.currency`), `tax_code` (enum, **obligatorio**, default `iva_19`: `iva_19` \| `exempt` \| `other`), `price_source` (ref. `PriceReference`, **obligatorio**)
+- `PurchaseRequestLine` (1 SOLPED → N líneas, ≥1) — `product_code` (texto, **opcional** hasta catálogo — **[PENDIENTE X-94]**; UI typeahead busca por código o palabra; si elige hit del catálogo, persiste código y puede prellenar descripción), `item_description` (texto, **obligatorio**), `quantity` (número, **obligatorio**), `unit_of_measure` (ref., **obligatorio**), `unit_price` (número, **obligatorio**, **neto**, en `PurchaseRequest.currency`), `tax_code` (enum, **obligatorio**, default `iva_19`: `iva_19` \| `exempt` \| `other`), `price_source` (ref. `PriceReference`, **obligatorio**)
 - `PurchaseRequestAttachment` (1 SOLPED → 0..N, **opcional**) — `attachment_type` (enum, **obligatorio**: `quote` \| `product_reference_photo` \| `technical_sheet` \| `other`), `description` (texto, **obligatorio**), `document_ref` (`DocumentRef`, **obligatorio** — vía `storeDocument` del core)
 - `PriceReference` — `item_code` / `item_description_hash` (texto, **obligatorio**), `source` (enum, **obligatorio**), `reference_price` (número, **obligatorio**), `reference_date` (fecha, **obligatorio**), `currency` (enum, **obligatorio**, default CLP)
 
@@ -135,6 +135,8 @@
 - Presupuestos no disponible en autoconsulta → mensaje `BUDGET_PROVIDER_UNAVAILABLE` en el panel; el usuario puede continuar redactando la SOLPED.
 
 > ⚠ **Pendiente de definir:** fuente API concreta para `PriceReference` (SII, histórico de Mercado Público, u otra). Regla de tolerancia de desviación de precio — candidata a reutilizarse en 3.2 y 5.1. Comportamiento ante caída de API de precios: ¿bloqueo total o ingreso manual con flag `price_manually_entered`? Alcance RBAC de `previewBudgetAvailability` para solicitantes (¿solo líneas de su unidad?).
+>
+> ⚠ **Pendiente de definir [X-94]:** catálogo / base de productos (`Product`) y operación `searchProducts`. El typeahead de `product_code` en líneas busca por código o palabra y, si hay hit, permite elegir el producto; la base de datos aún no está definida.
 >
 > ⚠ **Pendiente de definir:** hito que **congela el tipo de cambio** cuando `currency` ≠ CLP para el compromiso presupuestario (¿fecha de resolución, de OC, de preobligación/CDP?). Estimación: puede resolverse al documentar la generación de la obligación/compromiso. La tasa del día en 1.1 es solo referencial y no es auditable para presupuesto. Diferencia de cambio posterior → borde con Contabilidad.
 >
@@ -372,7 +374,7 @@ En ambos caminos se ejecuta `checkBudgetAvailability` antes de cerrar el paso. E
 | Entidad | Tipo de relación | Notas |
 |---|---|---|
 | `PurchaseRequest` | Raíz de la etapa | 1 por SOLPED; incluye `purchase_modality` (opcional) y `founded_resolution_attachment` (condicional) |
-| `PurchaseRequestLine` | 1:N con `PurchaseRequest` | Ítems de la solicitud, con `unit_price` obligatorio |
+| `PurchaseRequestLine` | 1:N con `PurchaseRequest` | Ítems de la solicitud; `product_code` (typeahead, **[X-94]**) + `unit_price` obligatorio |
 | `PurchaseRequestAttachment` | 1:N con `PurchaseRequest` | Documentos de respaldo opcionales (cotización, foto, ficha técnica, otro) |
 | `PriceReference` | N:1 con `PurchaseRequestLine` | Nueva — fuente de precio a definir |
 | `PurchaseRequestApproval` | 1:N con `PurchaseRequest` | Historial de decisiones (permite múltiples ciclos rechazo/reenvío) |

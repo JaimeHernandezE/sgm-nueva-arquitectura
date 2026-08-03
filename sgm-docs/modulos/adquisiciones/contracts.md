@@ -25,7 +25,7 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | `ProcurementCaseDetail` | Expuesta (DTO lectura) | `ProcurementCase` + `current_step` (`CaseStep` resumido) | — |
 | `CaseStep` | Expuesta | `id`, `procurement_case_id`, `step_number`, `name`, `status`, `responsible_unit_id`, `responsible_role`, `responsible_user_id`, `started_at`, `completed_at`, `elapsed_display` | 2.1 (instanciación), todas las etapas |
 | `PurchaseRequest` | Expuesta | `id`, `procurement_case_id`, `requesting_unit`, `destination_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status` | 1.1, 1.2, 2.1, 2.2 |
-| `PurchaseRequestLine` | Expuesta | `id`, `purchase_request_id`, `item_description`, `quantity`, `unit_of_measure`, `unit_price`, `price_source` | 1.1 |
+| `PurchaseRequestLine` | Expuesta | `id`, `purchase_request_id`, `product_code`, `item_description`, `quantity`, `unit_of_measure`, `unit_price`, `price_source` | 1.1 |
 | `PurchaseRequestAttachment` | Expuesta | `id`, `purchase_request_id`, `attachment_type`, `description`, `document_ref` | 1.1 |
 | `PurchaseRequestApproval` | Expuesta | `id`, `purchase_request_id`, `approver_id`, `decision`, `decision_date`, `comments` | 1.2 |
 | `BudgetAvailabilityCertificate` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status`, `signature_mode` | 1.5 |
@@ -123,7 +123,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 
 #### `POST /purchase-requests` — `createPurchaseRequest`
 - **Sub-pasos:** 1.1
-- **Entrada:** `PurchaseRequest` + `PurchaseRequestLine[]` (`currency` a nivel de documento; `unit_price` **neto** en esa moneda; `tax_code` por línea)
+- **Entrada:** `PurchaseRequest` + `PurchaseRequestLine[]` (`currency` a nivel de documento; `unit_price` **neto** en esa moneda; `tax_code` por línea; `product_code` opcional hasta **[X-94]**)
 - **Respuesta:** `PurchaseRequest` con `status = draft`
 - **Errores de validación:** ante varias reglas fallidas → `422` `ValidationErrorResponse` (`error_code: VALIDATION_FAILED`, `issues[]` con `legal_reference` obligatorio en cada issue `blocking`). Norma: [`estandares-api.md`](../../arquitectura/especificacion/estandares-api.md) §3.2–3.3; fundamento por código en ficha SOLPED §3.6.
 - **Reglas:**
@@ -145,9 +145,10 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Desviación precio vs referencia dentro de tolerancia | blocking ⚠ | `lines[].unit_price` | — | `PRICE_DEVIATION_EXCEEDED` |
   | Si `purchase_modality = direct_procurement`, `founded_resolution_attachment` presente | blocking | `founded_resolution_attachment` | — | `FOUNDED_RESOLUTION_REQUIRED` |
   | Si se agrega adjunto, tipo / descripción / archivo presentes | blocking | `attachments[].*` | — | `MISSING_REQUIRED_FIELD` |
-- **Dependencias invocadas:** `getPriceReference`, `previewBudgetAvailability` *(informativa, bajo demanda desde enlace UI)*. Verificación de stock/catálogo CM: sub-paso **1.0** (optativo).
+- **Dependencias invocadas:** `getPriceReference`, `previewBudgetAvailability` *(informativa, bajo demanda desde enlace UI)*; `searchProducts` *(typeahead de `product_code` — **[PENDIENTE X-94]**)*. Verificación de stock/catálogo CM: sub-paso **1.0** (optativo).
 - **Notas:**
   - Unidades: `requesting_unit` y `destination_unit` se autoasignan por `RoleAssignment`. Con `adq.solicitante` ambas quedan fijas a su unidad; con `adq.solicitante_daf` ambas son **modificables** en el tenant. Ver [`catalogo-roles.md`](../../arquitectura/especificacion/catalogo-roles.md) §3.1.
+  - `product_code` en línea: typeahead busca por código o palabra vía `searchProducts`; si el usuario elige un hit del catálogo, se persiste el código (y puede prellenar `item_description`). Catálogo / entidad `Product` **[PENDIENTE X-94]** — campo opcional hasta entonces.
   - Precio siempre neto (convención de plataforma); no se captura «neto/bruto» como elección del usuario.
   - Totales derivados: neto, impuestos, bruto. Autoconsulta y precompromiso orientativo usan **bruto** en CLP (municipio = consumidor final).
   - Si `currency` ≠ CLP, la tasa en 1.1 es referencial; el hito que congela la tasa para compromiso está pendiente (ficha 1-solped).
@@ -714,6 +715,12 @@ Registro manual del envío y del resultado, con documento de respaldo — no hay
 | `getPriceReference` | 1.1 | Cacheada | `PRICE_REFERENCE_UNAVAILABLE` |
 | `getInvoiceForMatch` | 5.1 | Síncrona bloqueante | `INVOICE_PROVIDER_UNAVAILABLE` |
 
+#### Catálogo de productos *(módulo / core — **[PENDIENTE X-94]**)*
+
+| Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
+|---|---|---|---|
+| `searchProducts` | 1.1 (typeahead `product_code`) | Cacheada | Catálogo `Product` no definido; prototipo usa datos demo. Query `q` = código o palabra; si hay hit y el usuario elige, se persiste `product_code` (puede prellenar `item_description`). |
+
 ### 3.5 Core — documentos (C10)
 
 Patrón upload-then-reference: el cliente sube vía `storeDocument` → recibe `DocumentRef` → el módulo persiste solo el ref en operaciones de negocio. Sin endpoints multipart en el borde de Adquisiciones.
@@ -810,7 +817,7 @@ La ficha QA original solo cubrió el piloto Compra Ágil. Las operaciones de Lic
 | 0.1 | `listProcurementCases`, `getProcurementCase` | — | — |
 | 0.2 | — *(navegación a 1.0/1.1)* | evaluación capacidades Inventario/CM | — |
 | 1.0 | — *(consulta deps)* | `checkStockAvailability`, `checkCatalogAvailability` *(cond.)* | — |
-| 1.1 | `createPurchaseRequest`, `submitPurchaseRequest` | `getPriceReference`, `previewBudgetAvailability` | — |
+| 1.1 | `createPurchaseRequest`, `submitPurchaseRequest` | `getPriceReference`, `previewBudgetAvailability`, `searchProducts` *(**[X-94]**)* | — |
 | 1.2 | `approvePurchaseRequest`, `rejectPurchaseRequest` | `requestSignature`, `confirmSignature`, `previewBudgetAvailability` | `PurchaseRequestApproved` |
 | 1.3 | `verifyBudgetAvailability` | `checkBudgetAvailability` | — |
 | 1.4 | `requestBudgetFinancing` | — | `BudgetFinancingRequested` |

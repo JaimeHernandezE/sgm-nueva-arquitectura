@@ -70,10 +70,19 @@
           <p class="form-section__hint" id="solped-fx-hint"></p>
           <p class="form-section__hint">
             El precio se ingresa <strong>neto</strong>. El impuesto se calcula por línea.
+            Código de producto: buscar por código o palabra; si está en el catálogo, elegir el hit
+            <span class="muted">(catálogo pendiente de definición — demo)</span>.
           </p>
+          <datalist id="product-catalog-demo">
+            <option value="OF-001 — Resma papel carta"></option>
+            <option value="OF-014 — Tóner láser negro"></option>
+            <option value="INF-220 — Cable UTP Cat6"></option>
+            <option value="LIM-003 — Detergente industrial 5L"></option>
+          </datalist>
           <table class="form-table" id="solped-lines">
             <thead>
               <tr>
+                <th>Código producto</th>
                 <th>Descripción <span class="required">*</span></th>
                 <th>Cantidad <span class="required">*</span></th>
                 <th>Unidad <span class="required">*</span></th>
@@ -85,6 +94,16 @@
             </thead>
             <tbody id="solped-lines-body">
               <tr class="solped-line">
+                <td>
+                  <input
+                    type="search"
+                    name="line-product-code"
+                    list="product-catalog-demo"
+                    placeholder="Código o palabra…"
+                    value="OF-001"
+                    autocomplete="off"
+                  />
+                </td>
                 <td><input type="text" name="line-description" value="Resma papel carta" /></td>
                 <td><input type="number" name="line-quantity" min="0" step="1" value="50" /></td>
                 <td>
@@ -108,22 +127,22 @@
             </tbody>
             <tfoot>
               <tr class="form-table__summary form-table__summary--secondary">
-                <td colspan="5" class="form-table__summary-label">Total neto</td>
+                <td colspan="6" class="form-table__summary-label">Total neto</td>
                 <td id="solped-total-net" class="form-table__summary-value">0</td>
                 <td></td>
               </tr>
               <tr class="form-table__summary form-table__summary--secondary">
-                <td colspan="5" class="form-table__summary-label">Total impuestos</td>
+                <td colspan="6" class="form-table__summary-label">Total impuestos</td>
                 <td id="solped-total-tax" class="form-table__summary-value">0</td>
                 <td></td>
               </tr>
               <tr class="form-table__summary">
-                <td colspan="5" class="form-table__summary-label">Total bruto</td>
+                <td colspan="6" class="form-table__summary-label">Total bruto</td>
                 <td id="solped-total-gross" class="form-table__summary-value">0</td>
                 <td></td>
               </tr>
               <tr class="form-table__summary form-table__summary--secondary" id="solped-clp-row" hidden>
-                <td colspan="5" class="form-table__summary-label">Total bruto en CLP</td>
+                <td colspan="6" class="form-table__summary-label">Total bruto en CLP</td>
                 <td id="solped-total-gross-clp" class="form-table__summary-value">0</td>
                 <td></td>
               </tr>
@@ -432,6 +451,16 @@
       const tr = document.createElement('tr');
       tr.className = 'solped-line';
       tr.innerHTML = `
+        <td>
+          <input
+            type="search"
+            name="line-product-code"
+            list="product-catalog-demo"
+            placeholder="Código o palabra…"
+            value="${data.productCode ?? ''}"
+            autocomplete="off"
+          />
+        </td>
         <td><input type="text" name="line-description" value="${data.description ?? ''}" /></td>
         <td><input type="number" name="line-quantity" min="0" step="1" value="${data.quantity ?? ''}" /></td>
         <td>
@@ -448,6 +477,26 @@
       `;
       return tr;
     }
+
+    function applyProductCatalogPick(input) {
+      const raw = (input?.value || '').trim();
+      if (!raw.includes(' — ')) return;
+      const [code, ...rest] = raw.split(' — ');
+      const description = rest.join(' — ').trim();
+      input.value = code.trim();
+      const row = input.closest('.solped-line');
+      const desc = row?.querySelector('[name="line-description"]');
+      if (desc && description) desc.value = description;
+    }
+
+    linesBody?.addEventListener('change', (e) => {
+      if (e.target.matches('[name="line-product-code"]')) applyProductCatalogPick(e.target);
+    });
+    linesBody?.addEventListener('input', (e) => {
+      if (e.target.matches('[name="line-product-code"]') && e.target.value.includes(' — ')) {
+        applyProductCatalogPick(e.target);
+      }
+    });
 
     document.getElementById('solped-lines-add')?.addEventListener('click', () => {
       linesBody.appendChild(createLineRow());

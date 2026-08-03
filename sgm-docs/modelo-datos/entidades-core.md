@@ -52,6 +52,7 @@ Si un macroproceso necesita un campo nuevo en una entidad ya existente, se agreg
 
 Estos puntos aparecen repetidos en más de una entidad/subproceso y son candidatos a resolverse con una única regla de negocio reutilizable:
 
+- **Catálogo / base de productos (`Product`, `searchProducts`)** — typeahead de `PurchaseRequestLine.product_code` en SOLPED 1.1. **[PENDIENTE X-94]**.
 - **Regla de tolerancia de desviación de montos/precios** — aparece en `PurchaseRequestLine.unit_price` vs. `PriceReference`, en `BudgetCommitment.committed_amount` vs. `BudgetPreCommitment.estimated_amount`, y en `ThreeWayMatch` (discrepancia entre OC/Recepción/Factura).
 - **Fuente(s) API externas confiables** — `PriceReference.source` queda sin fuente concreta definida.
 - **Hito que congela el tipo de cambio para compromiso presupuestario** — cuando `PurchaseRequest.currency` ≠ `CLP`, el presupuesto y la contabilidad operan en CLP. Falta definir en qué hito se fija la tasa auditable (fecha de resolución, de OC, de preobligación/CDP, u otro) y si la diferencia de cambio posterior es asiento de Contabilidad. Candidato a corregirse al documentar la generación de obligación/compromiso. La tasa mostrada en 1.1 es solo referencial.
