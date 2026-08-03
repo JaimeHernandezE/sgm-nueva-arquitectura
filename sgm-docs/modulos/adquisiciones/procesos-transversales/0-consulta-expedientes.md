@@ -33,11 +33,12 @@ Desde esta pantalla también se inicia la creación de un expediente nuevo (sub-
   - `procurement_type` (enum, **opcional** hasta confirmación de modalidad en 2.1)
   - `status` (enum, **obligatorio**: `in_progress` \| `completed` \| `cancelled` \| `deserted`)
   - `current_step_name` (texto, **opcional** en summary — derivado del `CaseStep` actual)
-  - `requesting_unit_id` (ref. `OrganizationalUnit`, **obligatorio**)
+  - `requesting_unit_id` (ref. `OrganizationalUnit`, **obligatorio** — quién tramitó)
+  - `destination_unit_id` (ref. `OrganizationalUnit`, **obligatorio** — unidad beneficiaria; base de alcance/listado de unidad)
   - `created_at` (fecha/hora, **obligatorio** — columna UI «Creación», inmediatamente tras Folio)
   - `requested_amount` (número CLP, **opcional** — total bruto solicitado: suma de líneas de `PurchaseRequest` / `BudgetPreCommitment.estimated_amount`)
   - `awarded_amount` (número CLP, **opcional** — monto adjudicado/contratado cuando existe: `PurchaseOrder.total_amount` activo o `Contract.amount`)
-- Departamento mostrado en UI: derivado del nodo orgánico padre de `requesting_unit_id` (`OrganizationalUnit`, plataforma).
+- Departamento mostrado en UI: derivado del nodo orgánico padre de `destination_unit_id` (`OrganizationalUnit`, plataforma).
 - **Creación** (columna UI): `created_at` formateado (fecha local del tenant); ordenable con `sort=created_at`.
 - **Monto** (columna UI): muestra `awarded_amount` si existe (etiqueta «Adjudicado»); si no, `requested_amount` («Solicitado»); «—» si aún no hay ninguno.
 - **Acciones pendientes del actor:** no van en una columna del listado. El filtro “Por firmar / aprobar” (`awaiting_my_action=true`) acota el listado a expedientes que esperan acción del usuario; el **detalle de pendientes por usuario** vive en la bandeja de entrada del **sistema transversal de notificaciones** ([`musts-arquitectura.md`](../../../arquitectura/especificacion/musts-arquitectura.md) §9; producto: [`plataforma/notificaciones/overview.md`](../../../plataforma/notificaciones/overview.md), wireframe [`shell/02-bandeja.md`](../../../plataforma/wireframes/shell/02-bandeja.md)).

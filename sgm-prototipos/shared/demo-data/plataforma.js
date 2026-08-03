@@ -164,6 +164,12 @@ export const catalogRoles = [
     process_area: 'adq.solped',
   },
   {
+    code: 'adq.solicitante_daf',
+    name: 'Solicitante DAF',
+    module: 'adquisiciones',
+    process_area: 'adq.solped',
+  },
+  {
     code: 'adq.aprobador_unidad',
     name: 'Aprobador de unidad',
     module: 'adquisiciones',

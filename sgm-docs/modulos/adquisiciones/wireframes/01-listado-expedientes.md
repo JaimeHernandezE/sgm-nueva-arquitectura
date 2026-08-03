@@ -54,7 +54,7 @@
 | Folio (columna, ordenable) | `ProcurementCase.id` / `folio` → `sort=folio` | — (lectura) |
 | Creación (columna, ordenable) | `ProcurementCase.created_at` → `sort=created_at` | — (lectura) |
 | Glosa (columna, ordenable) | `ProcurementCase.description` → `sort=description` | — (lectura) |
-| Departamento (columna, ordenable) | departamento de `OrganizationalUnit` vía `requesting_unit_id` → `sort=requesting_department` | — (lectura) |
+| Departamento (columna, ordenable) | departamento de `OrganizationalUnit` vía `destination_unit_id` → `sort=requesting_department` *(nombre de sort legado; ordena por depto de la unidad de destino)* | — (lectura) |
 | Modalidad (columna, ordenable) | `ProcurementCase.procurement_type` → `sort=procurement_type` | — (lectura) |
 | Estado (columna, ordenable) | `ProcurementCase.status` → `sort=status` | — (lectura) |
 | Monto (columna, ordenable) | `ProcurementCaseSummary.awarded_amount` si existe; si no `requested_amount` → `sort=amount` | — (lectura) |
@@ -84,7 +84,7 @@
 ## Notas de comportamiento
 
 1. **Filtros acumulables:** buscador y filtros se combinan con AND. Dentro de `q`, la coincidencia es por folio **o** glosa **o** modalidad (OR de campos de texto).
-2. **Alcance RBAC (servidor):** con `adq.solicitante` / `adq.aprobador_unidad` el scope de `requesting_unit_id` de la asignación se aplica **siempre**. Intentos de ampliar con `requesting_department_id` / `requesting_unit_id` ajenos se ignoran o rechazan. `adq.solicitante_daf` ve el tenant completo (puede crear SOLPED para cualquier unidad — [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) §3.1).
+2. **Alcance RBAC (servidor):** con `adq.solicitante` / `adq.aprobador_unidad` el scope se aplica por `destination_unit_id` (= unidad del `RoleAssignment`). Intentos de ampliar con filtros ajenos se ignoran o rechazan. `adq.solicitante_daf` ve el tenant completo y puede elegir `destination_unit` al crear ([`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) §3.1).
 3. **Proceso activo:** en UI es un checkbox que fija `status=in_progress`. Otros valores de `status` siguen disponibles vía API.
 4. **Por firmar / aprobar:** filtro de expedientes que esperan acción del actor (`awaiting_my_action`). No hay columna “Bandeja”: el listado de **acciones pendientes por usuario** corresponde a la bandeja de entrada del sistema de notificaciones ([`musts-arquitectura.md`](../../../arquitectura/especificacion/musts-arquitectura.md) §9; [`notificaciones/overview.md`](../../../plataforma/notificaciones/overview.md), wireframe [`02-bandeja.md`](../../../plataforma/wireframes/shell/02-bandeja.md)).
 5. **Monto:** prioriza adjudicado (`PurchaseOrder.total_amount` / `Contract.amount`) sobre solicitado (total bruto SOLPED / `BudgetPreCommitment.estimated_amount`).

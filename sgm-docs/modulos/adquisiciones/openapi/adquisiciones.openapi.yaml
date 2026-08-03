@@ -296,6 +296,7 @@ components:
         - folio
         - description
         - requesting_unit_id
+        - destination_unit_id
         - status
         - current_step_id
         - created_at
@@ -310,6 +311,10 @@ components:
           type: string
         requesting_unit_id:
           type: string
+          description: Unidad que tramita (RoleAssignment del actor)
+        destination_unit_id:
+          type: string
+          description: Unidad beneficiaria de la compra (base de listado/alcance de unidad)
         procurement_type:
           $ref: "#/components/schemas/ProcurementType"
         status:
@@ -337,6 +342,7 @@ components:
         - description
         - status
         - requesting_unit_id
+        - destination_unit_id
         - created_at
       properties:
         id:
@@ -353,6 +359,9 @@ components:
           type: string
         requesting_unit_id:
           type: string
+        destination_unit_id:
+          type: string
+          description: Unidad beneficiaria — columna Departamento / filtro de alcance unidad
         created_at:
           type: string
           format: date-time
@@ -440,6 +449,7 @@ components:
         - id
         - procurement_case_id
         - requesting_unit
+        - destination_unit
         - description
         - justification
         - requested_date
@@ -453,6 +463,12 @@ components:
           type: string
         requesting_unit:
           type: string
+          description: Unidad que tramita — autoasignada por RoleAssignment
+        destination_unit:
+          type: string
+          description: >
+            Unidad de destino (beneficiaria). Con adq.solicitante = requesting_unit;
+            con adq.solicitante_daf = seleccionable en el tenant (catalogo-roles §3.1).
         description:
           type: string
         justification:
@@ -1276,6 +1292,7 @@ components:
         folio: ADQ-2026-00123
         description: Insumos de oficina — reposición anual
         requesting_unit_id: unit-solicitante
+        destination_unit_id: unit-solicitante
         procurement_type: agile_purchase
         status: in_progress
         current_step_id: step-3-1
@@ -1329,6 +1346,7 @@ components:
         id: solped-2026-0123
         procurement_case_id: ADQ-2026-00123
         requesting_unit: unit-solicitante
+        destination_unit: unit-solicitante
         description: Adquisición de insumos de oficina
         justification: Reposición de stock según plan anual.
         requested_date: 2026-06-24
@@ -1350,6 +1368,7 @@ components:
         folio: ADQ-2026-00045
         description: Servicio de mantención de flota municipal
         requesting_unit_id: unit-direccion-obras
+        destination_unit_id: unit-direccion-obras
         procurement_type: public_tender
         status: completed
         current_step_id: step-5-4

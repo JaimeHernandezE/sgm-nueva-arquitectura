@@ -8,6 +8,7 @@
 
 export const ROLE_CATALOG = [
   { code: 'adq.solicitante', name: 'Solicitante' },
+  { code: 'adq.solicitante_daf', name: 'Solicitante DAF' },
   { code: 'adq.aprobador_unidad', name: 'Aprobador de unidad' },
   { code: 'adq.formulador_presupuesto', name: 'Formulador DAF / verificación' },
   { code: 'adq.firmante_cdp', name: 'Firmante CDP' },
@@ -24,7 +25,7 @@ export const ROLE_CATALOG = [
  * 'N/A' (pasos automáticos / gestionados en MP) no habilita a ningún rol.
  */
 export const ROLE_TEXT_TO_CODES = {
-  'Solicitante': ['adq.solicitante'],
+  'Solicitante': ['adq.solicitante', 'adq.solicitante_daf'],
   'Aprobador de unidad': ['adq.aprobador_unidad'],
   'Formulador DAF / verificación': ['adq.formulador_presupuesto'],
   'Firmante CDP': ['adq.firmante_cdp'],

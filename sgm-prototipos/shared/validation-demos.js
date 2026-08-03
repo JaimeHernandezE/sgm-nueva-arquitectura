@@ -12,6 +12,7 @@ export const VALIDATION_DEMOS = {
     title: 'Validaciones — Enviar a aprobación',
     issues: [
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'requesting_unit', rule: 'El campo Unidad solicitante es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
+      { error_code: 'MISSING_REQUIRED_FIELD', field: 'destination_unit', rule: 'El campo Unidad de destino es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'description', rule: 'El campo Descripción es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'justification', rule: 'El campo Justificación es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'requested_date', rule: 'El campo Fecha de necesidad es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
@@ -21,6 +22,7 @@ export const VALIDATION_DEMOS = {
     title: 'Validaciones — Guardar borrador',
     issues: [
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'requesting_unit', rule: 'El campo Unidad solicitante es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
+      { error_code: 'MISSING_REQUIRED_FIELD', field: 'destination_unit', rule: 'El campo Unidad de destino es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'description', rule: 'El campo Descripción es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'justification', rule: 'El campo Justificación es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
     ],
@@ -29,7 +31,7 @@ export const VALIDATION_DEMOS = {
     title: 'Validaciones — Aprobar SOLPED',
     issues: [
       { error_code: 'SIGNATURE_REQUIRED', field: null, rule: 'Se requiere firma electrónica avanzada válida.', legal_reference: 'Ley 19.799 — firma electrónica avanzada', severity: 'blocking' },
-      { error_code: 'UNAUTHORIZED_APPROVER', field: 'approver_id', rule: 'Solo el aprobador de jefatura de la unidad solicitante puede aprobar.', legal_reference: 'integridad:rol_operacion', severity: 'blocking' },
+      { error_code: 'UNAUTHORIZED_APPROVER', field: 'approver_id', rule: 'Solo el aprobador de jefatura de la unidad de destino puede aprobar.', legal_reference: 'integridad:rol_operacion', severity: 'blocking' },
     ],
   },
   rejectPurchaseRequest: {

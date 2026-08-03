@@ -13,6 +13,7 @@ scenarios:
       body:
         purchase_request:
           requesting_unit: unit-solicitante
+          destination_unit: unit-solicitante
           description: Adquisición de insumos de oficina
           justification: Reposición de stock según plan anual.
           requested_date: '2026-06-24'

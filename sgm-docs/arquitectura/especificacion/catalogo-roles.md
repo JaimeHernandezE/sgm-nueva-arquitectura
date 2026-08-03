@@ -52,7 +52,7 @@ adq
 
 | `process_area` | Etapa | Roles tipicos |
 |---|---|---|
-| `adq.solped` | 1.x | `adq.solicitante` *(básico — solo su unidad)*, `adq.solicitante_daf` *(DAF — cualquier unidad)*, `adq.aprobador_unidad`, `adq.formulador_presupuesto`, `adq.firmante_cdp` |
+| `adq.solped` | 1.x | `adq.solicitante` *(básico — destino = su unidad)*, `adq.solicitante_daf` *(DAF — elige unidad de destino)*, `adq.aprobador_unidad`, `adq.formulador_presupuesto`, `adq.firmante_cdp` |
 | `adq.modalidad` | 2.x | `adq.gestor_compra`, `adq.aprobador_modalidad` |
 | `adq.resolucion` | 3.x | `adq.gestor_compra` |
 | `adq.recepcion` | 4.x | `adq.recepcionista`, `adq.confirmante_recepcion` |
@@ -90,7 +90,7 @@ plat.subdere
 | Nombre (usuarios) | Código (sistema) | `process_area` | Nodo orgánico típico | Origen en fichas |
 |---|---|---|---|---|
 | Solicitante | `adq.solicitante` | `adq.solped` | Unidad / depto solicitante (Obras, Tránsito, …) | [`1-solped.md`](../../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.1, §1.4 |
-| Solicitante DAF | `adq.solicitante_daf` | `adq.solped` | Finanzas › Abastecimiento (DAF) | [`1-solped.md`](../../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.1 — crea SOLPED **por cuenta de cualquier unidad** del tenant |
+| Solicitante DAF | `adq.solicitante_daf` | `adq.solped` | Finanzas › Abastecimiento (DAF) | [`1-solped.md`](../../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.1 — elige `destination_unit` (**unidad de destino**) de cualquier unidad del tenant |
 | Aprobador de unidad | `adq.aprobador_unidad` | `adq.solped` | Misma unidad solicitante (jefatura) | [`1-solped.md`](../../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.2 |
 | Formulador DAF / verificación | `adq.formulador_presupuesto` | `adq.solped` | Finanzas › Presupuestos | [`1-solped.md`](../../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.3 |
 | Firmante CDP | `adq.firmante_cdp` | `adq.solped` | Finanzas › Presupuestos | [`1-solped.md`](../../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.5, §1.6 |
@@ -101,16 +101,21 @@ plat.subdere
 | Operador de pago | `adq.operador_pago` | `adq.pago` | Finanzas › Tesorería | [`5-pago.md`](../../modulos/adquisiciones/procesos-transversales/5-pago.md) §5.1–§5.4 |
 | Lector de expediente | `adq.lector` | `adq` | Cualquier unidad con necesidad de consulta | Lectura transversal |
 
-### 3.1 Alcance de `requesting_unit` al crear SOLPED
+### 3.1 Unidades al crear SOLPED (`requesting_unit` vs `destination_unit`)
 
-Ambos roles pueden `createPurchaseRequest` / `submitPurchaseRequest`. Se diferencian por el **scope de unidad solicitante**:
+Ambos roles pueden `createPurchaseRequest` / `submitPurchaseRequest`. Campos:
 
-| Rol | Scope de `requesting_unit` | Comportamiento UI / API |
+| Campo | Label (ES) | Significado |
 |---|---|---|
-| `adq.solicitante` (**básico**) | Solo la unidad del `RoleAssignment` del actor | Se autoasigna esa unidad. El selector **no ofrece** unidades ajenas. Si el payload trae otra → `FORBIDDEN` / `REQUESTING_UNIT_OUT_OF_SCOPE`. |
-| `adq.solicitante_daf` (**DAF**) | Cualquier `OrganizationalUnit` del tenant | Se autoasigna la unidad del `RoleAssignment` DAF (default); el selector permite **cambiar a cualquier unidad**. Asignar este rol solo a usuarios de DAF (Abastecimiento / Finanzas). |
+| `requesting_unit` | Unidad solicitante | Quién tramita la SOLPED — siempre la unidad del `RoleAssignment` del actor (autoasignada). |
+| `destination_unit` | Unidad de destino | Unidad beneficiaria de la compra — para quién es la solicitud. |
 
-> Un solicitante básico **no puede** usar una unidad que no sea la propia. La capacidad de tramitar SOLPED para distintas unidades exige el rol `adq.solicitante_daf` en DAF — no se obtiene ampliando el selector del rol básico.
+| Rol | `requesting_unit` | `destination_unit` |
+|---|---|---|
+| `adq.solicitante` (**básico**) | Autoasignada = unidad del `RoleAssignment` | Autoasignada = misma que `requesting_unit`. El selector **no ofrece** otras unidades. Si el payload trae otra → `DESTINATION_UNIT_OUT_OF_SCOPE`. |
+| `adq.solicitante_daf` (**DAF**) | Autoasignada = unidad DAF del `RoleAssignment` | **Seleccionable** — cualquier `OrganizationalUnit` del tenant. Obligatoria; permite indicar la unidad correcta cuando DAF tramita por cuenta de otra. Asignar este rol solo a usuarios de DAF (Abastecimiento / Finanzas). |
+
+> Un solicitante básico **no puede** destinar la SOLPED a una unidad distinta de la propia. Tramitar para distintas unidades exige `adq.solicitante_daf` en DAF. La aprobación de jefatura (1.2) y el alcance de listado de unidad se resuelven por `destination_unit` (no por quién digitó en DAF).
 
 ---
 
@@ -123,8 +128,8 @@ La columna usa **código (sistema)**; el nombre de usuario está en §3.
 | Código (sistema) | Operaciones |
 |---|---|
 | `adq.lector` | `listProcurementCases`, `getProcurementCase`, `listProcurementCaseSteps`, `listPurchaseRequests`, `getPurchaseRequest`, `listPurchaseOrders`, `getPurchaseOrder` |
-| `adq.solicitante` | (+ lector) `createPurchaseRequest`, `submitPurchaseRequest`, `previewBudgetAvailability`, `requestBudgetFinancing` — scope `requesting_unit` = unidad del `RoleAssignment` (§3.1) |
-| `adq.solicitante_daf` | Mismas operaciones que `adq.solicitante`; scope `requesting_unit` = **tenant** (§3.1). Lectura de expediente: tenant completo (como roles DAF). |
+| `adq.solicitante` | (+ lector) `createPurchaseRequest`, `submitPurchaseRequest`, `previewBudgetAvailability`, `requestBudgetFinancing` — `destination_unit` = unidad del `RoleAssignment` (§3.1) |
+| `adq.solicitante_daf` | Mismas operaciones que `adq.solicitante`; `destination_unit` = **cualquier unidad del tenant** (§3.1). Lectura de expediente: tenant completo (como roles DAF). |
 | `adq.aprobador_unidad` | (+ lector) `approvePurchaseRequest`, `rejectPurchaseRequest`, `previewBudgetAvailability` |
 | `adq.formulador_presupuesto` | (+ lector) `verifyBudgetAvailability` |
 | `adq.firmante_cdp` | (+ lector) `issueBudgetAvailabilityCertificate`, `registerScannedBudgetAvailabilityCertificate`, `createBudgetPreCommitment` |
@@ -172,7 +177,7 @@ No es fuente de autorización. Sirve al prototipo y a QA de pantallas.
 | `01-listado-expedientes` (0.1) | Lectura: `adq.solicitante` / `adq.aprobador_unidad` → solo expedientes de su unidad; `adq.solicitante_daf` y resto de roles Adquisiciones (DAF / `adq.lector`, etc.) → tenant completo. Ficha: [`0-consulta-expedientes.md`](../../modulos/adquisiciones/procesos-transversales/0-consulta-expedientes.md). Operación: `listProcurementCases` |
 | `01` CTA Nuevo expediente (0.2) | Solicitante (`adq.solicitante`) o Solicitante DAF (`adq.solicitante_daf`) — enruta a 1.0 o 1.1 |
 | `10-verificacion-previa` (1.0, optativo) | Solicitante (`adq.solicitante`) / Solicitante DAF (`adq.solicitante_daf`) |
-| `11-creacion-solped` | Solicitante (`adq.solicitante`) — unidad fija a la propia; Solicitante DAF (`adq.solicitante_daf`) — selector de cualquier unidad (§3.1) |
+| `11-creacion-solped` | Solicitante (`adq.solicitante`) — `destination_unit` fija a la propia; Solicitante DAF (`adq.solicitante_daf`) — selector de unidad de destino (§3.1) |
 | `12-visto-bueno-jefatura` | Aprobador de unidad (`adq.aprobador_unidad`) |
 | `13` verificación DAF | Formulador DAF / verificación (`adq.formulador_presupuesto`) |
 | `14-emision-cdp` | Firmante CDP (`adq.firmante_cdp`) |
@@ -214,7 +219,7 @@ Los intentos que violen SoD se rechazan y se auditan (`SEGREGATION_OF_DUTIES_VIO
 4. ¿Asignación masiva desde un nodo del árbol (mismo rol a N usuarios) en v1 de la consola?
 5. ¿Partir `plat.admin_municipal` en roles más finos (accesos vs. integraciones vs. parámetros)?
 6. ¿Roles de solo lectura distintos por departamento, o basta `adq.lector` + scope de unidad en runtime (**X-51**)?
-7. ~~¿Quién crea SOLPED por otras unidades?~~ → resuelto: `adq.solicitante` (solo propia) vs `adq.solicitante_daf` (cualquier unidad, asignado en DAF) — §3.1.
+7. ~~¿Quién crea SOLPED por otras unidades?~~ → resuelto: `destination_unit` + roles `adq.solicitante` (solo propia) vs `adq.solicitante_daf` (elige unidad de destino, asignado en DAF) — §3.1.
 
 ---
 

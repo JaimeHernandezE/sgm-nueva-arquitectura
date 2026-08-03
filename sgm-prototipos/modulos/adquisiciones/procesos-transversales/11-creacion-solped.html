@@ -26,12 +26,17 @@
           <h3 class="form-section__title">Datos de la solicitud</h3>
           <div class="form-row">
             <label>Unidad solicitante <span class="required">*</span></label>
-            <select>
-              <option selected>Unidad X</option>
-              <option>DAF Abastecimiento</option>
-              <option>Dirección de Obras</option>
+            <input type="text" id="requesting-unit" value="Unidad X" readonly disabled />
+            <p class="form-section__hint" id="requesting-unit-hint">Quién tramita — autoasignada según el rol; no editable.</p>
+          </div>
+          <div class="form-row">
+            <label>Unidad de destino <span class="required">*</span></label>
+            <select id="destination-unit">
+              <option value="unidad-x" selected>Unidad X</option>
+              <option value="daf-abastecimiento">DAF Abastecimiento</option>
+              <option value="direccion-obras">Dirección de Obras</option>
             </select>
-            <p class="form-section__hint">Prellenada según el rol. Solicitante básico: solo su unidad. Solicitante DAF: puede elegir cualquier unidad del municipio.</p>
+            <p class="form-section__hint" id="destination-unit-hint">Para quién es la compra. Solicitante básico: igual a la solicitante. Solicitante DAF: selecciona la unidad correcta.</p>
           </div>
           <div class="form-row">
             <label>Descripción <span class="required">*</span></label>
@@ -242,6 +247,7 @@
     import { getExpedienteId, renderBreadcrumb, demoAction, demoValidation, initBalancePanel, initModalityToggle, initStepSimulation } from '../../../shared/form-shell.js';
     import { bootstrapFormPage } from '../../../shared/form-bootstrap.js';
     import { getFormPreset } from '../../../shared/form-presets.js';
+    import { getSimulationFromUrl } from '../../../shared/roles.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
 
@@ -253,7 +259,40 @@
       stepName: 'Creación de solicitud',
       stepId: '1.1',
     });
-    initStepSimulation({ stepId: '1.1' });
+    initStepSimulation({ stepId: '1.1', defaultRol: 'adq.solicitante' });
+
+    function applyUnitsByRole() {
+      const rol = getSimulationFromUrl().rol || 'adq.solicitante';
+      const isDaf = rol === 'adq.solicitante_daf';
+      const requesting = document.getElementById('requesting-unit');
+      const destination = document.getElementById('destination-unit');
+      const requestingHint = document.getElementById('requesting-unit-hint');
+      const destinationHint = document.getElementById('destination-unit-hint');
+      if (!requesting || !destination) return;
+
+      if (isDaf) {
+        requesting.value = 'DAF Abastecimiento';
+        destination.disabled = false;
+        destination.value = 'direccion-obras';
+        if (requestingHint) {
+          requestingHint.textContent = 'Quién tramita — Solicitante DAF (autoasignada a DAF); no editable.';
+        }
+        if (destinationHint) {
+          destinationHint.textContent = 'Unidad de destino — seleccionable: indique la unidad beneficiaria de la compra.';
+        }
+      } else {
+        requesting.value = 'Unidad X';
+        destination.value = 'unidad-x';
+        destination.disabled = true;
+        if (requestingHint) {
+          requestingHint.textContent = 'Quién tramita — Solicitante básico (autoasignada a su unidad); no editable.';
+        }
+        if (destinationHint) {
+          destinationHint.textContent = 'Unidad de destino — autoasignada a la misma unidad; un solicitante básico no puede elegir otra.';
+        }
+      }
+    }
+    applyUnitsByRole();
 
     initModalityToggle('purchase-modality', 'resolution-row');
     bootstrapFormPage('solped');

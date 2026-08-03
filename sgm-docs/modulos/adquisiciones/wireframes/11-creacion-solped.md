@@ -11,9 +11,10 @@
 | SOLPED — Nueva solicitud                          [Borrador]|
 +----------------------------------------------------------+
 | Datos de la solicitud                                     |
-| Unidad solicitante *  [ Unidad X          v ]             |
-|   · básico: fija a su unidad (no elige otra)              |
-|   · DAF (`adq.solicitante_daf`): cualquier unidad tenant   |
+| Unidad solicitante *  [ Unidad X          ] (auto, solo lectura)|
+| Unidad de destino *   [ Unidad X          v ]             |
+|   · básico: auto = solicitante (no elige otra)            |
+|   · DAF (`adq.solicitante_daf`): selector cualquier unidad |
 | Descripción *         [________________________]          |
 | Justificación *       [________________________]          |
 | Fecha solicitada *    [ __ / __ / ____ ]                  |
@@ -65,7 +66,8 @@
 
 | Campo UI | Entidad.campo | Obligatorio |
 |---|---|---|
-| Unidad solicitante | `PurchaseRequest.requesting_unit` | Sí — autoasignada según `RoleAssignment`. `adq.solicitante`: solo su unidad (selector bloqueado / sin opciones ajenas). `adq.solicitante_daf`: cualquier unidad del tenant ([`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) §3.1) |
+| Unidad solicitante | `PurchaseRequest.requesting_unit` | Sí — autoasignada según `RoleAssignment` (quién tramita); no es el selector de destino |
+| Unidad de destino | `PurchaseRequest.destination_unit` | Sí — autoasignada = solicitante si `adq.solicitante`; seleccionable en el tenant si `adq.solicitante_daf` ([`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) §3.1) |
 | Descripción | `PurchaseRequest.description` | Sí |
 | Justificación | `PurchaseRequest.justification` | Sí |
 | Fecha solicitada | `PurchaseRequest.requested_date` | Sí |

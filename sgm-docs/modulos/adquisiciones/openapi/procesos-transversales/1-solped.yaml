@@ -89,6 +89,10 @@ paths:
                         rule: El campo Unidad solicitante es obligatorio.
                         severity: blocking
                       - error_code: MISSING_REQUIRED_FIELD
+                        field: destination_unit
+                        rule: El campo Unidad de destino es obligatorio.
+                        severity: blocking
+                      - error_code: MISSING_REQUIRED_FIELD
                         field: description
                         rule: El campo Descripción es obligatorio.
                         severity: blocking
@@ -142,6 +146,10 @@ paths:
                       - error_code: MISSING_REQUIRED_FIELD
                         field: requesting_unit
                         rule: El campo Unidad solicitante es obligatorio.
+                        severity: blocking
+                      - error_code: MISSING_REQUIRED_FIELD
+                        field: destination_unit
+                        rule: El campo Unidad de destino es obligatorio.
                         severity: blocking
                       - error_code: MISSING_REQUIRED_FIELD
                         field: description

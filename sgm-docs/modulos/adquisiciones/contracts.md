@@ -20,11 +20,11 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 
 | Entidad | Visibilidad | Campos expuestos | Sub-pasos origen |
 |---|---|---|---|
-| `ProcurementCase` | Expuesta | `id`, `folio`, `description`, `requesting_unit_id`, `procurement_type`, `status`, `current_step_id`, `created_at`, `mp_process_id`, `mp_linked_at`, `mp_process_type`, `procurement_route`, `route_decided_at`, `purchase_intent_published_at`, `purchase_intent_deadline` | 1.1 (creación implícita), 2.1, 2.3, 3.1/3.3 *(CM, `procurement_route` y campos de Intención de Compra)* |
-| `ProcurementCaseSummary` | Expuesta (DTO lectura) | `id`, `folio`, `description`, `procurement_type`, `status`, `current_step_name`, `requesting_unit_id`, `created_at`, `requested_amount`, `awarded_amount` | — |
+| `ProcurementCase` | Expuesta | `id`, `folio`, `description`, `requesting_unit_id`, `destination_unit_id`, `procurement_type`, `status`, `current_step_id`, `created_at`, `mp_process_id`, `mp_linked_at`, `mp_process_type`, `procurement_route`, `route_decided_at`, `purchase_intent_published_at`, `purchase_intent_deadline` | 1.1 (creación implícita), 2.1, 2.3, 3.1/3.3 *(CM, `procurement_route` y campos de Intención de Compra)* |
+| `ProcurementCaseSummary` | Expuesta (DTO lectura) | `id`, `folio`, `description`, `procurement_type`, `status`, `current_step_name`, `requesting_unit_id`, `destination_unit_id`, `created_at`, `requested_amount`, `awarded_amount` | — |
 | `ProcurementCaseDetail` | Expuesta (DTO lectura) | `ProcurementCase` + `current_step` (`CaseStep` resumido) | — |
 | `CaseStep` | Expuesta | `id`, `procurement_case_id`, `step_number`, `name`, `status`, `responsible_unit_id`, `responsible_role`, `responsible_user_id`, `started_at`, `completed_at`, `elapsed_display` | 2.1 (instanciación), todas las etapas |
-| `PurchaseRequest` | Expuesta | `id`, `procurement_case_id`, `requesting_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status` | 1.1, 1.2, 2.1, 2.2 |
+| `PurchaseRequest` | Expuesta | `id`, `procurement_case_id`, `requesting_unit`, `destination_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status` | 1.1, 1.2, 2.1, 2.2 |
 | `PurchaseRequestLine` | Expuesta | `id`, `purchase_request_id`, `item_description`, `quantity`, `unit_of_measure`, `unit_price`, `price_source` | 1.1 |
 | `PurchaseRequestAttachment` | Expuesta | `id`, `purchase_request_id`, `attachment_type`, `description`, `document_ref` | 1.1 |
 | `PurchaseRequestApproval` | Expuesta | `id`, `purchase_request_id`, `approver_id`, `decision`, `decision_date`, `comments` | 1.2 |
@@ -80,7 +80,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | `requesting_department_id` restringe a unidades hijas del departamento | — | — |
   | `awaiting_my_action=true` limita a expedientes que esperan acción del actor (firmar / aprobar según rol). Las pendientes detalladas por usuario se listan en la bandeja del sistema de notificaciones (plataforma C6, [`notificaciones/overview.md`](../../plataforma/notificaciones/overview.md); musts §9), no como columna del listado | — | — |
   | `requested_amount` = total bruto SOLPED / preobligación; `awarded_amount` = OC activa o contrato cuando existe | — | — |
-  | Si el rol es `adq.solicitante` o `adq.aprobador_unidad`, el scope de unidad del `RoleAssignment` se aplica **siempre**; `requesting_department_id` / `requesting_unit_id` ajenos se ignoran o rechazan. `adq.solicitante_daf` tiene scope tenant (como roles DAF) | blocking | `FORBIDDEN` *(o se fuerza el scope sin error — decisión de implementación)* |
+  | Si el rol es `adq.solicitante` o `adq.aprobador_unidad`, el scope de unidad se aplica por `destination_unit_id` del expediente (= unidad del `RoleAssignment`); filtros de departamento/unidad ajenos se ignoran o rechazan. `adq.solicitante_daf` tiene scope tenant (como roles DAF) | blocking | `FORBIDDEN` *(o se fuerza el scope sin error — decisión de implementación)* |
 
 #### `GET /procurement-cases/{case_id}` — `getProcurementCase`
 - **Sub-pasos:** 0.1 *(navegación desde listado)* · vista de expediente
@@ -130,8 +130,9 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Regla | Severidad | Campo | QA | Error |
   |---|---|---|---|---|
   | `requesting_unit` presente | blocking | `requesting_unit` | 53 | `MISSING_REQUIRED_FIELD` |
-  | Si el actor es `adq.solicitante`, `requesting_unit` = unidad del `RoleAssignment` (no puede usar otra) | blocking | `requesting_unit` | — | `REQUESTING_UNIT_OUT_OF_SCOPE` |
-  | Si el actor es `adq.solicitante_daf`, `requesting_unit` ∈ unidades del tenant | blocking | `requesting_unit` | — | `REQUESTING_UNIT_OUT_OF_SCOPE` |
+  | `destination_unit` presente | blocking | `destination_unit` | — | `MISSING_REQUIRED_FIELD` |
+  | Si el actor es `adq.solicitante`, `destination_unit` = unidad del `RoleAssignment` (no puede usar otra) | blocking | `destination_unit` | — | `DESTINATION_UNIT_OUT_OF_SCOPE` |
+  | Si el actor es `adq.solicitante_daf`, `destination_unit` ∈ unidades del tenant | blocking | `destination_unit` | — | `DESTINATION_UNIT_OUT_OF_SCOPE` |
   | `description` presente | blocking | `description` | 53 | `MISSING_REQUIRED_FIELD` |
   | `justification` presente | blocking | `justification` | 53 | `MISSING_REQUIRED_FIELD` |
   | `requested_date` presente | blocking | `requested_date` | 53 | `MISSING_REQUIRED_FIELD` |
@@ -144,7 +145,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Si se agrega adjunto, tipo / descripción / archivo presentes | blocking | `attachments[].*` | — | `MISSING_REQUIRED_FIELD` |
 - **Dependencias invocadas:** `getPriceReference`, `previewBudgetAvailability` *(informativa, bajo demanda desde enlace UI)*. Verificación de stock/catálogo CM: sub-paso **1.0** (optativo).
 - **Notas:**
-  - Scope de creación: `adq.solicitante` solo puede crear con `requesting_unit` = su unidad; `adq.solicitante_daf` (asignado en DAF) puede crear para cualquier unidad del tenant. Ver [`catalogo-roles.md`](../../arquitectura/especificacion/catalogo-roles.md) §3.1.
+  - Unidades: `requesting_unit` = quién tramita (autoasignada por `RoleAssignment`); `destination_unit` = para quién es la compra. Con `adq.solicitante` ambas coinciden; con `adq.solicitante_daf` el destino es seleccionable en el tenant. Ver [`catalogo-roles.md`](../../arquitectura/especificacion/catalogo-roles.md) §3.1.
   - Precio siempre neto (convención de plataforma); no se captura «neto/bruto» como elección del usuario.
   - Totales derivados: neto, impuestos, bruto. Autoconsulta y precompromiso orientativo usan **bruto** en CLP (municipio = consumidor final).
   - Si `currency` ≠ CLP, la tasa en 1.1 es referencial; el hito que congela la tasa para compromiso está pendiente (ficha 1-solped).
@@ -167,7 +168,8 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Regla | Severidad | Campo | QA | Error |
   |---|---|---|---|---|
   | `requesting_unit` presente | blocking | `requesting_unit` | 53 | `MISSING_REQUIRED_FIELD` |
-  | Scope de `requesting_unit` según rol (`adq.solicitante` = solo propia; `adq.solicitante_daf` = tenant) — [`catalogo-roles.md`](../../arquitectura/especificacion/catalogo-roles.md) §3.1 | blocking | `requesting_unit` | — | `REQUESTING_UNIT_OUT_OF_SCOPE` |
+  | `destination_unit` presente | blocking | `destination_unit` | — | `MISSING_REQUIRED_FIELD` |
+  | Scope de `destination_unit` según rol (`adq.solicitante` = solo propia; `adq.solicitante_daf` = tenant) — [`catalogo-roles.md`](../../arquitectura/especificacion/catalogo-roles.md) §3.1 | blocking | `destination_unit` | — | `DESTINATION_UNIT_OUT_OF_SCOPE` |
   | `description` presente | blocking | `description` | 53 | `MISSING_REQUIRED_FIELD` |
   | `justification` presente | blocking | `justification` | 53 | `MISSING_REQUIRED_FIELD` |
   | `requested_date` presente | blocking | `requested_date` | 53 | `MISSING_REQUIRED_FIELD` |
