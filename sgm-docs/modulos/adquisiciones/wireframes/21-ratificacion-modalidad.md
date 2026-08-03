@@ -10,11 +10,14 @@
 +----------------------------------------------------------------+
 | SOLPED #1234 — Ratificación de modalidad         [Pendiente]    |
 +----------------------------------------------------------------+
-| Datos de la solicitud (solo lectura)                            |
-| Unidad: Unidad Solicitante | Monto total estimado: $ 1.250.000   |
-| Modalidad indicada en SOLPED (1.1): Compra Ágil (provisional)    |
+| Datos de la SOLPED (solo lectura)                               |
+| Unidad solicitante: Unidad X                                     |
+| Descripción: Adquisición de insumos de oficina                   |
+| Modalidad indicada en 1.1: Compra Ágil (provisional)             |
+| [ Ver detalle de la SOLPED ]  → formulario 1.1 (solo lectura)    |
 +----------------------------------------------------------------+
 | Selección de modalidad                                          |
+| Monto total estimado (CLP) *  [ 1.250.000 ]                      |
 | Modalidad a ratificar/seleccionar *                             |
 | ( ) Compra Ágil  ( ) Convenio Marco  ( ) Licitación Pública      |
 | ( ) Trato Directo                                                |
@@ -58,6 +61,10 @@
 
 | Campo UI | Entidad.campo | Obligatorio |
 |---|---|---|
+| Unidad solicitante (lectura) | `PurchaseRequest.requesting_unit` | — (contexto SOLPED) |
+| Descripción (lectura) | `PurchaseRequest.description` | — (contexto SOLPED) |
+| Modalidad indicada en 1.1 (lectura) | `PurchaseRequest.purchase_modality` | — (contexto SOLPED) |
+| Ver detalle de la SOLPED | — (navegación a 1.1) | — |
 | Monto total estimado | entrada gateway V1–V8 | Sí |
 | Modalidad a ratificar/seleccionar | `ModalityDecision.selected_modality` | Sí |
 | (derivado) ¿Coincide con SOLPED? | `ModalityDecision.ratified` | Sí (generado) |
@@ -71,6 +78,7 @@
 
 | Botón / control | Operación contrato | Dependencia |
 |---|---|---|
+| Ver detalle de la SOLPED | — (navegación a 1.1) | — |
 | Confirmar modalidad | `confirmProcurementModality` | `getUtmValue` (SII), `checkCatalogAvailability` (catálogo CM) |
 | Cambiar selección de modalidad | — (recalcula gateway en cliente antes de confirmar) | — |
 | Checkbox "ítem en catálogo CM" *(solo demo)* | — (ilustra V2, no existe en la ficha como control de usuario) | `checkCatalogAvailability` |

@@ -32,8 +32,8 @@
 |---|---|---|
 | Fecha de envío | `ComptrollerReview.submitted_at` | Sí |
 | Resultado | `ComptrollerReview.outcome` | Sí, al registrar resultado |
-| Fecha de resultado | `ComptrollerReview.outcome_at` | No (generado por sistema) |
-| Oficio de respuesta | `ComptrollerReview.official_document_ref` | Sí, al registrar resultado |
+| Fecha de resultado | `ComptrollerReview.outcome_at` | Sí, al registrar resultado |
+| Oficio de respuesta | `ComptrollerReview.official_document_ref` (`DocumentRef`) | Sí, al registrar resultado — subida vía `storeDocument` |
 
 ## Acciones
 

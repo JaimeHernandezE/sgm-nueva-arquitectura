@@ -271,8 +271,9 @@ export const VALIDATION_DEMOS = {
   recordComptrollerOutcome: {
     title: 'Validaciones — Resultado Contraloría',
     issues: [
-      { error_code: 'MISSING_REQUIRED_FIELD', field: 'outcome', rule: 'El campo Resultado es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
-      { error_code: 'MISSING_REQUIRED_FIELD', field: 'official_document_ref', rule: 'El documento oficial es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
+      { error_code: 'MISSING_REQUIRED_FIELD', field: 'outcome', rule: 'El campo Resultado de Contraloría es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
+      { error_code: 'MISSING_REQUIRED_FIELD', field: 'outcome_at', rule: 'El campo Fecha de resultado es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
+      { error_code: 'MISSING_REQUIRED_FIELD', field: 'official_document_ref', rule: 'El oficio de respuesta (archivo) es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
     ],
   },
 };

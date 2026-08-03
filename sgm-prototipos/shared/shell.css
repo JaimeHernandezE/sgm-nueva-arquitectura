@@ -728,6 +728,12 @@
   font-variant-numeric: tabular-nums;
 }
 
+.expedientes-table .paso-cell {
+  max-width: 22rem;
+  font-size: 0.9em;
+  line-height: 1.35;
+}
+
 .expedientes-table .amount-td {
   text-align: right;
   white-space: nowrap;

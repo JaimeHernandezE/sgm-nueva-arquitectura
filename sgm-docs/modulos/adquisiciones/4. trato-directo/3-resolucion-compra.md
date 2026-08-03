@@ -39,7 +39,8 @@
 |---|---|---|---|---|---|---|
 | Registrar envío a Contraloría | `submitToComptroller` | `MISSING_REQUIRED_FIELD` | `submitted_at` | El campo Fecha de envío es obligatorio. | blocking | integridad:campo_requerido |
 | Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `outcome` | El campo Resultado de Contraloría es obligatorio. | blocking | integridad:campo_requerido |
-| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `official_document_ref` | El oficio o documento de respaldo es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `outcome_at` | El campo Fecha de resultado es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `official_document_ref` | El oficio de respuesta (archivo) es obligatorio. | blocking | integridad:campo_requerido |
 **Edge cases:**
 - Representación/reparo → proceso se cae; obligación de licitar (overview TD). El expediente no avanza a 3.2; se abre tarea de reversión a etapa 2.
 - Canal de consulta de estado CGR — **[PENDIENTE X-64]** (mismo que LP; no asumir API).

@@ -37,7 +37,8 @@ paths:
           description: >
             Campo de orden del listado (encabezados de columna).
             Valores: folio, created_at, description, requesting_department, procurement_type,
-            status, amount (`amount` = awarded_amount si existe; si no, requested_amount).
+            current_step, amount (`amount` = awarded_amount si existe; si no, requested_amount;
+            `current_step` = current_step_id).
           schema:
             type: string
             enum:
@@ -46,7 +47,7 @@ paths:
               - description
               - requesting_department
               - procurement_type
-              - status
+              - current_step
               - amount
         - $ref: ../../../arquitectura/especificacion/openapi/comunes.yaml#/components/parameters/Order
         - name: q
@@ -61,6 +62,9 @@ paths:
             $ref: ./adquisiciones.openapi.yaml#/components/schemas/ProcurementType
         - name: status
           in: query
+          description: >
+            Filtro por estado del expediente (En curso / Cerrado / Anulado / Desierto).
+            En UI 0.1 es un select; no se muestra como columna (la grilla muestra Paso).
           schema:
             $ref: ./adquisiciones.openapi.yaml#/components/schemas/ProcurementCaseStatus
         - name: requesting_department_id

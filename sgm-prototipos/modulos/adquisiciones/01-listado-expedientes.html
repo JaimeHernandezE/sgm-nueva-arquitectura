@@ -67,12 +67,14 @@
                   <option value="direct_procurement">Trato Directo</option>
                 </select>
               </label>
+              <label class="list-field">
+                Estado <span class="muted">(opcional)</span>
+                <select id="filter-status">
+                  <option value="">Todos</option>
+                </select>
+              </label>
             </div>
             <div class="list-toolbar__row list-toolbar__row--checks">
-              <label class="list-check">
-                <input type="checkbox" id="filter-active" />
-                Proceso activo
-              </label>
               <label class="list-check">
                 <input type="checkbox" id="filter-awaiting" />
                 Por firmar / aprobar
@@ -94,7 +96,7 @@
                   <th class="th-sortable" data-sort="description" scope="col" tabindex="0" role="columnheader" aria-sort="none">Glosa</th>
                   <th class="th-sortable" data-sort="requesting_department" scope="col" tabindex="0" role="columnheader" aria-sort="none">Departamento</th>
                   <th class="th-sortable" data-sort="procurement_type" scope="col" tabindex="0" role="columnheader" aria-sort="none">Modalidad</th>
-                  <th class="th-sortable" data-sort="status" scope="col" tabindex="0" role="columnheader" aria-sort="none">Estado</th>
+                  <th class="th-sortable" data-sort="current_step" scope="col" tabindex="0" role="columnheader" aria-sort="none">Paso</th>
                   <th class="th-sortable" data-sort="amount" scope="col" tabindex="0" role="columnheader" aria-sort="none" title="Adjudicado si existe; si no, solicitado">Monto</th>
                 </tr>
               </thead>
@@ -120,9 +122,10 @@
       displayAmount,
       formatClp,
       formatCreatedAt,
+      formatCurrentStep,
       getExpedienteDetailUrl,
       listDepartmentsFromDemo,
-      statusLabel,
+      listStatusOptions,
     } from '../../shared/expedientes-demo.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
@@ -141,7 +144,7 @@
       description: (e) => e.glosa,
       requesting_department: (e) => e.department,
       procurement_type: (e) => e.modality,
-      status: (e) => e.status,
+      current_step: (e) => e.currentStep?.id || '',
       amount: (e) => {
         const shown = displayAmount(e);
         return shown ? shown.value : -1;
@@ -163,7 +166,7 @@
       department: document.getElementById('filter-department'),
       deptField: document.getElementById('dept-field'),
       modality: document.getElementById('filter-modality'),
-      active: document.getElementById('filter-active'),
+      status: document.getElementById('filter-status'),
       awaiting: document.getElementById('filter-awaiting'),
       clear: document.getElementById('btn-clear'),
       tbody: document.getElementById('expedientes-tbody'),
@@ -179,6 +182,12 @@
       opt.value = d.id;
       opt.textContent = d.name;
       els.department.appendChild(opt);
+    }
+    for (const s of listStatusOptions()) {
+      const opt = document.createElement('option');
+      opt.value = s.id;
+      opt.textContent = s.name;
+      els.status.appendChild(opt);
     }
 
     function scopedBase() {
@@ -199,7 +208,7 @@
       const q = els.q.value.trim().toLowerCase();
       const dept = els.department.value;
       const modality = els.modality.value;
-      const onlyActive = els.active.checked;
+      const status = els.status.value;
       const onlyAwaiting = els.awaiting.checked;
       const isSolicitante = els.viewer.value === 'solicitante';
 
@@ -207,7 +216,7 @@
         if (!matchesQuery(exp, q)) return false;
         if (!isSolicitante && dept && exp.departmentId !== dept) return false;
         if (modality && exp.modalityKey !== modality) return false;
-        if (onlyActive && exp.status !== 'in_progress') return false;
+        if (status && exp.status !== status) return false;
         if (onlyAwaiting && !exp.awaitingMyAction) return false;
         return true;
       });
@@ -286,7 +295,7 @@
           <td>${exp.glosa} ${stubBadge}</td>
           <td>${exp.department}</td>
           <td>${exp.modality}</td>
-          <td><span class="badge">${statusLabel(exp.status)}</span></td>
+          <td class="paso-cell">${formatCurrentStep(exp)}</td>
           <td class="amount-td">${montoCell}</td>
         </tr>`;
         })
@@ -326,7 +335,7 @@
       els.q.value = '';
       els.department.value = '';
       els.modality.value = '';
-      els.active.checked = false;
+      els.status.value = '';
       els.awaiting.checked = false;
       resetPageAndRender();
     });
@@ -371,7 +380,7 @@
       els.q.addEventListener(evt, resetPageAndRender);
       els.department.addEventListener(evt, resetPageAndRender);
       els.modality.addEventListener(evt, resetPageAndRender);
-      els.active.addEventListener(evt, resetPageAndRender);
+      els.status.addEventListener(evt, resetPageAndRender);
       els.awaiting.addEventListener(evt, resetPageAndRender);
     });
 

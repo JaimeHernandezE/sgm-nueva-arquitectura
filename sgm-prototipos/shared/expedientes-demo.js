@@ -108,6 +108,7 @@ export const expedientesDemo = [
     awardedAmount: null,
     globalStatus: 'Solo listado · sin contenido',
     fullDetail: false,
+    currentStep: { id: '2.1', name: 'Ratificación o selección de modalidad' },
   },
   {
     id: 'ADQ-2026-00202',
@@ -125,6 +126,7 @@ export const expedientesDemo = [
     awardedAmount: 2950000,
     globalStatus: 'Solo listado · sin contenido',
     fullDetail: false,
+    currentStep: { id: '5.4', name: 'Ejecución del pago' },
   },
   {
     id: 'ADQ-2026-00210',
@@ -142,6 +144,7 @@ export const expedientesDemo = [
     awardedAmount: null,
     globalStatus: 'Solo listado · sin contenido',
     fullDetail: false,
+    currentStep: { id: '3.1', name: 'Elaboración de bases administrativas y técnicas' },
   },
   {
     id: 'ADQ-2026-00211',
@@ -159,6 +162,7 @@ export const expedientesDemo = [
     awardedAmount: null,
     globalStatus: 'Solo listado · sin contenido',
     fullDetail: false,
+    currentStep: { id: '1.2', name: 'Visto bueno de jefatura' },
   },
   {
     id: 'ADQ-2026-00220',
@@ -176,6 +180,7 @@ export const expedientesDemo = [
     awardedAmount: null,
     globalStatus: 'Solo listado · sin contenido',
     fullDetail: false,
+    currentStep: { id: '3.5', name: 'Publicación en MP y vinculación' },
   },
   {
     id: 'ADQ-2026-00221',
@@ -193,6 +198,7 @@ export const expedientesDemo = [
     awardedAmount: null,
     globalStatus: 'Solo listado · sin contenido',
     fullDetail: false,
+    currentStep: { id: '3.2', name: 'Publicación en Mercado Público y vinculación' },
   },
   {
     id: 'ADQ-2026-00222',
@@ -210,6 +216,7 @@ export const expedientesDemo = [
     awardedAmount: null,
     globalStatus: 'Solo listado · sin contenido',
     fullDetail: false,
+    currentStep: { id: '3.6', name: 'Gran Compra desierta' },
   },
   {
     id: 'ADQ-2026-00230',
@@ -227,6 +234,7 @@ export const expedientesDemo = [
     awardedAmount: null,
     globalStatus: 'Solo listado · sin contenido',
     fullDetail: false,
+    currentStep: { id: '1.3', name: 'Verificación de disponibilidad presupuestaria' },
   },
   {
     id: 'ADQ-2026-00231',
@@ -244,6 +252,7 @@ export const expedientesDemo = [
     awardedAmount: 3980000,
     globalStatus: 'Solo listado · sin contenido',
     fullDetail: false,
+    currentStep: { id: '5.4', name: 'Ejecución del pago' },
   },
   {
     id: 'ADQ-2026-00240',
@@ -261,6 +270,7 @@ export const expedientesDemo = [
     awardedAmount: null,
     globalStatus: 'Solo listado · sin contenido',
     fullDetail: false,
+    currentStep: { id: '3.1', name: 'Período de cotización' },
   },
   {
     id: 'ADQ-2026-00241',
@@ -278,6 +288,7 @@ export const expedientesDemo = [
     awardedAmount: null,
     globalStatus: 'Solo listado · sin contenido',
     fullDetail: false,
+    currentStep: { id: '2.1', name: 'Ratificación o selección de modalidad' },
   },
 ];
 
@@ -290,6 +301,15 @@ const STATUS_LABELS = {
   deserted: 'Desierto',
 };
 
+/** Etapas del ciclo de compra (número mayor del stepId "E.S"). */
+const STAGE_LABELS = {
+  1: 'SOLPED',
+  2: 'Modalidad de Compra',
+  3: 'Resolución de Compra',
+  4: 'Recepción conforme',
+  5: 'Pago',
+};
+
 const CLP = new Intl.NumberFormat('es-CL', {
   style: 'currency',
   currency: 'CLP',
@@ -298,6 +318,30 @@ const CLP = new Intl.NumberFormat('es-CL', {
 
 export function statusLabel(status) {
   return STATUS_LABELS[status] || status;
+}
+
+export function listStatusOptions() {
+  return Object.entries(STATUS_LABELS).map(([id, name]) => ({ id, name }));
+}
+
+export function stageLabelFromStepId(stepId) {
+  if (!stepId) return null;
+  const major = Number(String(stepId).split('.')[0]);
+  if (!Number.isFinite(major)) return null;
+  return { id: major, name: STAGE_LABELS[major] || `Etapa ${major}` };
+}
+
+/**
+ * Texto de columna «Paso» en listado:
+ * "2 — Modalidad de Compra / 2.1 Ratificación o selección de modalidad"
+ */
+export function formatCurrentStep(exp) {
+  const step = exp?.currentStep;
+  if (!step?.id) return '—';
+  const stage = stageLabelFromStepId(step.id);
+  const stepPart = step.name ? `${step.id} ${step.name}` : step.id;
+  if (!stage) return stepPart;
+  return `${stage.id} — ${stage.name} / ${stepPart}`;
 }
 
 /** Monto mostrado en listado: adjudicado si existe; si no, solicitado. */

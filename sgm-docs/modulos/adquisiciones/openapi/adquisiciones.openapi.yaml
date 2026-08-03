@@ -355,8 +355,23 @@ components:
           $ref: "#/components/schemas/ProcurementType"
         status:
           $ref: "#/components/schemas/ProcurementCaseStatus"
+        current_step_id:
+          type: string
+          nullable: true
+          description: Identificador del sub-paso actual (ej. 2.1)
+          example: '2.1'
         current_step_name:
           type: string
+          nullable: true
+          description: Nombre del sub-paso actual
+          example: Ratificación o selección de modalidad
+        current_stage_label:
+          type: string
+          nullable: true
+          description: >
+            Etiqueta de la etapa (ej. Modalidad de Compra). La columna Paso del listado
+            combina `{n} — {current_stage_label} / {current_step_id} {current_step_name}`.
+          example: Modalidad de Compra
         requesting_unit_id:
           type: string
         destination_unit_id:

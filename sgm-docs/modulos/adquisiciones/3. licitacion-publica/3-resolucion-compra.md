@@ -111,7 +111,8 @@
 |---|---|---|---|---|---|---|
 | Registrar envío a Contraloría | `submitToComptroller` | `MISSING_REQUIRED_FIELD` | `submitted_at` | El campo Fecha de envío es obligatorio. | blocking | integridad:campo_requerido |
 | Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `outcome` | El campo Resultado de Contraloría es obligatorio. | blocking | integridad:campo_requerido |
-| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `official_document_ref` | El oficio o documento de respaldo es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `outcome_at` | El campo Fecha de resultado es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `official_document_ref` | El oficio de respuesta (archivo) es obligatorio. | blocking | integridad:campo_requerido |
 **Edge cases:** representación → reversión trazada a 3.1; los `CaseStep` reflejan el reintento sin perder historia.
 
 ---
@@ -288,7 +289,8 @@
 |---|---|---|---|---|---|---|
 | Registrar envío a Contraloría | `submitToComptroller` | `MISSING_REQUIRED_FIELD` | `submitted_at` | El campo Fecha de envío es obligatorio. | blocking | integridad:campo_requerido |
 | Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `outcome` | El campo Resultado de Contraloría es obligatorio. | blocking | integridad:campo_requerido |
-| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `official_document_ref` | El oficio o documento de respaldo es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `outcome_at` | El campo Fecha de resultado es obligatorio. | blocking | integridad:campo_requerido |
+| Registrar resultado CGR | `recordComptrollerOutcome` | `MISSING_REQUIRED_FIELD` | `official_document_ref` | El oficio de respuesta (archivo) es obligatorio. | blocking | integridad:campo_requerido |
 ---
 
 ## 3.12 — Garantía de Fiel Cumplimiento

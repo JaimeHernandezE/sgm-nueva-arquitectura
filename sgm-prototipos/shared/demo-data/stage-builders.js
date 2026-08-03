@@ -288,7 +288,7 @@ export function buildStage3TratoDirecto() {
     expanded: true,
     state: 'active',
     totalTime: 'Total etapa: en curso (publicación 07-05)',
-    note: 'Vinculación diferida en 3.2; doble validación Publicado + OC Aceptada en 3.3. 3.1 omitido (bajo umbral).',
+    note: 'Vinculación diferida en 3.2; doble validación Publicado + OC Aceptada en 3.3. 3.1 omitido en camino feliz (bajo umbral); exploratorio vía «Solo para demo» o simular sobre umbral en el formulario.',
     steps: [
       {
         id: '3.1',
@@ -296,7 +296,9 @@ export function buildStage3TratoDirecto() {
         status: 'omitted',
         action: { type: 'badge', label: 'Omitido (optativo)' },
         responsible: { unit: 'DAF Abastecimiento', role: 'Gestor de compra', name: '—' },
-        secondaryLine: 'Monto bajo umbral 8.000 UTM — sub-paso no aplica',
+        secondaryLine:
+          'Monto bajo umbral 8.000 UTM — no aplica en camino feliz. Situar en 3.1 (Solo para demo) para revisar el trámite CGR.',
+        pendingCondition: 'Condicional — aplica si el monto supera el umbral de Toma de Razón.',
         origin: { kind: 'module', label: 'Contraloría', mode: 'registro manual' },
         borderModules: ['Contraloría'],
         omitted: true,

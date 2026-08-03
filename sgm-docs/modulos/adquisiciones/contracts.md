@@ -21,7 +21,7 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | Entidad | Visibilidad | Campos expuestos | Sub-pasos origen |
 |---|---|---|---|
 | `ProcurementCase` | Expuesta | `id`, `folio`, `description`, `requesting_unit_id`, `destination_unit_id`, `procurement_type`, `status`, `current_step_id`, `created_at`, `mp_process_id`, `mp_linked_at`, `mp_process_type`, `procurement_route`, `route_decided_at`, `purchase_intent_published_at`, `purchase_intent_deadline` | 1.1 (creación implícita), 2.1, 2.3, 3.1/3.3 *(CM, `procurement_route` y campos de Intención de Compra)* |
-| `ProcurementCaseSummary` | Expuesta (DTO lectura) | `id`, `folio`, `description`, `procurement_type`, `status`, `current_step_name`, `requesting_unit_id`, `destination_unit_id`, `created_at`, `requested_amount`, `awarded_amount` | — |
+| `ProcurementCaseSummary` | Expuesta (DTO lectura) | `id`, `folio`, `description`, `procurement_type`, `status`, `current_step_id`, `current_step_name`, `current_stage_label`, `requesting_unit_id`, `destination_unit_id`, `created_at`, `requested_amount`, `awarded_amount` | — |
 | `ProcurementCaseDetail` | Expuesta (DTO lectura) | `ProcurementCase` + `current_step` (`CaseStep` resumido) | — |
 | `CaseStep` | Expuesta | `id`, `procurement_case_id`, `step_number`, `name`, `status`, `responsible_unit_id`, `responsible_role`, `responsible_user_id`, `started_at`, `completed_at`, `elapsed_display` | 2.1 (instanciación), todas las etapas |
 | `PurchaseRequest` | Expuesta | `id`, `procurement_case_id`, `requesting_unit`, `destination_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status` | 1.1, 1.2, 2.1, 2.2 |
@@ -46,7 +46,7 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | `EvaluationCriterion` | Expuesta | `id`, `tender_bases_id`, `name`, `weight_percent`, `scoring_rule` | 3.1 *(LP)* |
 | `LegalReview` | Expuesta | `id`, `subject_type`, `subject_id`, `reviewer_id`, `outcome`, `observations`, `reviewed_at` | 3.2, 3.10 *(LP)* — polimórfica, transversal |
 | `AdministrativeAct` | Expuesta | `id`, `procurement_case_id`, `act_type`, `subject_id`, `act_number`, `external_folio`, `status`, `signed_by`, `signed_at` | 3.3, 3.9, 3.10 *(LP)* / 3.1 *(TD, `founded_resolution`)* — polimórfica, transversal; tramitación DocDigital <!-- REVISAR: candidata a absorber `PaymentDecree`, ver entidades-adquisiciones.md --> |
-| `ComptrollerReview` | Expuesta | `id`, `administrative_act_id`, `submitted_at`, `outcome`, `outcome_at` | 3.4, 3.11 *(LP)* / 3.1 *(TD)* — transversal |
+| `ComptrollerReview` | Expuesta | `id`, `administrative_act_id`, `submitted_at`, `outcome`, `outcome_at`, `official_document_ref` | 3.4, 3.11 *(LP)* / 3.1 *(TD)* — transversal |
 | `Guarantee` | Expuesta | `id`, `procurement_case_id`, `guarantee_type`, `provider_rut`, `instrument_type`, `amount`, `expiry_date`, `status` | 3.7, 3.12 *(LP)* — transversal |
 | `EvaluationCommittee` | Expuesta | `id`, `procurement_case_id`, `designation_act_id`, `status` | 3.9 *(LP)* |
 | `OfferRecord` | Expuesta | `id`, `procurement_case_id`, `provider_rut`, `provider_name`, `offered_amount`, `admissibility_status`, `entry_mode` | 3.9 *(LP)* |
@@ -71,7 +71,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 - **Sub-pasos:** 0.1 — [Consulta de expedientes](./procesos-transversales/0-consulta-expedientes.md)
 - **Entrada:** query `page`, `page_size`, `sort`, `order`; filtros `q`, `procurement_type`, `status`, `requesting_department_id`, `requesting_unit_id`, `folio`, `awaiting_my_action`
 - **Respuesta:** colección paginada de `ProcurementCaseSummary`
-- **UI listado (0.1):** `page_size` = **50**; encabezados ordenan con `sort` ∈ `folio` \| `created_at` \| `description` \| `requesting_department` \| `procurement_type` \| `status` \| `amount` y `order` ∈ `asc` \| `desc`. `amount` ordena por `awarded_amount` si existe; si no, por `requested_amount`.
+- **UI listado (0.1):** `page_size` = **50**; encabezados ordenan con `sort` ∈ `folio` \| `created_at` \| `description` \| `requesting_department` \| `procurement_type` \| `current_step` \| `amount` y `order` ∈ `asc` \| `desc`. `amount` ordena por `awarded_amount` si existe; si no, por `requested_amount`. `current_step` ordena por `current_step_id`. Columna **Paso** = `{etapa} — {current_stage_label} / {current_step_id} {current_step_name}` (p. ej. `2 — Modalidad de Compra / 2.1 Ratificación…`). Filtro **Estado** = query `status` (no hay columna Estado).
 - **Reglas:**
   | Regla | Severidad | Error |
   |---|---|---|
@@ -400,9 +400,9 @@ Vinculación con Mercado Público diferida al sub-paso 3.5 — reutiliza íntegr
 - **Dependencias:** Contraloría — registro manual, sin integración API asumida (**[PENDIENTE X-64]**)
 
 #### `POST /comptroller-reviews/{id}/outcome` — `recordComptrollerOutcome`
-- **Sub-pasos:** 3.4, 3.11
-- **Entrada:** `outcome` (`approved` \| `approved_with_remarks` \| `rejected`), `official_document_ref`
-- **Reglas:** `outcome = rejected` (representación) → el acto de origen se cae; 3.4 revierte a 3.1, 3.11 revierte a 3.10
+- **Sub-pasos:** 3.4, 3.11 *(LP)* / 3.1 *(TD)*
+- **Entrada:** `outcome` (`approved` \| `approved_with_remarks` \| `rejected`), `outcome_at` (fecha del pronunciamiento), `official_document_ref` (`DocumentRef` — oficio CGR vía `storeDocument` del core)
+- **Reglas:** `outcome`, `outcome_at` y `official_document_ref` obligatorios; `outcome = rejected` (representación) → el acto de origen se cae; 3.4 revierte a 3.1, 3.11 revierte a 3.10; en TD 3.1 el proceso no avanza a 3.2
 - **Evento emitido:** `ComptrollerReviewRecorded`
 
 #### `POST /procurement-cases/{id}/clarifications` — `recordClarification`

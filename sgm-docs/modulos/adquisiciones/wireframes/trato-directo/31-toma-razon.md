@@ -21,7 +21,8 @@
 +----------------------------------------------------------------+
 | ## Resultado CGR                                                 |
 | Resultado *  ( ) Toma razón  ( ) Con alcance  ( ) Representación |
-| Oficio de respuesta (adjunto) *                                    |
+| Fecha de resultado *  [ __/__/____ ]                               |
+| Oficio de respuesta *  [ Subir → storeDocument (core) ]            |
 | [ Registrar resultado ]                                            |
 +----------------------------------------------------------------+
 | (banner: continúa a 3.2, o representación → proceso se cae)       |
@@ -34,7 +35,8 @@
 |---|---|---|
 | Fecha de envío | `ComptrollerReview.submitted_at` | Sí |
 | Resultado | `ComptrollerReview.outcome` | Sí, al registrar resultado |
-| Oficio de respuesta | `ComptrollerReview.official_document_ref` | Sí, al registrar resultado |
+| Fecha de resultado | `ComptrollerReview.outcome_at` | Sí, al registrar resultado |
+| Oficio de respuesta | `ComptrollerReview.official_document_ref` (`DocumentRef`) | Sí, al registrar resultado — subida vía `storeDocument` |
 | Acto | `AdministrativeAct.act_type` (= `founded_resolution`) | Sí (sistema) |
 
 ## Acciones
@@ -52,8 +54,9 @@
 
 ## Validaciones visibles
 
-- Fecha de envío y oficio de resultado obligatorios (ver ficha §3.1).
+- Fecha de envío, fecha de resultado y oficio de respuesta (archivo) obligatorios (ver ficha §3.1).
 
 ## Notas
 
 - Reutiliza `ComptrollerReview` de LP. Canal API CGR — **[PENDIENTE X-64]**.
+- El oficio es un **adjunto** (`DocumentRef`), no un texto libre.

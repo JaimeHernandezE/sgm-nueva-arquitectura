@@ -65,7 +65,13 @@ export function applyCurrentStepFocus(stages, currentStepId, { assumePreviousDon
           ...step,
           current: true,
           status: 'active',
-          action: { type: 'primary', label: primaryLabel },
+          // Conserva omitted para tipografía/leyenda, pero habilita acción primaria en demo.
+          action: {
+            type: 'primary',
+            label: step.omitted || step.status === 'omitted'
+              ? 'Explorar paso (demo)'
+              : primaryLabel,
+          },
         };
       }
       if (!passedCurrent) {
@@ -112,7 +118,8 @@ export function applyCurrentStepFocus(stages, currentStepId, { assumePreviousDon
  * rol coincide con el responsable del paso; si no, se ve Pendiente.
  */
 function resolveAction(step, simulation) {
-  if (step.omitted || step.status === 'omitted') {
+  // En foco de demo («Situar en sub-paso») un omitido se puede explorar.
+  if ((step.omitted || step.status === 'omitted') && !step.current) {
     return step.action?.type === 'badge' ? step.action : { type: 'badge', label: 'Omitido (optativo)' };
   }
   if (step.action?.type === 'primary' && simulation?.rol) {
@@ -126,8 +133,8 @@ function resolveAction(step, simulation) {
 
 function renderAction(action, step) {
   if (!action) return '';
-  const isOmitted = step.omitted || step.status === 'omitted';
-  const formUrl = isOmitted ? null : getFormUrl(step.id);
+  const blockedAsOmitted = (step.omitted || step.status === 'omitted') && !step.current;
+  const formUrl = blockedAsOmitted ? null : getFormUrl(step.id);
 
   if (action.type === 'primary') {
     if (formUrl) {
@@ -304,13 +311,15 @@ function populateSimulationSelects(simulation) {
     const group = document.createElement('optgroup');
     group.label = `${stage.id} · ${stage.name}`;
     (stage.steps || []).forEach((step) => {
-      if (step.omitted || step.status === 'omitted') return;
       const opt = document.createElement('option');
       opt.value = step.id;
-      opt.textContent = `${step.id} — ${step.name}`;
+      const omitted = step.omitted || step.status === 'omitted';
+      opt.textContent = omitted
+        ? `${step.id} — ${step.name} (omitido — exploratorio)`
+        : `${step.id} — ${step.name}`;
       group.appendChild(opt);
     });
-    stepSelect.appendChild(group);
+    if (group.childElementCount) stepSelect.appendChild(group);
   });
   stepSelect.value = simulation.paso || '';
 }

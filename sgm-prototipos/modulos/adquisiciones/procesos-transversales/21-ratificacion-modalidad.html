@@ -23,11 +23,20 @@
       </div>
       <div class="form-card__body">
         <section class="form-section">
-          <h3 class="form-section__title">Selección de modalidad</h3>
-          <div class="info-panel">
+          <h3 class="form-section__title">Contexto SOLPED</h3>
+          <div class="info-panel" id="solped-context-panel">
             <strong>Datos SOLPED — solo lectura</strong><br />
-            Unidad: Unidad Solicitante · Modalidad indicada en 1.1: <strong>Compra Ágil (provisional)</strong>
+            <span id="solped-context-unit">Unidad solicitante: —</span><br />
+            <span id="solped-context-description">Descripción: —</span><br />
+            <span id="solped-context-modality">Modalidad indicada en 1.1: —</span>
           </div>
+          <p>
+            <a class="btn btn--link" id="view-solped-11" href="11-creacion-solped.html">Ver detalle de la SOLPED</a>
+          </p>
+        </section>
+
+        <section class="form-section">
+          <h3 class="form-section__title">Selección de modalidad</h3>
 
           <div class="form-row">
             <label>Monto total estimado (CLP) <span class="required">*</span></label>
@@ -130,6 +139,8 @@
     initStepSimulation({ stepId: '2.1' });
 
     bootstrapFormPage('modalidad');
+
+    document.getElementById('view-solped-11').href = relativeFormHref('11-creacion-solped.html');
 
     document.getElementById('gateway-body').innerHTML = gatewayTableBodyHtml();
     document.getElementById('utm-value').textContent = new Intl.NumberFormat('es-CL', {

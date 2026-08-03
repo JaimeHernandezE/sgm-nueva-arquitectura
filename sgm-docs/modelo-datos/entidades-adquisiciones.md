@@ -473,7 +473,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `document_ref` | Documento | ref. `DocumentRef` | **Obligatorio si** `status = signed` — vía C10 |
 
 ### `ComptrollerReview` (Toma de Razón)
-**Visibilidad:** expuesta — campos en contrato: `id`, `administrative_act_id`, `submitted_at`, `outcome`, `outcome_at`
+**Visibilidad:** expuesta — campos en contrato: `id`, `administrative_act_id`, `submitted_at`, `outcome`, `outcome_at`, `official_document_ref`
 
 **Transversal — reutilizable en Trato Directo** (mismo trámite para su Resolución Fundada). Sin integración API asumida con Contraloría: registro manual del envío y del resultado. Origen: ficha LP §3.4 (reutilizada en §3.11).
 
@@ -485,8 +485,8 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `procurement_case_id` | Expediente de compra | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
 | `submitted_at` | Fecha de remisión | fecha | **Obligatorio** — fecha de remisión a Contraloría |
 | `outcome` | Resultado | enum | **Obligatorio si** resuelto. Valores: `approved`, `approved_with_remarks`, `rejected` |
-| `outcome_at` | Fecha del resultado | fecha | **Obligatorio si** `outcome` presente |
-| `official_document_ref` | Oficio de respaldo | ref. `DocumentRef` | **Obligatorio si** `outcome` presente — oficio de respaldo, vía C10 |
+| `outcome_at` | Fecha de resultado | fecha | **Obligatorio si** `outcome` presente — fecha del pronunciamiento CGR (ingreso manual; no auto-generada) |
+| `official_document_ref` | Oficio de respuesta | ref. `DocumentRef` | **Obligatorio si** `outcome` presente — PDF/imagen del oficio CGR, subida vía `storeDocument` (C10) |
 
 ### `Guarantee` (Garantía)
 **Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `guarantee_type`, `provider_rut`, `instrument_type`, `amount`, `expiry_date`, `status`

@@ -71,16 +71,19 @@ export function applySolpedPreset() {
 export function applyModalidadPreset() {
   const preset = getPreset();
   const m = preset.modalidad;
+  const s = preset.solped || {};
   const header = document.querySelector('.form-card__header > span:first-child');
   setText(header, `SOLPED #${preset.solpedNumber} — Ratificación de modalidad`);
 
-  const solpedPanel = document.querySelector('.form-card__body .info-panel');
-  if (solpedPanel) {
-    setInnerHtml(
-      solpedPanel,
-      `<strong>Datos SOLPED — solo lectura</strong><br />
-      Unidad: ${m.unit} · Modalidad indicada en 1.1: <strong>${m.modalityLabel}</strong>`,
-    );
+  const unit = s.unit || m.unit || '—';
+  const description = s.description || '—';
+  const modalityLabel = m.modalityLabel || '—';
+
+  setText(document.getElementById('solped-context-unit'), `Unidad solicitante: ${unit}`);
+  setText(document.getElementById('solped-context-description'), `Descripción: ${description}`);
+  const modalityEl = document.getElementById('solped-context-modality');
+  if (modalityEl) {
+    modalityEl.innerHTML = `Modalidad indicada en 1.1: <strong>${modalityLabel}</strong>`;
   }
 
   setValue(document.getElementById('monto-input'), m.monto);
