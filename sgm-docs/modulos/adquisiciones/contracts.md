@@ -131,7 +131,9 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   |---|---|---|---|---|
   | `requesting_unit` presente | blocking | `requesting_unit` | 53 | `MISSING_REQUIRED_FIELD` |
   | `destination_unit` presente | blocking | `destination_unit` | — | `MISSING_REQUIRED_FIELD` |
-  | Si el actor es `adq.solicitante`, `destination_unit` = unidad del `RoleAssignment` (no puede usar otra) | blocking | `destination_unit` | — | `DESTINATION_UNIT_OUT_OF_SCOPE` |
+  | Si el actor es `adq.solicitante`, `requesting_unit` = unidad del `RoleAssignment` | blocking | `requesting_unit` | — | `REQUESTING_UNIT_OUT_OF_SCOPE` |
+  | Si el actor es `adq.solicitante`, `destination_unit` = unidad del `RoleAssignment` | blocking | `destination_unit` | — | `DESTINATION_UNIT_OUT_OF_SCOPE` |
+  | Si el actor es `adq.solicitante_daf`, `requesting_unit` ∈ unidades del tenant | blocking | `requesting_unit` | — | `REQUESTING_UNIT_OUT_OF_SCOPE` |
   | Si el actor es `adq.solicitante_daf`, `destination_unit` ∈ unidades del tenant | blocking | `destination_unit` | — | `DESTINATION_UNIT_OUT_OF_SCOPE` |
   | `description` presente | blocking | `description` | 53 | `MISSING_REQUIRED_FIELD` |
   | `justification` presente | blocking | `justification` | 53 | `MISSING_REQUIRED_FIELD` |
@@ -145,7 +147,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Si se agrega adjunto, tipo / descripción / archivo presentes | blocking | `attachments[].*` | — | `MISSING_REQUIRED_FIELD` |
 - **Dependencias invocadas:** `getPriceReference`, `previewBudgetAvailability` *(informativa, bajo demanda desde enlace UI)*. Verificación de stock/catálogo CM: sub-paso **1.0** (optativo).
 - **Notas:**
-  - Unidades: `requesting_unit` = quién tramita (autoasignada por `RoleAssignment`); `destination_unit` = para quién es la compra. Con `adq.solicitante` ambas coinciden; con `adq.solicitante_daf` el destino es seleccionable en el tenant. Ver [`catalogo-roles.md`](../../arquitectura/especificacion/catalogo-roles.md) §3.1.
+  - Unidades: `requesting_unit` y `destination_unit` se autoasignan por `RoleAssignment`. Con `adq.solicitante` ambas quedan fijas a su unidad; con `adq.solicitante_daf` ambas son **modificables** en el tenant. Ver [`catalogo-roles.md`](../../arquitectura/especificacion/catalogo-roles.md) §3.1.
   - Precio siempre neto (convención de plataforma); no se captura «neto/bruto» como elección del usuario.
   - Totales derivados: neto, impuestos, bruto. Autoconsulta y precompromiso orientativo usan **bruto** en CLP (municipio = consumidor final).
   - Si `currency` ≠ CLP, la tasa en 1.1 es referencial; el hito que congela la tasa para compromiso está pendiente (ficha 1-solped).
@@ -169,7 +171,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   |---|---|---|---|---|
   | `requesting_unit` presente | blocking | `requesting_unit` | 53 | `MISSING_REQUIRED_FIELD` |
   | `destination_unit` presente | blocking | `destination_unit` | — | `MISSING_REQUIRED_FIELD` |
-  | Scope de `destination_unit` según rol (`adq.solicitante` = solo propia; `adq.solicitante_daf` = tenant) — [`catalogo-roles.md`](../../arquitectura/especificacion/catalogo-roles.md) §3.1 | blocking | `destination_unit` | — | `DESTINATION_UNIT_OUT_OF_SCOPE` |
+  | Scope de `requesting_unit` y `destination_unit` según rol (`adq.solicitante` = solo propia; `adq.solicitante_daf` = tenant, ambas modificables) — [`catalogo-roles.md`](../../arquitectura/especificacion/catalogo-roles.md) §3.1 | blocking | `requesting_unit` / `destination_unit` | — | `REQUESTING_UNIT_OUT_OF_SCOPE` / `DESTINATION_UNIT_OUT_OF_SCOPE` |
   | `description` presente | blocking | `description` | 53 | `MISSING_REQUIRED_FIELD` |
   | `justification` presente | blocking | `justification` | 53 | `MISSING_REQUIRED_FIELD` |
   | `requested_date` presente | blocking | `requested_date` | 53 | `MISSING_REQUIRED_FIELD` |

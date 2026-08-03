@@ -22,8 +22,8 @@ Raíz de trazabilidad de todo el ciclo SOLPED → Pago. El estado del expediente
 | `id` | Identificador | texto | **Obligatorio** (generado por sistema). Igual al `folio` legible. Formato `ADQ-AAAA-NNNNN`. |
 | `folio` | Folio | texto | **Obligatorio** (generado por sistema). Correlativo legible. Duplica `id` — expuesto como `id` en API. |
 | `description` | Descripción | texto | **Obligatorio** — glosa resumen del expediente (listado y cabecera). |
-| `requesting_unit_id` | Unidad solicitante | ref. `OrganizationalUnit` | **Obligatorio** — unidad del actor que crea la SOLPED (copia de `PurchaseRequest.requesting_unit`). Se autoasigna según el `RoleAssignment`; no es el selector de “para quién” es la compra. |
-| `destination_unit_id` | Unidad de destino | ref. `OrganizationalUnit` | **Obligatorio** — unidad beneficiaria de la compra (copia de `PurchaseRequest.destination_unit`). Con `adq.solicitante` = misma que solicitante; con `adq.solicitante_daf` = unidad elegida. Ver [`catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) §3.1. Base del listado/departamento y del alcance del aprobador de unidad. |
+| `requesting_unit_id` | Unidad solicitante | ref. `OrganizationalUnit` | **Obligatorio** — copia de `PurchaseRequest.requesting_unit`. Con `adq.solicitante`: autoasignada (fija). Con `adq.solicitante_daf`: autoasignada por default y **modificable**. Ver [`catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) §3.1. |
+| `destination_unit_id` | Unidad de destino | ref. `OrganizationalUnit` | **Obligatorio** — unidad beneficiaria (copia de `PurchaseRequest.destination_unit`). Con `adq.solicitante` = misma que solicitante (fija); con `adq.solicitante_daf` = seleccionable. Ver [`catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) §3.1. Base del listado/departamento y del alcance del aprobador de unidad. |
 | `procurement_type` | Modalidad de compra | enum | **Opcional** hasta etapa 2.1; **Obligatorio** desde confirmación de modalidad. Valores: `agile_purchase`, `framework_agreement`, `public_tender`, `direct_procurement`. |
 | `current_step_id` | Paso actual | ref. `CaseStep` | **Obligatorio** |
 | `status` | Estado | enum | **Obligatorio**. Valores API: `in_progress`, `completed`, `cancelled`, `deserted`. |
@@ -64,8 +64,8 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 | Campo | Label (ES) | Tipo | Notas |
 |---|---|---|---|
 | `procurement_case_id` | Expediente de compra | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional — ver nota arriba |
-| `requesting_unit` | Unidad solicitante | ref. `OrganizationalUnit` | **Obligatorio** — se autoasigna según el `RoleAssignment` del actor (quién tramita). No seleccionable para “cambiar de unidad”. |
-| `destination_unit` | Unidad de destino | ref. `OrganizationalUnit` | **Obligatorio** — unidad para la que se solicita la compra. Con `adq.solicitante`: autoasignada = `requesting_unit` (no puede elegir otra). Con `adq.solicitante_daf`: seleccionable entre unidades del tenant. Ver [`catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) §3.1. |
+| `requesting_unit` | Unidad solicitante | ref. `OrganizationalUnit` | **Obligatorio** — se autoasigna según el `RoleAssignment` del actor. Con `adq.solicitante`: fija a su unidad. Con `adq.solicitante_daf`: default DAF y **modificable** en el tenant. Ver [`catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) §3.1. |
+| `destination_unit` | Unidad de destino | ref. `OrganizationalUnit` | **Obligatorio** — unidad para la que se solicita la compra. Con `adq.solicitante`: autoasignada = `requesting_unit` (fija). Con `adq.solicitante_daf`: seleccionable entre unidades del tenant. Ver [`catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) §3.1. |
 | `description` | Descripción | texto | **Obligatorio** |
 | `justification` | Justificación | texto | **Obligatorio** |
 | `requested_date` | Fecha solicitada | fecha | **Obligatorio** |

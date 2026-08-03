@@ -463,7 +463,10 @@ components:
           type: string
         requesting_unit:
           type: string
-          description: Unidad que tramita — autoasignada por RoleAssignment
+          description: >
+            Unidad solicitante. Autoasignada por RoleAssignment.
+            Con adq.solicitante = fija a su unidad; con adq.solicitante_daf = modificable en el tenant
+            (catalogo-roles §3.1).
         destination_unit:
           type: string
           description: >

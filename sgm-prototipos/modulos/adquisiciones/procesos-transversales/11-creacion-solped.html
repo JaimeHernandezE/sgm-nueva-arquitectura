@@ -26,8 +26,12 @@
           <h3 class="form-section__title">Datos de la solicitud</h3>
           <div class="form-row">
             <label>Unidad solicitante <span class="required">*</span></label>
-            <input type="text" id="requesting-unit" value="Unidad X" readonly disabled />
-            <p class="form-section__hint" id="requesting-unit-hint">Quién tramita — autoasignada según el rol; no editable.</p>
+            <select id="requesting-unit">
+              <option value="unidad-x" selected>Unidad X</option>
+              <option value="daf-abastecimiento">DAF Abastecimiento</option>
+              <option value="direccion-obras">Dirección de Obras</option>
+            </select>
+            <p class="form-section__hint" id="requesting-unit-hint">Autoasignada según el rol. Solicitante DAF puede cambiarla.</p>
           </div>
           <div class="form-row">
             <label>Unidad de destino <span class="required">*</span></label>
@@ -36,7 +40,7 @@
               <option value="daf-abastecimiento">DAF Abastecimiento</option>
               <option value="direccion-obras">Dirección de Obras</option>
             </select>
-            <p class="form-section__hint" id="destination-unit-hint">Para quién es la compra. Solicitante básico: igual a la solicitante. Solicitante DAF: selecciona la unidad correcta.</p>
+            <p class="form-section__hint" id="destination-unit-hint">Para quién es la compra. Solicitante básico: igual a la solicitante. Solicitante DAF: seleccionable.</p>
           </div>
           <div class="form-row">
             <label>Descripción <span class="required">*</span></label>
@@ -271,21 +275,23 @@
       if (!requesting || !destination) return;
 
       if (isDaf) {
-        requesting.value = 'DAF Abastecimiento';
+        requesting.disabled = false;
         destination.disabled = false;
+        requesting.value = 'daf-abastecimiento';
         destination.value = 'direccion-obras';
         if (requestingHint) {
-          requestingHint.textContent = 'Quién tramita — Solicitante DAF (autoasignada a DAF); no editable.';
+          requestingHint.textContent = 'Unidad solicitante — default DAF; Solicitante DAF puede cambiarla a cualquier unidad del municipio.';
         }
         if (destinationHint) {
           destinationHint.textContent = 'Unidad de destino — seleccionable: indique la unidad beneficiaria de la compra.';
         }
       } else {
-        requesting.value = 'Unidad X';
+        requesting.value = 'unidad-x';
         destination.value = 'unidad-x';
+        requesting.disabled = true;
         destination.disabled = true;
         if (requestingHint) {
-          requestingHint.textContent = 'Quién tramita — Solicitante básico (autoasignada a su unidad); no editable.';
+          requestingHint.textContent = 'Unidad solicitante — Solicitante básico: autoasignada a su unidad; no editable.';
         }
         if (destinationHint) {
           destinationHint.textContent = 'Unidad de destino — autoasignada a la misma unidad; un solicitante básico no puede elegir otra.';
