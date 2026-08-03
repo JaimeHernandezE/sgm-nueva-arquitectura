@@ -1,7 +1,7 @@
 # Wireframe: Creación de SOLPED
 
 **Sub-paso:** 1.1 — Creación de solicitud  
-**Rol:** Solicitante (`adq.solicitante`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md)  
+**Rol:** Solicitante (`adq.solicitante`) o Solicitante DAF (`adq.solicitante_daf`) — catálogo [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) §3.1  
 **Operaciones:** `createPurchaseRequest`, `submitPurchaseRequest`, `previewBudgetAvailability` *(informativa)*
 
 ## Layout
@@ -11,7 +11,9 @@
 | SOLPED — Nueva solicitud                          [Borrador]|
 +----------------------------------------------------------+
 | Datos de la solicitud                                     |
-| Unidad solicitante *  [ Unidad X          v ]  (auto según rol) |
+| Unidad solicitante *  [ Unidad X          v ]             |
+|   · básico: fija a su unidad (no elige otra)              |
+|   · DAF (`adq.solicitante_daf`): cualquier unidad tenant   |
 | Descripción *         [________________________]          |
 | Justificación *       [________________________]          |
 | Fecha solicitada *    [ __ / __ / ____ ]                  |
@@ -63,7 +65,7 @@
 
 | Campo UI | Entidad.campo | Obligatorio |
 |---|---|---|
-| Unidad solicitante | `PurchaseRequest.requesting_unit` | Sí (autoasignada según `RoleAssignment`; modificable) |
+| Unidad solicitante | `PurchaseRequest.requesting_unit` | Sí — autoasignada según `RoleAssignment`. `adq.solicitante`: solo su unidad (selector bloqueado / sin opciones ajenas). `adq.solicitante_daf`: cualquier unidad del tenant ([`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) §3.1) |
 | Descripción | `PurchaseRequest.description` | Sí |
 | Justificación | `PurchaseRequest.justification` | Sí |
 | Fecha solicitada | `PurchaseRequest.requested_date` | Sí |

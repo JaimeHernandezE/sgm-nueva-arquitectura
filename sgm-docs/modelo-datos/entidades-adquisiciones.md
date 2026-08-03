@@ -22,7 +22,7 @@ Raíz de trazabilidad de todo el ciclo SOLPED → Pago. El estado del expediente
 | `id` | Identificador | texto | **Obligatorio** (generado por sistema). Igual al `folio` legible. Formato `ADQ-AAAA-NNNNN`. |
 | `folio` | Folio | texto | **Obligatorio** (generado por sistema). Correlativo legible. Duplica `id` — expuesto como `id` en API. |
 | `description` | Descripción | texto | **Obligatorio** — glosa resumen del expediente (listado y cabecera). |
-| `requesting_unit_id` | Unidad solicitante | ref. `OrganizationalUnit` | **Obligatorio** — unidad solicitante de la SOLPED origen. Se autoasigna según el `RoleAssignment` del actor; modificable. |
+| `requesting_unit_id` | Unidad solicitante | ref. `OrganizationalUnit` | **Obligatorio** — unidad solicitante de la SOLPED origen. Se autoasigna según el `RoleAssignment` del actor. Scope: `adq.solicitante` → solo su unidad (no puede elegir otra); `adq.solicitante_daf` → cualquier unidad del tenant (modificable). Ver [`catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) §3.1. |
 | `procurement_type` | Modalidad de compra | enum | **Opcional** hasta etapa 2.1; **Obligatorio** desde confirmación de modalidad. Valores: `agile_purchase`, `framework_agreement`, `public_tender`, `direct_procurement`. |
 | `current_step_id` | Paso actual | ref. `CaseStep` | **Obligatorio** |
 | `status` | Estado | enum | **Obligatorio**. Valores API: `in_progress`, `completed`, `cancelled`, `deserted`. |
@@ -63,7 +63,7 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 | Campo | Label (ES) | Tipo | Notas |
 |---|---|---|---|
 | `procurement_case_id` | Expediente de compra | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional — ver nota arriba |
-| `requesting_unit` | Unidad solicitante | ref. `OrganizationalUnit` | **Obligatorio** — se autoasigna según el `RoleAssignment` del actor; modificable. |
+| `requesting_unit` | Unidad solicitante | ref. `OrganizationalUnit` | **Obligatorio** — se autoasigna según el `RoleAssignment` del actor. Scope: `adq.solicitante` → solo su unidad; `adq.solicitante_daf` → cualquier unidad del tenant (modificable). Ver [`catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) §3.1. |
 | `description` | Descripción | texto | **Obligatorio** |
 | `justification` | Justificación | texto | **Obligatorio** |
 | `requested_date` | Fecha solicitada | fecha | **Obligatorio** |

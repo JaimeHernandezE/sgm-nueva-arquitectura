@@ -79,12 +79,12 @@
 | Normal | Hay al menos un expediente en el resultado |
 | Vacío | Filtros/scope sin coincidencias — mensaje “No hay expedientes con estos criterios” |
 | Scope unidad | Actor `adq.solicitante` o `adq.aprobador_unidad`: listado limitado a su unidad; filtro Departamento no visible |
-| Scope DAF / amplio | Resto de roles Adquisiciones: tenant completo; filtro Departamento disponible |
+| Scope DAF / amplio | `adq.solicitante_daf` y resto de roles Adquisiciones: tenant completo; filtro Departamento disponible |
 
 ## Notas de comportamiento
 
 1. **Filtros acumulables:** buscador y filtros se combinan con AND. Dentro de `q`, la coincidencia es por folio **o** glosa **o** modalidad (OR de campos de texto).
-2. **Alcance RBAC (servidor):** con `adq.solicitante` / `adq.aprobador_unidad` el scope de `requesting_unit_id` de la asignación se aplica **siempre**. Intentos de ampliar con `requesting_department_id` / `requesting_unit_id` ajenos se ignoran o rechazan.
+2. **Alcance RBAC (servidor):** con `adq.solicitante` / `adq.aprobador_unidad` el scope de `requesting_unit_id` de la asignación se aplica **siempre**. Intentos de ampliar con `requesting_department_id` / `requesting_unit_id` ajenos se ignoran o rechazan. `adq.solicitante_daf` ve el tenant completo (puede crear SOLPED para cualquier unidad — [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) §3.1).
 3. **Proceso activo:** en UI es un checkbox que fija `status=in_progress`. Otros valores de `status` siguen disponibles vía API.
 4. **Por firmar / aprobar:** filtro de expedientes que esperan acción del actor (`awaiting_my_action`). No hay columna “Bandeja”: el listado de **acciones pendientes por usuario** corresponde a la bandeja de entrada del sistema de notificaciones ([`musts-arquitectura.md`](../../../arquitectura/especificacion/musts-arquitectura.md) §9; [`notificaciones/overview.md`](../../../plataforma/notificaciones/overview.md), wireframe [`02-bandeja.md`](../../../plataforma/wireframes/shell/02-bandeja.md)).
 5. **Monto:** prioriza adjudicado (`PurchaseOrder.total_amount` / `Contract.amount`) sobre solicitado (total bruto SOLPED / `BudgetPreCommitment.estimated_amount`).
@@ -92,7 +92,7 @@
 7. **Orden por encabezado:** cada columna del listado ordena con `sort` + `order`; clic repetido en la misma columna invierte el sentido.
 8. **Prototipo “Ver como”:** control solo de demo — *Unidad solicitante* vs *Usuario DAF* — para ilustrar el contraste de alcance; no sustituye autenticación real. El panel lleva badge «Solo para demo» y fondo de advertencia (igual que los paneles de simulación rol/paso).
 9. **Filas stub:** expedientes de prueba sin timeline; badge “Solo listado · sin contenido”; no navegan al expediente.
-10. **Nuevo expediente:** destino según capacidades del tenant — sub-paso 1.0 ([`10-verificacion-previa.md`](./10-verificacion-previa.md)) u omisión directa a 1.1. Toggle demo “Omitir paso 1.0” ilustra el caso borde (mismo panel con badge «Solo para demo»).
+10. **Nuevo expediente:** visible con `adq.solicitante` o `adq.solicitante_daf`. Destino según capacidades del tenant — sub-paso 1.0 ([`10-verificacion-previa.md`](./10-verificacion-previa.md)) u omisión directa a 1.1. Toggle demo “Omitir paso 1.0” ilustra el caso borde (mismo panel con badge «Solo para demo»).
 
 ## Pendientes UI
 

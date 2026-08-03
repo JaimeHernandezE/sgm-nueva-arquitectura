@@ -80,7 +80,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | `requesting_department_id` restringe a unidades hijas del departamento | — | — |
   | `awaiting_my_action=true` limita a expedientes que esperan acción del actor (firmar / aprobar según rol). Las pendientes detalladas por usuario se listan en la bandeja del sistema de notificaciones (plataforma C6, [`notificaciones/overview.md`](../../plataforma/notificaciones/overview.md); musts §9), no como columna del listado | — | — |
   | `requested_amount` = total bruto SOLPED / preobligación; `awarded_amount` = OC activa o contrato cuando existe | — | — |
-  | Si el rol es `adq.solicitante` o `adq.aprobador_unidad`, el scope de unidad del `RoleAssignment` se aplica **siempre**; `requesting_department_id` / `requesting_unit_id` ajenos se ignoran o rechazan | blocking | `FORBIDDEN` *(o se fuerza el scope sin error — decisión de implementación)* |
+  | Si el rol es `adq.solicitante` o `adq.aprobador_unidad`, el scope de unidad del `RoleAssignment` se aplica **siempre**; `requesting_department_id` / `requesting_unit_id` ajenos se ignoran o rechazan. `adq.solicitante_daf` tiene scope tenant (como roles DAF) | blocking | `FORBIDDEN` *(o se fuerza el scope sin error — decisión de implementación)* |
 
 #### `GET /procurement-cases/{case_id}` — `getProcurementCase`
 - **Sub-pasos:** 0.1 *(navegación desde listado)* · vista de expediente
@@ -130,6 +130,8 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Regla | Severidad | Campo | QA | Error |
   |---|---|---|---|---|
   | `requesting_unit` presente | blocking | `requesting_unit` | 53 | `MISSING_REQUIRED_FIELD` |
+  | Si el actor es `adq.solicitante`, `requesting_unit` = unidad del `RoleAssignment` (no puede usar otra) | blocking | `requesting_unit` | — | `REQUESTING_UNIT_OUT_OF_SCOPE` |
+  | Si el actor es `adq.solicitante_daf`, `requesting_unit` ∈ unidades del tenant | blocking | `requesting_unit` | — | `REQUESTING_UNIT_OUT_OF_SCOPE` |
   | `description` presente | blocking | `description` | 53 | `MISSING_REQUIRED_FIELD` |
   | `justification` presente | blocking | `justification` | 53 | `MISSING_REQUIRED_FIELD` |
   | `requested_date` presente | blocking | `requested_date` | 53 | `MISSING_REQUIRED_FIELD` |
@@ -142,6 +144,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Si se agrega adjunto, tipo / descripción / archivo presentes | blocking | `attachments[].*` | — | `MISSING_REQUIRED_FIELD` |
 - **Dependencias invocadas:** `getPriceReference`, `previewBudgetAvailability` *(informativa, bajo demanda desde enlace UI)*. Verificación de stock/catálogo CM: sub-paso **1.0** (optativo).
 - **Notas:**
+  - Scope de creación: `adq.solicitante` solo puede crear con `requesting_unit` = su unidad; `adq.solicitante_daf` (asignado en DAF) puede crear para cualquier unidad del tenant. Ver [`catalogo-roles.md`](../../arquitectura/especificacion/catalogo-roles.md) §3.1.
   - Precio siempre neto (convención de plataforma); no se captura «neto/bruto» como elección del usuario.
   - Totales derivados: neto, impuestos, bruto. Autoconsulta y precompromiso orientativo usan **bruto** en CLP (municipio = consumidor final).
   - Si `currency` ≠ CLP, la tasa en 1.1 es referencial; el hito que congela la tasa para compromiso está pendiente (ficha 1-solped).
@@ -164,6 +167,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Regla | Severidad | Campo | QA | Error |
   |---|---|---|---|---|
   | `requesting_unit` presente | blocking | `requesting_unit` | 53 | `MISSING_REQUIRED_FIELD` |
+  | Scope de `requesting_unit` según rol (`adq.solicitante` = solo propia; `adq.solicitante_daf` = tenant) — [`catalogo-roles.md`](../../arquitectura/especificacion/catalogo-roles.md) §3.1 | blocking | `requesting_unit` | — | `REQUESTING_UNIT_OUT_OF_SCOPE` |
   | `description` presente | blocking | `description` | 53 | `MISSING_REQUIRED_FIELD` |
   | `justification` presente | blocking | `justification` | 53 | `MISSING_REQUIRED_FIELD` |
   | `requested_date` presente | blocking | `requested_date` | 53 | `MISSING_REQUIRED_FIELD` |

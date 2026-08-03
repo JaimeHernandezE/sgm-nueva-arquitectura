@@ -15,7 +15,7 @@
 | Materia | Valor |
 |---|---|
 | Unidad municipal | Según rol: Unidad Solicitante (scope restringido) o DAF / unidades con lectura amplia (tenant) |
-| Rol | Lectura con alcance: Solicitante ([`adq.solicitante`](../../../arquitectura/especificacion/catalogo-roles.md)) y Aprobador de unidad ([`adq.aprobador_unidad`](../../../arquitectura/especificacion/catalogo-roles.md)) → solo expedientes de su unidad; resto de roles Adquisiciones (p. ej. [`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md), [`adq.lector`](../../../arquitectura/especificacion/catalogo-roles.md), formulador/firmante DAF, etc.) → tenant completo |
+| Rol | Lectura con alcance: Solicitante ([`adq.solicitante`](../../../arquitectura/especificacion/catalogo-roles.md)) y Aprobador de unidad ([`adq.aprobador_unidad`](../../../arquitectura/especificacion/catalogo-roles.md)) → solo expedientes de su unidad; Solicitante DAF ([`adq.solicitante_daf`](../../../arquitectura/especificacion/catalogo-roles.md)) y resto de roles Adquisiciones (p. ej. [`adq.gestor_compra`](../../../arquitectura/especificacion/catalogo-roles.md), [`adq.lector`](../../../arquitectura/especificacion/catalogo-roles.md), formulador/firmante DAF, etc.) → tenant completo |
 | Plataforma | SGM |
 | Optativo | Falso *(pantalla de entrada del módulo; siempre disponible para quien tenga `listProcurementCases`)* |
 
@@ -120,7 +120,7 @@ Las operaciones de escritura del alta están en la ficha **1.1**:
 
 **Edge cases:**
 - Tenant sin Inventario ni CM → 0.2 salta a 1.1 (omisión de 1.0).
-- Usuario sin rol de creación (`adq.solicitante`) → CTA oculto o `403` al intentar operaciones de 1.1.
+- Usuario sin rol de creación (`adq.solicitante` / `adq.solicitante_daf`) → CTA oculto o `403` al intentar operaciones de 1.1.
 - Fallo al evaluar capacidades de integración → ⚠ pendiente: ¿omitir 1.0 por seguridad o mostrar 1.0 degradado?
 
 > ⚠ **Pendiente de definir:** mecanismo canónico de feature-flags / capacidades de tenant para Inventario y sync ChileCompra (consola municipal vs parámetros de plataforma).

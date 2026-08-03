@@ -52,7 +52,7 @@ adq
 
 | `process_area` | Etapa | Roles tipicos |
 |---|---|---|
-| `adq.solped` | 1.x | `adq.solicitante`, `adq.aprobador_unidad`, `adq.formulador_presupuesto`, `adq.firmante_cdp` |
+| `adq.solped` | 1.x | `adq.solicitante` *(básico — solo su unidad)*, `adq.solicitante_daf` *(DAF — cualquier unidad)*, `adq.aprobador_unidad`, `adq.formulador_presupuesto`, `adq.firmante_cdp` |
 | `adq.modalidad` | 2.x | `adq.gestor_compra`, `adq.aprobador_modalidad` |
 | `adq.resolucion` | 3.x | `adq.gestor_compra` |
 | `adq.recepcion` | 4.x | `adq.recepcionista`, `adq.confirmante_recepcion` |
@@ -90,6 +90,7 @@ plat.subdere
 | Nombre (usuarios) | Código (sistema) | `process_area` | Nodo orgánico típico | Origen en fichas |
 |---|---|---|---|---|
 | Solicitante | `adq.solicitante` | `adq.solped` | Unidad / depto solicitante (Obras, Tránsito, …) | [`1-solped.md`](../../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.1, §1.4 |
+| Solicitante DAF | `adq.solicitante_daf` | `adq.solped` | Finanzas › Abastecimiento (DAF) | [`1-solped.md`](../../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.1 — crea SOLPED **por cuenta de cualquier unidad** del tenant |
 | Aprobador de unidad | `adq.aprobador_unidad` | `adq.solped` | Misma unidad solicitante (jefatura) | [`1-solped.md`](../../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.2 |
 | Formulador DAF / verificación | `adq.formulador_presupuesto` | `adq.solped` | Finanzas › Presupuestos | [`1-solped.md`](../../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.3 |
 | Firmante CDP | `adq.firmante_cdp` | `adq.solped` | Finanzas › Presupuestos | [`1-solped.md`](../../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.5, §1.6 |
@@ -99,6 +100,17 @@ plat.subdere
 | Confirmante de recepción | `adq.confirmante_recepcion` | `adq.recepcion` | Unidad receptora / control | [`4-recepcion-conforme.md`](../../modulos/adquisiciones/procesos-transversales/4-recepcion-conforme.md) §4.2 |
 | Operador de pago | `adq.operador_pago` | `adq.pago` | Finanzas › Tesorería | [`5-pago.md`](../../modulos/adquisiciones/procesos-transversales/5-pago.md) §5.1–§5.4 |
 | Lector de expediente | `adq.lector` | `adq` | Cualquier unidad con necesidad de consulta | Lectura transversal |
+
+### 3.1 Alcance de `requesting_unit` al crear SOLPED
+
+Ambos roles pueden `createPurchaseRequest` / `submitPurchaseRequest`. Se diferencian por el **scope de unidad solicitante**:
+
+| Rol | Scope de `requesting_unit` | Comportamiento UI / API |
+|---|---|---|
+| `adq.solicitante` (**básico**) | Solo la unidad del `RoleAssignment` del actor | Se autoasigna esa unidad. El selector **no ofrece** unidades ajenas. Si el payload trae otra → `FORBIDDEN` / `REQUESTING_UNIT_OUT_OF_SCOPE`. |
+| `adq.solicitante_daf` (**DAF**) | Cualquier `OrganizationalUnit` del tenant | Se autoasigna la unidad del `RoleAssignment` DAF (default); el selector permite **cambiar a cualquier unidad**. Asignar este rol solo a usuarios de DAF (Abastecimiento / Finanzas). |
+
+> Un solicitante básico **no puede** usar una unidad que no sea la propia. La capacidad de tramitar SOLPED para distintas unidades exige el rol `adq.solicitante_daf` en DAF — no se obtiene ampliando el selector del rol básico.
 
 ---
 
@@ -111,7 +123,8 @@ La columna usa **código (sistema)**; el nombre de usuario está en §3.
 | Código (sistema) | Operaciones |
 |---|---|
 | `adq.lector` | `listProcurementCases`, `getProcurementCase`, `listProcurementCaseSteps`, `listPurchaseRequests`, `getPurchaseRequest`, `listPurchaseOrders`, `getPurchaseOrder` |
-| `adq.solicitante` | (+ lector) `createPurchaseRequest`, `submitPurchaseRequest`, `previewBudgetAvailability`, `requestBudgetFinancing` |
+| `adq.solicitante` | (+ lector) `createPurchaseRequest`, `submitPurchaseRequest`, `previewBudgetAvailability`, `requestBudgetFinancing` — scope `requesting_unit` = unidad del `RoleAssignment` (§3.1) |
+| `adq.solicitante_daf` | Mismas operaciones que `adq.solicitante`; scope `requesting_unit` = **tenant** (§3.1). Lectura de expediente: tenant completo (como roles DAF). |
 | `adq.aprobador_unidad` | (+ lector) `approvePurchaseRequest`, `rejectPurchaseRequest`, `previewBudgetAvailability` |
 | `adq.formulador_presupuesto` | (+ lector) `verifyBudgetAvailability` |
 | `adq.firmante_cdp` | (+ lector) `issueBudgetAvailabilityCertificate`, `registerScannedBudgetAvailabilityCertificate`, `createBudgetPreCommitment` |
@@ -156,15 +169,15 @@ No es fuente de autorización. Sirve al prototipo y a QA de pantallas.
 
 | Pantalla / área | Rol (nombre + código) |
 |---|---|
-| `01-listado-expedientes` (0.1) | Lectura: `adq.solicitante` / `adq.aprobador_unidad` → solo expedientes de su unidad; resto de roles Adquisiciones (DAF / `adq.lector`, etc.) → tenant completo. Ficha: [`0-consulta-expedientes.md`](../../modulos/adquisiciones/procesos-transversales/0-consulta-expedientes.md). Operación: `listProcurementCases` |
-| `01` CTA Nuevo expediente (0.2) | Solicitante (`adq.solicitante`) — enruta a 1.0 o 1.1 |
-| `10-verificacion-previa` (1.0, optativo) | Solicitante (`adq.solicitante`) |
-| `11-creacion-solped` | Solicitante (`adq.solicitante`) |
+| `01-listado-expedientes` (0.1) | Lectura: `adq.solicitante` / `adq.aprobador_unidad` → solo expedientes de su unidad; `adq.solicitante_daf` y resto de roles Adquisiciones (DAF / `adq.lector`, etc.) → tenant completo. Ficha: [`0-consulta-expedientes.md`](../../modulos/adquisiciones/procesos-transversales/0-consulta-expedientes.md). Operación: `listProcurementCases` |
+| `01` CTA Nuevo expediente (0.2) | Solicitante (`adq.solicitante`) o Solicitante DAF (`adq.solicitante_daf`) — enruta a 1.0 o 1.1 |
+| `10-verificacion-previa` (1.0, optativo) | Solicitante (`adq.solicitante`) / Solicitante DAF (`adq.solicitante_daf`) |
+| `11-creacion-solped` | Solicitante (`adq.solicitante`) — unidad fija a la propia; Solicitante DAF (`adq.solicitante_daf`) — selector de cualquier unidad (§3.1) |
 | `12-visto-bueno-jefatura` | Aprobador de unidad (`adq.aprobador_unidad`) |
 | `13` verificación DAF | Formulador DAF / verificación (`adq.formulador_presupuesto`) |
 | `14-emision-cdp` | Firmante CDP (`adq.firmante_cdp`) |
 | `15-preobligacion` | Firmante CDP (`adq.firmante_cdp`) |
-| `16-solicitar-financiamiento` | Solicitante (`adq.solicitante`) |
+| `16-solicitar-financiamiento` | Solicitante (`adq.solicitante`) / Solicitante DAF (`adq.solicitante_daf`) |
 | Modalidad 2.1 / vinculación MP (`21`, `23`) | Gestor de compra (`adq.gestor_compra`) |
 | `22-aprobacion-jefatura` (modalidad) | Aprobador de modalidad (`adq.aprobador_modalidad`) |
 | Resolución CA `32`–`33`, `35`–`36` | Gestor de compra (`adq.gestor_compra`) |
@@ -183,7 +196,7 @@ Incompatibilidades **bloqueantes** ya exigidas en fichas/QA. Régimen de excepci
 
 | # | Código A | Código B (mismo usuario, contexto aplicable) | Base |
 |---|---|---|---|
-| S1 | `adq.solicitante` | `adq.aprobador_unidad` | Quien solicita no aprueba (misma SOLPED / misma unidad) |
+| S1 | `adq.solicitante` o `adq.solicitante_daf` | `adq.aprobador_unidad` | Quien solicita no aprueba (misma SOLPED / misma unidad) |
 | S2 | `adq.formulador_presupuesto` | `adq.firmante_cdp` | QA 9 P1 — verificador ≠ firmante CDP |
 | S3 | `adq.aprobador_unidad` o `adq.aprobador_modalidad` | `adq.confirmante_recepcion` | Quien aprueba la compra ≠ quien confirma recepción |
 | S4 | `plat.proponente_normativo` | `plat.aprobador_normativo` | Doble control parámetros normativos |
@@ -197,10 +210,11 @@ Los intentos que violen SoD se rechazan y se auditan (`SEGREGATION_OF_DUTIES_VIO
 
 1. ¿Un solo `adq.gestor_compra` cubre CA/CM/LP/TD, o hace falta partir por modalidad?
 2. ¿`createBudgetPreCommitment` (1.6) queda en `adq.firmante_cdp` o rol aparte (`adq.preobligacion`)?
-3. ¿`previewBudgetAvailability` limita líneas a la unidad del solicitante?
+3. ¿`previewBudgetAvailability` limita líneas a la unidad del solicitante? (para `adq.solicitante_daf` el alcance debería ser tenant)
 4. ¿Asignación masiva desde un nodo del árbol (mismo rol a N usuarios) en v1 de la consola?
 5. ¿Partir `plat.admin_municipal` en roles más finos (accesos vs. integraciones vs. parámetros)?
 6. ¿Roles de solo lectura distintos por departamento, o basta `adq.lector` + scope de unidad en runtime (**X-51**)?
+7. ~~¿Quién crea SOLPED por otras unidades?~~ → resuelto: `adq.solicitante` (solo propia) vs `adq.solicitante_daf` (cualquier unidad, asignado en DAF) — §3.1.
 
 ---
 
