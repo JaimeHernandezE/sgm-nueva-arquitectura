@@ -1,6 +1,6 @@
 # Glosario del Modelo de Datos
 
-Mapeo entre el término técnico usado en las entidades (`modelo-datos/entidades-core.md`) y el término funcional/legal usado en Chile.
+Mapeo entre el término técnico usado en las entidades (`modelo-datos/entidades-adquisiciones.md` y demás `entidades-<módulo>.md`; índice en `entidades-core.md`) y el término funcional/legal usado en Chile.
 
 | Término técnico | Término funcional (ES) | Notas |
 |---|---|---|

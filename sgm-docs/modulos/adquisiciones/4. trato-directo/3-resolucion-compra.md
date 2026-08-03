@@ -108,7 +108,7 @@
 
 **Entidad(es) y campos:**
 - `PurchaseOrder` — creada/actualizada **solo por sync**: `procurement_case_id` (ref., **obligatorio**), `mp_oc_id`, `supplier_rut`, `total_amount`, `status` (= `accepted`), `acceptance_date` / `accepted_at`
-- `BudgetCommitment` *(canónica en `entidades-core.md`)* — vía `commitBudget`: `purchase_order_id`, `budget_pre_commitment_id`, `committed_amount`, `commitment_date`, `source` (= `api_event`)
+- `BudgetCommitment` *(canónica en `entidades-adquisiciones.md`)* — vía `commitBudget`: `purchase_order_id`, `budget_pre_commitment_id`, `committed_amount`, `commitment_date`, `source` (= `api_event`)
 - `CaseStep` — cierre de etapa 3
 
 **Borde de módulo:**

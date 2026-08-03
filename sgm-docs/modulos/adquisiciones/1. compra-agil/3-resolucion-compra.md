@@ -95,7 +95,7 @@
 **Entidad(es) y campos:**
 - `PurchaseOrder` — creada **solo por sync**: `procurement_case_id` (ref., **obligatorio**), `mp_oc_id` (texto, **obligatorio**), `supplier_rut` (texto, **obligatorio**), `total_amount` (número, **obligatorio**), `status` (enum, **obligatorio**: `issued`, …)
 
-*(Nota de reconciliación: la ficha original usaba el estado `sent` y el evento `PurchaseOrderSent`; se normalizan aquí a `issued`/`PurchaseOrderIssued`, consistentes con el enum canónico de `entidades-core.md` y con el evento ya existente en `contracts.md`.)*
+*(Nota de reconciliación: la ficha original usaba el estado `sent` y el evento `PurchaseOrderSent`; se normalizan aquí a `issued`/`PurchaseOrderIssued`, consistentes con el enum canónico de `entidades-adquisiciones.md` y con el evento ya existente en `contracts.md`.)*
 
 **Borde de módulo:**
 

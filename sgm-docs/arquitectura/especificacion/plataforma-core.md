@@ -70,7 +70,7 @@ Nota sobre C9/C10/C11: los módulos funcionales **declaran** dependencias en su 
 
 ## 4. Entidades del core
 
-Entidades transversales que hoy las fichas usan de forma implícita (columnas Unidad municipal / Rol) sin definición canónica. Definición canónica en [`modelo-datos/entidades-plataforma.md`](../../modelo-datos/entidades-plataforma.md), hermano de `entidades-core.md`, con la misma regla de obligatoriedad explícita de campos:
+Entidades transversales que hoy las fichas usan de forma implícita (columnas Unidad municipal / Rol) sin definición canónica. Definición canónica en [`modelo-datos/entidades-plataforma.md`](../../modelo-datos/entidades-plataforma.md) (índice de dominio: `entidades-core.md`), con la misma regla de obligatoriedad explícita de campos:
 
 | Entidad | Rol | Visibilidad propuesta |
 |---|---|---|
@@ -83,7 +83,7 @@ Entidades transversales que hoy las fichas usan de forma implícita (columnas Un
 | `Delegation` | Subrogancia/suplencia: asignación temporal con fecha de término obligatoria y reversión automática | Expuesta |
 | `SodRule` / `SodException` | Incompatibilidad entre roles y excepción configurada por tenant (explícita, registrada, auditada) | Interna; excepciones consultables |
 | `ApiClient` | Credencial M2M: sistema municipal o tercero del ecosistema, con scopes por módulo y municipio, rotación y revocación | Expuesta (administración) |
-| `NormativeParameter` | Reclasificada desde `entidades-core.md`; administración SUBDERE, lectura por todos los módulos — ver `entidades-plataforma.md` | Expuesta (lectura) |
+| `NormativeParameter` | Canónica en `entidades-plataforma.md`; administración SUBDERE, lectura por todos los módulos | Expuesta (lectura) |
 | `TenantParameter` | Parámetro operativo por tenant (perfil de recepción **X-42**, visto bueno pre-OC **X-39**), distinto de `NormativeParameter` | Expuesta (administración municipal) |
 | `AuditRecord` | Registro de auditoría según `seguridad.md` §5.2 | Expuesta (scope restringido) |
 | `EventSubscription` | Suscripción de un consumidor (servicio de notificaciones, webhook de tercero) a eventos de dominio | Expuesta (administración) |

@@ -7,7 +7,7 @@ business_state: >
   ruta Gran Compra determinada en 3.1 (monto ≥ 1.000 UTM); Intención de
   Compra publicada y vinculada en 3.3 (ID 4021-88-IC26); actualmente en 3.5
   (Selección de oferta Gran Compra), pendiente de lectura MP. Etapa 3 con
-  ficha de flujo, 8 wireframes, entidades reconciliadas en entidades-core.md,
+  ficha de flujo, 8 wireframes, entidades reconciliadas en entidades-adquisiciones.md,
   operaciones formalizadas en contracts.md §2.7 y prototipo HTML interactivo
   (8/8 sub-pasos, con escenarios y validaciones bloqueantes de la ficha).
   Pendiente separado: openapi/2-convenio-marco/ sigue siendo solo un README

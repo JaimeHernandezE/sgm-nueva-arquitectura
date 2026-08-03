@@ -4,7 +4,7 @@
 > Estado: borrador funcional derivado de fichas de flujo y ficha QA.
 > Estándares transversales: [`arquitectura/especificacion/estandares-api.md`](../../arquitectura/especificacion/estandares-api.md)
 > Metodología: [`arquitectura/especificacion/contrato-api-first.md`](../../arquitectura/especificacion/contrato-api-first.md)
-> Entidades canónicas: [`modelo-datos/entidades-core.md`](../../modelo-datos/entidades-core.md)
+> Entidades canónicas: [`modelo-datos/entidades-adquisiciones.md`](../../modelo-datos/entidades-adquisiciones.md) (índice: [`entidades-core.md`](../../modelo-datos/entidades-core.md))
 > OpenAPI: [`openapi/adquisiciones.openapi.yaml`](./openapi/adquisiciones.openapi.yaml) — estructura: [`openapi/README.md`](./openapi/README.md)
 > Fixtures sandbox: [`fixtures/catalogo.md`](./fixtures/catalogo.md)
 
@@ -16,7 +16,7 @@
 
 ## 1. Entidades que expone
 
-Entidades visibles fuera del borde del módulo Adquisiciones. Definición completa en `entidades-core.md`; aquí el subconjunto expuesto en API.
+Entidades visibles fuera del borde del módulo Adquisiciones. Definición completa en `entidades-adquisiciones.md`; aquí el subconjunto expuesto en API.
 
 | Entidad | Visibilidad | Campos expuestos | Sub-pasos origen |
 |---|---|---|---|
@@ -30,7 +30,7 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | `PurchaseRequestApproval` | Expuesta | `id`, `purchase_request_id`, `approver_id`, `decision`, `decision_date`, `comments` | 1.2 |
 | `BudgetAvailabilityCertificate` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status`, `signature_mode` | 1.5 |
 | `BudgetPreCommitment` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `budget_availability_certificate_id`, `budget_line_id`, `estimated_amount`, `fiscal_year`, `status` | 1.6 |
-| `AgileQuoteProcess` | Expuesta | `id`, `purchase_request_id`, `deep_link_clicked_at`, `mp_quote_id` | 2.1 *(CA)* — duplica `ProcurementCase.mp_process_id`, ver `entidades-core.md` <!-- REVISAR: consolidar AgileQuoteProcess --> |
+| `AgileQuoteProcess` | Expuesta | `id`, `purchase_request_id`, `deep_link_clicked_at`, `mp_quote_id` | 2.1 *(CA)* — duplica `ProcurementCase.mp_process_id`, ver `entidades-adquisiciones.md` (candidato a deprecar) |
 | `ModalityDecision` | Expuesta | `id`, `procurement_case_id`, `selected_modality`, `ratified`, `requires_jefatura_approval`, `decided_by`, `decided_at` | 2.1 |
 | `ModalityDecisionApproval` | Expuesta | `id`, `modality_decision_id`, `approver_id`, `decision`, `decision_date` | 2.2 — existencia condicionada a **[PENDIENTE X-38]** |
 | `QuotationResult` | Expuesta | `id`, `procurement_case_id`, `selected_provider_rut`, `selected_provider_name`, `offered_amount`, `lowest_price_selected`, `recorded_at` | 3.2 *(CA)* / 3.5 *(CM, ruta `gran_compra`)* |
@@ -45,7 +45,7 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | `TenderBases` | Expuesta | `id`, `procurement_case_id`, `status`, `technical_bases_ref`, `administrative_bases_ref`, `requires_bid_bond`, `requires_performance_bond`, `version` | 3.1 *(LP)* |
 | `EvaluationCriterion` | Expuesta | `id`, `tender_bases_id`, `name`, `weight_percent`, `scoring_rule` | 3.1 *(LP)* |
 | `LegalReview` | Expuesta | `id`, `subject_type`, `subject_id`, `reviewer_id`, `outcome`, `observations`, `reviewed_at` | 3.2, 3.10 *(LP)* — polimórfica, transversal |
-| `AdministrativeAct` | Expuesta | `id`, `procurement_case_id`, `act_type`, `subject_id`, `act_number`, `external_folio`, `status`, `signed_by`, `signed_at` | 3.3, 3.9, 3.10 *(LP)* / 3.1 *(TD, `founded_resolution`)* — polimórfica, transversal; tramitación DocDigital <!-- REVISAR: candidata a absorber `PaymentDecree`, ver entidades-core.md --> |
+| `AdministrativeAct` | Expuesta | `id`, `procurement_case_id`, `act_type`, `subject_id`, `act_number`, `external_folio`, `status`, `signed_by`, `signed_at` | 3.3, 3.9, 3.10 *(LP)* / 3.1 *(TD, `founded_resolution`)* — polimórfica, transversal; tramitación DocDigital <!-- REVISAR: candidata a absorber `PaymentDecree`, ver entidades-adquisiciones.md --> |
 | `ComptrollerReview` | Expuesta | `id`, `administrative_act_id`, `submitted_at`, `outcome`, `outcome_at` | 3.4, 3.11 *(LP)* / 3.1 *(TD)* — transversal |
 | `Guarantee` | Expuesta | `id`, `procurement_case_id`, `guarantee_type`, `provider_rut`, `instrument_type`, `amount`, `expiry_date`, `status` | 3.7, 3.12 *(LP)* — transversal |
 | `EvaluationCommittee` | Expuesta | `id`, `procurement_case_id`, `designation_act_id`, `status` | 3.9 *(LP)* |

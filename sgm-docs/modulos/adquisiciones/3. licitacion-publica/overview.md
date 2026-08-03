@@ -21,4 +21,4 @@
 
 **Fuente base:** *Guía de integración SGM – ChileCompra* (cargada julio 2026); ficha QA de Adquisiciones (`../qa/ficha-qa-adquisiciones.csv`).
 
-Ver [`modelo-datos/entidades-core.md`](../../../modelo-datos/entidades-core.md) para las entidades ya definidas en Compra Ágil que probablemente se reutilizan aquí (`PurchaseRequest`, `PurchaseOrder`, `BudgetCommitment`, etc.) — extender esa fuente única en vez de redefinir.
+Ver [`modelo-datos/entidades-adquisiciones.md`](../../../modelo-datos/entidades-adquisiciones.md) para las entidades ya definidas en Compra Ágil que probablemente se reutilizan aquí (`PurchaseRequest`, `PurchaseOrder`, `BudgetCommitment`, etc.) — extender esa fuente única en vez de redefinir.

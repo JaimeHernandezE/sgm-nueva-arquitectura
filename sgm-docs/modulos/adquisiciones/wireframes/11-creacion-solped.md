@@ -11,7 +11,7 @@
 | SOLPED — Nueva solicitud                          [Borrador]|
 +----------------------------------------------------------+
 | Datos de la solicitud                                     |
-| Unidad solicitante *  [ Unidad X          v ]             |
+| Unidad solicitante *  [ Unidad X          v ]  (auto según rol) |
 | Descripción *         [________________________]          |
 | Justificación *       [________________________]          |
 | Fecha solicitada *    [ __ / __ / ____ ]                  |
@@ -63,7 +63,7 @@
 
 | Campo UI | Entidad.campo | Obligatorio |
 |---|---|---|
-| Unidad solicitante | `PurchaseRequest.requesting_unit` | Sí |
+| Unidad solicitante | `PurchaseRequest.requesting_unit` | Sí (autoasignada según `RoleAssignment`; modificable) |
 | Descripción | `PurchaseRequest.description` | Sí |
 | Justificación | `PurchaseRequest.justification` | Sí |
 | Fecha solicitada | `PurchaseRequest.requested_date` | Sí |

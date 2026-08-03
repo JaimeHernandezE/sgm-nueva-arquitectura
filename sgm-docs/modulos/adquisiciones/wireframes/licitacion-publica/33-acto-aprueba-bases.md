@@ -58,5 +58,5 @@
 ## Notas
 
 - Sin este acto no hay publicación en Mercado Público (3.5).
-- `AdministrativeAct` es polimórfica y transversal — generaliza el patrón de `PaymentDecree`; candidata a absorberlo a futuro, marcado `<!-- REVISAR -->` en `entidades-core.md`, no fusionado en esta pasada.
+- `AdministrativeAct` es polimórfica y transversal — generaliza el patrón de `PaymentDecree`; candidata a absorberlo a futuro, marcado `<!-- REVISAR -->` en `entidades-adquisiciones.md`, no fusionado en esta pasada.
 - El selector "Simular respuesta FirmaGob" es un artefacto de prototipo — en producción la confirmación llega vía el servicio real, no por acción de usuario en esta pantalla.

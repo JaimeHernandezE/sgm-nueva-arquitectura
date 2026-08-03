@@ -55,4 +55,4 @@ Ninguna regla bloqueante propia — el paso es informativo; el `CaseStep` avanza
 ## Notas
 
 - Interacción MP: **Informativo** — candidato a **Gestión** optativa (**[PENDIENTE X-39]**: VB interno pre-OC configurable por municipio, igual que CA 3.2).
-- `QuotationResult` es la misma entidad que usa Compra Ágil en su 3.2 (patrón compartido, sin transcripción manual — ver `entidades-core.md`).
+- `QuotationResult` es la misma entidad que usa Compra Ágil en su 3.2 (patrón compartido, sin transcripción manual — ver `entidades-adquisiciones.md`).

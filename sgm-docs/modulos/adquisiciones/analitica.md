@@ -32,7 +32,7 @@ Consumidores previstos del mismo contrato: el dashboard del frontend base, los t
 
 ## 3. Catálogo de dimensiones (v0 propuesta)
 
-Derivadas de las entidades existentes en `entidades-core.md`. Toda dimensión referencia su campo canónico:
+Derivadas de las entidades existentes en `entidades-adquisiciones.md`. Toda dimensión referencia su campo canónico:
 
 | Dimensión | Fuente canónica | Valores | Estado |
 |---|---|---|---|
@@ -157,4 +157,4 @@ Nuevos pendientes formales para el registro: **X-54** (9.1), **X-55** (9.2), **X
 - [`decisiones-macro-stack.md`](../../arquitectura/decisiones/decisiones-macro-stack.md) — §7.1 categoría reportería del ecosistema
 - [`seguridad.md`](../../arquitectura/especificacion/seguridad.md) — scopes, RBAC, datos personales
 - [`plataforma-core.md`](../../arquitectura/especificacion/plataforma-core.md) — parámetros normativos con vigencia temporal
-- `modelo-datos/entidades-core.md` — fuente canónica de dimensiones y medidas
+- `modelo-datos/entidades-adquisiciones.md` — fuente canónica de dimensiones y medidas

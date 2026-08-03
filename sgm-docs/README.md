@@ -12,7 +12,7 @@ Este repo documenta, en Markdown versionado, los macroprocesos y modelo de datos
 
 - **`arquitectura/`** — índice en [`arquitectura/README.md`](arquitectura/README.md). Organizada en `decisiones/`, `licitacion/`, `especificacion/` e `instrucciones/`. Principios no negociables: [`licitacion/principios-no-negociables.md`](arquitectura/licitacion/principios-no-negociables.md). Entregable de licitación (API + sandbox): [`licitacion/entregable-licitacion.md`](arquitectura/licitacion/entregable-licitacion.md). Pendientes centralizados: [`decisiones/pendientes.md`](arquitectura/decisiones/pendientes.md). ADR eliminación Odoo: [`decisiones/2026-07-eliminacion-odoo.md`](arquitectura/decisiones/2026-07-eliminacion-odoo.md).
 <!-- REVISAR: la sección Convenciones más abajo dice que los pendientes viven incrustados en cada subproceso, sin backlog centralizado — eso aplica a fichas de proceso, pero ya no a documentos de arquitectura. -->
-- **`modelo-datos/`** — fuente única de entidades de dominio (`entidades-core.md`), entidades de plataforma (`entidades-plataforma.md`) y el glosario de términos de dominio. Los macroprocesos referencian estas entidades, no las redefinen.
+- **`modelo-datos/`** — índice del modelo (`entidades-core.md`), definición por módulo (`entidades-adquisiciones.md`, …), entidades de plataforma (`entidades-plataforma.md`) y el glosario de términos de dominio. Los macroprocesos referencian estas entidades, no las redefinen.
 - **`plataforma/`** — core de plataforma: [`overview.md`](plataforma/overview.md), [`contracts.md`](plataforma/contracts.md) y wireframes de consolas admin (SUBDERE y municipal) en [`plataforma/wireframes/`](plataforma/wireframes/README.md).
 - **`modulos/`** — un subdirectorio por módulo funcional (Adquisiciones, Tesorería, Contabilidad, Presupuestos, RRHH). En Adquisiciones, los procesos transversales (SOLPED, Recepción Conforme, Pago) viven en `procesos-transversales/`; cada modalidad de compra tiene su propio subdirectorio con las etapas 2 y 3 específicas (ej. `adquisiciones/1. compra-agil/`).
 - **[`sgm-prototipos/`](../sgm-prototipos/)** — prototipos HTML interactivos para validación UX (complementan los wireframes `.md`/`.svg` de este repo; ver [`sgm-prototipos/MANIFEST.md`](../sgm-prototipos/MANIFEST.md)).
@@ -34,6 +34,6 @@ Cada macroproceso también trae su ficha QA (`qa/`) y sus diagramas BPMN (`diagr
 
 ## Convenciones
 
-- Nombres de entidad en inglés, estilo técnico (`PurchaseRequest`, no `SolicitudCompra`) — ver `modelo-datos/entidades-core.md`.
+- Nombres de entidad en inglés, estilo técnico (`PurchaseRequest`, no `SolicitudCompra`); cada campo lleva Label (ES) — ver `modelo-datos/entidades-core.md` e `entidades-<módulo>.md`.
 - Cada sub-paso de proceso documenta: Unidad, Rol, Plataforma, Optativo, entidades/campos involucrados, edge cases, y puntos marcados explícitamente como **pendientes de definir** cuando la fuente no resuelve una regla de negocio.
 - Los pendientes se mantienen incrustados en el archivo del subproceso donde aparecen (no hay un backlog centralizado) — al resolverse, se actualiza directamente el archivo correspondiente.

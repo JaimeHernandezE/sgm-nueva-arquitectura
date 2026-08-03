@@ -85,7 +85,7 @@ Agregado de las secciones 3.5 de los 17 sub-pasos. Insumo directo de [`contracts
 | 4.1 | Operación | `registerReceipt` | — | — |
 | 4.2 | Evento | `GoodsReceiptConfirmed` | — | Asíncrona |
 | 4.3 | Dependencia | `registerInventoryEntry` | Proveedor de inventario | Asíncrona — **[PENDIENTE X-44]** alcance por decidir |
-| 4.4 | Dependencia / Evento | `recordAccrual`, `AccrualRecorded` | Proveedor contable | Asíncrona — **[PENDIENTE X-46]** momento del devengado, ver `entidades-core.md` |
+| 4.4 | Dependencia / Evento | `recordAccrual`, `AccrualRecorded` | Proveedor contable | Asíncrona — **[PENDIENTE X-46]** momento del devengado, ver `entidades-adquisiciones.md` |
 | 4.5 | Evento / Deep link | `ReceiptRejected`, reclamo en ChileCompra | MP (navegación) | Asíncrona / — |
 | 5.1 | Dependencia | `getInvoiceForMatch` | SII / Contabilidad | Síncrona bloqueante |
 | 5.1 | Sistema externo | `readMpProcess` | Core (Mercado Público) | Cacheada |
@@ -105,4 +105,4 @@ Estos puntos aparecen repetidos en más de una etapa y son candidatos a resolver
 - **Manejo de fallas de sincronización/disponibilidad de API externa** — aparece en 2.3 (vínculo MP no disponible), 3.1-3.6 (lecturas MP deseadas) y 1.1 (API de precios) — consolidado en **[PENDIENTE X-32]**.
 - **Timers de escalamiento configurables** — aparece en 2.3, 3.2, 4.1, 4.2 — consolidado en **[PENDIENTE X-33]**.
 
-Ver también [`contracts.md`](../contracts.md) para el contrato API del módulo, [`wireframes/`](./wireframes/README.md) para pantallas SGM prioritarias, y `modelo-datos/entidades-core.md` para la definición canónica de todas las entidades usadas en este macroproceso.
+Ver también [`contracts.md`](../contracts.md) para el contrato API del módulo, [`wireframes/`](./wireframes/README.md) para pantallas SGM prioritarias, y `modelo-datos/entidades-adquisiciones.md` para la definición canónica de todas las entidades usadas en este macroproceso.

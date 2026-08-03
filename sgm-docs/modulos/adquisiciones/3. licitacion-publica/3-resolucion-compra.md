@@ -375,7 +375,7 @@
 | `EvaluationCommittee` / `CommitteeMember` / `OfferRecord` / `EvaluationScore` / `EvaluationReport` | — | Núcleo de la evaluación; declaración de conflictos bloqueante |
 | `Contract` | 1:1 con `ProcurementCase` | Condicional según umbral/bases |
 
-> Nota de reconciliación: las entidades de esta etapa **ya están incorporadas** a [`modelo-datos/entidades-core.md`](../../../modelo-datos/entidades-core.md) y formalizadas en `contracts.md` §2.4 / OpenAPI `3-licitacion-publica/3-resolucion-compra.yaml`.
+> Nota de reconciliación: las entidades de esta etapa **ya están incorporadas** a [`modelo-datos/entidades-adquisiciones.md`](../../../modelo-datos/entidades-adquisiciones.md) y formalizadas en `contracts.md` §2.4 / OpenAPI `3-licitacion-publica/3-resolucion-compra.yaml`.
 
 ## Resumen de bordes — Etapa 3 (LP)
 

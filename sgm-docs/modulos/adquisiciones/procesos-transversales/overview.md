@@ -19,7 +19,7 @@ Solo la etapa 3 (Resolución de Compra) tiene documentación específica por mod
 - [Licitación Pública](../3.%20licitacion-publica/overview.md)
 - [Trato Directo](../4.%20trato-directo/overview.md)
 
-Ver también `modelo-datos/entidades-core.md` para la definición canónica de las entidades usadas en estos procesos.
+Ver también `modelo-datos/entidades-adquisiciones.md` para la definición canónica de las entidades usadas en estos procesos.
 
 ## OpenAPI
 

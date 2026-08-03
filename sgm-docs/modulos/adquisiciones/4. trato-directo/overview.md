@@ -21,4 +21,4 @@
 
 **Fuente base:** *Guía de integración SGM – ChileCompra* (cargada julio 2026); ficha QA de Adquisiciones (`../qa/ficha-qa-adquisiciones.csv`).
 
-Ver [`modelo-datos/entidades-core.md`](../../../modelo-datos/entidades-core.md) para las entidades canónicas reutilizadas (`ProcurementCase`, `PurchaseOrder`, `BudgetCommitment`, `AdministrativeAct`, `ComptrollerReview`, etc.).
+Ver [`modelo-datos/entidades-adquisiciones.md`](../../../modelo-datos/entidades-adquisiciones.md) para las entidades canónicas reutilizadas (`ProcurementCase`, `PurchaseOrder`, `BudgetCommitment`, `AdministrativeAct`, `ComptrollerReview`, etc.).

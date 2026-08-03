@@ -42,7 +42,7 @@ Documento normativo del repositorio `sgm-docs`. Define la estructura obligatoria
 6. **Índice de etapas** con enlaces relativos a cada archivo.
 7. **Mapa de bordes del macroproceso:** tabla resumen de todos los cruces de borde de módulo identificados en los sub-pasos (sub-paso / contrato invocado o evento emitido / clasificación). Se construye agregando las secciones 3.5 de las fichas; es el insumo directo de `contracts.md`.
 8. **Patrones transversales pendientes de definir**: vacíos que aparecen en más de una etapa y son candidatos a regla única reutilizable.
-9. **Referencia al modelo de datos**: link a `modelo-datos/entidades-core.md`.
+9. **Referencia al modelo de datos**: link a `modelo-datos/entidades-<módulo>.md` (índice: `entidades-core.md`).
 
 ---
 
@@ -69,7 +69,7 @@ Metadatos del sub-paso: quién del municipio actúa, con qué rol, en qué siste
 Descripción funcional del sub-paso en prosa. Qué ocurre, quién lo hace, qué condiciones aplican, plazos si existen.
 
 ### 3.4 Entidad(es) y campos
-- Referenciar entidades por su nombre canónico de `modelo-datos/entidades-core.md` o `entidades-plataforma.md` (dominio de plataforma: `DocumentRef`, `User`, etc.).
+- Referenciar entidades por su nombre canónico de `modelo-datos/entidades-<módulo>.md` o `entidades-plataforma.md` (dominio de plataforma: `DocumentRef`, `User`, etc.).
 - Indicar si el sub-paso **crea** una entidad nueva o **actualiza** una existente (y qué campos toca).
 - Si una entidad es nueva, se agrega primero al modelo canónico correspondiente y luego se referencia aquí — nunca se define solo en el sub-paso.
 - Campos de adjunto usan **`DocumentRef`**; la subida es operación del core C10 (`storeDocument`), no del módulo.
@@ -87,7 +87,7 @@ Formato:
 | **Contrato / Evento** | Nombre de la operación de contrato o del evento (nomenclatura inglesa: `checkBudgetAvailability`, `PurchaseOrderIssued`) |
 | **Contraparte** | Módulo, o **`Core (<proveedor>)`** / **`Core (documentos)`** para integraciones y archivos — nunca el tercero como implementador del módulo |
 | **Clasificación** | Síncrona bloqueante / Asíncrona / Cacheada (ver `musts-arquitectura.md`, sección 5) |
-| **Payload** | Entidades/campos que cruzan el borde (referencia a `entidades-core.md`) |
+| **Payload** | Entidades/campos que cruzan el borde (referencia a `entidades-<módulo>.md`) |
 
 Reglas:
 - Toda operación o evento nombrado aquí debe existir (o agregarse) en el `contracts.md` del módulo — nunca se define solo en el sub-paso, misma disciplina que las entidades.
@@ -147,7 +147,7 @@ Cada archivo de etapa termina con:
 
 Documento único por módulo, en `modulos/<módulo>/contracts.md`. Es la vista de arquitectura del módulo: qué expone, qué ofrece, qué necesita, qué anuncia. Se alimenta de los mapas de bordes de los macroprocesos del módulo. Cuatro secciones fijas (detalle metodológico en `contrato-api-first.md`):
 
-1. **Entidades que expone:** entidades del dominio visibles fuera del borde, con esquema (referencia a `entidades-core.md` + qué subconjunto de campos cruza el borde). Toda entidad que cruza el borde es candidata a payload de API.
+1. **Entidades que expone:** entidades del dominio visibles fuera del borde, con esquema (referencia a `entidades-<módulo>.md` + qué subconjunto de campos cruza el borde). Toda entidad que cruza el borde es candidata a payload de API.
 2. **Operaciones que ofrece:** endpoints con verbo, ruta, payload de entrada, respuesta, códigos de error posibles y reglas de negocio que valida (clasificación bloqueante/asesora y **fundamento** `legal_reference` obligatorio en `blocking` — [`musts-arquitectura.md`](../especificacion/musts-arquitectura.md) §11).
 3. **Dependencias que requiere:** contratos de proveedor expresados como interfaces — operación, entrada, respuesta esperada, comportamiento ante falla o rechazo. Nunca como llamadas a un módulo concreto: el proveedor puede ser otro módulo SGM o un sistema municipal externo.
 4. **Eventos que emite:** hechos de dominio observables, con esquema del evento.
@@ -272,13 +272,15 @@ Reglas de propiedad (`plataforma-core.md` §7–§7bis):
 
 ## 6. Reglas del modelo de datos
 
-1. **Fuente única:** entidades de dominio en `modelo-datos/entidades-core.md`; entidades de plataforma en `modelo-datos/entidades-plataforma.md`. Los procesos las referencian, no las redefinen.
-2. **Nomenclatura:** inglés, estilo técnico, PascalCase para entidades (`PurchaseRequest`), snake_case para campos (`requesting_unit`).
-3. **Extensión de entidades existentes:** si un proceso nuevo necesita un campo en una entidad ya definida, el campo se agrega en `entidades-core.md` con nota de qué proceso lo motivó, y se referencia desde el sub-paso.
-4. **Entidades sugeridas:** si el análisis sugiere una entidad que la fuente no confirma (ej. `GoodsReceiptLine`), se marca explícitamente como *(sugerida, no confirmada en fuente)*.
-5. **Glosario:** todo término técnico nuevo se agrega al mapeo técnico↔funcional en `modelo-datos/glosario.md`.
-6. **Visibilidad de borde:** cada entidad en `entidades-core.md` indica si es **interna** al módulo o **expuesta** en el contrato (y en ese caso, qué subconjunto de campos cruza el borde). Por defecto toda entidad es interna; la exposición se declara, no se asume.
-7. **Obligatoriedad explícita de campos:** todo campo en `entidades-core.md` y en las fichas de sub-paso declara si es obligatorio, opcional u obligatorio bajo condición (`**opcional**`, `Obligatorio`, `**Obligatorio si** …`). Si un campo aparece en un formulario, su obligatoriedad debe coincidir en modelo, ficha, wireframe y prototipo HTML.
+1. **Fuente única:** índice en `modelo-datos/entidades-core.md`; definición canónica por módulo en `modelo-datos/entidades-<módulo>.md` (ej. `entidades-adquisiciones.md`); entidades de plataforma en `modelo-datos/entidades-plataforma.md`. Los procesos las referencian, no las redefinen.
+2. **Nomenclatura:** inglés, estilo técnico, PascalCase para entidades (`PurchaseRequest`), snake_case para campos (`requesting_unit`). Cada campo declara además un **Label (ES)**.
+3. **Label en español:** toda fila de campo en `entidades-<módulo>.md` y `entidades-plataforma.md` incluye columna **Label (ES)** — etiqueta canónica de UI/lenguaje funcional. Debe coincidir con la columna “Campo UI” del wireframe y con la etiqueta del prototipo HTML cuando el campo aparece en formulario. El glosario (`glosario.md`) mapea entidades (y términos de dominio), no sustituye el Label (ES) campo a campo.
+4. **Cambio de Label (ES):** modificar el Label (ES) de un campo que aparece en UI obliga a actualizar en el mismo cambio el wireframe (layout + “Campo UI”) y el prototipo HTML correspondiente (`sgm-prototipos/`). Igual que la obligatoriedad: modelo, wireframe y HTML no divergen. Un cambio que solo actualiza el label en el modelo sin tocar el prototipo queda incompleto.
+5. **Extensión de entidades existentes:** si un proceso nuevo necesita un campo en una entidad ya definida, el campo se agrega en `entidades-<módulo>.md` (con Label (ES) y nota de qué proceso lo motivó), y se referencia desde el sub-paso.
+6. **Entidades sugeridas:** si el análisis sugiere una entidad que la fuente no confirma (ej. `GoodsReceiptLine`), se marca explícitamente como *(sugerida, no confirmada en fuente)*.
+7. **Glosario:** todo término técnico nuevo de **entidad** se agrega al mapeo técnico↔funcional en `modelo-datos/glosario.md`.
+8. **Visibilidad de borde:** cada entidad en `entidades-<módulo>.md` indica si es **interna** al módulo o **expuesta** en el contrato (y en ese caso, qué subconjunto de campos cruza el borde). Por defecto toda entidad es interna; la exposición se declara, no se asume.
+9. **Obligatoriedad y label explícitos:** todo campo en `entidades-<módulo>.md` y en las fichas de sub-paso declara si es obligatorio, opcional u obligatorio bajo condición (`**opcional**`, `Obligatorio`, `**Obligatorio si** …`). Si un campo aparece en un formulario, su **obligatoriedad** y el **texto del Label (ES)** deben coincidir en modelo, ficha, wireframe y prototipo HTML.
 
 ---
 
@@ -306,9 +308,9 @@ Imagen exportada (PNG/SVG) + fuente editable si existe (Excalidraw, draw.io). Pa
 
 ### Contenido obligatorio por wireframe
 1. **Identificación:** nombre de pantalla + sub-paso(s) que la motivan.
-2. **Todos los campos del formulario**, correlacionados con los campos de entidad del sub-paso — si el wireframe muestra un campo que no existe en `entidades-core.md`, o viceversa, hay una inconsistencia que resolver antes de dar por cerrada la pantalla.
+2. **Todos los campos del formulario**, correlacionados con los campos de entidad del sub-paso — si el wireframe muestra un campo que no existe en `entidades-<módulo>.md`, o viceversa, hay una inconsistencia que resolver antes de dar por cerrada la pantalla. El texto “Campo UI” del wireframe **es el mismo** que el Label (ES) del modelo.
 3. **Secciones tituladas:** el layout ASCII agrupa campos en bloques con subtítulo visible (misma jerarquía que el prototipo). Norma: [`patron-formularios-secciones.md`](./patron-formularios-secciones.md).
-4. **Tabla Campos ↔ entidad** con columna **Obligatorio** (`Sí` / `No` / `Sí si <condición>`). Toda fila debe tener valor en esa columna; es el ancla de trazabilidad entre modelo, wireframe y prototipo.
+4. **Tabla Campos ↔ entidad** con columna **Obligatorio** (`Sí` / `No` / `Sí si <condición>`). Toda fila debe tener valor en esa columna; es el ancla de trazabilidad entre modelo, wireframe y prototipo. El “Campo UI” debe igualar el Label (ES) canónico.
 5. **Acciones disponibles** (botones/enlaces), a dónde navega o qué transición de estado dispara cada una, y **qué operación de contrato invoca** (nombre de la operación en `contracts.md`).
 6. **Estados de la pantalla:** al menos el estado normal + estados de bloqueo/solo lectura si el proceso los define (ej. SOLPED "En proceso de cotización").
 7. **Validaciones visibles:** qué campos son obligatorios, opcionales o condicionales, y qué condiciones bloquean el avance. El catálogo completo de códigos por acción de UI vive en la ficha del sub-paso (§3.6 Validaciones) y en `contracts.md`; el wireframe solo resume lo visible en layout. Recordatorio de diseño: la validación bloqueante vive en el servidor y llega como `ValidationErrorResponse` / `ErrorResponse` de la API; el prototipo refleja el conjunto de `issues` (p. ej. modal al pulsar el botón), no inventa reglas.
@@ -325,6 +327,8 @@ En **documentación** (layout ASCII y tabla Campos ↔ entidad) y en **prototipo
 
 Referencia de implementación: wireframe `11-creacion-solped.md` y su HTML hermano.
 
+**Sincronización de labels:** cambio de Label (ES) en el modelo → actualizar “Campo UI” / layout del wireframe **y** la etiqueta del prototipo HTML en el mismo cambio (§6.4). Si el HTML introduce un texto de etiqueta nuevo, primero se actualiza el Label (ES) en `entidades-<módulo>.md`.
+
 ### Anotación acompañante
 Cada wireframe lleva un bloque de notas (en un `.md` hermano o dentro de la imagen) con: reglas de comportamiento no evidentes en el dibujo, y pendientes de definir de UI si los hay.
 
@@ -340,7 +344,7 @@ Cada wireframe lleva un bloque de notas (en un `.md` hermano o dentro de la imag
 |---|---|---|
 | **Diagrama de contexto** (uno solo) | Solo entidades raíz de cada módulo y las relaciones inter-módulo. **Toda relación inter-módulo del diagrama de contexto debe corresponder a un contrato o evento declarado en algún `contracts.md`** — el contexto es el mapa visual de los contratos. | `modelo-datos/diagramas/contexto-general.<ext>` |
 | **Diagrama por dominio/módulo** | Todas las entidades del módulo con campos clave y cardinalidades completas. | `modelo-datos/diagramas/<módulo>.<ext>` |
-| **Definición canónica** (texto) | La fuente de verdad: `entidades-core.md`. Los diagramas se derivan de este archivo; ante discrepancia, gana el texto. | `modelo-datos/entidades-core.md` |
+| **Definición canónica** (texto) | La fuente de verdad: `entidades-<módulo>.md` (índice en `entidades-core.md`). Los diagramas se derivan del archivo del módulo; ante discrepancia, gana el texto. | `modelo-datos/entidades-<módulo>.md` |
 
 ### Contenido obligatorio por diagrama de dominio
 1. Todas las entidades del módulo, con sus campos (mínimo: los obligatorios y las claves foráneas).
@@ -353,7 +357,7 @@ Cada wireframe lleva un bloque de notas (en un `.md` hermano o dentro de la imag
 Herramienta libre (draw.io, Mermaid embebido en el propio `.md`, dbdiagram) siempre que se versione la fuente editable en el repo. Mermaid tiene la ventaja de ser texto plano diffable y renderizable directo en GitLab.
 
 ### Regla de sincronización
-Todo cambio en `entidades-core.md` que afecte relaciones o entidades debe reflejarse en el diagrama del dominio correspondiente en el mismo commit (o marcarse como deuda explícita en el mensaje de commit). La misma regla aplica entre mapas de bordes y `contracts.md`, y entre `contracts.md`, **OpenAPI** y **fixtures** (§4.1).
+Todo cambio en `entidades-<módulo>.md` que afecte relaciones o entidades debe reflejarse en el diagrama del dominio correspondiente en el mismo commit (o marcarse como deuda explícita en el mensaje de commit). La misma regla aplica entre mapas de bordes y `contracts.md`, y entre `contracts.md`, **OpenAPI** y **fixtures** (§4.1).
 
 ---
 
@@ -361,7 +365,7 @@ Todo cambio en `entidades-core.md` que afecte relaciones o entidades debe reflej
 
 Un **sub-paso** está completo cuando:
 - [ ] Tabla de ficha con las 4 materias llenas (sin celdas "por ver").
-- [ ] Todas las entidades referenciadas existen en `entidades-core.md`.
+- [ ] Todas las entidades referenciadas existen en `entidades-<módulo>.md` (o en plataforma / módulo dueño declarado).
 - [ ] Sección de borde de módulo presente (aunque sea "Sin cruce"); si hay cruce, contrato/evento nombrado y existente en `contracts.md`, con clasificación declarada o marcada ⚠.
 - [ ] Sección de validaciones presente (§3.6): tabla por acción UI ↔ operación ↔ código, o `Sin validaciones de formulario`; cada código anclado en `contracts.md` / OpenAPI.
 - [ ] Si el borde implica operación nueva o cambio de payload: entrada correspondiente en OpenAPI del módulo (§4.1).

@@ -11,7 +11,7 @@ Antes de cambiar un sub-paso, pantalla o fila del expediente:
 1. Leer `sgm-prototipos/MANIFEST.md` y la entrada en `sgm-prototipos/shared/steps-manifest.json` (`stepId`).
 2. Abrir el wireframe spec (`.md`) y la ficha de proceso referenciados.
 3. Verificar operaciones en `sgm-docs/modulos/adquisiciones/contracts.md`.
-4. Verificar campos en `sgm-docs/modelo-datos/entidades-core.md`.
+4. Verificar campos en `sgm-docs/modelo-datos/entidades-adquisiciones.md` (u otro `entidades-<módulo>.md`).
 5. Si cambia tinte/origen: reglas 2a/2b en `sgm-docs/arquitectura/instrucciones/patron-vista-expediente.md`.
 6. Si cambia layout de formulario: secciones tituladas según `sgm-docs/arquitectura/instrucciones/patron-formularios-secciones.md` (wireframe ASCII + HTML `.form-section`).
 7. Si cambia configuración de anclas de firma: `patron-edicion-anclas-firma.md` + catálogo de documentos firmables.
@@ -20,6 +20,7 @@ Antes de cambiar un sub-paso, pantalla o fila del expediente:
 
 - Ningún botón sin operación publicada en contrato.
 - Ningún campo sin entidad.campo en el modelo.
+- Label (ES) del modelo alineado con “Campo UI” del wireframe y con la etiqueta del prototipo HTML; cambio de Label (ES) implica actualizar wireframe y prototipo en el mismo cambio.
 - Toda obligatoriedad explícita en modelo, wireframe (columna Obligatorio) y prototipo (`*`, `(opcional)`, `(obligatorio si …)`).
 - Validaciones por acción UI: ficha §3.6 (`plantilla-maestra-sgm.md`) + `contracts.md` + OpenAPI; prototipo refleja con `showValidationIssues` (no inventa códigos). Todo `blocking` lleva `legal_reference` (cita normativa o `integridad:*`); el modal muestra el fundamento solo si es normativo (`musts-arquitectura.md` §11).
 - Formularios con subtítulos de sección (`.form-section` / `.form-section__title`); sin campos huérfanos entre bloques temáticos.

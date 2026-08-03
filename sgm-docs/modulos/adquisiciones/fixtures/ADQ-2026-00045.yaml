@@ -5,7 +5,7 @@ title: Licitación Pública — demo transversal finalizado
 business_state: >
   Expediente LP con etapas transversales 1, 2, 4 y 5 completadas; etapa 3
   (14 sub-pasos, 3.1-3.14) con ficha de flujo, wireframes, entidades en
-  entidades-core.md, operaciones formalizadas en contracts.md §2.4 y
+  entidades-adquisiciones.md, operaciones formalizadas en contracts.md §2.4 y
   prototipo HTML interactivo completo (camino feliz + ramas de retorno
   probadas con Playwright). El adjetivo "finalizada" ya no es un posible
   falso positivo: refleja el estado real de la documentación tras la

@@ -7,7 +7,7 @@ Contrato HTTP: [`plataforma/contracts.md`](../plataforma/contracts.md)
 
 **Convención de nombres:** inglés, PascalCase para entidades; snake_case para campos.
 
-**Distinción con `entidades-core.md`:** entidades de dominio de negocio (SOLPED, OC, etc.) viven en `entidades-core.md`. Campos `*_attachment` y `supporting_document_ref` en entidades de dominio son **`DocumentRef`** definido aquí.
+**Distinción con el modelo de dominio:** entidades de negocio viven en `entidades-<módulo>.md` (índice: `entidades-core.md`). Campos `*_attachment` y `supporting_document_ref` en entidades de dominio son **`DocumentRef`** definido aquí.
 
 ---
 
@@ -144,7 +144,7 @@ Un municipio pequeño puede asignar a la misma persona, p. ej., `adq.aprobador_u
 ### `NormativeParameter`
 **Visibilidad:** expuesta (lectura)
 
-Parámetro normativo de plataforma (umbrales UTM, tramos de licitación, etc.). Antes listado en `entidades-core.md`; **canónico aquí**.
+Parámetro normativo de plataforma (umbrales UTM, tramos de licitación, etc.). **Canónico aquí** (no en el módulo Adquisiciones).
 
 | Campo | Tipo | Notas |
 |---|---|---|
@@ -434,10 +434,10 @@ Tramitación de un acto en DocDigital (o vía asistida).
 Estos tipos se devuelven por operaciones del core (C7/C9/C11); los módulos pueden cachearlos pero no los administran.
 
 ### `UtmValue` *(DTO)*
-Procedencia: `getUtmValue` (C9 → SII). Ver nota en `entidades-core.md`.
+Procedencia: `getUtmValue` (C9 → SII). Definición canónica de este DTO: esta sección; consumo desde Adquisiciones vía gateway de modalidad (ver remisión en [`entidades-adquisiciones.md`](entidades-adquisiciones.md)).
 
 ### `PriceReference` *(DTO)*
-Procedencia: `getPriceReference` (C9 → SII u otra fuente). Entidad de dominio homónima en `entidades-core.md` describe el uso en líneas SOLPED.
+Procedencia: `getPriceReference` (C9 → SII u otra fuente). Entidad de dominio homónima en [`entidades-adquisiciones.md`](entidades-adquisiciones.md) describe el uso en líneas SOLPED.
 
 ### `MpProcessSnapshot` *(DTO / bitácora)*
-Procedencia: servicio C7. Bitácora de sincronización MP; ver `entidades-core.md`.
+Procedencia: servicio C7. Bitácora de sincronización MP; campos de dominio en [`entidades-adquisiciones.md`](entidades-adquisiciones.md).

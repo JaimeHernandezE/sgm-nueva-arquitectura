@@ -14,7 +14,7 @@ Prototipo HTML               →  validación UX (sgm-prototipos/)
 Expediente shell (00)        →  filas de sub-paso, formUrl, tintes
         ↑
 contracts.md                 →  operaciones API que respaldan botones
-entidades-core.md            →  campos de formulario
+entidades-adquisiciones.md   →  campos de formulario (Label ES)
 ```
 
 ## Navegación del prototipo
@@ -52,8 +52,8 @@ Antes de modificar un sub-paso `N.M`:
 2. Abrir el **wireframe spec** (`wireframeSpec` en el manifiesto).
 3. Abrir la **ficha de proceso** (`processFicha`).
 4. Verificar **operaciones** en `contracts.md` — ningún botón sin operación.
-5. Verificar **campos** en `entidades-core.md`.
-6. Verificar **obligatoriedad explícita** en los tres niveles: `entidades-core.md` (obligatorio / opcional / obligatorio si), tabla **Obligatorio** del wireframe spec, y etiqueta del HTML (`*`, `(opcional)` o `(obligatorio si …)`).
+5. Verificar **campos** en `entidades-adquisiciones.md` (Label (ES) + obligatoriedad).
+6. Verificar **obligatoriedad y label explícitos** en los tres niveles: `entidades-adquisiciones.md` (obligatorio / opcional / obligatorio si + Label ES), tabla **Obligatorio** / Campo UI del wireframe spec, y etiqueta del HTML (`*`, `(opcional)` o `(obligatorio si …)`). Cambio de Label (ES) → actualizar wireframe y prototipo.
 7. Verificar **secciones tituladas** del formulario (`.form-section` / subtítulos) según [`patron-formularios-secciones.md`](../sgm-docs/arquitectura/instrucciones/patron-formularios-secciones.md) — wireframe ASCII y HTML con los mismos títulos.
 8. Si cambia tinte/origen: revisar reglas 2a/2b en [`patron-vista-expediente.md`](../sgm-docs/arquitectura/instrucciones/patron-vista-expediente.md).
 9. Actualizar **prototipo HTML**, **expediente** (`shared/demo-data/<modalidad>.js`) y **preset** (`form-presets.js`) en el mismo cambio.

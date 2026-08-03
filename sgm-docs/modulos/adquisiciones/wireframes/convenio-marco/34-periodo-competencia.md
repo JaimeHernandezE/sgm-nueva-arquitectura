@@ -54,5 +54,5 @@ Ninguna — paso de solo monitoreo, sin campos editables ni reglas bloqueantes.
 ## Notas
 
 - Interacción MP: **Informativo**.
-- `MpProcessSnapshot` es la misma bitácora de sincronización usada en Compra Ágil (patrón común, ver `entidades-core.md`).
+- `MpProcessSnapshot` es la misma bitácora de sincronización usada en Compra Ágil (patrón común, ver `entidades-adquisiciones.md`).
 - El expediente no puede forzar el cierre del período desde SGM — depende enteramente de la lectura MP (agnóstica de push/polling).
