@@ -9,7 +9,7 @@ Documentación transversal de arquitectura, organizada por propósito.
 | [`decisiones/`](./decisiones/) | ADRs cerrados, registro de pendientes y documentos de debate / brechas |
 | [`licitacion/`](./licitacion/) | Principios no negociables, modelo de entregable y sandbox del ecosistema |
 | [`especificacion/`](./especificacion/) | Specs técnicas: core, seguridad, API, roles, integraciones, firma |
-| [`instrucciones/`](./instrucciones/) | Cómo documentar y diseñar UI (plantilla maestra y patrones) |
+| [`instrucciones/`](./instrucciones/) | Gobierno operativo del repo, plantilla maestra y patrones UI |
 
 ## Índice de archivos
 
@@ -54,6 +54,7 @@ Documentación transversal de arquitectura, organizada por propósito.
 
 ### instrucciones/
 
+- [`gobierno-repositorio.md`](./instrucciones/gobierno-repositorio.md) — gobierno operativo / coherencia al editar (mapa de fuentes de verdad; orquestador Cursor)
 - [`plantilla-maestra-sgm.md`](./instrucciones/plantilla-maestra-sgm.md) — norma de documentación de procesos
 - [`patron-vista-expediente.md`](./instrucciones/patron-vista-expediente.md) — patrón UI de expediente
 - [`patron-formularios-secciones.md`](./instrucciones/patron-formularios-secciones.md) — patrón UI de formularios

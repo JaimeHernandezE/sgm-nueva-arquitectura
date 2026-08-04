@@ -1,0 +1,18 @@
+---
+description: Orquestador de coherencia del repo SGM — leer mapa de gobierno
+alwaysApply: true
+---
+
+# Gobierno del repositorio (orquestador)
+
+Antes de editar `sgm-docs/`, `sgm-prototipos/` o inventarios del corpus:
+
+1. Leer `sgm-docs/arquitectura/instrucciones/gobierno-repositorio.md` (mapa de fuentes de verdad + checklist).
+2. Identificar la **fuente canónica** del tema y las capas a sincronizar en el **mismo** cambio.
+3. Si el cambio cae en UI / wireframes / prototipos / normas: respetar la regla de dominio correspondiente (`sgm-ui-conexiones`, `sgm-docs-wireframes`, `sgm-prototipos-html`, `sgm-docs-normas`).
+4. Pendiente transversal nuevo o cerrado → `sgm-docs/arquitectura/decisiones/pendientes.md` + marcador `**[PENDIENTE X-nn]**`.
+5. Norma citada → `registro-normas.md` (alta o aparición; forma canónica `N-nn`).
+6. No duplicar decisiones de ADR / `plan-general.md`; referenciar.
+7. No inventar endpoints, campos, normas ni umbrales ausentes del corpus.
+
+Esta regla **no** sustituye la plantilla maestra ni los patrones UI: solo orquesta. Detalle de formato → esos documentos.
