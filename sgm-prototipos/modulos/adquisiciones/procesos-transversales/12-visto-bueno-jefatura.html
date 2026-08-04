@@ -76,6 +76,7 @@
       </div>
       <div class="form-actions hidden" id="actions-signed">
         <button class="btn btn--secondary" type="button" id="view-signed-doc">Ver documento firmado</button>
+        <button class="btn btn--secondary" type="button" id="download-signed-doc">Descargar PDF</button>
         <a class="btn btn--primary" id="back-expediente" href="#">Volver al expediente</a>
       </div>
       <div class="form-actions hidden" id="actions-rejected">
@@ -111,13 +112,13 @@
   <div class="modal-overlay" id="sign-modal">
     <div class="modal modal--wide" role="dialog" aria-labelledby="sign-modal-title">
       <div class="modal__header">
-        <span id="sign-modal-title">Previsualización — V°B° jefatura</span>
+        <span id="sign-modal-title">Previsualización — Solicitud de pedido</span>
         <button class="btn btn--link" type="button" id="sign-modal-close">✕</button>
       </div>
       <div class="modal__body">
         <div class="doc-preview" id="doc-preview">
-          <h4 class="doc-preview__title">Acta de visto bueno — SOLPED #1234</h4>
-          <p class="doc-preview__meta">Expediente demo · Unidad Solicitante · Monto $1.250.000</p>
+          <h4 class="doc-preview__title">Solicitud de pedido — SOLPED #1234</h4>
+          <p class="doc-preview__meta">Expediente demo · Unidad Solicitante · Monto $1.250.000 · Plantilla adq.solped_vb</p>
           <p>
             La jefatura de la unidad solicitante declara haber revisado la solicitud de pedido
             y otorga el visto bueno para su remisión a DAF Finanzas (verificación presupuestaria).
@@ -197,14 +198,14 @@
     function openSignModal() {
       signModal.classList.add('is-open');
       if (isSigned) {
-        signModalTitle.textContent = 'Documento firmado — V°B° jefatura';
+        signModalTitle.textContent = 'Documento firmado — Solicitud de pedido';
         signFooterPending.classList.add('hidden');
         signFooterSigned.classList.remove('hidden');
         docSignatureBlock.classList.add('doc-preview__signature--done');
         docSignatureBlock.textContent =
           'Firmado electrónicamente vía FirmaGob · Jefatura Unidad · confirmSignature OK';
       } else {
-        signModalTitle.textContent = 'Previsualización — V°B° jefatura';
+        signModalTitle.textContent = 'Previsualización — Solicitud de pedido';
         signFooterPending.classList.remove('hidden');
         signFooterSigned.classList.add('hidden');
         docSignatureBlock.classList.remove('doc-preview__signature--done');
@@ -245,7 +246,7 @@
       actionsSigned.classList.remove('hidden');
       nextStepPanel.classList.remove('hidden');
       nextStepText.textContent =
-        'SOLPED aprobada y firmada — status = pending_finance. Puede revisar el documento o volver al expediente.';
+        'SOLPED aprobada — solicitud de pedido firmada (adq.solped_vb). status = pending_finance. Puede descargar el PDF o volver al expediente.';
       closeSignModal();
     }
 
@@ -293,6 +294,9 @@
     document.getElementById('sign-modal-close').addEventListener('click', closeSignModal);
     document.getElementById('sign-modal-done').addEventListener('click', closeSignModal);
     document.getElementById('view-signed-doc').addEventListener('click', openSignModal);
+    document.getElementById('download-signed-doc').addEventListener('click', () => {
+      demoAction('Descarga signed_document_ref (solicitud de pedido firmada)');
+    });
   </script>
 </body>
 </html>

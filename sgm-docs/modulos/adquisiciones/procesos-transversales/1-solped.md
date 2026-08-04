@@ -154,21 +154,23 @@
 | Plataforma | SGM |
 | Optativo | Falso |
 
-**Detalle:** Jefatura de la unidad revisa y aprueba la SOLPED antes de que pase a Finanzas. La aprobación requiere firma electrónica avanzada conforme a normativa (QA ítems 5, 7). Si la SOLPED trae `proposed_budget_line_id`, se muestran (solo lectura, desde Presupuestos) la **descripción de la cuenta** y el **saldo** (`getBudgetLine` / `previewBudgetAvailability`); el aprobador puede abrir el detalle proyectado antes de firmar sin que ello constituya verificación formal (eso ocurre en 1.3, a cargo de DAF Finanzas).
+**Detalle:** Jefatura de la unidad revisa y aprueba la SOLPED antes de que pase a Finanzas. La aprobación requiere firma electrónica avanzada conforme a normativa (QA ítems 5, 7). Al aprobar, SGM **genera el documento de solicitud de pedido** (plantilla `adq.solped_vb`) con los datos de la SOLPED, lo envía a FirmaGob y, tras `confirmSignature`, deja el **PDF firmado** disponible para **descarga** en el expediente (`PurchaseRequestApproval.signed_document_ref`). La plantilla y las anclas de firma se administran en el **mantenedor de documentos firmables** del módulo (Configuraciones → Firmas). Si la SOLPED trae `proposed_budget_line_id`, se muestran (solo lectura, desde Presupuestos) la **descripción de la cuenta** y el **saldo** (`getBudgetLine` / `previewBudgetAvailability`); el aprobador puede abrir el detalle proyectado antes de firmar sin que ello constituya verificación formal (eso ocurre en 1.3, a cargo de DAF Finanzas).
 
 **Entidad(es) y campos:**
-- `PurchaseRequestApproval` — `purchase_request_id` (ref., **obligatorio**), `approver_id` (ref. `User`, **obligatorio**), `decision` (enum, **obligatorio**: `approved`, `rejected`), `disposition` (enum, **obligatorio si** `decision = rejected`: `return_to_draft` \| `cancel`), `decision_date` (fecha, **obligatorio**), `comments` (texto, **obligatorio si** `decision = rejected`)
+- `PurchaseRequestApproval` — `purchase_request_id` (ref., **obligatorio**), `approver_id` (ref. `User`, **obligatorio**), `decision` (enum, **obligatorio**: `approved`, `rejected`), `disposition` (enum, **obligatorio si** `decision = rejected`: `return_to_draft` \| `cancel`), `decision_date` (fecha, **obligatorio**), `comments` (texto, **obligatorio si** `decision = rejected`), `signed_document_ref` (`DocumentRef`, **obligatorio si** `decision = approved` — PDF de solicitud de pedido firmado, vía C10 tras FirmaGob)
 - `PurchaseRequest.status` (enum, **obligatorio** — transiciona a `pending_finance` si `approved`, o `draft` si `rejected` + `disposition = return_to_draft`)
 - `ProcurementCase.status` — transiciona a `cancelled` si `rejected` + `disposition = cancel`
+- Plantilla firmable — `adq.solped_vb` (*Solicitud de pedido / V°B° jefatura*); catálogo [`catalogo-documentos-firmables.md`](../catalogo-documentos-firmables.md); UI admin: Configuraciones → Firmas
 
 **Borde de módulo:**
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Dependencia | `requestSignature` | Core (FirmaGob) | Síncrona bloqueante | Entrada: `document_id`, `document_type`, `signer_id` — Respuesta: `signature_request_id`, `status` |
-| 2 | Dependencia | `confirmSignature` | Core (FirmaGob) | Síncrona bloqueante | Entrada: `signature_request_id` — Respuesta: `signed_at`, `certificate_ref` |
-| 3 | Dependencia | `getBudgetLine` / `previewBudgetAvailability` | Presupuestos | Cacheada / informativa | Descripción de cuenta + saldo si hay `proposed_budget_line_id`; detalle proyectado opcional |
-| 4 | Evento | `PurchaseRequestApproved` | — (consumidores: Presupuestos, auditoría) | Asíncrona | `PurchaseRequest` (`id`, `requesting_unit`, `destination_unit`, `status`), `PurchaseRequestApproval` |
+| 1 | Dependencia | `storeDocument` / render de plantilla | Core (documentos C10) | Síncrona | Genera PDF de solicitud de pedido desde plantilla `adq.solped_vb` |
+| 2 | Dependencia | `requestSignature` | Core (FirmaGob) | Síncrona bloqueante | Entrada: `document_id`, `document_type` (= `adq.solped_vb`), `signer_id` — Respuesta: `signature_request_id`, `status` |
+| 3 | Dependencia | `confirmSignature` | Core (FirmaGob) | Síncrona bloqueante | Entrada: `signature_request_id` — Respuesta: `signed_at`, `certificate_ref`; persiste `signed_document_ref` |
+| 4 | Dependencia | `getBudgetLine` / `previewBudgetAvailability` | Presupuestos | Cacheada / informativa | Descripción de cuenta + saldo si hay `proposed_budget_line_id`; detalle proyectado opcional |
+| 5 | Evento | `PurchaseRequestApproved` | — (consumidores: Presupuestos, auditoría) | Asíncrona | `PurchaseRequest` (`id`, `requesting_unit`, `destination_unit`, `status`), `PurchaseRequestApproval` (incluye `signed_document_ref`) |
 
 **Validaciones:**
 

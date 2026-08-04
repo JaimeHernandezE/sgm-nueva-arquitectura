@@ -27,7 +27,7 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | `PurchaseRequest` | Expuesta | `id`, `procurement_case_id`, `requesting_unit`, `destination_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status` | 1.1, 1.2, 2.1, 2.2 |
 | `PurchaseRequestLine` | Expuesta | `id`, `purchase_request_id`, `product_code`, `item_description`, `quantity`, `unit_of_measure`, `unit_price`, `price_source` | 1.1 |
 | `PurchaseRequestAttachment` | Expuesta | `id`, `purchase_request_id`, `attachment_type`, `description`, `document_ref` | 1.1 |
-| `PurchaseRequestApproval` | Expuesta | `id`, `purchase_request_id`, `approver_id`, `decision`, `decision_date`, `comments` | 1.2 |
+| `PurchaseRequestApproval` | Expuesta | `id`, `purchase_request_id`, `approver_id`, `decision`, `disposition`, `decision_date`, `comments`, `signed_document_ref` | 1.2 |
 | `BudgetAvailabilityCertificate` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status`, `signature_mode` | 1.5 |
 | `BudgetPreCommitment` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `budget_availability_certificate_id`, `budget_line_id`, `estimated_amount`, `fiscal_year`, `status` | 1.6 |
 | `AgileQuoteProcess` | Expuesta | `id`, `purchase_request_id`, `deep_link_clicked_at`, `mp_quote_id` | 2.1 *(CA)* — duplica `ProcurementCase.mp_process_id`, ver `entidades-adquisiciones.md` (candidato a deprecar) |
@@ -193,12 +193,14 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 #### `POST /purchase-requests/{id}/approve` — `approvePurchaseRequest`
 - **Sub-pasos:** 1.2
 - **Entrada:** `decision`, `comments`
+- **Respuesta:** `PurchaseRequestApproval` con `signed_document_ref` (PDF de solicitud de pedido firmado)
 - **Reglas:**
   | Regla | Severidad | QA | Error |
   |---|---|---|---|
   | Firma electrónica válida (FirmaGob) | blocking | 5, 7 P1 | `SIGNATURE_REQUIRED` |
   | Solo aprobador de jefatura de unidad solicitante | blocking | 6 | `UNAUTHORIZED_APPROVER` |
-- **Dependencias:** `requestSignature`, `confirmSignature`
+- **Dependencias:** render plantilla `adq.solped_vb` + `storeDocument` (C10); `requestSignature`, `confirmSignature` (FirmaGob)
+- **UI:** previsualización del documento → firmar → **descarga** del PDF firmado (`signed_document_ref`). Plantilla administrable en Configuraciones → Firmas ([`catalogo-documentos-firmables.md`](./catalogo-documentos-firmables.md)).
 - **Evento emitido:** `PurchaseRequestApproved`
 
 #### `POST /purchase-requests/{id}/reject` — `rejectPurchaseRequest`

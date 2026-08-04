@@ -122,7 +122,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `currency` | Moneda | enum | **Obligatorio** (default CLP) |
 
 ### `PurchaseRequestApproval`
-**Visibilidad:** expuesta — campos en contrato: `id`, `purchase_request_id`, `approver_id`, `decision`, `disposition`, `decision_date`, `comments`
+**Visibilidad:** expuesta — campos en contrato: `id`, `purchase_request_id`, `approver_id`, `decision`, `disposition`, `decision_date`, `comments`, `signed_document_ref`
 
 1:N con `PurchaseRequest`. Historial de decisiones — permite múltiples ciclos rechazo/reenvío.
 
@@ -134,6 +134,7 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `disposition` | Disposición | enum | **Obligatorio si** `decision = rejected`. Valores: `return_to_draft` (vuelve a 1.1), `cancel` (cierra expediente). Default histórico: `return_to_draft`. |
 | `decision_date` | Fecha de decisión | fecha | **Obligatorio** (generado por sistema al registrar) |
 | `comments` | Comentarios | texto | **Obligatorio si** `decision = rejected` |
+| `signed_document_ref` | Solicitud de pedido firmada | ref. `DocumentRef` | **Obligatorio si** `decision = approved`. PDF generado desde plantilla `adq.solped_vb` (Configuraciones → Firmas), firmado con FirmaGob; descargable desde el expediente. |
 
 ### `BudgetAvailabilityCertificate` (CDP)
 **Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status`, `signature_mode`

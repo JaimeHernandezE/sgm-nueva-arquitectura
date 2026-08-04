@@ -38,7 +38,7 @@ DocumentTemplate (versionada)
 
 | `code` | `name` | `process_area` | `mode` | Puntos de firma (`role` · `anchor` · order) | Departamento dueño (hint) | Ficha |
 |---|---|---|---|---|---|---|
-| `adq.solped_vb` | V°B° / aprobación de SOLPED | `adq.solped` | `unattended` | `adq.aprobador_unidad` · `{{firma:adq.aprobador_unidad}}` · 1 | Unidad / depto solicitante | [`1-solped.md`](../../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.2 |
+| `adq.solped_vb` | Solicitud de pedido (V°B° jefatura) | `adq.solped` | `unattended` | `adq.aprobador_unidad` · `{{firma:adq.aprobador_unidad}}` · 1 | Unidad / depto solicitante | [`1-solped.md`](../../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.2 |
 | `adq.cdp` | Certificado de Disponibilidad Presupuestaria (CDP) | `adq.solped` | `unattended` | `adq.firmante_cdp` · `{{firma:adq.firmante_cdp}}` · 1 | Finanzas › Presupuestos | [`1-solped.md`](../../modulos/adquisiciones/procesos-transversales/1-solped.md) §1.5 |
 | `adq.modalidad_aprobacion` | Aprobación de modalidad | `adq.modalidad` | `unattended` | `adq.aprobador_modalidad` · `{{firma:adq.aprobador_modalidad}}` · 1 | Abastecimiento / jefatura DAF | [`2-modalidad-compra.md`](../../modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md) §2.2 — condicional **[X-38]** |
 | `adq.acto_bases` | Decreto/resolución que aprueba bases | `adq.resolucion` | `unattended` | `adq.aprobador_modalidad` · `{{firma:adq.aprobador_modalidad}}` · 1 | Alcaldía / autoridad | LP 3.3 — [`3-resolucion-compra.md`](../../modulos/adquisiciones/3.%20licitacion-publica/3-resolucion-compra.md) |

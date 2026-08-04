@@ -15,7 +15,7 @@
 | departamento (RoleAssignment).                                    |
 |-------------------------------------------------------------------|
 | Documento              | Etapa   | Rol firmante     | Modo   |     |
-| V°B° SOLPED            | 1.2     | aprobador_unidad | Desat. | [Editar anclas] |
+| Solicitud de pedido (V°B°) | 1.2     | aprobador_unidad | Desat. | [Editar anclas] |
 | CDP                    | 1.5     | firmante_cdp     | Desat. | [Editar anclas] |
 | Aprobación modalidad   | 2.2     | aprobador_mod.   | Desat. | [Editar anclas] |
 | … (resto del catálogo) |         |                  |        |     |

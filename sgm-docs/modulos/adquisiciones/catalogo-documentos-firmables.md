@@ -14,7 +14,7 @@ Vista de módulo del catálogo transversal. La fuente de `code`, estructura de p
 
 | Etapa | Sub-paso | Documento | `code` | Rol firmante | Ancla sugerida | Modo |
 |---|---|---|---|---|---|---|
-| 1 SOLPED | 1.2 | V°B° / aprobación de SOLPED | `adq.solped_vb` | `adq.aprobador_unidad` | `{{firma:adq.aprobador_unidad}}` | Desatendida |
+| 1 SOLPED | 1.2 | Solicitud de pedido (V°B° jefatura) | `adq.solped_vb` | `adq.aprobador_unidad` | `{{firma:adq.aprobador_unidad}}` | Desatendida |
 | 1 SOLPED | 1.5 | CDP | `adq.cdp` | `adq.firmante_cdp` | `{{firma:adq.firmante_cdp}}` | Desatendida |
 | 2 Modalidad | 2.2 | Aprobación de modalidad | `adq.modalidad_aprobacion` | `adq.aprobador_modalidad` | `{{firma:adq.aprobador_modalidad}}` | Desatendida — **[X-38]** |
 | 3 LP | 3.3 | Decreto/resolución aprueba bases | `adq.acto_bases` | `adq.aprobador_modalidad` | `{{firma:adq.aprobador_modalidad}}` | Desatendida |
