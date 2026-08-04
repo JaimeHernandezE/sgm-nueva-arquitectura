@@ -126,7 +126,7 @@ Viven **una sola vez**. Los módulos referencian.
 | **R-nn** | RRHH |
 | **A-nn** | Decisiones humanas Adquisiciones (comparativa §5) aún sin ID en registro viejo |
 
-Registro detallado X-01…X-76: [`arquitectura/decisiones/pendientes.md`](arquitectura/decisiones/pendientes.md).
+Registro unificado X/P/C/T/R/A: [`arquitectura/decisiones/pendientes.md`](arquitectura/decisiones/pendientes.md).
 
 ### 5.2 Mapa de renumeración y colisiones resueltas
 
