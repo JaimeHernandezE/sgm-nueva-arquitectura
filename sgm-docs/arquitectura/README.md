@@ -46,6 +46,7 @@ Documentación transversal de arquitectura, organizada por propósito.
 - [`contrato-api-first.md`](./especificacion/contrato-api-first.md) — metodología contract-first
 - [`catalogo-roles.md`](./especificacion/catalogo-roles.md) — catálogo RBAC transversal (X-24)
 - [`catalogo-documentos-firmables.md`](./especificacion/catalogo-documentos-firmables.md) — tipología de documentos firmables (anclas + roles)
+- [`registro-normas.md`](./especificacion/registro-normas.md) — registro único de normas citadas (`N-nn`) + apariciones
 - [`integracion-mercado-publico.md`](./especificacion/integracion-mercado-publico.md) — integración SGM ↔ MP
 - [`integracion-docdigital.md`](./especificacion/integracion-docdigital.md) — integración SGM ↔ DocDigital (C11; condicionada a X-72)
 - [`estandar-firma-electronica.md`](./especificacion/estandar-firma-electronica.md) — firma electrónica

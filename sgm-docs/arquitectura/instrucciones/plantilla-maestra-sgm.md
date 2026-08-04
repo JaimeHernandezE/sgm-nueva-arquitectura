@@ -116,10 +116,10 @@ Formato (tabla; una fila por regla; agrupar por acción de UI):
 | **Campo** | Path del campo en el payload (`requesting_unit`, `lines[0].quantity`, …) o `—` si es regla de documento/estado |
 | **Mensaje (`rule`)** | Texto legible que verá el usuario (mismo valor que viaja en la API) |
 | **Severidad** | `blocking` (impide avanzar) \| `advisory` (informa sin bloquear) — enum `Severity` |
-| **Fundamento (`legal_reference`)** | Obligatorio si `blocking`: cita normativa **o** `integridad:<motivo>`. En `advisory`, citar cuando aporte al funcionario. Ver [`estandares-api.md`](../especificacion/estandares-api.md) §3.3 |
+| **Fundamento (`legal_reference`)** | Obligatorio si `blocking`: cita normativa **o** `integridad:<motivo>`. En `advisory`, citar cuando aporte al funcionario. Ver [`estandares-api.md`](../especificacion/estandares-api.md) §3.3. Citas normativas: forma canónica del [`registro-normas.md`](../especificacion/registro-normas.md) (`N-nn`); alta o aparición si falta. |
 
 Reglas:
-- Toda fila `blocking` debe tener fundamento no vacío. Normativo = artículo/decreto/dictamen (opcionalmente clave `NormativeParameter`); integridad = `integridad:campo_requerido` \| `integridad:estado_expediente` \| `integridad:documento_requerido` \| `integridad:rol_operacion` (u otro motivo documentado). Si la cita exacta está en un pendiente (P-NN), el valor incluye la norma marco y `⚠ P-NN` — no se deja en blanco.
+- Toda fila `blocking` debe tener fundamento no vacío. Normativo = artículo/decreto/dictamen según forma canónica de [`registro-normas.md`](../especificacion/registro-normas.md) (opcionalmente clave `NormativeParameter` e ID `N-nn`); integridad = `integridad:campo_requerido` \| `integridad:estado_expediente` \| `integridad:documento_requerido` \| `integridad:rol_operacion` (u otro motivo documentado). Si la cita exacta está en un pendiente (P-NN / X-NN), el valor incluye la norma marco y `⚠ P-NN` / `⚠ X-NN` — no se deja en blanco.
 - Toda fila debe existir (o agregarse) en la tabla de reglas de la operación en `contracts.md` (misma columna Fundamento) y tener ejemplo o esquema en OpenAPI (`422` con `issues[]` cuando hay varias).
 - Prohibido inventar reglas solo en el prototipo: el modal de demo lista el mismo conjunto documentado aquí, incluyendo `legal_reference`.
 - Ante varias reglas `blocking`, la API responde `422` con `ValidationErrorResponse` (`issues[]`); el prototipo muestra **todas** en un modal o listado. Las citas normativas se muestran al funcionario; `integridad:*` no.

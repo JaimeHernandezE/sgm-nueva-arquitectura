@@ -22,7 +22,7 @@ Antes de cambiar un sub-paso, pantalla o fila del expediente:
 - Ningún campo sin entidad.campo en el modelo.
 - Label (ES) del modelo alineado con “Campo UI” del wireframe y con la etiqueta del prototipo HTML; cambio de Label (ES) implica actualizar wireframe y prototipo en el mismo cambio.
 - Toda obligatoriedad explícita en modelo, wireframe (columna Obligatorio) y prototipo (`*`, `(opcional)`, `(obligatorio si …)`).
-- Validaciones por acción UI: ficha §3.6 (`plantilla-maestra-sgm.md`) + `contracts.md` + OpenAPI; prototipo refleja con `showValidationIssues` (no inventa códigos). Todo `blocking` lleva `legal_reference` (cita normativa o `integridad:*`); el modal muestra el fundamento solo si es normativo (`musts-arquitectura.md` §11).
+- Validaciones por acción UI: ficha §3.6 (`plantilla-maestra-sgm.md`) + `contracts.md` + OpenAPI; prototipo refleja con `showValidationIssues` (no inventa códigos). Todo `blocking` lleva `legal_reference` (cita normativa o `integridad:*`); el modal muestra el fundamento solo si es normativo (`musts-arquitectura.md` §11). Citas normativas: forma canónica + ID en `arquitectura/especificacion/registro-normas.md` (regla `sgm-docs-normas`).
 - Formularios con subtítulos de sección (`.form-section` / `.form-section__title`); sin campos huérfanos entre bloques temáticos.
 - Cambio en wireframe `.md` → actualizar prototipo HTML enlazado (y viceversa).
 - Cambio en fila del expediente → actualizar `demo-data.js` y `steps-manifest.json` + `.js`.

@@ -1,0 +1,19 @@
+---
+description: Citas normativas — registro único N-nn obligatorio
+globs: sgm-docs/**/*.md,inventario-repositorio.md
+alwaysApply: false
+---
+
+# Normas citadas — registro único
+
+Antes de citar o modificar una cita de Ley / DS / Decreto / Resolución / Dictamen / Oficio / Directiva / NICSP / NTDEE / PISEE / LOCM en `sgm-docs`:
+
+1. Abrir `sgm-docs/arquitectura/especificacion/registro-normas.md`.
+2. Si la norma **existe**: usar su **forma canónica** e ID `N-nn`; en la primera mención del documento preferir `**[NORMA N-nn]**` o enlace al ancla; **añadir** la aparición (ruta §) en la tabla si falta.
+3. Si **no existe**: alta de fila con el siguiente `N-nn`; verificación por defecto `No verificada` salvo que el texto declare verificación en fuente primaria.
+4. En `legal_reference` de validadores `blocking`: preferir la forma canónica del registro (opcionalmente el ID). Los valores `integridad:*` no se registran aquí.
+5. No inventar artículos ni números de norma ausentes del corpus o de fuente verificada.
+6. No duplicar grafías: una sola fila canónica (p. ej. Resolución CGR N° 3/2020, no variantes sueltas).
+7. LOCM: preferir **N-02** (Ley 18.695); N-36 es alias documental.
+
+Distinción: este registro es índice documental; `NormativeParameter` es runtime de umbrales; pendientes de verificación jurídica van en `pendientes.md` / planes (R-3, C-6, X-37, etc.).

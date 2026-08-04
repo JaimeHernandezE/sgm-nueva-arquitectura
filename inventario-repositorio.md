@@ -27,7 +27,7 @@
 | Decisiones de partida D-n / DC-n (filas de tabla) | Pres **4** · Cont **5** · Tes **6** · RRHH **6** · plan-general **11** (DC) · entregable-licitación **7** (D-01…07) | Filas `| D-… |` / `| DC-… |` |
 | Macroprocesos nombrados | MC-1…MC-7 · MT-1…MT-7 · MR-1…MR-7 | Distinct en `sgm-docs` |
 | ADR fechados `2026-07-*` | **5** | Carpeta `arquitectura/decisiones/` |
-| Normas distintas (tras deduplicar grafías) | **36** ítems canónicos listados en §1.3 (59 cadenas crudas antes de deduplicar) | Regex Ley/DS/Decreto/Resolución/Dictamen/Oficio/Directiva/NICSP/NTDEE/PISEE/LOCM |
+| Normas distintas (tras deduplicar grafías) | **36** ítems canónicos en [`registro-normas.md`](sgm-docs/arquitectura/especificacion/registro-normas.md) (`N-01`…`N-36`; lista espejo en §1.3) | Registro único + regex histórico Ley/DS/Decreto/Resolución/Dictamen/Oficio/Directiva/NICSP/NTDEE/PISEE/LOCM |
 | Integraciones con sistemas del Estado (deduplicadas) | **15** | Ver §1.4 |
 | Commits totales | **108** | `git rev-list --count HEAD` |
 | Primer commit | **2026-07-01 16:10:41 -0400** | `git log --reverse` |
@@ -60,6 +60,8 @@ En `entidades-plataforma.md`, varios encabezados agrupan alias con `/` (p. ej. `
 
 ### 1.3 Normas (lista consolidada deduplicada)
 
+**Fuente de verdad:** [`sgm-docs/arquitectura/especificacion/registro-normas.md`](sgm-docs/arquitectura/especificacion/registro-normas.md) (`N-01`…`N-36`, apariciones y verificación). Esta sección es un espejo resumido del inventario; altas y citas nuevas van al registro.
+
 **Leyes:** 15.076; 18.695 (LOCM); 18.883; 19.070; 19.378; 19.799; 19.880; 19.883; 19.886; 19.925; 19.983; 20.237; 20.422; 20.742; 21.180; 21.634; 21.719.
 
 **Decretos / DS:** 1/2015; 4/2020; 7/2023; 10/2023; 12/2023; 854/2004; 661/2024; 1227/2024.
@@ -74,12 +76,12 @@ En `entidades-plataforma.md`, varios encabezados agrupan alias con `/` (p. ej. `
 
 **Total lista §1.3:** 36 ítems (17 leyes + 8 decretos + 1 resolución + 2 dictámenes + 3 oficios + 5 marcos/directivas).
 
-**Declaradas verificadas en fuente primaria u oficial** (el propio corpus lo afirma):
+**Declaradas verificadas en fuente primaria u oficial** (el propio corpus lo afirma; detalle en el registro §3):
 
 | Norma / hecho | Archivo |
 |---|---|
-| Dictamen CGR N° 60.449/2008 (y corrección de cita del levantamiento) | `sgm-docs/modulos/presupuestos/plan-de-trabajo.md` |
-| art. 24 DL 3.063; art. 65 c) LOCM; composición IPP/SINIM | `sgm-docs/arquitectura/decisiones/Nota-sobre-rentas.md` |
+| Dictamen CGR N° 60.449/2008 (y corrección de cita del levantamiento) — **N-27** | `sgm-docs/modulos/presupuestos/plan-de-trabajo.md` |
+| art. 24 DL 3.063; art. 65 c) LOCM (**N-02**); composición IPP/SINIM | `sgm-docs/arquitectura/decisiones/Nota-sobre-rentas.md` |
 | Cobertura DocDigital 80 % municipios / funciones de la plataforma (fuente Ministerio de Hacienda); mecanismo M2M **no** verificado | `sgm-docs/arquitectura/especificacion/integracion-docdigital.md` y ADR DocDigital |
 
 El resto de normas del corpus **no** declara verificación en fuente primaria en el texto leído.
@@ -874,7 +876,7 @@ Origen: `sgm-docs/arquitectura/especificacion/estandar-pruebas.md` §11 (registr
 
 ### Conteos que no son exactos al 100 % (declarados)
 
-- **Normas:** el regex produjo 59 cadenas crudas; la lista §1.3 deduplicada suma **36** ítems. Pueden existir citas en prosa sin número no capturadas.
+- **Normas:** el regex produjo 59 cadenas crudas; la lista canónica en `registro-normas.md` / §1.3 suma **36** ítems (`N-01`…`N-36`). Pueden existir citas en prosa sin número no capturadas; altas futuras van al registro.
 - **Pendientes únicos P/C:** incluyen IDs históricos residuales; la serie canónica es la de los planes/registro.
 - **Entidades plataforma:** 27 encabezados; nombres atómicos tras partir alias `A / B` no se contabilizaron aparte.
 - **Cobertura Magenta en %:** no se recalculó; solo se inventarían los N de procesos que los planes enumeran.
