@@ -138,7 +138,6 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | `title` presente | blocking | `title` | 53 | `MISSING_REQUIRED_FIELD` |
   | `description` presente | blocking | `description` | 53 | `MISSING_REQUIRED_FIELD` |
   | `justification` presente | blocking | `justification` | 53 | `MISSING_REQUIRED_FIELD` |
-  | `requested_date` presente | blocking | `requested_date` | 53 | `MISSING_REQUIRED_FIELD` |
   | Al menos una línea | blocking | `lines` | 53 | `MISSING_REQUIRED_FIELD` |
   | Campos obligatorios de cada línea | blocking | `lines[].*` | 53 | `MISSING_REQUIRED_FIELD` |
   | `quantity > 0` en cada línea | blocking | `lines[].quantity` | 53 P0 | `INVALID_QUANTITY` |
@@ -148,7 +147,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Si se agrega adjunto, tipo / descripción / archivo presentes | blocking | `attachments[].*` | — | `MISSING_REQUIRED_FIELD` |
 - **Dependencias invocadas:** `getPriceReference`, `getBudgetLine` / `previewBudgetAvailability` *(al seleccionar imputación presupuestaria — descripción + saldo)*; `searchProducts` *(typeahead de `product_code` — **[PENDIENTE X-94]**)*; `listUnitOfMeasures` *(catálogo de plataforma)*. Verificación de stock/catálogo CM: sub-paso **1.0** (optativo).
 - **Notas:**
-  - Al crear la SOLPED se crea implícitamente el `ProcurementCase`: `title`, `requesting_unit_id` y `destination_unit_id` se copian desde la SOLPED (`PurchaseRequest.title` / unidades).
+  - Al crear la SOLPED se crea implícitamente el `ProcurementCase`: `title`, `requesting_unit_id` y `destination_unit_id` se copian desde la SOLPED (`PurchaseRequest.title` / unidades). El sistema asigna `PurchaseRequest.requested_date` (= fecha del día de creación); no forma parte de la entrada del cliente.
   - Unidades: `requesting_unit` y `destination_unit` se autoasignan por `RoleAssignment`. Con `adq.solicitante` ambas quedan fijas a su unidad; con `adq.solicitante_daf` ambas son **modificables** en el tenant. Ver [`catalogo-roles.md`](../../arquitectura/especificacion/catalogo-roles.md) §3.1.
   - `product_code` en línea: typeahead busca por código o palabra vía `searchProducts`; si el usuario elige un hit del catálogo, se persiste el código (y puede prellenar `item_description`). Catálogo / entidad `Product` **[PENDIENTE X-94]** — campo opcional hasta entonces.
   - `unit_of_measure` en línea: ref. al catálogo de plataforma `UnitOfMeasure` (`listUnitOfMeasures`, solo activas). Semilla (unidad, bolsa, caja, resma, g, kg, L, …) ampliable en consola municipal sin cambiar Adquisiciones.
@@ -186,7 +185,6 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | `title` presente | blocking | `title` | 53 | `MISSING_REQUIRED_FIELD` |
   | `description` presente | blocking | `description` | 53 | `MISSING_REQUIRED_FIELD` |
   | `justification` presente | blocking | `justification` | 53 | `MISSING_REQUIRED_FIELD` |
-  | `requested_date` presente | blocking | `requested_date` | 53 | `MISSING_REQUIRED_FIELD` |
   | Al menos una línea con campos obligatorios | blocking | `lines` / `lines[].*` | 53 | `MISSING_REQUIRED_FIELD` |
   | `quantity > 0` en cada línea | blocking | `lines[].quantity` | 53 P0 | `INVALID_QUANTITY` |
   | `unit_price` con referencia válida | blocking | `lines[].price_source` | — | `PRICE_REFERENCE_UNAVAILABLE` |

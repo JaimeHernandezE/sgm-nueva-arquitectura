@@ -69,7 +69,7 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 | `title` | Título | texto | **Obligatorio** — resumen corto (una línea). Se copia a `ProcurementCase.title` al crear el expediente. Visible en listado y cabecera del expediente. |
 | `description` | Descripción | texto | **Obligatorio** — texto largo: qué producto, servicio o conjunto se busca. Distinto de `justification` (el porqué). No se copia al expediente. |
 | `justification` | Justificación | texto | **Obligatorio** — motivo / necesidad de la compra (el porqué). Distinto de `description` (el qué). |
-| `requested_date` | Fecha solicitada | fecha | **Obligatorio** |
+| `requested_date` | Fecha solicitud | fecha | **Obligatorio** (generado por sistema al crear la SOLPED — fecha del día de creación). No editable por el usuario. |
 | `purchase_modality` | Modalidad de compra | enum, **opcional** | **Opcional** — indicación provisional de modalidad. Valores: `agile_purchase`, `framework_agreement`, `public_tender`, `direct_procurement`. Confirmable en etapa 2. |
 | `founded_resolution_attachment` | Resolución fundada | ref. `DocumentRef` | **Obligatorio si** `purchase_modality = direct_procurement`. Resolución Fundada — almacenada vía C10 (`storeDocument`). |
 | `currency` | Moneda | enum | **Obligatorio** (default `CLP`). Valores: `CLP`, `UF`, `UTM`, `USD`. Moneda del documento; todas las líneas se expresan en ella. No se mezclan monedas en una misma SOLPED. |

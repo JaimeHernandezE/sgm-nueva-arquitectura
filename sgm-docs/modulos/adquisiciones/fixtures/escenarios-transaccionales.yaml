@@ -19,7 +19,6 @@ scenarios:
             Adquisición de resmas de papel, tóner y útiles de escritorio para la
             reposición anual de stock de la unidad solicitante.
           justification: Reposición de stock según plan anual.
-          requested_date: '2026-06-24'
           purchase_modality: agile_purchase
           proposed_budget_line_id: bl-2210-001
           proposed_fiscal_year: 2026

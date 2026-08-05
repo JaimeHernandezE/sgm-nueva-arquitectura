@@ -502,6 +502,7 @@ components:
         requested_date:
           type: string
           format: date
+          description: Fecha solicitud — asignada por el sistema al crear (no editable).
         purchase_modality:
           $ref: "#/components/schemas/PurchaseModality"
         founded_resolution_attachment:
@@ -607,7 +608,6 @@ components:
         - title
         - description
         - justification
-        - requested_date
         - purchase_modality
         - lines
       properties:
@@ -620,9 +620,6 @@ components:
         justification:
           type: string
           description: Porqué de la compra
-        requested_date:
-          type: string
-          format: date
         purchase_modality:
           $ref: "#/components/schemas/PurchaseModality"
         founded_resolution_attachment:

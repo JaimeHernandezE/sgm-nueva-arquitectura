@@ -45,8 +45,12 @@ export function applySolpedPreset() {
   setValue(document.getElementById('solped-title'), s.title);
   setValue(document.getElementById('solped-description'), s.description);
   setValue(document.getElementById('solped-justification'), s.justification);
-  const dateInput = document.querySelector('.form-card__body input[type="date"]');
-  if (dateInput) setValue(dateInput, s.date);
+  const requestedDate = document.getElementById('solped-requested-date');
+  if (requestedDate && s.date) {
+    // Demo: ISO → DD-MM-AAAA
+    const [y, m, d] = String(s.date).split('-');
+    setText(requestedDate, d && m && y ? `${d}-${m}-${y}` : s.date);
+  }
   setSelect(document.getElementById('purchase-modality'), s.purchaseModality);
 
   const lineTable = document.getElementById('solped-lines');

@@ -88,7 +88,7 @@ Prioridad por impacto funcional, analítica y bordes. Columna **Candidato**: ado
 | `funcionario_envia` | No | Descartar | Texto libre; el actor queda en auditoría |
 | Flags `autorizacion_jefatura`, `autorizacion_direccion`, `revision_presupuestaria`, `derivacion_compras` | Estados + firmas FirmaGob | Descartar | Checklist booleana Odoo |
 | `firma_solicitante` / `firma_finanzas` / `firma_administracion` | FirmaGob por paso | Descartar | Modelo distinto |
-| `fecha_solicitud` + `fecha_estimada` | Solo `requested_date` (+ `created_at` del expediente) | Parcialmente cubierto | Odoo separa creación vs necesidad |
+| `fecha_solicitud` + `fecha_estimada` | `requested_date` (= `fecha_solicitud`, auto al crear) + `created_at` del expediente | Parcial | `fecha_estimada` (necesidad) no modelada; `requested_date` es fecha de la solicitud, no editable |
 
 ### 2.2 Líneas SOLPED / Resolución
 

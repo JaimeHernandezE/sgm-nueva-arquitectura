@@ -20,7 +20,8 @@
 |   (texto largo: qué producto/servicio o conjunto se busca)|
 | Justificación *       [________________________]          |
 |   (porqué de la compra)                                   |
-| Fecha solicitada *    [ __ / __ / ____ ]                  |
+| Fecha solicitud       [ 24-06-2026 ] (solo lectura)       |
+|   — asignada por el sistema al crear                      |
 +----------------------------------------------------------+
 | Líneas de bienes/servicios                                |
 | Moneda *              [ Peso (CLP) / UF / UTM / USD  v ]  |
@@ -81,7 +82,7 @@
 | Título | `PurchaseRequest.title` | Sí — resumen corto; se copia a `ProcurementCase.title` |
 | Descripción | `PurchaseRequest.description` | Sí — texto largo (qué se busca); distinto de justificación |
 | Justificación | `PurchaseRequest.justification` | Sí — porqué de la compra |
-| Fecha solicitada | `PurchaseRequest.requested_date` | Sí |
+| Fecha solicitud (lectura) | `PurchaseRequest.requested_date` | — (generada por sistema al crear) |
 | Modalidad de compra | `PurchaseRequest.purchase_modality` | No (indicación provisional; confirmable en etapa 2). Si proviene de 1.0 con hit CM: sugerencia + advertencia no bloqueante. Al seleccionar: **preview** del gateway V1–V8 (mismo que 2.1; no bloquea 1.1) |
 | Resolución Fundada | `PurchaseRequest.founded_resolution_attachment` | Sí si modalidad = Trato Directo |
 | Causal TD / justif. bypass CM | — (UI demo gateway) | Condicionales al preview V3 / V2 |
