@@ -50,8 +50,8 @@ paths:
                 missingFields:
                   value:
                     error_code: MISSING_REQUIRED_FIELD
-                    field: description
-                    rule: El campo Descripción es obligatorio.
+                    field: title
+                    rule: El campo Título es obligatorio.
                     severity: blocking
                 invalidQuantity:
                   value:
@@ -91,6 +91,10 @@ paths:
                       - error_code: MISSING_REQUIRED_FIELD
                         field: destination_unit
                         rule: El campo Unidad de destino es obligatorio.
+                        severity: blocking
+                      - error_code: MISSING_REQUIRED_FIELD
+                        field: title
+                        rule: El campo Título es obligatorio.
                         severity: blocking
                       - error_code: MISSING_REQUIRED_FIELD
                         field: description
@@ -150,6 +154,10 @@ paths:
                       - error_code: MISSING_REQUIRED_FIELD
                         field: destination_unit
                         rule: El campo Unidad de destino es obligatorio.
+                        severity: blocking
+                      - error_code: MISSING_REQUIRED_FIELD
+                        field: title
+                        rule: El campo Título es obligatorio.
                         severity: blocking
                       - error_code: MISSING_REQUIRED_FIELD
                         field: description

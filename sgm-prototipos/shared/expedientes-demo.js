@@ -4,7 +4,7 @@ export const expedientesDemo = [
   {
     id: 'ADQ-2026-00123',
     createdAt: '2026-03-12T10:15:00-03:00',
-    glosa: 'Insumos de oficina — reposición anual',
+    title: 'Insumos de oficina — reposición anual',
     modality: 'Compra Ágil',
     modalityKey: 'agile_purchase',
     department: 'Administración Municipal',
@@ -22,7 +22,7 @@ export const expedientesDemo = [
   {
     id: 'ADQ-2026-00089',
     createdAt: '2026-02-05T09:30:00-03:00',
-    glosa: 'Mobiliario ergonómico vía Convenio Marco',
+    title: 'Mobiliario ergonómico vía Convenio Marco',
     modality: 'Convenio Marco',
     modalityKey: 'framework_agreement',
     department: 'Finanzas',
@@ -40,7 +40,7 @@ export const expedientesDemo = [
   {
     id: 'ADQ-2026-00045',
     createdAt: '2026-01-20T14:00:00-03:00',
-    glosa: 'Servicio de mantención de flota municipal',
+    title: 'Servicio de mantención de flota municipal',
     modality: 'Licitación Pública',
     modalityKey: 'public_tender',
     department: 'Dirección de Obras Municipales',
@@ -58,7 +58,7 @@ export const expedientesDemo = [
   {
     id: 'ADQ-2026-00012',
     createdAt: '2026-01-08T11:45:00-03:00',
-    glosa: 'Repuestos críticos — urgencia operacional',
+    title: 'Repuestos críticos — urgencia operacional',
     modality: 'Trato Directo',
     modalityKey: 'direct_procurement',
     department: 'Finanzas',
@@ -76,7 +76,7 @@ export const expedientesDemo = [
   {
     id: 'ADQ-2026-00142',
     createdAt: '2026-03-18T08:20:00-03:00',
-    glosa: 'Equipamiento audiovisual sala de consejo',
+    title: 'Equipamiento audiovisual sala de consejo',
     modality: 'Compra Ágil',
     modalityKey: 'agile_purchase',
     department: 'Administración Municipal',
@@ -95,7 +95,7 @@ export const expedientesDemo = [
   {
     id: 'ADQ-2026-00201',
     createdAt: '2026-03-01T16:00:00-03:00',
-    glosa: 'Toner y consumibles impresoras sector norte',
+    title: 'Toner y consumibles impresoras sector norte',
     modality: 'Compra Ágil',
     modalityKey: 'agile_purchase',
     department: 'Administración Municipal',
@@ -113,7 +113,7 @@ export const expedientesDemo = [
   {
     id: 'ADQ-2026-00202',
     createdAt: '2026-01-28T12:00:00-03:00',
-    glosa: 'Señalética peatonal — reposición',
+    title: 'Señalética peatonal — reposición',
     modality: 'Convenio Marco',
     modalityKey: 'framework_agreement',
     department: 'Administración Municipal',
@@ -131,7 +131,7 @@ export const expedientesDemo = [
   {
     id: 'ADQ-2026-00210',
     createdAt: '2026-02-14T10:00:00-03:00',
-    glosa: 'Asfaltado parcial calle Los Aromos',
+    title: 'Asfaltado parcial calle Los Aromos',
     modality: 'Licitación Pública',
     modalityKey: 'public_tender',
     department: 'Dirección de Obras Municipales',
@@ -149,7 +149,7 @@ export const expedientesDemo = [
   {
     id: 'ADQ-2026-00211',
     createdAt: '2026-02-22T15:30:00-03:00',
-    glosa: 'Herramientas menores taller municipal',
+    title: 'Herramientas menores taller municipal',
     modality: 'Compra Ágil',
     modalityKey: 'agile_purchase',
     department: 'Dirección de Obras Municipales',
@@ -167,7 +167,7 @@ export const expedientesDemo = [
   {
     id: 'ADQ-2026-00220',
     createdAt: '2026-03-05T09:00:00-03:00',
-    glosa: 'Cámaras control de velocidad — estudio',
+    title: 'Cámaras control de velocidad — estudio',
     modality: 'Licitación Pública',
     modalityKey: 'public_tender',
     department: 'Tránsito',
@@ -185,7 +185,7 @@ export const expedientesDemo = [
   {
     id: 'ADQ-2026-00221',
     createdAt: '2026-03-10T13:15:00-03:00',
-    glosa: 'Pintura demarcación vial urgente',
+    title: 'Pintura demarcación vial urgente',
     modality: 'Trato Directo',
     modalityKey: 'direct_procurement',
     department: 'Tránsito',
@@ -203,7 +203,7 @@ export const expedientesDemo = [
   {
     id: 'ADQ-2026-00222',
     createdAt: '2026-01-15T11:00:00-03:00',
-    glosa: 'Software de simulación de tránsito (licencia)',
+    title: 'Software de simulación de tránsito (licencia)',
     modality: 'Convenio Marco',
     modalityKey: 'framework_agreement',
     department: 'Tránsito',
@@ -221,7 +221,7 @@ export const expedientesDemo = [
   {
     id: 'ADQ-2026-00230',
     createdAt: '2026-02-28T17:00:00-03:00',
-    glosa: 'Auditoría presupuestaria externa — honorarios',
+    title: 'Auditoría presupuestaria externa — honorarios',
     modality: 'Trato Directo',
     modalityKey: 'direct_procurement',
     department: 'Finanzas',
@@ -239,7 +239,7 @@ export const expedientesDemo = [
   {
     id: 'ADQ-2026-00231',
     createdAt: '2025-12-10T10:30:00-03:00',
-    glosa: 'Equipamiento ergonómico Tesorería',
+    title: 'Equipamiento ergonómico Tesorería',
     modality: 'Convenio Marco',
     modalityKey: 'framework_agreement',
     department: 'Finanzas',
@@ -257,7 +257,7 @@ export const expedientesDemo = [
   {
     id: 'ADQ-2026-00240',
     createdAt: '2026-03-15T08:45:00-03:00',
-    glosa: 'Capacitación normativa de compras públicas',
+    title: 'Capacitación normativa de compras públicas',
     modality: 'Compra Ágil',
     modalityKey: 'agile_purchase',
     department: 'Finanzas',
@@ -275,7 +275,7 @@ export const expedientesDemo = [
   {
     id: 'ADQ-2026-00241',
     createdAt: '2026-02-01T14:20:00-03:00',
-    glosa: 'Servicio de digitalización de expedientes DAF',
+    title: 'Servicio de digitalización de expedientes DAF',
     modality: 'Licitación Pública',
     modalityKey: 'public_tender',
     department: 'Finanzas',

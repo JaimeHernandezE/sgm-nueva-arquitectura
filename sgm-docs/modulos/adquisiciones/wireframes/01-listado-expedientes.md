@@ -17,7 +17,7 @@
 | [ ] Omitir paso 1.0 (sin Inventario ni catálogo CM)              |
 | (panel fondo advertencia)                    [ Solo para demo ]  |
 +------------------------------------------------------------------+
-| Buscar (opcional) [ folio / glosa / modalidad ________ ]         |
+| Buscar (opcional) [ folio / título / modalidad ________ ]         |
 |                                                                  |
 | Filtros (opcionales, acumulables)                                |
 | Departamento solicitante (opcional) [ Todos              v ]     |
@@ -30,7 +30,7 @@
 +------------------------------------------------------------------+
 | Mostrando 1–50 de M  (página P de T)     [ ◀ Anterior ] [ Siguiente ▶ ] |
 | +--------+----------+----------+--------+----------+---------------------------+------------------+ |
-| | Folio↕ | Creación↕| Glosa↕   | Depto↕ | Modalid↕| Paso↕                    | Monto↕           | |
+| | Folio↕ | Creación↕| Título↕  | Depto↕ | Modalid↕| Paso↕                    | Monto↕           | |
 | +--------+----------+----------+--------+----------+---------------------------+------------------+ |
 | | ADQ-…  | 12-03-2026| …        | Obras  | CA       | 4 — Recepción conforme /  | $1.250.000 sol.  | |
 | |        |          |          |        |          | 4.1 Registro de la recepción|                | |
@@ -49,14 +49,14 @@
 
 | Campo UI | Entidad / query | Obligatorio |
 |---|---|---|
-| Buscar | query `q` (folio, `ProcurementCase.description`, etiqueta de `procurement_type`) | No |
+| Buscar | query `q` (folio, `ProcurementCase.title`, etiqueta de `procurement_type`) | No |
 | Departamento solicitante | query `requesting_department_id` | No; oculto si rol de unidad |
 | Modalidad | query `procurement_type` → `ProcurementCase.procurement_type` | No |
 | Estado | query `status` → `ProcurementCase.status` (`in_progress` \| `completed` \| `cancelled` \| `deserted`) | No |
 | Por firmar / aprobar | query `awaiting_my_action=true` | No |
 | Folio (columna, ordenable) | `ProcurementCase.id` / `folio` → `sort=folio` | — (lectura) |
 | Creación (columna, ordenable) | `ProcurementCase.created_at` → `sort=created_at` | — (lectura) |
-| Glosa (columna, ordenable) | `ProcurementCase.description` → `sort=description` | — (lectura) |
+| Título (columna, ordenable) | `ProcurementCase.title` → `sort=title` | — (lectura) |
 | Departamento (columna, ordenable) | departamento de `OrganizationalUnit` vía `destination_unit_id` → `sort=requesting_department` *(nombre de sort legado; ordena por depto de la unidad de destino)* | — (lectura) |
 | Modalidad (columna, ordenable) | `ProcurementCase.procurement_type` → `sort=procurement_type` | — (lectura) |
 | Paso (columna, ordenable) | etapa + `current_step_id` / nombre del sub-paso → `sort=current_step` | — (lectura; reemplaza columna Estado) |
@@ -86,7 +86,7 @@
 
 ## Notas de comportamiento
 
-1. **Filtros acumulables:** buscador y filtros se combinan con AND. Dentro de `q`, la coincidencia es por folio **o** glosa **o** modalidad (OR de campos de texto).
+1. **Filtros acumulables:** buscador y filtros se combinan con AND. Dentro de `q`, la coincidencia es por folio **o** título **o** modalidad (OR de campos de texto).
 2. **Alcance RBAC (servidor):** con `adq.solicitante` / `adq.aprobador_unidad` el scope se aplica por `destination_unit_id` (= unidad del `RoleAssignment`). Intentos de ampliar con filtros ajenos se ignoran o rechazan. `adq.solicitante_daf` ve el tenant completo y puede cambiar `requesting_unit` y `destination_unit` al crear ([`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) §3.1).
 3. **Estado:** filtro select por `ProcurementCase.status` (`in_progress` / `completed` / `cancelled` / `deserted`). Sustituye el checkbox «Proceso activo» (equivalente a filtrar `in_progress`).
 4. **Por firmar / aprobar:** filtro de expedientes que esperan acción del actor (`awaiting_my_action`). No hay columna “Bandeja”: el listado de **acciones pendientes por usuario** corresponde a la bandeja de entrada del sistema de notificaciones ([`musts-arquitectura.md`](../../../arquitectura/especificacion/musts-arquitectura.md) §9; [`notificaciones/overview.md`](../../../plataforma/notificaciones/overview.md), wireframe [`02-bandeja.md`](../../../plataforma/wireframes/shell/02-bandeja.md)).

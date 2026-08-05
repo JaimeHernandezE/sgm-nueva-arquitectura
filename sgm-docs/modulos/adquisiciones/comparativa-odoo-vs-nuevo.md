@@ -79,7 +79,7 @@ Prioridad por impacto funcional, analítica y bordes. Columna **Candidato**: ado
 
 | Campo Odoo | En el nuevo | Candidato | Nota |
 |---|---|---|---|
-| `titulo` | No (solo `description`) | Evaluar | Título corto vs glosa larga |
+| `titulo` | Sí → `PurchaseRequest.title` (+ copia a `ProcurementCase.title`) | **Adoptado** | Título corto (listado/cabecera); `description` queda como texto largo del qué; `justification` = porqué |
 | `observaciones` | No canónico | Evaluar | Distinto de `justification` |
 | `instrucciones_internas` | No | Evaluar / descartar | Notas operativas; puede vivir en comentarios de paso |
 | `historial_observaciones` | No (auditoría implícita) | Descartar | Sustituido por bitácora de plataforma |

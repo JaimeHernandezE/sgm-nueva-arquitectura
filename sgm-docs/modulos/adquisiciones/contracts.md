@@ -20,11 +20,11 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 
 | Entidad | Visibilidad | Campos expuestos | Sub-pasos origen |
 |---|---|---|---|
-| `ProcurementCase` | Expuesta | `id`, `folio`, `description`, `requesting_unit_id`, `destination_unit_id`, `procurement_type`, `status`, `current_step_id`, `created_at`, `mp_process_id`, `mp_linked_at`, `mp_process_type`, `procurement_route`, `route_decided_at`, `purchase_intent_published_at`, `purchase_intent_deadline` | 1.1 (creación implícita), 2.1, 2.3, 3.1/3.3 *(CM, `procurement_route` y campos de Intención de Compra)* |
-| `ProcurementCaseSummary` | Expuesta (DTO lectura) | `id`, `folio`, `description`, `procurement_type`, `status`, `current_step_id`, `current_step_name`, `current_stage_label`, `requesting_unit_id`, `destination_unit_id`, `created_at`, `requested_amount`, `awarded_amount` | — |
+| `ProcurementCase` | Expuesta | `id`, `folio`, `title`, `requesting_unit_id`, `destination_unit_id`, `procurement_type`, `status`, `current_step_id`, `created_at`, `mp_process_id`, `mp_linked_at`, `mp_process_type`, `procurement_route`, `route_decided_at`, `purchase_intent_published_at`, `purchase_intent_deadline` | 1.1 (creación implícita), 2.1, 2.3, 3.1/3.3 *(CM, `procurement_route` y campos de Intención de Compra)* |
+| `ProcurementCaseSummary` | Expuesta (DTO lectura) | `id`, `folio`, `title`, `procurement_type`, `status`, `current_step_id`, `current_step_name`, `current_stage_label`, `requesting_unit_id`, `destination_unit_id`, `created_at`, `requested_amount`, `awarded_amount` | — |
 | `ProcurementCaseDetail` | Expuesta (DTO lectura) | `ProcurementCase` + `current_step` (`CaseStep` resumido) | — |
 | `CaseStep` | Expuesta | `id`, `procurement_case_id`, `step_number`, `name`, `status`, `responsible_unit_id`, `responsible_role`, `responsible_user_id`, `started_at`, `completed_at`, `elapsed_display` | 2.1 (instanciación), todas las etapas |
-| `PurchaseRequest` | Expuesta | `id`, `procurement_case_id`, `requesting_unit`, `destination_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status` | 1.1, 1.2, 2.1, 2.2 |
+| `PurchaseRequest` | Expuesta | `id`, `procurement_case_id`, `requesting_unit`, `destination_unit`, `title`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status` | 1.1, 1.2, 2.1, 2.2 |
 | `PurchaseRequestLine` | Expuesta | `id`, `purchase_request_id`, `product_code`, `item_description`, `quantity`, `unit_of_measure`, `unit_price`, `price_source` | 1.1 |
 | `PurchaseRequestAttachment` | Expuesta | `id`, `purchase_request_id`, `attachment_type`, `description`, `document_ref` | 1.1 |
 | `PurchaseRequestApproval` | Expuesta | `id`, `purchase_request_id`, `approver_id`, `decision`, `disposition`, `decision_date`, `comments`, `signed_document_ref` | 1.2 |
@@ -71,12 +71,12 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 - **Sub-pasos:** 0.1 — [Consulta de expedientes](./procesos-transversales/0-consulta-expedientes.md)
 - **Entrada:** query `page`, `page_size`, `sort`, `order`; filtros `q`, `procurement_type`, `status`, `requesting_department_id`, `requesting_unit_id`, `folio`, `awaiting_my_action`
 - **Respuesta:** colección paginada de `ProcurementCaseSummary`
-- **UI listado (0.1):** `page_size` = **50**; encabezados ordenan con `sort` ∈ `folio` \| `created_at` \| `description` \| `requesting_department` \| `procurement_type` \| `current_step` \| `amount` y `order` ∈ `asc` \| `desc`. `amount` ordena por `awarded_amount` si existe; si no, por `requested_amount`. `current_step` ordena por `current_step_id`. Columna **Paso** = `{etapa} — {current_stage_label} / {current_step_id} {current_step_name}` (p. ej. `2 — Modalidad de Compra / 2.1 Ratificación…`). Filtro **Estado** = query `status` (no hay columna Estado).
+- **UI listado (0.1):** `page_size` = **50**; encabezados ordenan con `sort` ∈ `folio` \| `created_at` \| `title` \| `requesting_department` \| `procurement_type` \| `current_step` \| `amount` y `order` ∈ `asc` \| `desc`. `amount` ordena por `awarded_amount` si existe; si no, por `requested_amount`. `current_step` ordena por `current_step_id`. Columna **Paso** = `{etapa} — {current_stage_label} / {current_step_id} {current_step_name}` (p. ej. `2 — Modalidad de Compra / 2.1 Ratificación…`). Filtro **Estado** = query `status` (no hay columna Estado).
 - **Reglas:**
   | Regla | Severidad | Error |
   |---|---|---|
   | Solo lectura; sin efectos colaterales | — | — |
-  | Filtros combinables (AND). `q` busca en folio, descripción (glosa) y etiqueta de `procurement_type` | — | — |
+  | Filtros combinables (AND). `q` busca en folio, título y etiqueta de `procurement_type` | — | — |
   | `requesting_department_id` restringe a unidades hijas del departamento | — | — |
   | `awaiting_my_action=true` limita a expedientes que esperan acción del actor (firmar / aprobar según rol). Las pendientes detalladas por usuario se listan en la bandeja del sistema de notificaciones (plataforma C6, [`notificaciones/overview.md`](../../plataforma/notificaciones/overview.md); musts §9), no como columna del listado | — | — |
   | `requested_amount` = total bruto SOLPED / preobligación; `awarded_amount` = OC activa o contrato cuando existe | — | — |
@@ -135,6 +135,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Si el actor es `adq.solicitante`, `destination_unit` = unidad del `RoleAssignment` | blocking | `destination_unit` | — | `DESTINATION_UNIT_OUT_OF_SCOPE` |
   | Si el actor es `adq.solicitante_daf`, `requesting_unit` ∈ unidades del tenant | blocking | `requesting_unit` | — | `REQUESTING_UNIT_OUT_OF_SCOPE` |
   | Si el actor es `adq.solicitante_daf`, `destination_unit` ∈ unidades del tenant | blocking | `destination_unit` | — | `DESTINATION_UNIT_OUT_OF_SCOPE` |
+  | `title` presente | blocking | `title` | 53 | `MISSING_REQUIRED_FIELD` |
   | `description` presente | blocking | `description` | 53 | `MISSING_REQUIRED_FIELD` |
   | `justification` presente | blocking | `justification` | 53 | `MISSING_REQUIRED_FIELD` |
   | `requested_date` presente | blocking | `requested_date` | 53 | `MISSING_REQUIRED_FIELD` |
@@ -147,6 +148,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Si se agrega adjunto, tipo / descripción / archivo presentes | blocking | `attachments[].*` | — | `MISSING_REQUIRED_FIELD` |
 - **Dependencias invocadas:** `getPriceReference`, `getBudgetLine` / `previewBudgetAvailability` *(al seleccionar imputación presupuestaria — descripción + saldo)*; `searchProducts` *(typeahead de `product_code` — **[PENDIENTE X-94]**)*; `listUnitOfMeasures` *(catálogo de plataforma)*. Verificación de stock/catálogo CM: sub-paso **1.0** (optativo).
 - **Notas:**
+  - Al crear la SOLPED se crea implícitamente el `ProcurementCase`: `title`, `requesting_unit_id` y `destination_unit_id` se copian desde la SOLPED (`PurchaseRequest.title` / unidades).
   - Unidades: `requesting_unit` y `destination_unit` se autoasignan por `RoleAssignment`. Con `adq.solicitante` ambas quedan fijas a su unidad; con `adq.solicitante_daf` ambas son **modificables** en el tenant. Ver [`catalogo-roles.md`](../../arquitectura/especificacion/catalogo-roles.md) §3.1.
   - `product_code` en línea: typeahead busca por código o palabra vía `searchProducts`; si el usuario elige un hit del catálogo, se persiste el código (y puede prellenar `item_description`). Catálogo / entidad `Product` **[PENDIENTE X-94]** — campo opcional hasta entonces.
   - `unit_of_measure` en línea: ref. al catálogo de plataforma `UnitOfMeasure` (`listUnitOfMeasures`, solo activas). Semilla (unidad, bolsa, caja, resma, g, kg, L, …) ampliable en consola municipal sin cambiar Adquisiciones.
@@ -181,6 +183,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | `requesting_unit` presente | blocking | `requesting_unit` | 53 | `MISSING_REQUIRED_FIELD` |
   | `destination_unit` presente | blocking | `destination_unit` | — | `MISSING_REQUIRED_FIELD` |
   | Scope de `requesting_unit` y `destination_unit` según rol (`adq.solicitante` = solo propia; `adq.solicitante_daf` = tenant, ambas modificables) — [`catalogo-roles.md`](../../arquitectura/especificacion/catalogo-roles.md) §3.1 | blocking | `requesting_unit` / `destination_unit` | — | `REQUESTING_UNIT_OUT_OF_SCOPE` / `DESTINATION_UNIT_OUT_OF_SCOPE` |
+  | `title` presente | blocking | `title` | 53 | `MISSING_REQUIRED_FIELD` |
   | `description` presente | blocking | `description` | 53 | `MISSING_REQUIRED_FIELD` |
   | `justification` presente | blocking | `justification` | 53 | `MISSING_REQUIRED_FIELD` |
   | `requested_date` presente | blocking | `requested_date` | 53 | `MISSING_REQUIRED_FIELD` |

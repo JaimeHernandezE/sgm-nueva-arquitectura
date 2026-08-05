@@ -36,7 +36,7 @@ paths:
           in: query
           description: >
             Campo de orden del listado (encabezados de columna).
-            Valores: folio, created_at, description, requesting_department, procurement_type,
+            Valores: folio, created_at, title, requesting_department, procurement_type,
             current_step, amount (`amount` = awarded_amount si existe; si no, requested_amount;
             `current_step` = current_step_id).
           schema:
@@ -44,7 +44,7 @@ paths:
             enum:
               - folio
               - created_at
-              - description
+              - title
               - requesting_department
               - procurement_type
               - current_step
@@ -53,7 +53,7 @@ paths:
         - name: q
           in: query
           description: >
-            Búsqueda libre en folio, descripción (glosa) y etiqueta de modalidad (`procurement_type`).
+            Búsqueda libre en folio, título y etiqueta de modalidad (`procurement_type`).
           schema:
             type: string
         - name: procurement_type

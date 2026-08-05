@@ -42,9 +42,9 @@ export function applySolpedPreset() {
 
   // Unidad solicitante / destino: las fija el rol en 1.1 (applyUnitsByRole), no el preset.
 
+  setValue(document.getElementById('solped-title'), s.title);
   setValue(document.getElementById('solped-description'), s.description);
-  const textarea = document.querySelector('.form-card__body textarea');
-  if (textarea) setValue(textarea, s.justification);
+  setValue(document.getElementById('solped-justification'), s.justification);
   const dateInput = document.querySelector('.form-card__body input[type="date"]');
   if (dateInput) setValue(dateInput, s.date);
   setSelect(document.getElementById('purchase-modality'), s.purchaseModality);
@@ -76,11 +76,11 @@ export function applyModalidadPreset() {
   setText(header, `SOLPED #${preset.solpedNumber} — Ratificación de modalidad`);
 
   const unit = s.unit || m.unit || '—';
-  const description = s.description || '—';
+  const title = s.title || '—';
   const modalityLabel = m.modalityLabel || '—';
 
   setText(document.getElementById('solped-context-unit'), `Unidad solicitante: ${unit}`);
-  setText(document.getElementById('solped-context-description'), `Descripción: ${description}`);
+  setText(document.getElementById('solped-context-title'), `Título: ${title}`);
   const modalityEl = document.getElementById('solped-context-modality');
   if (modalityEl) {
     modalityEl.innerHTML = `Modalidad indicada en 1.1: <strong>${modalityLabel}</strong>`;

@@ -13,6 +13,7 @@ export const VALIDATION_DEMOS = {
     issues: [
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'requesting_unit', rule: 'El campo Unidad solicitante es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'destination_unit', rule: 'El campo Unidad de destino es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
+      { error_code: 'MISSING_REQUIRED_FIELD', field: 'title', rule: 'El campo Título es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'description', rule: 'El campo Descripción es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'justification', rule: 'El campo Justificación es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'requested_date', rule: 'El campo Fecha solicitada es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
@@ -23,6 +24,7 @@ export const VALIDATION_DEMOS = {
     issues: [
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'requesting_unit', rule: 'El campo Unidad solicitante es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'destination_unit', rule: 'El campo Unidad de destino es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
+      { error_code: 'MISSING_REQUIRED_FIELD', field: 'title', rule: 'El campo Título es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'description', rule: 'El campo Descripción es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'justification', rule: 'El campo Justificación es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
     ],

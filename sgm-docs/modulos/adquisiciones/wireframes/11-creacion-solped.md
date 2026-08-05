@@ -15,8 +15,11 @@
 | Unidad de destino *   [ Unidad X          v ]             |
 |   · básico: ambas fijas a su unidad                       |
 |   · DAF: ambas modificables (cualquier unidad tenant)     |
+| Título *              [________________________]          |
 | Descripción *         [________________________]          |
+|   (texto largo: qué producto/servicio o conjunto se busca)|
 | Justificación *       [________________________]          |
+|   (porqué de la compra)                                   |
 | Fecha solicitada *    [ __ / __ / ____ ]                  |
 +----------------------------------------------------------+
 | Líneas de bienes/servicios                                |
@@ -75,8 +78,9 @@
 |---|---|---|
 | Unidad solicitante | `PurchaseRequest.requesting_unit` | Sí — autoasignada según `RoleAssignment`. `adq.solicitante`: fija. `adq.solicitante_daf`: modificable en el tenant ([`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) §3.1) |
 | Unidad de destino | `PurchaseRequest.destination_unit` | Sí — autoasignada = solicitante si `adq.solicitante` (fija); seleccionable en el tenant si `adq.solicitante_daf` ([`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) §3.1) |
-| Descripción | `PurchaseRequest.description` | Sí |
-| Justificación | `PurchaseRequest.justification` | Sí |
+| Título | `PurchaseRequest.title` | Sí — resumen corto; se copia a `ProcurementCase.title` |
+| Descripción | `PurchaseRequest.description` | Sí — texto largo (qué se busca); distinto de justificación |
+| Justificación | `PurchaseRequest.justification` | Sí — porqué de la compra |
 | Fecha solicitada | `PurchaseRequest.requested_date` | Sí |
 | Modalidad de compra | `PurchaseRequest.purchase_modality` | No (indicación provisional; confirmable en etapa 2). Si proviene de 1.0 con hit CM: sugerencia + advertencia no bloqueante. Al seleccionar: **preview** del gateway V1–V8 (mismo que 2.1; no bloquea 1.1) |
 | Resolución Fundada | `PurchaseRequest.founded_resolution_attachment` | Sí si modalidad = Trato Directo |

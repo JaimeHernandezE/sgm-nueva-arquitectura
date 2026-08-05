@@ -237,7 +237,7 @@ function renderHeader(profile, currentStep, simulation) {
     <header class="expediente-header">
       <div>
         <div class="folio">${profile.id}</div>
-        <div class="glosa">${profile.glosa}</div>
+        <div class="case-title">${profile.title}</div>
         <div class="meta">Modalidad: ${profile.modality} · Unidad de origen: ${profile.unit}</div>
         ${roleLine}
         ${currentLink}

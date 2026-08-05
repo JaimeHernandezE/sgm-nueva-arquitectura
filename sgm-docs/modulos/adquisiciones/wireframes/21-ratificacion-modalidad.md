@@ -12,7 +12,7 @@
 +----------------------------------------------------------------+
 | Datos de la SOLPED (solo lectura)                               |
 | Unidad solicitante: Unidad X                                     |
-| Descripción: Adquisición de insumos de oficina                   |
+| Título: Insumos de oficina — reposición anual                    |
 | Modalidad indicada en 1.1: Compra Ágil (provisional)             |
 | [ Ver detalle de la SOLPED ]  → formulario 1.1 (solo lectura)    |
 +----------------------------------------------------------------+
@@ -62,7 +62,7 @@
 | Campo UI | Entidad.campo | Obligatorio |
 |---|---|---|
 | Unidad solicitante (lectura) | `PurchaseRequest.requesting_unit` | — (contexto SOLPED) |
-| Descripción (lectura) | `PurchaseRequest.description` | — (contexto SOLPED) |
+| Título (lectura) | `PurchaseRequest.title` | — (contexto SOLPED) |
 | Modalidad indicada en 1.1 (lectura) | `PurchaseRequest.purchase_modality` | — (contexto SOLPED) |
 | Ver detalle de la SOLPED | — (navegación a 1.1) | — |
 | Monto total estimado | entrada gateway V1–V8 | Sí |

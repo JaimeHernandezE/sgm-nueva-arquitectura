@@ -47,7 +47,7 @@
                 <input
                   type="search"
                   id="filter-q"
-                  placeholder="Folio, glosa o modalidad"
+                  placeholder="Folio, título o modalidad"
                   autocomplete="off"
                 />
               </label>
@@ -93,7 +93,7 @@
                 <tr>
                   <th class="th-sortable" data-sort="folio" scope="col" tabindex="0" role="columnheader" aria-sort="none">Folio</th>
                   <th class="th-sortable" data-sort="created_at" scope="col" tabindex="0" role="columnheader" aria-sort="none">Creación</th>
-                  <th class="th-sortable" data-sort="description" scope="col" tabindex="0" role="columnheader" aria-sort="none">Glosa</th>
+                  <th class="th-sortable" data-sort="title" scope="col" tabindex="0" role="columnheader" aria-sort="none">Título</th>
                   <th class="th-sortable" data-sort="requesting_department" scope="col" tabindex="0" role="columnheader" aria-sort="none">Departamento</th>
                   <th class="th-sortable" data-sort="procurement_type" scope="col" tabindex="0" role="columnheader" aria-sort="none">Modalidad</th>
                   <th class="th-sortable" data-sort="current_step" scope="col" tabindex="0" role="columnheader" aria-sort="none">Paso</th>
@@ -141,7 +141,7 @@
     const SORT_KEYS = {
       folio: (e) => e.id,
       created_at: (e) => e.createdAt || '',
-      description: (e) => e.glosa,
+      title: (e) => e.title,
       requesting_department: (e) => e.department,
       procurement_type: (e) => e.modality,
       current_step: (e) => e.currentStep?.id || '',
@@ -200,7 +200,7 @@
 
     function matchesQuery(exp, q) {
       if (!q) return true;
-      const hay = [exp.id, exp.glosa, exp.modality].join(' ').toLowerCase();
+      const hay = [exp.id, exp.title, exp.modality].join(' ').toLowerCase();
       return hay.includes(q);
     }
 
@@ -292,7 +292,7 @@
         <tr ${navAttrs}>
           <td class="folio-cell">${exp.id}</td>
           <td class="date-cell">${formatCreatedAt(exp.createdAt)}</td>
-          <td>${exp.glosa} ${stubBadge}</td>
+          <td>${exp.title} ${stubBadge}</td>
           <td>${exp.department}</td>
           <td>${exp.modality}</td>
           <td class="paso-cell">${formatCurrentStep(exp)}</td>

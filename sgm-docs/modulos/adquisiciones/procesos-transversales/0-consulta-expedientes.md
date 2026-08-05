@@ -19,7 +19,7 @@
 | Plataforma | SGM |
 | Optativo | Falso *(pantalla de entrada del módulo; siempre disponible para quien tenga `listProcurementCases`)* |
 
-**Detalle:** Pantalla de consulta paginada de expedientes de compra (`ProcurementCase`). El usuario busca por folio/glosa/modalidad, aplica filtros acumulables (departamento solicitante, modalidad, **estado**, “por firmar/aprobar”) y abre el detalle de un expediente. En la grilla, la columna **Paso** muestra la etapa y el sub-paso actual (p. ej. `2 — Modalidad de Compra / 2.1 Ratificación o selección de modalidad`); el `status` del expediente se filtra, no se lista como columna. El **alcance** lo impone el servidor según el `RoleAssignment`: los perfiles de unidad solicitante no pueden ampliar el universo con filtros de departamento/unidad ajenos; los perfiles DAF / lectura amplia ven el tenant y pueden filtrar por departamento.
+**Detalle:** Pantalla de consulta paginada de expedientes de compra (`ProcurementCase`). El usuario busca por folio/título/modalidad, aplica filtros acumulables (departamento solicitante, modalidad, **estado**, “por firmar/aprobar”) y abre el detalle de un expediente. En la grilla, la columna **Paso** muestra la etapa y el sub-paso actual (p. ej. `2 — Modalidad de Compra / 2.1 Ratificación o selección de modalidad`); el `status` del expediente se filtra, no se lista como columna. El **alcance** lo impone el servidor según el `RoleAssignment`: los perfiles de unidad solicitante no pueden ampliar el universo con filtros de departamento/unidad ajenos; los perfiles DAF / lectura amplia ven el tenant y pueden filtrar por departamento.
 
 **Paginación y orden (UI):** la tabla muestra hasta **50 ítems por página** (`page_size` = 50; dentro del tope de plataforma 100 de [`estandares-api.md`](../../../arquitectura/especificacion/estandares-api.md) §4). Los encabezados de columna son controles de orden: un clic fija `sort` al campo de esa columna y alterna `order` (`asc` ↔ `desc`); el cambio recarga `listProcurementCases` manteniendo filtros y página (o vuelve a `page=1` si el orden cambia el conjunto visible).
 
@@ -29,7 +29,7 @@ Desde esta pantalla también se inicia la creación de un expediente nuevo (sub-
 
 - Lectura de colección: `ProcurementCaseSummary` (DTO) — no crea ni actualiza entidades.
   - `id` / `folio` (texto, **obligatorio**)
-  - `description` (texto, **obligatorio** — glosa)
+  - `title` (texto, **obligatorio** — título corto; copia de `PurchaseRequest.title`)
   - `procurement_type` (enum, **opcional** hasta confirmación de modalidad en 2.1)
   - `status` (enum, **obligatorio**: `in_progress` \| `completed` \| `cancelled` \| `deserted` — filtro UI; no es columna)
   - `current_step_id` (texto, **opcional** — p. ej. `2.1`)
@@ -68,7 +68,7 @@ Query de `listProcurementCases` (todos **opcionales** salvo paginación estánda
 | Parámetro UI | Convención en esta pantalla |
 |---|---|
 | `page_size` | **50** (máximo de página del listado; no superar el tope de plataforma 100) |
-| `sort` vía encabezado | `folio` \| `created_at` \| `description` \| `requesting_department` \| `procurement_type` \| `current_step` \| `amount` *(monto mostrado: adjudicado si existe, si no solicitado; `current_step` = `current_step_id`)* |
+| `sort` vía encabezado | `folio` \| `created_at` \| `title` \| `requesting_department` \| `procurement_type` \| `current_step` \| `amount` *(monto mostrado: adjudicado si existe, si no solicitado; `current_step` = `current_step_id`)* |
 | `order` | `asc` \| `desc` — alterna al repetir clic en el mismo encabezado |
 
 **Edge cases:**

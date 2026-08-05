@@ -294,7 +294,7 @@ components:
       required:
         - id
         - folio
-        - description
+        - title
         - requesting_unit_id
         - destination_unit_id
         - status
@@ -307,8 +307,9 @@ components:
         folio:
           type: string
           example: ADQ-2026-00123
-        description:
+        title:
           type: string
+          description: Título corto del expediente (copia de PurchaseRequest.title)
         requesting_unit_id:
           type: string
           description: Unidad que tramita (RoleAssignment del actor)
@@ -339,7 +340,7 @@ components:
       required:
         - id
         - folio
-        - description
+        - title
         - status
         - requesting_unit_id
         - destination_unit_id
@@ -349,8 +350,9 @@ components:
           type: string
         folio:
           type: string
-        description:
+        title:
           type: string
+          description: Título corto del expediente (listado / cabecera)
         procurement_type:
           $ref: "#/components/schemas/ProcurementType"
         status:
@@ -465,6 +467,7 @@ components:
         - procurement_case_id
         - requesting_unit
         - destination_unit
+        - title
         - description
         - justification
         - requested_date
@@ -487,10 +490,15 @@ components:
           description: >
             Unidad de destino (beneficiaria). Con adq.solicitante = requesting_unit;
             con adq.solicitante_daf = seleccionable en el tenant (catalogo-roles §3.1).
+        title:
+          type: string
+          description: Resumen corto (una línea). Se copia a ProcurementCase.title al crear el expediente.
         description:
           type: string
+          description: Texto largo — qué producto, servicio o conjunto se busca (distinto de justification).
         justification:
           type: string
+          description: Motivo / necesidad de la compra (el porqué; distinto de description).
         requested_date:
           type: string
           format: date
@@ -596,16 +604,22 @@ components:
     CreatePurchaseRequestRequest:
       type: object
       required:
+        - title
         - description
         - justification
         - requested_date
         - purchase_modality
         - lines
       properties:
+        title:
+          type: string
+          description: Resumen corto; se copia a ProcurementCase.title
         description:
           type: string
+          description: Texto largo — qué se busca
         justification:
           type: string
+          description: Porqué de la compra
         requested_date:
           type: string
           format: date
@@ -1327,7 +1341,7 @@ components:
       value:
         id: ADQ-2026-00123
         folio: ADQ-2026-00123
-        description: Insumos de oficina — reposición anual
+        title: Insumos de oficina — reposición anual
         requesting_unit_id: unit-solicitante
         destination_unit_id: unit-solicitante
         procurement_type: agile_purchase
@@ -1384,7 +1398,10 @@ components:
         procurement_case_id: ADQ-2026-00123
         requesting_unit: unit-solicitante
         destination_unit: unit-solicitante
-        description: Adquisición de insumos de oficina
+        title: Insumos de oficina — reposición anual
+        description: >
+          Adquisición de resmas de papel, tóner y útiles de escritorio para la
+          reposición anual de stock de la unidad solicitante.
         justification: Reposición de stock según plan anual.
         requested_date: 2026-06-24
         purchase_modality: agile_purchase
@@ -1403,7 +1420,7 @@ components:
       value:
         id: ADQ-2026-00045
         folio: ADQ-2026-00045
-        description: Servicio de mantención de flota municipal
+        title: Servicio de mantención de flota municipal
         requesting_unit_id: unit-direccion-obras
         destination_unit_id: unit-direccion-obras
         procurement_type: public_tender

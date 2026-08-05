@@ -23,7 +23,7 @@ export const stages = compraAgilStages;
 
 export const expediente = {
   id: 'ADQ-2026-00123',
-  glosa: 'Insumos de oficina — reposición anual',
+  title: 'Insumos de oficina — reposición anual',
   modality: 'Compra Ágil',
   unit: 'Unidad Solicitante',
   globalStatus: 'En curso · recepción conforme (4.1)',

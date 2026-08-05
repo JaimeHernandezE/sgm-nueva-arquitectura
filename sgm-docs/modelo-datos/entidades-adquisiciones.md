@@ -13,7 +13,7 @@ Los macroprocesos **referencian** estas entidades — no las redefinen. Si un su
 ---
 
 ### `ProcurementCase` (Expediente de Compra)
-**Visibilidad:** expuesta — campos en contrato: `id` (= `folio`), `procurement_type`, `status`, `current_step_id`, `description`, `requesting_unit_id`, `destination_unit_id`, `created_at`, `mp_process_id`, `mp_linked_at`, `mp_process_type`, `procurement_route`, `route_decided_at`, `purchase_intent_published_at`, `purchase_intent_deadline`
+**Visibilidad:** expuesta — campos en contrato: `id` (= `folio`), `procurement_type`, `status`, `current_step_id`, `title`, `requesting_unit_id`, `destination_unit_id`, `created_at`, `mp_process_id`, `mp_linked_at`, `mp_process_type`, `procurement_route`, `route_decided_at`, `purchase_intent_published_at`, `purchase_intent_deadline`
 
 Raíz de trazabilidad de todo el ciclo SOLPED → Pago. El estado del expediente es **distinto** del estado documental de sus entidades hijas (`PurchaseRequest.status`, `PurchaseOrder.status`, etc.) — no fusionar ambos conceptos.
 
@@ -21,7 +21,7 @@ Raíz de trazabilidad de todo el ciclo SOLPED → Pago. El estado del expediente
 |---|---|---|---|
 | `id` | Identificador | texto | **Obligatorio** (generado por sistema). Igual al `folio` legible. Formato `ADQ-AAAA-NNNNN`. |
 | `folio` | Folio | texto | **Obligatorio** (generado por sistema). Correlativo legible. Duplica `id` — expuesto como `id` en API. |
-| `description` | Descripción | texto | **Obligatorio** — glosa resumen del expediente (listado y cabecera). |
+| `title` | Título | texto | **Obligatorio** — resumen corto del expediente (listado y cabecera). Copia de `PurchaseRequest.title` al crear la SOLPED (`createPurchaseRequest`, creación implícita del expediente). |
 | `requesting_unit_id` | Unidad solicitante | ref. `OrganizationalUnit` | **Obligatorio** — copia de `PurchaseRequest.requesting_unit`. Con `adq.solicitante`: autoasignada (fija). Con `adq.solicitante_daf`: autoasignada por default y **modificable**. Ver [`catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) §3.1. |
 | `destination_unit_id` | Unidad de destino | ref. `OrganizationalUnit` | **Obligatorio** — unidad beneficiaria (copia de `PurchaseRequest.destination_unit`). Con `adq.solicitante` = misma que solicitante (fija); con `adq.solicitante_daf` = seleccionable. Ver [`catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) §3.1. Base del listado/departamento y del alcance del aprobador de unidad. |
 | `procurement_type` | Modalidad de compra | enum | **Opcional** hasta etapa 2.1; **Obligatorio** desde confirmación de modalidad. Valores: `agile_purchase`, `framework_agreement`, `public_tender`, `direct_procurement`. |
@@ -57,7 +57,7 @@ Raíz de trazabilidad de todo el ciclo SOLPED → Pago. El estado del expediente
 > `procurement_case_id` en cada entidad del ciclo es **desnormalización intencional** para trazabilidad y reportería directa (consultas por expediente sin recorrer la cadena de FKs). Se mantiene además de las FKs directas entre entidades.
 
 ### `PurchaseRequest` (SOLPED)
-**Visibilidad:** expuesta — campos en contrato: `id`, `requesting_unit`, `destination_unit`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `currency`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status`
+**Visibilidad:** expuesta — campos en contrato: `id`, `requesting_unit`, `destination_unit`, `title`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `currency`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status`
 
 Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 
@@ -66,8 +66,9 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 | `procurement_case_id` | Expediente de compra | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional — ver nota arriba |
 | `requesting_unit` | Unidad solicitante | ref. `OrganizationalUnit` | **Obligatorio** — se autoasigna según el `RoleAssignment` del actor. Con `adq.solicitante`: fija a su unidad. Con `adq.solicitante_daf`: default DAF y **modificable** en el tenant. Ver [`catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) §3.1. |
 | `destination_unit` | Unidad de destino | ref. `OrganizationalUnit` | **Obligatorio** — unidad para la que se solicita la compra. Con `adq.solicitante`: autoasignada = `requesting_unit` (fija). Con `adq.solicitante_daf`: seleccionable entre unidades del tenant. Ver [`catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) §3.1. |
-| `description` | Descripción | texto | **Obligatorio** |
-| `justification` | Justificación | texto | **Obligatorio** |
+| `title` | Título | texto | **Obligatorio** — resumen corto (una línea). Se copia a `ProcurementCase.title` al crear el expediente. Visible en listado y cabecera del expediente. |
+| `description` | Descripción | texto | **Obligatorio** — texto largo: qué producto, servicio o conjunto se busca. Distinto de `justification` (el porqué). No se copia al expediente. |
+| `justification` | Justificación | texto | **Obligatorio** — motivo / necesidad de la compra (el porqué). Distinto de `description` (el qué). |
 | `requested_date` | Fecha solicitada | fecha | **Obligatorio** |
 | `purchase_modality` | Modalidad de compra | enum, **opcional** | **Opcional** — indicación provisional de modalidad. Valores: `agile_purchase`, `framework_agreement`, `public_tender`, `direct_procurement`. Confirmable en etapa 2. |
 | `founded_resolution_attachment` | Resolución fundada | ref. `DocumentRef` | **Obligatorio si** `purchase_modality = direct_procurement`. Resolución Fundada — almacenada vía C10 (`storeDocument`). |

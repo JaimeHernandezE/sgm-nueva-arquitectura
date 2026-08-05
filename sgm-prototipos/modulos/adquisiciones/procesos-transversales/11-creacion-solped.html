@@ -43,12 +43,19 @@
             <p class="form-section__hint" id="destination-unit-hint">Para quién es la compra. Solicitante básico: igual a la solicitante. Solicitante DAF: seleccionable.</p>
           </div>
           <div class="form-row">
+            <label>Título <span class="required">*</span></label>
+            <input type="text" id="solped-title" value="Insumos de oficina — reposición anual" />
+            <p class="form-section__hint">Resumen corto visible en el listado y la cabecera del expediente.</p>
+          </div>
+          <div class="form-row">
             <label>Descripción <span class="required">*</span></label>
-            <input type="text" id="solped-description" value="Adquisición de insumos de oficina" />
+            <textarea id="solped-description">Adquisición de resmas de papel, tóner y útiles de escritorio para la reposición anual de stock de la unidad solicitante.</textarea>
+            <p class="form-section__hint">Qué producto, servicio o conjunto se busca (texto largo).</p>
           </div>
           <div class="form-row">
             <label>Justificación <span class="required">*</span></label>
-            <textarea>Reposición de stock según plan anual.</textarea>
+            <textarea id="solped-justification">Reposición de stock según plan anual.</textarea>
+            <p class="form-section__hint">Porqué de la compra (necesidad o motivo).</p>
           </div>
           <div class="form-row">
             <label>Fecha solicitada <span class="required">*</span></label>
@@ -702,8 +709,8 @@
     const params = new URLSearchParams(window.location.search);
     if (params.get('from') === 'previa') {
       const q = params.get('q');
-      const desc = document.getElementById('solped-description');
-      if (q && desc) desc.value = q;
+      const title = document.getElementById('solped-title');
+      if (q && title) title.value = q;
 
       if (params.get('cm') === '1') {
         const modality = document.getElementById('purchase-modality');

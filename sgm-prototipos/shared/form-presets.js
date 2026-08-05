@@ -4,7 +4,8 @@ export const formPresets = {
     solpedNumber: '1234',
     solped: {
       unit: 'Unidad X',
-      description: 'Adquisición de insumos de oficina',
+      title: 'Insumos de oficina — reposición anual',
+      description: 'Adquisición de resmas de papel, tóner y útiles de escritorio para la reposición anual de stock de la unidad solicitante.',
       justification: 'Reposición de stock según plan anual.',
       date: '2026-06-24',
       purchaseModality: 'agile_purchase',
@@ -48,7 +49,8 @@ export const formPresets = {
     solpedNumber: '8891',
     solped: {
       unit: 'DAF Administración',
-      description: 'Mobiliario ergonómico para oficinas municipales',
+      title: 'Mobiliario ergonómico vía Convenio Marco',
+      description: 'Adquisición de sillas ergonómicas y estaciones de trabajo para oficinas municipales, preferentemente vía catálogo de Convenio Marco.',
       justification: 'Renovación de puestos de trabajo según diagnóstico ergonómico 2026.',
       date: '2026-03-10',
       purchaseModality: 'framework_agreement',
@@ -92,7 +94,8 @@ export const formPresets = {
     solpedNumber: '4512',
     solped: {
       unit: 'Dirección de Obras',
-      description: 'Servicio de mantención de flota municipal',
+      title: 'Servicio de mantención de flota municipal',
+      description: 'Servicio de mantención preventiva y correctiva de la flota vehicular municipal por 12 meses, incluyendo repuestos e insumos asociados.',
       justification: 'Contrato anual de mantención preventiva y correctiva de vehículos municipales.',
       date: '2026-01-15',
       purchaseModality: 'public_tender',
@@ -136,7 +139,8 @@ export const formPresets = {
     solpedNumber: '1205',
     solped: {
       unit: 'DAF Abastecimiento',
-      description: 'Repuestos críticos para maquinaria municipal',
+      title: 'Repuestos críticos — urgencia operacional',
+      description: 'Kits de reparación hidráulica y repuestos críticos para maquinaria de aseo urbano fuera de servicio.',
       justification: 'Urgencia operacional: falla de equipo impide prestación del servicio de aseo.',
       date: '2026-05-05',
       purchaseModality: 'direct_procurement',
@@ -181,7 +185,8 @@ export const formPresets = {
     solpedNumber: '1420',
     solped: {
       unit: 'Unidad X',
-      description: 'Equipamiento audiovisual sala de consejo',
+      title: 'Equipamiento audiovisual sala de consejo',
+      description: 'Proyector láser 4K, sistema de audio y accesorios de instalación para la sala de consejo municipal.',
       justification: 'Renovación de proyección y audio para sesiones del concejo municipal.',
       date: '2026-07-18',
       purchaseModality: 'agile_purchase',
