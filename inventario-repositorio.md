@@ -46,7 +46,7 @@ Serie canónica declarada en planes / registro:
 | Prefijo | Serie declarada en documentos de origen | Filas en registro tabular central |
 |---|---|---|
 | X- | X-01…X-93 | **93** filas en `sgm-docs/arquitectura/decisiones/pendientes.md` |
-| P- | P-1…P-30 (plan Presupuestos / plan-general) | Marcadores `> **PENDIENTE P-…**` y tablas |
+| P- | P-1…P-31 (plan Presupuestos / plan-general) | Marcadores `> **PENDIENTE P-…**` y tablas |
 | C- | C-1…C-18 | Marcadores en plan Contabilidad |
 | T- | T-1…T-14 | Marcadores en plan Tesorería |
 | R- | R-1…R-14 | Marcadores en plan RRHH |
@@ -117,7 +117,7 @@ El resto de normas del corpus **no** declara verificación en fuente primaria en
 | Ruta | Título (H1) | Versión / estado | Líneas | H2 | D-n | Macros | Pendientes (únicos en archivo) |
 |---|---|---|---:|---:|---:|---|---|
 | `sgm-docs/plan-general.md` | Plan de trabajo general — Corpus SGM | v0.2 / consolidación B0 — no validado con DM | 299 | 11 | 11 DC | — | P18 C12 T3 R5 A5 X23 |
-| `sgm-docs/modulos/presupuestos/plan-de-trabajo_presupuestos.md` | Plan de trabajo — Módulo Presupuestos | 0.15 / no validado con DM | ~1664 | 13 | 4 | — | P30 (+menciones C/R/X) |
+| `sgm-docs/modulos/presupuestos/plan-de-trabajo_presupuestos.md` | Plan de trabajo — Módulo Presupuestos | 0.17 / no validado con DM | ~1732 | 13 | 4 | — | P31 (+menciones C/R/X) |
 | `sgm-docs/modulos/contabilidad/plan-de-trabajo-contabilidad.md` | Plan de trabajo — Módulo Contabilidad | 0.6 / no validado con DM | 438 | 11 | 5 | MC-1…7 | C18 |
 | `sgm-docs/modulos/tesoreria/plan-de-trabajo-tesoreria.md` | Plan de trabajo — Módulo Tesorería | 0.3 / no validado con DM | 393 | 11 | 6 | MT-1…7 | T14 |
 | `sgm-docs/modulos/rrhh/plan-de-trabajo-rrhh.md` | Plan de trabajo — Módulo RRHH y Remuneraciones | 0.3 / no validado con DM | 439 | 11 | 6 | MR-1…7 | R14 |
@@ -331,7 +331,7 @@ HTML por área: Compra Ágil 6; Convenio Marco 8; Licitación Pública 14; Trato
 | ``sgm-docs/modulos/contabilidad/plan-de-trabajo-contabilidad.md`` | Plan de trabajo — Módulo Contabilidad | 438 | 11 | 0.6 (borrador para revisión interna) propuesta de plan, no validada con DM |
 | ``sgm-docs/modulos/presupuestos/modelos-odoo.md`` | Modelos Odoo — Presupuestos | 452 | 12 |  |
 | ``sgm-docs/modulos/presupuestos/overview.md`` | Módulo: Presupuestos | 15 | 2 |  |
-| ``sgm-docs/modulos/presupuestos/plan-de-trabajo_presupuestos.md`` | Plan de trabajo — Módulo Presupuestos | ~1664 | 13 | 0.15 (borrador; Anexo B; P-1…P-30) propuesta de plan, no validado con DM |
+| ``sgm-docs/modulos/presupuestos/plan-de-trabajo_presupuestos.md`` | Plan de trabajo — Módulo Presupuestos | ~1732 | 13 | 0.17 (borrador; Anexo B; P-1…P-31) propuesta de plan, no validado con DM |
 | ``sgm-docs/modulos/rrhh/modelos-odoo.md`` | Modelos Odoo — RRHH / Remuneraciones | 435 | 15 |  |
 | ``sgm-docs/modulos/rrhh/overview.md`` | Módulo: RRHH / Remuneraciones | 17 | 2 |  |
 | ``sgm-docs/modulos/rrhh/plan-de-trabajo-rrhh.md`` | Plan de trabajo — Módulo RRHH y Remuneraciones | 439 | 11 | 0.3 (borrador para revisión interna) propuesta de plan, no validada con DM |
@@ -682,7 +682,7 @@ Origen: `sgm-docs/arquitectura/especificacion/estandar-pruebas.md` §11 (registr
 | 438 | ``sgm-docs/modulos/contabilidad/plan-de-trabajo-contabilidad.md`` |
 | 452 | ``sgm-docs/modulos/presupuestos/modelos-odoo.md`` |
 | 15 | ``sgm-docs/modulos/presupuestos/overview.md`` |
-| 1664 | ``sgm-docs/modulos/presupuestos/plan-de-trabajo_presupuestos.md`` |
+| 1732 | ``sgm-docs/modulos/presupuestos/plan-de-trabajo_presupuestos.md`` |
 | 435 | ``sgm-docs/modulos/rrhh/modelos-odoo.md`` |
 | 17 | ``sgm-docs/modulos/rrhh/overview.md`` |
 | 439 | ``sgm-docs/modulos/rrhh/plan-de-trabajo-rrhh.md`` |

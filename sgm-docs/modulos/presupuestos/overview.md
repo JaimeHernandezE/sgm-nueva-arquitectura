@@ -6,8 +6,8 @@ Inventario Odoo y plan de trabajo de especificación en curso. Macroprocesos, co
 
 | Documento | Descripción |
 |-----------|-------------|
-| [`plan-de-trabajo_presupuestos.md`](plan-de-trabajo_presupuestos.md) | Plan de especificación (**v0.15**): D-5/D-6, eje de gestión, Anexo A, fases, pendientes **P-1…P-30**. Stub legacy: [`plan-de-trabajo.md`](plan-de-trabajo.md) |
-| [`anexo-b_ciclo-presupuestario-ejemplos.md`](anexo-b_ciclo-presupuestario-ejemplos.md) | Anexo B — ciclo presupuestario completo (dos casos); origen P-29/P-30 |
+| [`plan-de-trabajo_presupuestos.md`](plan-de-trabajo_presupuestos.md) | Plan de especificación (**v0.17**): D-5/D-6, eje de gestión, Anexo A, fases, pendientes **P-1…P-31**. Stub legacy: [`plan-de-trabajo.md`](plan-de-trabajo.md) |
+| [`anexo-b_ciclo-presupuestario-ejemplos.md`](anexo-b_ciclo-presupuestario-ejemplos.md) | Anexo B — ciclo presupuestario completo (dos casos); origen P-29/P-30/P-31 |
 | [`modelos-odoo.md`](modelos-odoo.md) | Modelos, relaciones y flujos de estado en Odoo (`presupuesto_gov_cl` + puente `account_gov_adquisiciones`) |
 
 ## Referencias

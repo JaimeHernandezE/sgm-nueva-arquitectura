@@ -1,6 +1,6 @@
 # Entidades — Presupuestos
 
-**Estado:** stubs mínimos consumidos por Adquisiciones; especificación completa pendiente del plan [`modulos/presupuestos/plan-de-trabajo_presupuestos.md`](../modulos/presupuestos/plan-de-trabajo_presupuestos.md) (D-5, D-6, P-21…P-30).
+**Estado:** stubs mínimos consumidos por Adquisiciones; especificación completa pendiente del plan [`modulos/presupuestos/plan-de-trabajo_presupuestos.md`](../modulos/presupuestos/plan-de-trabajo_presupuestos.md) (D-5, D-6, P-21…P-31).
 
 Índice del modelo: [`entidades-core.md`](entidades-core.md).
 

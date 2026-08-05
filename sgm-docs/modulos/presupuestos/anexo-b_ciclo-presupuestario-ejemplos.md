@@ -1,6 +1,6 @@
 # Anexo B — Ciclo presupuestario completo: dos ejemplos trabajados
 
-**Documento complementario de** [`plan-de-trabajo_presupuestos.md`](plan-de-trabajo_presupuestos.md) v0.16
+**Documento complementario de** [`plan-de-trabajo_presupuestos.md`](plan-de-trabajo_presupuestos.md) v0.17
 **Propósito:** ilustrar el modelo de D-5 y D-6 sobre dos casos de distinta complejidad, y exponer los vacíos que los ejemplos revelan.
 **Estado:** borrador. Los montos y el municipio son ficticios; los códigos de cuenta y la mecánica no.
 
@@ -259,9 +259,23 @@ Esto fija el nivel al que vive cada eje dentro de la solicitud:
 
 **Consecuencia sobre el CDP.** El certificado tiene una línea por cuenta distinta, todas contra el mismo nodo: aquí dos líneas. No es un monto único contra una sola `BudgetLine`, pero tampoco un producto cartesiano de cuentas y nodos.
 
-**Consecuencia sobre el flujo.** Una SOLPED **no puede servir a dos programas**. Si DIDECO necesita insumos para el taller y para la feria en la misma compra, son dos solicitudes. Es una restricción deliberada: mantiene el expediente legible y hace que la imputación del nodo sea una sola decisión de la DAF, no una por línea.
+**Consecuencia sobre el flujo.** Una SOLPED **no puede servir a dos programas**. Si DIDECO necesita insumos para el taller y para la feria en la misma compra, son dos solicitudes.
 
-> **A verificar (P-28).** El caso que tensiona la regla es la **compra centralizada**: bodega municipal adquiere resmas para todo el municipio y las distribuye. Ahí el nodo sería el de abastecimiento, no el de cada dirección receptora, y la distribución posterior no queda trazada presupuestariamente. Es coherente con que Villarrica tenga `BODEGA MUNICIPAL` como subprograma propio, pero hay que confirmarlo con los municipios antes de cerrar la regla.
+> ### ⚠ Esta regla es un default, no una decisión — **P-31**
+>
+> Tiene una virtud operativa clara: la DAF toma **una** decisión de imputación por solicitud, no una por línea. Eso es lo que hace viable D-6 sin agravar el cuello de botella.
+>
+> Y un costo que no está medido: **impide agregar demanda de dos programas en una sola compra**, que es justamente lo que conviene para obtener mejor precio.
+>
+> Cinco casos la falsifican si existen en la operación real:
+>
+> 1. **Compra centralizada de bodega** — resmas para todo el municipio, distribuidas después. Villarrica tiene `BODEGA MUNICIPAL` como subprograma propio, lo que sugiere que imputan ahí y no reparten.
+> 2. **Servicios básicos por inmueble** — Villarrica usa el subprograma como dirección física (`OMIL-General Korner 335`), lo que sugiere lo contrario: que sí reparten una factura entre nodos.
+> 3. **Combustible que cruza áreas** — camión de aseo (área 2) y vehículo de alcaldía (área 1) en un mismo suministro.
+> 4. **Agregación por economía de escala** — dos programas sociales comprando alimentos juntos.
+> 5. **Contrato de suministro que sirve a varios nodos** — aseo, seguridad, arriendo de fotocopiadoras.
+>
+> Si aparece cualquiera, el nodo pasa a la línea con valor por defecto heredado de la solicitud. Se contrasta con los municipios antes de fijarlo en el contrato.
 
 ### Julio · Honorarios: otra puerta de entrada, por exclusión legal
 
@@ -333,9 +347,11 @@ Adquisiciones para bienes y servicios; **RRHH para todo el subtítulo 21**. No e
 
 `CommitmentChain` no puede asumir origen único, y el contrato R-1 no es un caso secundario del contrato con Adquisiciones sino uno paralelo, con la misma criticidad y un fundamento normativo propio.
 
-### 8. Los dos ejes viven en niveles distintos de la solicitud
+### 8. Los dos ejes viven en niveles distintos de la solicitud — y eso hay que preguntárselo a los municipios
 
 La cuenta es de la línea, el nodo es de la solicitud. Es la consecuencia práctica más inmediata de D-5 y D-6 sobre el contrato con Adquisiciones, y determina la forma del CDP: una línea por cuenta distinta, todas contra el mismo nodo.
+
+Pero es la regla **más fácil de refutar con un caso real** de todas las que este anexo produce, porque tensiona dos lógicas legítimas y opuestas: la de compra empuja a agregar demanda, la de presupuesto a separar por destino. **P-31** la deja como default con cinco casos concretos para contrastar. No conviene escribirla en el contrato de API antes de esa conversación.
 
 ---
 

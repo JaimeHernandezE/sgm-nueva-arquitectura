@@ -236,7 +236,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Disponibilidad presupuestaria con trazabilidad de saldo (par cuenta × nodo) | blocking | 8 P1 | `BUDGET_UNAVAILABLE` |
   | SOLPED en `pending_finance` | blocking | — | `INVALID_STATUS` |
 - **Dependencias:** `listManagementNodes`, `checkBudgetAvailability` (Presupuestos; entrada incluye `management_node_id` + `budget_line_id`)
-- **Notas:** prefill desde propuesta SOLPED; pre-sugerencia por unidad destino si no hay propuesta (**[PENDIENTE P-23]**). Divergencia propuesta≠resuelto no es error. Corpus actual = **una** imputación resuelta; Presupuestos v0.15 exige CDP multi-línea (**[PENDIENTE P-28]**).
+- **Notas:** prefill desde propuesta SOLPED; pre-sugerencia por unidad destino si no hay propuesta (**[PENDIENTE P-23]**). Divergencia propuesta≠resuelto no es error. Pres v0.17 default: nodo por SOLPED + cuenta por línea; CDP multi-cuenta mismo nodo (**[PENDIENTE P-31]** / **[PENDIENTE P-28]**). Corpus Adq aún 1 pareja en 1.3.
 
 #### `POST /purchase-requests/{id}/budget-financing-request` — `requestBudgetFinancing`
 - **Sub-pasos:** 1.4

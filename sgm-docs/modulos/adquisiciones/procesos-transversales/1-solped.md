@@ -205,7 +205,7 @@
 
 **Detalle:** El formulador de DAF Finanzas **clasifica** la SOLPED (imputación **cuenta × nodo de gestión**, D-5/D-6) y **verifica** disponibilidad (QA ítem 8 P1). Es el paso de autoridad presupuestaria previo al CDP: la unidad solicitante solo pudo **proponer** en 1.1; aquí se **resuelve**. Prefill desde `proposed_management_node_id` / `proposed_budget_line_id` si existen; la DAF puede cambiarlos. Si no hay propuesta, puede aplicarse pre-sugerencia por unidad destino (**[PENDIENTE P-23]**). Si lo resuelto diverge de lo propuesto, se registra `imputation_diverged` (no es error; alimenta P-23). Muestra trazabilidad de saldo sobre la imputación **resuelta** y confirma o rechaza con justificación. Quien clasifica/verifica aquí **no** es quien firma el CDP (segregación QA ítem 9).
 
-> **[PENDIENTE P-28]** — Presupuestos v0.15 (Anexo B): una SOLPED puede resolverse en **varias imputaciones** (CDP con líneas). El corpus Adq modela hoy **una** pareja `management_node_id` × `budget_line_id`; el rediseño multi-línea queda pendiente de validación DM / contrato.
+> **[PENDIENTE P-28]** / **[PENDIENTE P-31]** — Presupuestos v0.17: default de contrato = **un** `management_node_id` por SOLPED y **cuenta por línea** (`budget_account_id`); el CDP tiene una línea por cuenta distinta contra el mismo nodo. Cardinalidad del nodo aún abierta (P-31). El corpus Adq modela hoy una sola pareja resuelta en 1.3/CDP; no rediseñar hasta cierre P-31.
 
 **Entidad(es) y campos:**
 - `PurchaseRequest.status` (enum, **obligatorio** — permanece en `pending_finance` hasta completar 1.6)
@@ -240,7 +240,7 @@
 - Rechazo DAF con justificación → `PurchaseRequest` vuelve al solicitante; camino optativo a 1.4 (línea punteada BPMN).
 - Divergencia propuesta vs resuelto → se confirma igual; queda `imputation_diverged = true`.
 
-> ⚠ **Pendiente de definir:** gateway de disponibilidad — campo calculado `available_balance` en `BudgetLine`; pre-sugerencia unidad→nodo (**[PENDIENTE P-23]**); validación `DETALLE` (**[PENDIENTE P-25]**); CDP multi-línea vs modelo 1:1 actual (**[PENDIENTE P-28]** / Pres v0.15).
+> ⚠ **Pendiente de definir:** gateway de disponibilidad — campo calculado `available_balance` en `BudgetLine`; pre-sugerencia unidad→nodo (**[PENDIENTE P-23]**); validación `DETALLE` (**[PENDIENTE P-25]**); cardinalidad nodo×SOLPED vs línea y cuentas por línea (**[PENDIENTE P-31]** / Pres v0.17); validación DM D-6 (**[PENDIENTE P-28]**).
 
 ---
 

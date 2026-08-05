@@ -2,11 +2,13 @@
 
 **Proyecto:** SGM — Sistema de Gestión Municipal
 **Módulo:** Presupuestos
-**Versión:** 0.16 (borrador para revisión interna)
+**Versión:** 0.17 (borrador para revisión interna)
 **Fecha:** agosto 2026
 **Estado:** propuesta de plan, no validado con DM
 
 **Gobierno del corpus:** [`../../plan-general.md`](../../plan-general.md). Criterios de calidad comunes: plan general §7. Decisiones transversales: plan general §4.
+
+**Cambios v0.17:** la regla *la cuenta es de la línea, el nodo es de la solicitud* **se degrada de decisión a default sujeto a validación**: pasa a **P-31**, con cinco casos concretos para contrastar con los cinco municipios. La tensión que la pone en duda es real — un nodo por solicitud **impide agregar demanda de dos programas en una sola compra**, que es justamente lo que conviene para obtener mejor precio. Se agrega además una **agenda consolidada de validación con municipios** en F2, para que la ventana del convenio se use en las preguntas correctas.
 
 **Cambios v0.16:** dos precisiones al contrato con Adquisiciones, sobre el Anexo B. **(1) La cuenta es de la línea; el nodo de gestión es de la solicitud** — `budget_account_id` por línea de SOLPED, `management_node_id` único por SOLPED. Una solicitud no puede servir a dos programas. **(2) Ninguna solicitud de personal pasa por Adquisiciones**, y la separación es **legal**: el art. 3 letra a) de la Ley 19.886 excluye de su ámbito las contrataciones de personal y los contratos a honorarios. Todo el subtítulo 21 entra a la cadena de compromiso por RRHH. Nuevo caso a verificar en P-28 (compra centralizada de bodega).
 
@@ -105,7 +107,9 @@ Adquisiciones ya declaró la entidad `BudgetPreCommitment` en su modelo prelimin
 
    Los ítems de una solicitud pueden clasificar a cuentas distintas —ingredientes a `22-01-001`, delantales a `22-04-999`— pero todos sirven al mismo propósito. En consecuencia, **el CDP tiene una línea por cuenta distinta, todas contra el mismo nodo**: no es un monto único, pero tampoco un producto cartesiano.
 
-   Restricción deliberada: **una SOLPED no puede servir a dos programas.** Si se necesita, son dos solicitudes. Mantiene el expediente legible y hace que la imputación del nodo sea **una sola decisión** de la DAF, no una por línea. El caso que tensiona la regla —compra centralizada de bodega distribuida a varias unidades— queda a verificar en P-28.
+   Restricción que se sigue de la regla: **una SOLPED no puede servir a dos programas.** Si se necesita, son dos solicitudes.
+
+   > **Default, no decisión cerrada.** La cardinalidad es coherente con el caso trabajado y hace que la imputación del nodo sea **una sola decisión** de la DAF, lo que es central para que D-6 no agrave el cuello de botella. Pero **choca con la agregación de demanda**: si dos programas compran alimentos juntos para obtener mejor precio, la regla los obliga a separar la solicitud. Se mantiene como default y **se valida con los cinco municipios en P-31** antes de fijarla en el contrato.
 
 7. **Ninguna solicitud de personal pasa por Adquisiciones, y la separación es legal.** El **art. 3 letra a) de la Ley 19.886** excluye de su ámbito las contrataciones de personal de la Administración regidas por estatutos especiales y los contratos a honorarios con personas naturales. **Todo el subtítulo 21** —planta, contrata, honorarios, cometidos, trabajos extraordinarios— entra a la cadena de compromiso por **RRHH**.
 
@@ -739,9 +743,26 @@ Recuperar como procesos formales lo que hoy solo existe como caja no descompuest
 | BPMN — Examen trimestral, déficit y reportes de Control | Art. 81 más art. 29 letras c) y d) LOCM, incluido el plazo de 10 días con escalamiento a CGR. Descompone `Controlar y Evaluar` (26.2.10). Validar con Control |
 | BPMN — Programación de caja | Derivado de `budget.cash.flow` más práctica municipal |
 | BPMN — Salud y Educación | Ciclo separado y consolidación |
+
+#### Agenda de validación con municipios
+
+Lo que **solo** puede responderse preguntándoles. Ordenado por impacto sobre el modelo:
+
+| Pendiente | Pregunta en una línea | Si la respuesta sorprende |
+|---|---|---|
+| **P-31** | ¿El nodo de gestión es de la solicitud o de la línea? Cinco casos concretos | Cambia el contrato con Adquisiciones y la UI de SOLPED |
+| **P-21** | ¿Cinco niveles bastan? ¿Alguno es obligatorio además del área? | Cambia el enum `level` y el aplanamiento |
+| **P-23** | ¿Quieren dimensión organizacional propia, o les basta el árbol? | Cambia la carga de configuración inicial de cada municipio |
+| **P-27** | ¿Aceptan declarar la semántica de sus nodos (`node_purpose`)? | Habilita o bloquea cualquier análisis comparado nacional |
+| **P-24** | ¿Cómo abren el árbol cada año hoy? ¿Qué hacen con los nodos que mueren? | Define el arrastre y el caso de saldos pendientes |
+| **P-25** | ¿De dónde salen `ANALÍTICO` y `ACTÚA PRESUPUESTO`? ¿Los configuran o vienen dados? | Define si es catálogo nacional o del tenant |
+| **P-30** | ¿Qué rendiciones de convenio les exigen hoy, y cómo las arman? | Justifica o descarta `FundingSource` |
+
+**Criterio.** Cada pregunta va acompañada de la evidencia ya extraída de **su propio** presupuesto. No se pregunta "¿cómo lo hacen?" sino "vemos esto en sus datos, ¿lo estamos leyendo bien?". Es más rápido y produce correcciones en vez de descripciones.
 | **Contrato de contracuentas con Contabilidad** | Tabla cuenta presupuestaria (× área × ejercicio) → contracuentas de devengo, pago y activo fijo. Se levanta junto con la apertura del ejercicio; contraste contra el Manual de Procedimientos Contables NICSP (P-26) |
 | **BPMN — Mantención del árbol de gestión** | Alta, modificación, cierre y arrastre de nodos entre ejercicios; quién lo opera en el municipio y con qué control. Se levanta junto con la apertura del ejercicio (P-24) |
-| Validación con municipios piloto | Contraste con al menos dos de los cinco municipios de referencia. Incluye validación de los cinco niveles (P-21) y del alcance de `OrganizationalUnit` (P-23) |
+| **Agenda de validación con municipios** | Ver tabla abajo. Es una ventana escasa: el convenio con la DM es dependencia dura y las sesiones con los municipios son pocas. Ir con la lista cerrada, no con preguntas abiertas |
+| Validación con municipios piloto | Contraste con al menos dos de los cinco municipios de referencia, incluyendo los dos extremos de profundidad (Cochamó y Villarrica) |
 
 ### F3 — Fichas de proceso por etapa · 3 semanas
 
@@ -814,6 +835,7 @@ Formato ficha idéntico al usado en Adquisiciones: actores, precondiciones, paso
 | **P-28** | Validar D-6 con DM: la solicitud de campos programa/proyecto/actividad en SOLPED se resuelve de otra forma | F0 / F1 | DM + Adquisiciones | Abierto |
 | **P-29** | Reasignación entre nodos de gestión con la misma cuenta: ¿es modificación presupuestaria? (Anexo B §B.4) | F1 / F3 | Jurídica + DM · candidato GP-4 | Abierto |
 | **P-30** | Trazabilidad de convenios: el ingreso se traza por la cuenta y el gasto por el nodo, sin identificador común (Anexo B §B.2) | F2 / F4 | DM + Contabilidad | Abierto |
+| **P-31** | Cardinalidad de la imputación en la solicitud: ¿un nodo por SOLPED o un nodo por línea? (D-6 punto 6) | F2 / F3 | Municipios en convenio + Adquisiciones | Abierto |
 
 Cada pendiente abierto se documenta abajo con: contexto, pregunta a resolver, opciones candidatas, decisión por defecto si no hay respuesta a tiempo, criterio de cierre e insumos.
 
@@ -1330,7 +1352,7 @@ Consecuencia sobre las opciones: la opción 2 (captura obligatoria) queda descar
 1. **¿De qué municipio es ese vocabulario?** Los cinco en convenio usan esos niveles con semánticas distintas —organigrama en Villarrica, objeto de gasto en María Pinto, convenio en Quilaco—. Si el requerimiento viene de uno en particular, el modelo genérico puede no ser lo que esperan ver en pantalla.
 2. **¿Qué problema resolvía tener los campos en la SOLPED?** Si es trazabilidad de para qué se pide, lo cubre el campo de propósito. Si es control previo de disponibilidad por programa, es otra cosa y requiere diseño propio.
 3. **¿Hay conformidad con que la clasificación la haga la DAF?** Es un cambio de carga de trabajo entre unidades, no solo de diseño.
-4. **¿Cómo operan hoy la compra centralizada?** La regla de un nodo por SOLPED (D-6, punto 6) supone que la adquisición de bodega para todo el municipio se imputa al nodo de abastecimiento, y que la distribución posterior a cada dirección no se traza presupuestariamente. Es coherente con que Villarrica tenga `BODEGA MUNICIPAL` como subprograma propio, pero hay que confirmarlo antes de cerrar la regla.
+4. **¿La cardinalidad de la imputación calza con su operación?** Ver **P-31**, que reúne los casos concretos a contrastar.
 
 **Opciones.**
 1. **D-6 tal cual**, con la SOLPED espejando la imputación del CDP de forma opcional. Recomendada.
@@ -1405,14 +1427,45 @@ Pero el art. 82 exige que el Concejo apruebe presupuestos **por programa**, y lo
 
 ---
 
+### P-31 — Cardinalidad de la imputación en la solicitud
+
+**Contexto.** D-6 punto 6 propone que los dos ejes vivan en niveles distintos de la SOLPED: `budget_account_id` por línea, `management_node_id` **uno por solicitud**. La cuenta responde a *qué se compra* y varía ítem por ítem; el nodo responde a *para qué se pide* y sería único.
+
+La regla tiene una virtud operativa importante —la DAF toma **una** decisión de imputación por solicitud, no una por línea, que es lo que hace viable D-6 sin agravar el cuello de botella— y un costo que no está medido: **impide agregar demanda de dos programas en una sola compra**, que es justamente lo que conviene para obtener mejor precio.
+
+**Pregunta.** ¿El nodo de gestión es atributo de la solicitud o de la línea?
+
+**Casos a contrastar con los cinco municipios.** Son los que falsifican la regla si existen:
+
+| # | Caso | Qué revelaría |
+|---|---|---|
+| 1 | **Compra centralizada de bodega.** Resmas para todo el municipio, distribuidas después a cada dirección | Si imputan a abastecimiento, la regla se sostiene y la distribución no se traza. Si distribuyen, cae. Villarrica tiene `BODEGA MUNICIPAL` como subprograma propio, lo que sugiere lo primero |
+| 2 | **Servicios básicos por inmueble.** Electricidad y agua de varios edificios municipales | Villarrica usa el subprograma como **dirección física** (`OMIL-General Korner 335`), lo que sugiere que sí reparten una factura entre nodos |
+| 3 | **Combustible.** Un mismo suministro para el camión de aseo (área 2) y el vehículo de alcaldía (área 1) | María Pinto tiene `Gestión Interna › Vehículos › Combustible`; si el gasto cruza áreas, un nodo por solicitud obliga a separar |
+| 4 | **Agregación por economía de escala.** Dos programas sociales compran alimentos juntos | Es el caso que más tensiona la regla: la lógica de compra empuja a agregar, la de presupuesto a separar |
+| 5 | **Contrato de suministro que sirve a varios nodos.** Aseo, seguridad, arriendo de fotocopiadoras | Si el contrato es uno y el gasto se reparte, el nodo no puede ser de la solicitud |
+
+**Opciones.**
+1. **Nodo en la solicitud** (default actual). Una decisión de imputación por SOLPED; expediente legible; obliga a separar solicitudes cuando el gasto sirve a más de un programa.
+2. **Nodo en la línea.** Máxima flexibilidad y permite agregar demanda; multiplica las decisiones de la DAF por el número de líneas y agrava el riesgo de throughput de D-6.
+3. **Nodo en la línea, con valor por defecto heredado de la solicitud.** El caso común es una sola decisión; la excepción es posible sin cambiar el modelo. Probablemente el punto de llegada, pero conviene confirmarlo con los casos antes de asumirlo.
+
+**Default:** opción 1 hasta la validación; si aparece **cualquiera** de los cinco casos en la operación real de los municipios, pasa a opción 3.
+
+**Criterio de cierre.** Los cinco casos contrastados con al menos tres de los cinco municipios en convenio; decisión reflejada en el contrato de §6 y en la ficha 1-solped de Adquisiciones; si queda la opción 3, definir el comportamiento de la UI para que el caso común no exponga el campo por línea.
+
+**Insumos.** D-6 punto 6; Anexo B §B.3; §5.3 (subprogramas como dirección física en Villarrica, `Vehículos` en María Pinto); ficha 1-solped de Adquisiciones; P-23 (la pre-sugerencia se complica si el nodo es por línea).
+
+---
+
 ### Orden sugerido de resolución
 
 ```
 F0:  P-1, P-4, P-28 (comunicación a DM)
 F1:  P-8, P-11, P-12, P-17, P-21, P-22, P-25, P-27, P-29 (consulta GP-4), (P-10 inicia con RRHH)
      · P-9 cerrado en v0.5; P-3 parcial en v0.6
-F2:  P-5, P-6, P-23, P-24, P-26, P-30
-F3:  P-3, P-7, P-10 (cierre), P-21 (cierre), P-27 (cierre), P-29 (cierre)
+F2:  P-5, P-6, P-23, P-24, P-26, P-30, P-31 (contraste de casos)
+F3:  P-3, P-7, P-10 (cierre), P-21 (cierre), P-27 (cierre), P-29 (cierre), P-31 (cierre)
      · alcance de D-6 en formulación: quién clasifica la ficha (antes de fichas MP-1)
 F4:  cierre formal P-1 en modelo de Adquisiciones; ContingencyRecord (P-15);
      ManagementNode y OrganizationalUnit (P-23, P-24); contrato de contracuentas (P-26)

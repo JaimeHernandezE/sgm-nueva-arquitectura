@@ -19,14 +19,14 @@ Registro centralizado de pendientes del corpus por prefijo ([`../../plan-general
 | Serie | Ámbito | Fuente de detalle | Total | Abiertos | Parciales | Resueltos / cerrados / absorbidos |
 |---|---|---|---:|---:|---:|---:|
 | [X-nn](#transversales-x-nn--94-pendientes-histórico) | Transversal | esta sección | 94 | 91 | 0 | 3 (X-46, X-47, X-80) |
-| [P-nn](#presupuestos-p-nn--30-pendientes-histórico) | Presupuestos | [`presupuestos/plan-de-trabajo_presupuestos.md`](../../modulos/presupuestos/plan-de-trabajo_presupuestos.md) §9 | 30 | 25 | 3 (P-3, P-8, P-25) | 2 (P-2, P-9) |
+| [P-nn](#presupuestos-p-nn--31-pendientes-histórico) | Presupuestos | [`presupuestos/plan-de-trabajo_presupuestos.md`](../../modulos/presupuestos/plan-de-trabajo_presupuestos.md) §9 | 31 | 26 | 3 (P-3, P-8, P-25) | 2 (P-2, P-9) |
 | [C-nn](#contabilidad-c-nn--18-pendientes-histórico) | Contabilidad | [`contabilidad/plan-de-trabajo-contabilidad.md`](../../modulos/contabilidad/plan-de-trabajo-contabilidad.md) §8 | 18 | 18 | 0 | 0 |
 | [T-nn](#tesorería-t-nn--14-pendientes-histórico) | Tesorería | [`tesoreria/plan-de-trabajo-tesoreria.md`](../../modulos/tesoreria/plan-de-trabajo-tesoreria.md) §8 | 14 | 14 | 0 | 0 |
 | [R-nn](#rrhh-r-nn--14-pendientes-histórico) | RRHH | [`rrhh/plan-de-trabajo-rrhh.md`](../../modulos/rrhh/plan-de-trabajo-rrhh.md) §8 | 14 | 14 | 0 | 0 |
 | [A-nn](#adquisiciones-a-nn--5-pendientes-histórico) | Adq. decisiones humanas | [`adquisiciones/comparativa-odoo-vs-nuevo.md`](../../modulos/adquisiciones/comparativa-odoo-vs-nuevo.md) §5 | 5 | 5 | 0 | 0 |
-| | | **Corpus** | **175** | **167** | **3** | **5** |
+| | | **Corpus** | **176** | **168** | **3** | **5** |
 
-**Prioridad (corpus):** Bloqueante 6 · Alta 95 · Media 33 · Baja 36 · — 5
+**Prioridad (corpus):** Bloqueante 6 · Alta 96 · Media 33 · Baja 36 · — 5
 
 ## Glosario — actores de Dependencia externa
 
@@ -171,11 +171,11 @@ Pendientes transversales de arquitectura, seguridad, API, Adquisiciones en regis
 
 ---
 
-## Presupuestos (P-nn) — 30 pendientes (histórico)
+## Presupuestos (P-nn) — 31 pendientes (histórico)
 
-Pendientes del módulo Presupuestos. Detalle (contexto, insumos, fichas): [`../../modulos/presupuestos/plan-de-trabajo_presupuestos.md`](../../modulos/presupuestos/plan-de-trabajo_presupuestos.md) §9 (**v0.15**). Decisiones **D-5** (eje de gestión / `ManagementNode`) y **D-6** (imputación resuelta en CDP; espejo opcional en SOLPED; clasificación DAF en Adq 1.3; alcance formulación distinto) viven en ese plan §2. Origen de **P-29** / **P-30** y ampliaciones v0.15: [`anexo-b_ciclo-presupuestario-ejemplos.md`](../../modulos/presupuestos/anexo-b_ciclo-presupuestario-ejemplos.md).
+Pendientes del módulo Presupuestos. Detalle (contexto, insumos, fichas): [`../../modulos/presupuestos/plan-de-trabajo_presupuestos.md`](../../modulos/presupuestos/plan-de-trabajo_presupuestos.md) §9 (**v0.17**). Decisiones **D-5** / **D-6** en plan §2. Anexo B: [`anexo-b_ciclo-presupuestario-ejemplos.md`](../../modulos/presupuestos/anexo-b_ciclo-presupuestario-ejemplos.md). v0.16–v0.17: cardinalidad cuenta×línea / nodo×SOLPED (**P-31**); ST 21 solo por RRHH (Ley 19.886 art. 3 a).
 
-**Conteo:** 30 total · 25 abiertos · 3 parciales (P-3, P-8, P-25) · 2 resueltos (P-2, P-9).
+**Conteo:** 31 total · 26 abiertos · 3 parciales (P-3, P-8, P-25) · 2 resueltos (P-2, P-9).
 
 | ID | Pendiente | Documento(s) origen | Dependencia externa | Estado | Prioridad | Opciones | Default propuesto | Criterio de cierre |
 |---|---|---|---|---|---|---|---|---|
@@ -206,9 +206,10 @@ Pendientes del módulo Presupuestos. Detalle (contexto, insumos, fichas): [`../.
 | P-25 | Origen/gobernanza atributos plan de cuentas local (MATRIZ/DETALLE) | plan-de-trabajo_presupuestos.md Anexo A.6, §9 | DM + Depto. Finanzas | **Resuelto en parte** (v0.13); residual normativo | Alta | Residual: origen `ACTÚA PRESUPUESTO` | solo DETALLE imputable — propuesta de trabajo | Acta DM; importador; P-14 |
 | P-26 | Tabla de contracuentas (ejercicio, área, cuenta) Pres→Cont | plan-de-trabajo_presupuestos.md §5.4, §9 | Contabilidad | Abierto | Alta | (a) catálogo nacional CGR + override local; (b) solo Manual/tenant; (c) híbrido | (a) — propuesta de trabajo (verificar Manual NICSP) | Contrato Pres↔Cont; P-6 / C-1 |
 | P-27 | Semántica heterogénea del nivel `programa` entre municipios | plan-de-trabajo_presupuestos.md §5.3, §9 | DM + pilotos | Abierto | Alta | (a) libre + `node_purpose` opcional; (b) normalizar; (c) tipificar obligatorio | (a) — default plan | Acta DM+pilotos; vocabulario `node_purpose`; impacto P-23 |
-| P-28 | Validar D-6 con DM (ejecución + formulación); corpus Adq aún 1:1 vs CDP multi-línea (v0.15) | plan-de-trabajo_presupuestos.md §2 D-6, §9; Anexo B; 1-solped §§1.1–1.3 | DM + Adquisiciones | Abierto | Alta | (a) D-6 tal cual + líneas en CDP; (b) campos SOLPED ocultos por tenant; (c) revertir captura en SOLPED | (a) — default plan; formulación: unidad propone / DAF valida | Respuesta escrita DM; ficha Adq multi-imputación; cierre formulación antes MP-1 |
+| P-28 | Validar D-6 con DM (ejecución + formulación + bodega); cardinalidad → P-31 | plan-de-trabajo_presupuestos.md §2 D-6, §9; Anexo B; 1-solped | DM + Adquisiciones | Abierto | Alta | (a) D-6 tal cual; (b) campos SOLPED ocultos por tenant; (c) revertir captura en SOLPED | (a) — default plan; formulación: unidad propone / DAF valida | Respuesta escrita DM; ficha Adq; sub-pregunta 4 vía P-31 |
 | P-29 | Reasignación entre nodos misma cuenta: ¿modificación presupuestaria? (Anexo B §B.4) | plan-de-trabajo_presupuestos.md §9; Anexo B | Jurídica + DM · GP-4 | Abierto | Alta | (a) no es modificación; (b) decreto + informativo art. 29 d); (c) acuerdo Concejo si cruza programa | (b) — configurable; candidato GP-4 | Consulta CGR vía GP-4 o dictamen; parámetro marcado |
 | P-30 | Trazabilidad de convenios (ingreso por cuenta / gasto por nodo, sin ID común) | plan-de-trabajo_presupuestos.md §9; Anexo B §B.2 | DM + Contabilidad | Abierto | Alta | (a) entidad `FundingSource` opcional; (b) solo glosa/cuenta ingreso; (c) diferir | (a) — propuesta de trabajo | Inventario rendiciones; decisión `FundingSource`; contrato reporte |
+| P-31 | Cardinalidad imputación: ¿un `management_node_id` por SOLPED o por línea? (D-6 § punto 6) | plan-de-trabajo_presupuestos.md §2 D-6, §9; Anexo B | Municipios convenio + Adq | Abierto | Alta | (a) nodo por SOLPED + cuenta por línea; (b) nodo por línea; (c) nodo en línea con default heredado de la solicitud | (a) hasta validación; si aparece cualquiera de 5 casos → (c) | Contraste 5 casos × ≥3 municipios F2; contrato §6 + ficha 1-solped |
 
 ---
 
@@ -274,7 +275,7 @@ Pendientes del módulo RRHH. Detalle: [`../../modulos/rrhh/plan-de-trabajo-rrhh.
 
 | ID | Pendiente | Documento(s) origen | Dependencia externa | Estado | Prioridad | Opciones | Default propuesto | Criterio de cierre |
 |---|---|---|---|---|---|---|---|---|
-| R-1 | Contratos con Presupuestos: disponibilidad bloqueante + CDP de personal | rrhh/plan-de-trabajo-rrhh.md §3.1, §8; Pres v0.15 (contrato desde v0.11) | Presupuestos / DM | Abierto | Alta | (a) consulta sync bloqueante + CDP personal; (b) solo consulta sin CDP; (c) diferir | (a) — propuesta de trabajo (contrato bidireccional declarado; API abierta) | Spec API F0/F4; ops en contracts Pres↔RRHH |
+| R-1 | Contratos con Presupuestos: disponibilidad bloqueante + CDP de personal | rrhh/plan-de-trabajo-rrhh.md §3.1, §8; Pres v0.17 (ST 21 solo RRHH — Ley 19.886 art. 3 a) | Presupuestos / DM | Abierto | Alta | (a) consulta sync bloqueante + CDP personal; (b) solo consulta sin CDP; (c) diferir | (a) — propuesta de trabajo (contrato bidireccional; puerta paralela a Adq) | Spec API F0/F4; ops en contracts Pres↔RRHH |
 | R-2 | Verificar interfaz M2M de SIAPER (análogo X-72) | rrhh/plan-de-trabajo-rrhh.md §2.2, §8; D-2 | CGR / SIAPER | Abierto | Bloqueante | (a) M2M si verificada; (b) registro asistido/portal manual; (c) diferir MR-6 | no asumir API; diseñar (a)+(b) hasta verificación | Verificación CGR; vía alternativa; condiciona MR-6 |
 | R-3 | Verificar estatuto, periodo de calificación y dictamen 11.365/2006 | rrhh/plan-de-trabajo-rrhh.md §3.1, §8 | ninguna (fuente primaria) | Abierto | Media | (a) confirmar/corregir tras fuente; (b) no validar hasta verificar; (c) usar levantamiento tal cual (rechazado) | sin default hasta verificación | Nota F1; validadores solo post-verificación |
 | R-4 | Unificar doble vía de calidad jurídica del as-is | rrhh/plan-de-trabajo-rrhh.md §3.2, §8 | ninguna | Abierto | Media | (a) un catálogo canónico (puente contable); (b) mapear ambas; (c) heredar doble vía | (a) — propuesta de trabajo | Modelo único pre-F4; migración de ambos catálogos Odoo |

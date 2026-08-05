@@ -34,7 +34,7 @@ Este documento **gobierna el conjunto** del corpus de planificación y especific
 | Documento | Versión | Cobertura levantamiento | Pendientes abiertos (aprox.) | Estado |
 |---|---|---|---|---|
 | **Adquisiciones** (spec; sin plan de trabajo) | Spec operativa + [`comparativa-odoo-vs-nuevo.md`](modulos/adquisiciones/comparativa-odoo-vs-nuevo.md) | Modalidades parciales; transversales avanzados | Serie X (ex P-32…P-71 en registro) + **A-1…A-5** + deuda §3 | Spec de referencia; deuda de consistencia abierta |
-| **Presupuestos** [`plan-de-trabajo_presupuestos.md`](modulos/presupuestos/plan-de-trabajo_presupuestos.md) | 0.15 | ~35–40 % (proc. 26–27) + Anexo B | P-1…P-30 (serie propia) | Borrador; no validado DM |
+| **Presupuestos** [`plan-de-trabajo_presupuestos.md`](modulos/presupuestos/plan-de-trabajo_presupuestos.md) | 0.17 | ~35–40 % (proc. 26–27) + Anexo B | P-1…P-31 (serie propia) | Borrador; no validado DM |
 | **Contabilidad** [`plan-de-trabajo-contabilidad.md`](modulos/contabilidad/plan-de-trabajo-contabilidad.md) | 0.6 | 10 procesos; sustancial | C-1…C-18 | Borrador; no validado DM |
 | **Tesorería** [`plan-de-trabajo-tesoreria.md`](modulos/tesoreria/plan-de-trabajo-tesoreria.md) | 0.3 | 5 procesos; ciclo diario fuerte | T-1…T-14 | Borrador; no validado DM |
 | **RRHH** [`plan-de-trabajo-rrhh.md`](modulos/rrhh/plan-de-trabajo-rrhh.md) | 0.3 | 18 procesos; mejor del corpus | R-1…R-14 | Borrador; no validado DM |
@@ -139,7 +139,7 @@ Registro unificado X/P/C/T/R/A: [`arquitectura/decisiones/pendientes.md`](arquit
 | Nodo SUBDERE «P-71…P-74» (propuestos, no en registro) | **X-82…X-85** | No pisar X-71…X-74 (Trato Directo / DocDigital) |
 | Alcance mínimo P-18, P-19, P-21 | **X-78, X-79, X-81** reservados (abiertos al incorporar) | Documento aún no en repo; no inventar texto |
 | Alcance mínimo P-20 (motor de liquidación) | **X-80** — **cerrado** | Ya cerrado por RRHH D-1; al incorporar el alcance mínimo entra con ese fundamento, no como abierto |
-| Presupuestos P-1…P-30 | **Sin cambio de prefijo** | Refs DocDigital → X-73…X-76; serie ampliada a P-30 (v0.15) |
+| Presupuestos P-1…P-31 | **Sin cambio de prefijo** | Refs DocDigital → X-73…X-76; serie ampliada a P-31 (v0.17) |
 
 ### 5.3 Pendientes Adquisiciones A-1…A-5
 
@@ -287,7 +287,7 @@ Viven **una sola vez** aquí. Los planes de módulo referencian esta sección (o
 | X-44 / X-46 / X-47 (ex P-44 / P-46 / P-47) | Adq comparativa §5; pendientes.md; recepción 4.3–4.4 |
 | DocDigital | ADR 2026-07-docdigital |
 | Ventana mutabilidad | Tesorería T-3; cuatro entidades |
-| Colisión P-nn | pendientes.md vs Pres P-1…P-30; seguridad Anexo A; nodo §9 |
+| Colisión P-nn | pendientes.md vs Pres P-1…P-31; seguridad Anexo A; nodo §9 |
 
 ---
 
