@@ -20,6 +20,7 @@ scenarios:
             reposición anual de stock de la unidad solicitante.
           justification: Reposición de stock según plan anual.
           purchase_modality: agile_purchase
+          proposed_management_node_id: mn-act-oficina-001
           proposed_budget_line_id: bl-2210-001
           proposed_fiscal_year: 2026
         lines:
@@ -42,6 +43,7 @@ scenarios:
       path: /purchase-requests/PR-2026-00142/budget-verification
       body:
         budget_line_id: bl-2210-003
+        management_node_id: mn-act-oficina-001
         amount: 2450000
         fiscal_year: 2026
         decision: confirmed

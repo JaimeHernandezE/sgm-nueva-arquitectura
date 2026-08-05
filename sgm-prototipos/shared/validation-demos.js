@@ -42,8 +42,9 @@ export const VALIDATION_DEMOS = {
     ],
   },
   verifyBudgetAvailability: {
-    title: 'Validaciones — Verificar disponibilidad',
+    title: 'Validaciones — Clasificación y verificación',
     issues: [
+      { error_code: 'MISSING_REQUIRED_FIELD', field: 'management_node_id', rule: 'El campo Nodo de gestión es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'budget_line_id', rule: 'El campo Imputación presupuestaria es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
       { error_code: 'MISSING_REQUIRED_FIELD', field: 'amount', rule: 'El campo Monto es obligatorio.', legal_reference: 'integridad:campo_requerido', severity: 'blocking' },
       { error_code: 'BUDGET_UNAVAILABLE', field: 'budget_line_id', rule: 'La imputación presupuestaria no tiene saldo disponible para el monto solicitado.', legal_reference: 'DL 1.263 — fase de compromiso presupuestario', severity: 'blocking' },

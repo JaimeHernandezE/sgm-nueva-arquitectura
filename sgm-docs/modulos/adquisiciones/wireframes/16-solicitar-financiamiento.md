@@ -38,7 +38,7 @@
 ## Estados de pantalla
 
 - **En trámite:** pantalla informativa; el Solicitante espera resolución de Presupuestos.
-- **Resuelto:** notificación; retorno a sub-paso 1.3 para nueva verificación.
+- **Resuelto:** notificación; retorno a sub-paso 1.3 para nueva clasificación y verificación.
 - **Denegado:** SOLPED bloqueada; opción cancelar o reformular.
 
 ## Validaciones visibles

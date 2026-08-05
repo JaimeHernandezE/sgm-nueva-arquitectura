@@ -28,7 +28,7 @@ export const stages = [
       },
       {
         id: '1.3',
-        name: 'Verificación de disponibilidad presupuestaria',
+        name: 'Clasificación y verificación presupuestaria',
         responsible: { unit: 'DAF Finanzas', role: 'Formulador DAF / verificación', name: 'Carla Fuentes' },
         status: 'done',
         action: { type: 'secondary', label: 'Ver verificación' },

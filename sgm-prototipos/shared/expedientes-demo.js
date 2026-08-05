@@ -234,7 +234,7 @@ export const expedientesDemo = [
     awardedAmount: null,
     globalStatus: 'Solo listado · sin contenido',
     fullDetail: false,
-    currentStep: { id: '1.3', name: 'Verificación de disponibilidad presupuestaria' },
+    currentStep: { id: '1.3', name: 'Clasificación y verificación presupuestaria' },
   },
   {
     id: 'ADQ-2026-00231',

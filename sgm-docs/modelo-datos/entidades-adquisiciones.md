@@ -57,7 +57,7 @@ Raíz de trazabilidad de todo el ciclo SOLPED → Pago. El estado del expediente
 > `procurement_case_id` en cada entidad del ciclo es **desnormalización intencional** para trazabilidad y reportería directa (consultas por expediente sin recorrer la cadena de FKs). Se mantiene además de las FKs directas entre entidades.
 
 ### `PurchaseRequest` (SOLPED)
-**Visibilidad:** expuesta — campos en contrato: `id`, `requesting_unit`, `destination_unit`, `title`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `currency`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status`
+**Visibilidad:** expuesta — campos en contrato: `id`, `requesting_unit`, `destination_unit`, `title`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `currency`, `proposed_management_node_id`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status`
 
 Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 
@@ -68,12 +68,13 @@ Origen: `modulos/adquisiciones/procesos-transversales/1-solped.md`
 | `destination_unit` | Unidad de destino | ref. `OrganizationalUnit` | **Obligatorio** — unidad para la que se solicita la compra. Con `adq.solicitante`: autoasignada = `requesting_unit` (fija). Con `adq.solicitante_daf`: seleccionable entre unidades del tenant. Ver [`catalogo-roles.md`](../arquitectura/especificacion/catalogo-roles.md) §3.1. |
 | `title` | Título | texto | **Obligatorio** — resumen corto (una línea). Se copia a `ProcurementCase.title` al crear el expediente. Visible en listado y cabecera del expediente. |
 | `description` | Descripción | texto | **Obligatorio** — texto largo: qué producto, servicio o conjunto se busca. Distinto de `justification` (el porqué). No se copia al expediente. |
-| `justification` | Justificación | texto | **Obligatorio** — motivo / necesidad de la compra (el porqué). Distinto de `description` (el qué). |
+| `justification` | Justificación | texto | **Obligatorio** — motivo / necesidad de la compra (el porqué). Distinto de `description` (el qué). Contexto no clasificatorio para la DAF (D-6). |
 | `requested_date` | Fecha solicitud | fecha | **Obligatorio** (generado por sistema al crear la SOLPED — fecha del día de creación). No editable por el usuario. |
 | `purchase_modality` | Modalidad de compra | enum, **opcional** | **Opcional** — indicación provisional de modalidad. Valores: `agile_purchase`, `framework_agreement`, `public_tender`, `direct_procurement`. Confirmable en etapa 2. |
 | `founded_resolution_attachment` | Resolución fundada | ref. `DocumentRef` | **Obligatorio si** `purchase_modality = direct_procurement`. Resolución Fundada — almacenada vía C10 (`storeDocument`). |
 | `currency` | Moneda | enum | **Obligatorio** (default `CLP`). Valores: `CLP`, `UF`, `UTM`, `USD`. Moneda del documento; todas las líneas se expresan en ella. No se mezclan monedas en una misma SOLPED. |
-| `proposed_budget_line_id` | Imputación presupuestaria propuesta | ref. `BudgetLine` | **Opcional** — pista para autoconsulta (1.1, 1.2); no sustituye verificación en 1.3. **Al seleccionar** una imputación, la UI obtiene de Presupuestos (borde de módulo) la **descripción de la cuenta** y el **saldo** (vía `getBudgetLine` + `previewBudgetAvailability` / respuesta enriquecida) y los muestra en solo lectura junto al selector. |
+| `proposed_management_node_id` | Nodo de gestión (propuesto) | ref. `ManagementNode` | **Opcional** — hoja del eje de gestión (D-5). Espejo no vinculante de la imputación del CDP (D-6). Path Área › … › Actividad derivado en UI. Catálogo vía `listManagementNodes`. **No** filtrar por unidad destino en 1.1 (**[PENDIENTE P-23]**; **[PENDIENTE P-28]**). |
+| `proposed_budget_line_id` | Imputación presupuestaria propuesta | ref. `BudgetLine` | **Opcional** — cuenta/`DETALLE` propuesta (D-6); no sustituye la clasificación/verificación en 1.3. Al seleccionar: UI muestra descripción y saldo (`getBudgetLine` + `previewBudgetAvailability`). |
 | `proposed_fiscal_year` | Año fiscal propuesto | número | **Opcional** — año fiscal asociado a la línea propuesta |
 | `status` | Estado | enum | **Obligatorio**. Valores: `draft`, `pending_approval`, `pending_finance`, `quoting_in_progress`, `quote_void`, … |
 
@@ -138,18 +139,19 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `signed_document_ref` | Solicitud de pedido firmada | ref. `DocumentRef` | **Obligatorio si** `decision = approved`. PDF generado desde plantilla `adq.solped_vb` (Configuraciones → Firmas), firmado con FirmaGob; descargable desde el expediente. |
 
 ### `BudgetAvailabilityCertificate` (CDP)
-**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status`, `signature_mode`
+**Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `management_node_id`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status`, `signature_mode`, `proposed_management_node_id`, `proposed_budget_line_id`, `imputation_diverged`
 
 > **Definición provisional en Adquisiciones** hasta documentar el módulo dueño (Presupuestos / Contabilidad / Tesorería). No redefinir en otro archivo mientras exista aquí.
 
-1:1 con `PurchaseRequest` en esta etapa. Certificado de Disponibilidad Presupuestaria emitido y firmado por el aprobador DAF (sub-paso 1.5).
+1:1 con `PurchaseRequest` en esta etapa. Certificado de Disponibilidad Presupuestaria emitido y firmado por el aprobador DAF (sub-paso 1.5). La imputación **cuenta × nodo** queda **resuelta en 1.3** (D-6); 1.5 la consume en solo lectura y revalida saldo.
 
 | Campo | Label (ES) | Tipo | Notas |
 |---|---|---|---|
 | `procurement_case_id` | Expediente de compra | ref. `ProcurementCase` | **Obligatorio**. Desnormalización intencional |
 | `purchase_request_id` | SOLPED | ref. `PurchaseRequest` | **Obligatorio** |
 | `certificate_number` | Número de certificado | texto | **Obligatorio** (generado por sistema en modo electrónico; ingreso manual en escaneado) |
-| `budget_line_id` | Imputación presupuestaria | ref. `BudgetLine` | **Obligatorio** |
+| `management_node_id` | Nodo de gestión | ref. `ManagementNode` | **Obligatorio** — hoja resuelta en 1.3 (D-5/D-6) |
+| `budget_line_id` | Imputación presupuestaria | ref. `BudgetLine` | **Obligatorio** — cuenta/`DETALLE` resuelta en 1.3 |
 | `certified_amount` | Monto certificado | número | **Obligatorio** |
 | `fiscal_year` | Año fiscal | número | **Obligatorio** |
 | `verified_by` | Verificado por | ref. `User` | **Obligatorio** — formulador DAF (sub-paso 1.3) |
@@ -159,6 +161,9 @@ N:1 con `PurchaseRequestLine`. **Nueva — fuente API de precio aún sin definir
 | `rejection_reason` | Motivo de rechazo | texto | **Obligatorio si** `status = rejected` |
 | `signature_mode` | Modo de firma | enum | **Obligatorio**. Valores: `electronic`, `scanned` |
 | `scanned_certificate_attachment` | Certificado escaneado | ref. `DocumentRef` | **Obligatorio si** `signature_mode = scanned` — PDF escaneado vía C10 |
+| `proposed_management_node_id` | Nodo propuesto (SOLPED) | ref. `ManagementNode` | **Opcional** — copia de la propuesta al confirmar 1.3 (auditoría) |
+| `proposed_budget_line_id` | Imputación propuesta (SOLPED) | ref. `BudgetLine` | **Opcional** — copia de la propuesta al confirmar 1.3 |
+| `imputation_diverged` | Divergió de la propuesta | booleano | **Obligatorio** al confirmar 1.3 — `true` si resuelto ≠ propuesto; señal para pre-sugerencia **[PENDIENTE P-23]** |
 
 ### `BudgetPreCommitment` (Preobligación / Pre-afectación)
 **Visibilidad:** expuesta — campos en contrato: `id`, `procurement_case_id`, `purchase_request_id`, `budget_availability_certificate_id`, `budget_line_id`, `estimated_amount`, `fiscal_year`, `status`

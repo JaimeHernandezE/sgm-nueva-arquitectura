@@ -24,11 +24,11 @@ Entidades visibles fuera del borde del módulo Adquisiciones. Definición comple
 | `ProcurementCaseSummary` | Expuesta (DTO lectura) | `id`, `folio`, `title`, `procurement_type`, `status`, `current_step_id`, `current_step_name`, `current_stage_label`, `requesting_unit_id`, `destination_unit_id`, `created_at`, `requested_amount`, `awarded_amount` | — |
 | `ProcurementCaseDetail` | Expuesta (DTO lectura) | `ProcurementCase` + `current_step` (`CaseStep` resumido) | — |
 | `CaseStep` | Expuesta | `id`, `procurement_case_id`, `step_number`, `name`, `status`, `responsible_unit_id`, `responsible_role`, `responsible_user_id`, `started_at`, `completed_at`, `elapsed_display` | 2.1 (instanciación), todas las etapas |
-| `PurchaseRequest` | Expuesta | `id`, `procurement_case_id`, `requesting_unit`, `destination_unit`, `title`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status` | 1.1, 1.2, 2.1, 2.2 |
+| `PurchaseRequest` | Expuesta | `id`, `procurement_case_id`, `requesting_unit`, `destination_unit`, `title`, `description`, `justification`, `requested_date`, `purchase_modality`, `founded_resolution_attachment`, `proposed_management_node_id`, `proposed_budget_line_id`, `proposed_fiscal_year`, `status` | 1.1, 1.2, 2.1, 2.2 |
 | `PurchaseRequestLine` | Expuesta | `id`, `purchase_request_id`, `product_code`, `item_description`, `quantity`, `unit_of_measure`, `unit_price`, `price_source` | 1.1 |
 | `PurchaseRequestAttachment` | Expuesta | `id`, `purchase_request_id`, `attachment_type`, `description`, `document_ref` | 1.1 |
 | `PurchaseRequestApproval` | Expuesta | `id`, `purchase_request_id`, `approver_id`, `decision`, `disposition`, `decision_date`, `comments`, `signed_document_ref` | 1.2 |
-| `BudgetAvailabilityCertificate` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status`, `signature_mode` | 1.5 |
+| `BudgetAvailabilityCertificate` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `certificate_number`, `management_node_id`, `budget_line_id`, `certified_amount`, `fiscal_year`, `verified_by`, `signed_by`, `signed_at`, `status`, `signature_mode`, `proposed_management_node_id`, `proposed_budget_line_id`, `imputation_diverged` | 1.5 |
 | `BudgetPreCommitment` | Expuesta | `id`, `procurement_case_id`, `purchase_request_id`, `budget_availability_certificate_id`, `budget_line_id`, `estimated_amount`, `fiscal_year`, `status` | 1.6 |
 | `AgileQuoteProcess` | Expuesta | `id`, `purchase_request_id`, `deep_link_clicked_at`, `mp_quote_id` | 2.1 *(CA)* — duplica `ProcurementCase.mp_process_id`, ver `entidades-adquisiciones.md` (candidato a deprecar) |
 | `ModalityDecision` | Expuesta | `id`, `procurement_case_id`, `selected_modality`, `ratified`, `requires_jefatura_approval`, `decided_by`, `decided_at` | 2.1 |
@@ -123,7 +123,7 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 
 #### `POST /purchase-requests` — `createPurchaseRequest`
 - **Sub-pasos:** 1.1
-- **Entrada:** `PurchaseRequest` + `PurchaseRequestLine[]` (`currency` a nivel de documento; `unit_price` **neto** en esa moneda; `tax_code` por línea; `product_code` opcional hasta **[X-94]**)
+- **Entrada:** `PurchaseRequest` + `PurchaseRequestLine[]` (`currency` a nivel de documento; `unit_price` **neto** en esa moneda; `tax_code` por línea; `product_code` opcional hasta **[X-94]**; `proposed_management_node_id` / `proposed_budget_line_id` opcionales — D-6)
 - **Respuesta:** `PurchaseRequest` con `status = draft`
 - **Errores de validación:** ante varias reglas fallidas → `422` `ValidationErrorResponse` (`error_code: VALIDATION_FAILED`, `issues[]` con `legal_reference` obligatorio en cada issue `blocking`). Norma: [`estandares-api.md`](../../arquitectura/especificacion/estandares-api.md) §3.2–3.3; fundamento por código en ficha SOLPED §3.6.
 - **Reglas:**
@@ -145,10 +145,11 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | Desviación precio vs referencia dentro de tolerancia | blocking ⚠ | `lines[].unit_price` | — | `PRICE_DEVIATION_EXCEEDED` |
   | Si `purchase_modality = direct_procurement`, `founded_resolution_attachment` presente | blocking | `founded_resolution_attachment` | — | `FOUNDED_RESOLUTION_REQUIRED` |
   | Si se agrega adjunto, tipo / descripción / archivo presentes | blocking | `attachments[].*` | — | `MISSING_REQUIRED_FIELD` |
-- **Dependencias invocadas:** `getPriceReference`, `getBudgetLine` / `previewBudgetAvailability` *(al seleccionar imputación presupuestaria — descripción + saldo)*; `searchProducts` *(typeahead de `product_code` — **[PENDIENTE X-94]**)*; `listUnitOfMeasures` *(catálogo de plataforma)*. Verificación de stock/catálogo CM: sub-paso **1.0** (optativo).
+- **Dependencias invocadas:** `getPriceReference`; `listManagementNodes` *(nodo de gestión propuesto — D-5/D-6; **sin** filtro por unidad destino — **[PENDIENTE P-23]** / **[PENDIENTE P-28]**)*; `getBudgetLine` / `previewBudgetAvailability` *(al seleccionar cuenta propuesta — descripción + saldo)*; `searchProducts` *(typeahead de `product_code` — **[PENDIENTE X-94]**)*; `listUnitOfMeasures` *(catálogo de plataforma)*. Verificación de stock/catálogo CM: sub-paso **1.0** (optativo).
 - **Notas:**
   - Al crear la SOLPED se crea implícitamente el `ProcurementCase`: `title`, `requesting_unit_id` y `destination_unit_id` se copian desde la SOLPED (`PurchaseRequest.title` / unidades). El sistema asigna `PurchaseRequest.requested_date` (= fecha del día de creación); no forma parte de la entrada del cliente.
   - Unidades: `requesting_unit` y `destination_unit` se autoasignan por `RoleAssignment`. Con `adq.solicitante` ambas quedan fijas a su unidad; con `adq.solicitante_daf` ambas son **modificables** en el tenant. Ver [`catalogo-roles.md`](../../arquitectura/especificacion/catalogo-roles.md) §3.1.
+  - `proposed_management_node_id` / `proposed_budget_line_id`: opcionales, **no vinculantes** (D-6). No sustituyen la clasificación+verificación en 1.3.
   - `product_code` en línea: typeahead busca por código o palabra vía `searchProducts`; si el usuario elige un hit del catálogo, se persiste el código (y puede prellenar `item_description`). Catálogo / entidad `Product` **[PENDIENTE X-94]** — campo opcional hasta entonces.
   - `unit_of_measure` en línea: ref. al catálogo de plataforma `UnitOfMeasure` (`listUnitOfMeasures`, solo activas). Semilla (unidad, bolsa, caja, resma, g, kg, L, …) ampliable en consola municipal sin cambiar Adquisiciones.
   - Precio siempre neto (convención de plataforma); no se captura «neto/bruto» como elección del usuario.
@@ -156,18 +157,26 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   - Si `currency` ≠ CLP, la tasa en 1.1 es referencial; el hito que congela la tasa para compromiso está pendiente (ficha 1-solped).
   - ⚠ Pendiente normativo: umbrales de modalidad (UTM) ¿neto o bruto?
 
+#### `GET /management-nodes` — `listManagementNodes`
+- **Sub-pasos:** 1.1 *(propuesta opcional)*, 1.3 *(clasificación obligatoria)*
+- **Entrada:** query `fiscal_year` (opcional); `leaves_only` (default `true` en UI de imputación)
+- **Respuesta:** colección de nodos del eje de gestión (`id`, `code`, `name`, `level`, `path_label`, `is_leaf`, `parent_id`) — canónico en Presupuestos ([`entidades-presupuestos.md`](../../modelo-datos/entidades-presupuestos.md); D-5).
+- **Reglas:** **no** filtrar por `destination_unit` en 1.1 (**[PENDIENTE P-23]**). Pre-sugerencia unidad→nodo solo en 1.3 (demo stub).
+- **Dependencias:** Presupuestos (cacheada)
+- **Comportamiento ante falla:** mensaje junto al selector; no bloquea borrador en 1.1; en 1.3 bloquea confirmar si no hay catálogo usable
+
 #### `GET /budget-lines/{id}` — `getBudgetLine`
-- **Sub-pasos:** 1.1, 1.2 *(al seleccionar `proposed_budget_line_id`)*
-- **Respuesta:** subset de `BudgetLine` — al menos `id`, `code`, `description` (descripción de la cuenta). Canónico en Presupuestos ([`entidades-presupuestos.md`](../../modelo-datos/entidades-presupuestos.md)).
+- **Sub-pasos:** 1.1, 1.2 *(al seleccionar `proposed_budget_line_id`)*, 1.3 *(cuenta resuelta)*
+- **Respuesta:** subset de `BudgetLine` — al menos `id`, `code`, `description`, `management_node_id` si aplica. Canónico en Presupuestos ([`entidades-presupuestos.md`](../../modelo-datos/entidades-presupuestos.md)).
 - **Dependencias:** Presupuestos (cacheada)
 - **Comportamiento ante falla:** mensaje junto al selector; no bloquea el borrador
 
 #### `GET /budget-lines/{id}/preview-availability` — `previewBudgetAvailability`
 - **Sub-pasos:** 1.1, 1.2 *(autoconsulta informativa; se dispara al seleccionar la línea y/o desde panel de detalle)*
-- **Entrada:** `budget_line_id`, `fiscal_year`, `amount` (opcional — monto estimado de la SOLPED **bruto en CLP**)
+- **Entrada:** `budget_line_id`, `fiscal_year`, `amount` (opcional — monto estimado de la SOLPED **bruto en CLP**); `management_node_id` opcional si la línea aún no fija el nodo
 - **Respuesta:** `available_balance` (**saldo** mostrado junto al selector), `committed_by_others`, `projected_balance` (misma forma que `checkBudgetAvailability`); puede enriquecerse con `account_code` / `account_description` si `getBudgetLine` no se invocó por separado
 - **Reglas:** solo lectura; no persiste verificación ni afecta `PurchaseRequest.status`; requiere RBAC de consulta sobre la línea
-- **UI 1.1:** al elegir `proposed_budget_line_id`, mostrar en solo lectura **descripción de la cuenta** + **saldo** (Presupuestos). No sustituye 1.3.
+- **UI 1.1:** al elegir `proposed_management_node_id` / `proposed_budget_line_id`, mostrar path del nodo + **descripción de la cuenta** + **saldo** (Presupuestos). Propuesta **no vinculante** (D-6 / **[PENDIENTE P-28]**). No sustituye 1.3.
 - **Dependencias:** Presupuestos (cacheada)
 - **Comportamiento ante falla:** error en panel/modal o bloque bajo el selector; la pantalla de creación o aprobación continúa operativa
 - **Nota B0 (CDP / personal):** esta operación es **informativa** en el flujo de Adquisiciones. La **disponibilidad bloqueante** y el **CDP de gasto en personal** (RRHH procesos 1–4, 8; cometidos 3.2.4) son contratos distintos Presupuestos↔RRHH (**R-1**). No asumir que `previewBudgetAvailability` cubre contratación de personal.
@@ -215,14 +224,19 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
   | `disposition = cancel` → `ProcurementCase.status = cancelled` (sin corrección) | — | — |
 
 #### `POST /purchase-requests/{id}/budget-verification` — `verifyBudgetAvailability`
-- **Sub-pasos:** 1.3
-- **Entrada:** `budget_line_id`, `amount`, `fiscal_year`, `decision` (`confirmed` \| `rejected`), `comments` (obligatorio si rechazo)
+- **Sub-pasos:** 1.3 — *Clasificación y verificación presupuestaria* (D-6)
+- **Entrada:** `management_node_id` (hoja, **obligatorio** al confirmar), `budget_line_id` (**obligatorio**), `amount`, `fiscal_year`, `decision` (`confirmed` \| `rejected`), `comments` (obligatorio si rechazo)
+- **Efecto:** persiste imputación resuelta; calcula `imputation_diverged` vs `proposed_*` de la SOLPED; registra `verified_by`
 - **Reglas:**
   | Regla | Severidad | QA | Error |
   |---|---|---|---|
-  | Disponibilidad presupuestaria con trazabilidad de saldo | blocking | 8 P1 | `BUDGET_UNAVAILABLE` |
+  | `management_node_id` presente (al confirmar) | blocking | — | `MISSING_REQUIRED_FIELD` |
+  | Nodo hoja vigente | blocking | — | `INVALID_MANAGEMENT_NODE` |
+  | `budget_line_id` presente (al confirmar) | blocking | — | `MISSING_REQUIRED_FIELD` |
+  | Disponibilidad presupuestaria con trazabilidad de saldo (par cuenta × nodo) | blocking | 8 P1 | `BUDGET_UNAVAILABLE` |
   | SOLPED en `pending_finance` | blocking | — | `INVALID_STATUS` |
-- **Dependencias:** `checkBudgetAvailability` (Presupuestos)
+- **Dependencias:** `listManagementNodes`, `checkBudgetAvailability` (Presupuestos; entrada incluye `management_node_id` + `budget_line_id`)
+- **Notas:** prefill desde propuesta SOLPED; pre-sugerencia por unidad destino si no hay propuesta (**[PENDIENTE P-23]**). Divergencia propuesta≠resuelto no es error.
 
 #### `POST /purchase-requests/{id}/budget-financing-request` — `requestBudgetFinancing`
 - **Sub-pasos:** 1.4
@@ -232,23 +246,24 @@ Operaciones de consulta del expediente y recursos asociados. Requisito de [`must
 
 #### `POST /purchase-requests/{id}/budget-availability-certificate` — `issueBudgetAvailabilityCertificate`
 - **Sub-pasos:** 1.5
-- **Entrada:** `budget_line_id`, `certified_amount`, `fiscal_year`, `signature_mode` (`electronic` \| `scanned`)
+- **Entrada:** `certified_amount`, `fiscal_year`, `signature_mode` (`electronic` \| `scanned`) — la imputación (`management_node_id` + `budget_line_id`) se toma de la verificación confirmada en 1.3 (**no reclasificar**)
+- **Respuesta:** `BudgetAvailabilityCertificate` con imputación resuelta + auditoría `proposed_*` / `imputation_diverged`
 - **Reglas:**
   | Regla | Severidad | QA | Error |
   |---|---|---|---|
-  | Verificación confirmada en 1.3 | blocking | — | `VERIFICATION_REQUIRED` |
+  | Clasificación + verificación confirmadas en 1.3 | blocking | — | `VERIFICATION_REQUIRED` |
   | Verificador ≠ firmante CDP | blocking | 9 P1 | `SEGREGATION_OF_DUTIES_VIOLATION` |
-  | Saldo disponible al revalidar | blocking | 8, 11 P0/P1 | `BUDGET_UNAVAILABLE` |
+  | Saldo disponible al revalidar (par resuelto) | blocking | 8, 11 P0/P1 | `BUDGET_UNAVAILABLE` |
   | Firma electrónica válida (FirmaGob) si `signature_mode = electronic` | blocking | 5, 7 P1 | `SIGNATURE_REQUIRED` |
   | Adjunto escaneado válido si `signature_mode = scanned` | blocking | — | `SCANNED_CDP_INVALID` |
-- **Dependencias:** `checkBudgetAvailability`; si `electronic`: `requestSignature`, `confirmSignature`
+- **Dependencias:** `checkBudgetAvailability` (sobre imputación 1.3); si `electronic`: `requestSignature`, `confirmSignature`
 - **Evento emitido:** `BudgetAvailabilityCertificateIssued`
 
 #### `POST /purchase-requests/{id}/budget-availability-certificate/scanned` — `registerScannedBudgetAvailabilityCertificate`
 - **Sub-pasos:** 1.5 *(modo degradado)*
 - **Entrada:** mismos metadatos que emisión + `scanned_certificate_attachment` (`DocumentRef` — PDF previamente subido vía `storeDocument` del core)
 - **Reglas:** mismas que emisión, excepto FirmaGob; fija `signature_mode = scanned`
-- **Dependencias:** `checkBudgetAvailability`
+- **Dependencias:** `checkBudgetAvailability` (sobre imputación 1.3)
 - **Evento emitido:** `BudgetAvailabilityCertificateIssued`
 
 #### `POST /purchase-requests/{id}/budget-pre-commitment` — `createBudgetPreCommitment`
@@ -645,8 +660,9 @@ Contrato del core: [`plataforma/contracts.md`](../../plataforma/contracts.md) §
 
 | Operación | Sub-pasos | Clasificación | Comportamiento ante falla |
 |---|---|---|---|
-| `checkBudgetAvailability` | 1.3, 1.5, 1.6 | Síncrona bloqueante | Error `BUDGET_PROVIDER_UNAVAILABLE`; operación no procede |
-| `getBudgetLine` | 1.1, 1.2 | Cacheada | Descripción de cuenta al seleccionar línea propuesta; error no bloquea borrador |
+| `listManagementNodes` | 1.1, 1.3 | Cacheada | Catálogo eje de gestión (D-5); falla no bloquea borrador en 1.1; en 1.3 bloquea confirmar |
+| `checkBudgetAvailability` | 1.3, 1.5, 1.6 | Síncrona bloqueante | Entrada: `budget_line_id` + `management_node_id` + monto/año; error `BUDGET_PROVIDER_UNAVAILABLE`; operación no procede |
+| `getBudgetLine` | 1.1, 1.2, 1.3 | Cacheada | Descripción de cuenta al seleccionar línea; error no bloquea borrador |
 | `previewBudgetAvailability` | 1.1, 1.2 | Cacheada / informativa | Saldo al seleccionar línea / panel detalle; no bloquea creación ni aprobación |
 | `createBudgetPreCommitment` | 1.6 | Síncrona bloqueante | Rechazo → `BUDGET_UNAVAILABLE`; sin efecto parcial |
 | `commitBudget` | 3.4 *(CA)*, 3.14 *(LP)*, 3.7 *(CM)*, 3.3 *(TD)* | Síncrona bloqueante | Rechazo → `BUDGET_UNAVAILABLE`; OC queda `commitment_pending` — regularización pendiente (**[PENDIENTE X-40]**). Reemplaza el par anterior `convertPreCommitmentToCommitment`+`registerBudgetCommitment`. |

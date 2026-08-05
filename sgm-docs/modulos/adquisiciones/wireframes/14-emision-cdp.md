@@ -14,9 +14,11 @@
 +----------------------------------------------------------+
 | Datos del CDP                                             |
 | Verificado por:  María López (1.3)                        |
-| Imputación presupuestaria (solo lectura) [ Cuenta / Programa ... ]  |
+| Nodo de gestión (solo lectura) [ Adm. › … › Act. Oficina ]|
+| Imputación / cuenta (solo lectura) [ 22.01.03 — Insumos ] |
 | Monto certificado *     [ $ ____________ ]                |
 | Año fiscal *            [ 2026 ]                          |
+| (Sin reclasificar — resolución DAF en 1.3; D-6 / SoD)     |
 +----------------------------------------------------------+
 | Revalidación de saldo                                     |
 | Saldo proyectado:  $ 450.000  [OK]                        |
@@ -36,6 +38,7 @@ Visible cuando FirmaGob no está disponible o el usuario elige «Registrar CDP f
 +----------------------------------------------------------+
 | Datos del CDP                                             |
 | Nº correlativo CDP *    [ CDP-2026-00891 ]                |
+| Nodo / cuenta (solo lectura, desde 1.3)                   |
 | Monto certificado *     [ $ ____________ ]                |
 | Fecha del documento *   [ __ / __ / ____ ]                |
 | Adjunto CDP firmado *   [ Seleccionar PDF o imagen... ]   |
@@ -52,7 +55,8 @@ Visible cuando FirmaGob no está disponible o el usuario elige «Registrar CDP f
 
 | Campo UI | Entidad.campo | Obligatorio |
 |---|---|---|
-| Imputación presupuestaria | `BudgetAvailabilityCertificate.budget_line_id` | No (solo lectura, heredada de 1.3) |
+| Nodo de gestión | `BudgetAvailabilityCertificate.management_node_id` | No (solo lectura, heredado de 1.3) |
+| Imputación / cuenta | `BudgetAvailabilityCertificate.budget_line_id` | No (solo lectura, heredada de 1.3) |
 | Monto certificado | `BudgetAvailabilityCertificate.certified_amount` | Sí |
 | Año fiscal | `BudgetAvailabilityCertificate.fiscal_year` | Sí |
 | Nº correlativo CDP | `BudgetAvailabilityCertificate.certificate_number` | Sí (modo escaneado) |

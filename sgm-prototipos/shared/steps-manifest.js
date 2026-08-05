@@ -32,7 +32,7 @@ export default {
     {
       stepId: '1.3',
       stageName: 'SOLPED',
-      stepName: 'Verificación de disponibilidad presupuestaria',
+      stepName: 'Clasificación y verificación presupuestaria',
       wireframeSpec: 'sgm-docs/modulos/adquisiciones/wireframes/13-verificacion-disponibilidad.md',
       processFicha: 'sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md',
       prototypeHtml: 'modulos/adquisiciones/procesos-transversales/13-verificacion-disponibilidad.html',

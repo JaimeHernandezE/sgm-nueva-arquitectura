@@ -2,11 +2,17 @@
 
 **Proyecto:** SGM — Sistema de Gestión Municipal
 **Módulo:** Presupuestos
-**Versión:** 0.11 (borrador para revisión interna)
-**Fecha:** julio 2026
+**Versión:** 0.14 (borrador para revisión interna)
+**Fecha:** agosto 2026
 **Estado:** propuesta de plan, no validado con DM
 
 **Gobierno del corpus:** [`../../plan-general.md`](../../plan-general.md). Criterios de calidad comunes: plan general §7. Decisiones transversales: plan general §4.
+
+**Cambios v0.14:** nueva decisión **D-6 — la autoridad de imputación reside en el CDP, no en la SOLPED**, a raíz de una solicitud de DM de incorporar campos de programa, proyecto y actividad en la solicitud de pedido. La SOLPED **espeja** la estructura de imputación del CDP de forma completa, opcional y no vinculante; la resolución definitiva la toma la DAF al certificar disponibilidad. Fundamento de segregación de funciones (*quien solicita no imputa*) antes que de usabilidad. Consecuencias en §6 (contrato Adq↔Presupuestos), F2 (paso de clasificación explícito), §11 (criterio 16) y §10 (riesgo de cuello de botella en la DAF). **P-23 se replantea por tercera vez**: el mapeo unidad → nodo pasa de filtro a pre-sugerencia. Nuevo **P-28** (validación con DM). Los tres campos independientes solicitados no se incorporan: son niveles de un árbol, no dimensiones (§5.3, D-5).
+
+**Cambios v0.13:** incorporados **Villarrica, Cochamó y Quilaco** — con Las Cabras y María Pinto, **los cinco municipios en convenio**. Cierra el entregable de base de evidencia de F1. **Dos correcciones a v0.12** (§5.3, Anexo A.6): las cuentas `MATRIZ` con presupuesto **no son una anomalía** —son el nodo agregado que lleva el subtotal, 241 de 241 cuadran en Villarrica—, y la convención de codificación del programa **varía por municipio** (dos codifican el área en el primer dígito sin colisiones; dos usan secuencia por área). Hallazgos nuevos: la **semántica del nivel `programa` no es homogénea** —en Villarrica es el organigrama— lo que reabre P-23; `Centro de Costo` está **vacío en las tres plantillas de migración**; el eje de gestión **no aplica a ingresos** (0 de 840 filas); y las **cuentas analíticas mapean cada cuenta presupuestaria a sus contracuentas de devengo y pago**, que es el mecanismo concreto del devengo dual de D-1 (nueva §5.4). Nuevos P-26, P-27.
+
+**Cambios v0.12:** inspección de **planes de cuentas y presupuestos por área de gestión 2026 de Las Cabras y María Pinto** (cuatro planillas, dos municipios). Tres consecuencias estructurales: (1) el **eje de gestión tiene cinco niveles** —Área › Programa › Subprograma › **Proyecto** › **Actividad**—, no tres; se adopta **D-5** (árbol recursivo con profundidad variable, no columnas fijas). (2) **`Project` del eje de gestión no es `InvestmentInitiative` del ST 31**: se modelan desacoplados con vínculo opcional (§5.3). (3) El plan de cuentas municipal tiene un **sexto nivel de apertura local que diverge entre municipios**, y atributos operativos (MATRIZ/DETALLE, analítico, actúa presupuesto) que ninguna fuente normativa entrega — nuevo **Anexo A.6**, cuarta capa en A.1. Nuevos P-21…P-25.
 
 **Cambios v0.11 (B0 plan general):** matiz de **D-1** (devengo dual — efecto patrimonial es Contabilidad; atomicidad = ADR / C-1). Contrato bidireccional **RRHH↔Presupuestos** (disponibilidad bloqueante + CDP de personal; R-1). Referencias DocDigital a prefijo **X-72…X-76**. Criterios de calidad remiten al plan general.
 
@@ -48,6 +54,8 @@ Tomadas antes de iniciar el trabajo. Si alguna cambia, el plan se recalcula.
 | D-2 | **Alcance de entidades presupuestarias** | Ciclo completo municipal **más** los presupuestos separados de Salud y Educación (servicios traspasados), que son entidades presupuestarias distintas con consolidación propia. SINIM expone además un cuarto sector, **Cementerio** — alcance por confirmar (P-12). |
 | D-3 | **Método** | Réplica del método de Adquisiciones: fichas de proceso por etapa → modelo de entidades en naming técnico inglés → contratos de API → wireframes → especificaciones transversales. |
 | D-4 | **Tramitación de decretos (DocDigital)** | Los decretos que promulgan el presupuesto anual (26.2.7) y de modificación presupuestaria (27.2.4 / 27.2.5) se **originan en SGM** y se **tramitan en DocDigital** (visación, FEA, enumeración, distribución). El folio oficial es el externo; el correlativo interno es solo trazabilidad. Decisión canónica transversal — no se reitera aquí. Cadena de firma municipal = `SignatureChain` (plataforma), implementación del proceso 25 del levantamiento. Condicionado a **X-72** (mecanismo de integración). |
+| D-5 | **Estructura del eje de gestión** | El eje de gestión tiene **cinco niveles** —Área de gestión › Programa › Subprograma › Proyecto › Actividad— y se modela como **árbol recursivo con nivel tipado y profundidad variable por rama** (`ManagementNode`), no como cinco columnas fijas. El área es catálogo nacional (seis valores); los cuatro niveles inferiores los define cada municipio. Solo los nodos hoja admiten imputación. El nivel `PROJECT` del eje de gestión **no** es la iniciativa de inversión del subtítulo 31: son entidades distintas con vínculo opcional. Ver §5.3. |
+| D-6 | **Momento y autoridad de la imputación** | La **imputación presupuestaria —cuenta × nodo de gestión— se resuelve en el CDP**, no en la SOLPED. Es la DAF quien la determina, en ejercicio de su competencia funcional (art. 27 LOCM) y porque la imputación errónea tiene consecuencia ante Contraloría. La SOLPED **espeja la misma estructura de imputación** de forma completa, opcional y **no vinculante**: quien sepa usarla la usará bien y aporta contexto; quien no, no queda bloqueado. No existe un vocabulario de clasificación propio de la SOLPED. Ver consecuencia abajo y **P-28**. |
 
 ### Consecuencia inmediata de D-1
 
@@ -61,6 +69,30 @@ Adquisiciones ya declaró la entidad `BudgetPreCommitment` en su modelo prelimin
 2. **Estado de espera:** la transición post-decreto (promulgación → apertura; modificación → registro) pasa por `pending_signature` hasta el retorno del acto firmado (`AdministrativeActSigned` / `DocumentProcedureCompleted`).
 3. **Entidades:** `DecreeSignatureChain` (candidata v0.2–v0.9) se alinea a `SignatureChain` de plataforma; el acto se modela como `AdministrativeAct` (o equivalente presupuestario) con `DocumentProcedure`.
 4. **Contingencia:** municipios sin DocDigital y latencia ante plazos legales (15 dic, 10 días art. 29 c) — P-18, P-20; mismo patrón que §5.1.
+
+### Consecuencia inmediata de D-5
+
+1. Las entidades `Program`, `Subprogram` y `CostCenter` de la lista transversal de v≤0.11 quedan **superadas**: se reemplazan por `ManagementArea` (catálogo nacional) + `ManagementNode` (árbol local) + `OrganizationalUnit` (dimensión opcional, P-23).
+2. El contrato de reporte BEP (§6.1) exige columnas fijas por área. Con profundidad variable, el sistema **debe** exponer una vista aplanada con regla de relleno única y explícita, definida en las bases y no por el proveedor (P-22).
+3. `InvestmentInitiative` (§5.2) conserva su identidad propia —Código Municipal perpetuo y Código INI— y **no** se fusiona con el nivel `PROJECT`. La colisión de nombres es real: el ítem `31.02` del clasificador se llama "Proyectos" y la posición 7 del Código INI codifica "tipo de iniciativa". Ver riesgo asociado en §10.
+
+### Consecuencia inmediata de D-6
+
+**Origen.** DM solicitó incorporar campos de `programa`, `proyecto` y `actividad` en la SOLPED, como tres selectores independientes filtrados por la unidad de destino. La solicitud no se implementa en esos términos, por tres razones que la evidencia de los cinco municipios ya había establecido (§5.3):
+
+1. Los tres no son dimensiones independientes sino **niveles de un mismo árbol** (D-5). Tres selectores permiten combinaciones que no existen y que el modelo no puede validar.
+2. La propuesta **omite el área de gestión**, que es el único nivel con catálogo nacional, el único que el BEP reporta y el único que los cinco municipios tienen — Cochamó usa un área, un programa y ningún subprograma.
+3. Filtrar por unidad organizacional **es circular**: `Centro de Costo` está vacío en las 4.919 filas de las plantillas de migración, `OrganizationalUnit` es un pendiente abierto (P-23), y en Villarrica el programa *es* la unidad organizacional.
+
+**Lo que se adopta en su lugar.**
+
+1. **Un solo campo, no tres.** La referencia es a un **nodo hoja** del árbol de gestión (`management_node_id`), del que el path completo —área › programa › subprograma › proyecto › actividad— es derivado. Soporta profundidad variable sin campos vacíos y hace imposible por construcción una combinación inconsistente.
+2. **La SOLPED espeja el CDP.** Los campos de imputación de la SOLPED son los mismos que el CDP debe especificar, con prefijo o marca de **propuesta**: no hay estructura de clasificación exclusiva de Adquisiciones.
+3. **Opcionales y no bloqueantes.** Ninguna regla `MISSING_REQUIRED_FIELD`. Lo que sí se valida es la **forma**, no el criterio: si se envía un valor, debe ser un nodo hoja vigente y una cuenta `DETALLE` del ejercicio. El criterio lo evalúa la DAF en el CDP.
+4. **La divergencia entre lo propuesto y lo resuelto se conserva.** Cuando el CDP imputa a un nodo distinto del propuesto en la SOLPED, la diferencia queda registrada. No es un error a corregir: es la señal que alimenta la pre-sugerencia de P-23.
+5. **Contexto no clasificatorio.** La SOLPED conserva un campo de propósito en texto libre. Sin él, sacar la clasificación deja a la DAF imputando a ciegas, con el resultado previsible de que todo termine en Gestión Interna.
+
+> **Riesgo aceptado.** Cada SOLPED pasa a requerir una acción de clasificación de la DAF antes del CDP. En municipios con equipos de finanzas de tres personas eso es throughput real. La mitigación es la pre-sugerencia de P-23, no relajar la segregación.
 
 ---
 
@@ -146,6 +178,11 @@ Leyenda de cobertura Odoo: **Sí** = opera el ámbito · **Parcial** = hay rastr
 | **Salud y Educación** | No | Parcial: códigos de área; no entidades presupuestarias | **Sin cobertura de D-2 en ninguna fuente (P-5)** |
 | **Cementerio (sector SINIM)** | No | No (solo área de catálogo en algunos datos) | **Confirmado como sector con reglas de imputación propias por cuenta en el Manual V19; confirmar alcance como `BudgetEntity` (P-12)** |
 | Informes CGR / SINIM / BEP | No | Parcial: 4 informes CGR TXT; SINIM/BEP no | **Estructura BEP fijada (§6.1)**; residual canal y periodicidad (P-8) |
+| **Eje de gestión completo (5 niveles)** | No | Parcial: área, centro de costo, programa/subprograma en distribución; sin proyecto ni actividad | **D-5: árbol recursivo `ManagementNode`; regla de aplanamiento para BEP (P-21, P-22)** |
+| **Unidad organizacional responsable del gasto** | No | Parcial: campo `centro de costo` presente en el ORM y en la plantilla de migración, **vacío en las 4.919 filas de los tres municipios con plantilla**. En Villarrica la información existe, pero codificada dentro del árbol de gestión | **Caso de "campo presente ≠ uso funcional". `OrganizationalUnit` alimentable por captura o por derivación desde el árbol (P-23, P-27)** |
+| **Vigencia temporal del árbol de gestión** | No | No | **Los municipios embeben el año en el nombre del nodo. Arrastre y cierre entre ejercicios sin cobertura (P-24)** |
+| **Correspondencia cuenta presupuestaria → contracuentas contables** | No | No como catálogo; el asiento se resuelve en el puente | **Los municipios ya la mantienen como tabla de datos, indexada por (ejercicio, área, cuenta). Es el mecanismo del devengo dual de D-1 (§5.4, P-26)** |
+| **Atributos operativos del plan de cuentas local** (MATRIZ/DETALLE, analítico, actúa presupuesto) | No | Parcial: jerarquía de cuentas sin tipificación explícita de imputabilidad | **Invariante "solo DETALLE es imputable" sin fuente normativa identificada (P-25, Anexo A.6)** |
 
 ### 3.4 Lectura del cruce Magenta × Odoo
 
@@ -296,7 +333,9 @@ Naming técnico en inglés, consistente con Adquisiciones. Lista de trabajo, no 
 
 **Control:** `DeficitRepresentation` (con plazo art. 29 c y escalamiento a CGR), `QuarterlyReview`, **`QuarterlyControlReport`** (art. 29 d; reemplaza a `AccruedLiabilitiesReport` de v0.4 — ver §4.2), **`UnfundedRequest`** (peticiones no contempladas), `CashFlowProjection`, `ExecutionSnapshot`, **`ContingencyRecord`** (§5.1)
 
-**Transversal:** `BudgetClassifier` (versionado, subtítulo/ítem/asignación/subasignación; atributos por cuenta: `requires_council_agreement`, aplicabilidad por sector municipal/educación/salud/cementerio, área de gestión, estado nueva/no usar, oficio de creación — ver §4.1 y Anexo A.5), `NormativeParameter` (compartido con Adquisiciones), `CostCenter`, `ManagementArea`, `Program` / `Subprogram`
+**Transversal:** `BudgetClassifier` (catálogo nacional versionado, subtítulo/ítem/asignación/subasignación; atributos por cuenta: `requires_council_agreement`, aplicabilidad por sector municipal/educación/salud/cementerio, área de gestión, estado nueva/no usar, oficio de creación — ver §4.1 y Anexo A.5), **`BudgetAccount`** *(plan de cuentas local del municipio; extiende el clasificador con el sexto nivel de apertura y los atributos operativos — Anexo A.6)*, `NormativeParameter` (compartido con Adquisiciones)
+
+**Eje de gestión (D-5, §5.3):** `ManagementArea` (catálogo nacional, seis valores), **`ManagementNode`** (árbol recursivo local: `PROGRAM` / `SUBPROGRAM` / `PROJECT` / `ACTIVITY`), **`OrganizationalUnit`** *(dimensión opcional — P-23)*. Reemplazan a `Program`, `Subprogram` y `CostCenter` de v≤0.11
 
 **Gobernanza de plataforma (GP):** `NormativeWatch`, `ChangeRequest`, `NormativeRuling`, `ContractVersion`, `EcosystemNotice` — ver §7.7
 
@@ -357,6 +396,144 @@ Junto con el proyecto de presupuesto se entrega al Concejo un anexo con el detal
 
 Es un **entregable obligatorio de MP-1**, con formato definido. Debe especificarse como reporte del módulo, no como documento que el municipio arma por fuera.
 
+### 5.3 Eje de gestión: cinco niveles, árbol recursivo
+
+Base de evidencia: planes de cuentas y presupuestos por área de gestión 2026 de **Las Cabras** (260 líneas de gasto, 228 cuentas de ingreso) y **María Pinto** (620 líneas), inspeccionados en v0.12.
+
+#### Dos clasificaciones ortogonales, no una
+
+Una línea presupuestaria es la **intersección** de dos ejes independientes más la cadena de estados:
+
+| Eje | Pregunta | Autoridad | Mutabilidad |
+|---|---|---|---|
+| Clasificador / plan de cuentas | ¿Qué se gasta? | Hacienda (DS 854) + CGR (plan de cuentas) + municipio (6º nivel) | Nacional versionado + apertura local |
+| **Gestión** | ¿Para qué se gasta? | Área: nacional (seis). Resto: municipio | Local, versionado por ejercicio |
+| Ejecución | ¿En qué estado está? | CGR | Estados fijos |
+
+**La cuenta por sí sola no identifica una línea presupuestaria.** En Las Cabras, **24 de 139 cuentas de gasto aparecen en más de una combinación del eje de gestión**. El caso extremo es `215-22-04-999` (Otros materiales), presente en cinco combinaciones: Gestión Interna ($4M), Servicios Comunitarios ($6M), Programa Medio Ambiental ($1M), Mantención de Caminos y Alumbrado ($50M) y Obras Menores ($25M). La clave de `BudgetLine` es el par cuenta × nodo de gestión, no la cuenta.
+
+#### Los cinco niveles
+
+```
+Área de gestión  →  Programa  →  Subprograma  →  Proyecto  →  Actividad
+   (6 fijas)         ──────────  definidos por el municipio  ──────────
+```
+
+Las seis áreas son las mismas que exige el BEP para el gasto municipal (§6.1): Gestión Interna, Servicios Comunitarios, Actividades Municipales, Programas Sociales, Programas Deportivos y Programas Culturales.
+
+#### Por qué árbol recursivo y no cinco columnas (D-5)
+
+1. **La profundidad real es extremadamente variable, incluso dentro de un municipio.** En Villarrica, **219 de 224 programas no tienen ningún subprograma, y uno tiene 37**. En Las Cabras, `Gestión Interna` opera con un solo nivel efectivo mientras `Programas Sociales › Convenios` agota los tres disponibles. Cinco columnas fijas obligarían a rellenar cuatro de ellas en la inmensa mayoría de las líneas.
+
+2. **El relleno con placeholders ya es masivo con tres niveles.** Las Cabras repite `GESTIÓN INTERNA / GESTIÓN INTERNA / GESTIÓN INTERNA` en **114 de 260 líneas**; en Quilaco **39 de 60 subprogramas son espejo exacto del nombre de su programa**; María Pinto rellena con `VARIOS` y `OTRAS`. El placeholder es la norma, no la excepción.
+
+3. **La convención de codificación del programa varía por municipio.** *Corrige la afirmación de v0.12.* Villarrica y Quilaco **codifican el área en el primer dígito** del código de programa (área 3 → `31`, `32`, `33`…) y en ambos casos hay **cero colisiones** entre áreas: el código es único dentro del municipio. Las Cabras y María Pinto usan una **secuencia independiente por área**, donde el mismo número identifica programas distintos según el área. Es decir: no solo el contenido del árbol es local, también lo es **la semántica de su clave**. Consecuencia reforzada: surrogate ID más `materialized_path`; ninguna clave natural es interoperable entre municipios.
+
+4. **Ningún par de municipios comparte una sola combinación del eje de gestión.** Las Cabras 53, María Pinto 62, Quilaco 49 programas, Villarrica 224. Intersección vacía en todos los pares. El árbol es data del tenant, sin excepción.
+
+#### Los cinco municipios en convenio
+
+| | Las Cabras | María Pinto | Quilaco | Cochamó | Villarrica |
+|---|---|---|---|---|---|
+| Áreas de gestión | 6 | 4 usadas | 6 | 1 usada | 6 |
+| Programas | — (53 combinaciones) | — (62 combinaciones) | 49 | 1 usado | **224** |
+| Subprogramas | sí | sí | 60 (65% espejo) | ninguno | 97, concentrados en 5 programas |
+| Codificación del programa | secuencia por área | secuencia por área | área en 1er dígito | — | área en 1er dígito |
+| Semántica del programa | mixta | objeto funcional | programa / convenio | — | **unidad organizacional** |
+
+El rango va de **un municipio que usa un área, un programa y ningún subprograma** (Cochamó) a **uno con 224 programas** (Villarrica). Cualquier modelo que asuma una estructura mínima obligatoria más allá del área excluye a Cochamó; cualquiera que asuma profundidad fija infla Villarrica.
+
+#### La semántica del nivel `programa` no es homogénea
+
+Este es el hallazgo que más condiciona el modelo. El mismo nivel significa cosas distintas según el municipio:
+
+| Municipio | Qué es un "programa" | Ejemplos |
+|---|---|---|
+| **Villarrica** | **La unidad organizacional** | `DEPTO. PERSONAL`, `DEPTO. TESORERÍA MUNICIPAL`, `CONTABILIDAD Y PRESUPUESTO`, `ASESORÍA JURÍDICA`, `SECRETARÍA CONCEJO`, `DEPTO. INFORMÁTICA` |
+| **María Pinto** | El objeto de gasto | `VEHÍCULOS`, `PISCINA`, `PLANTAS DE TRATAMIENTO`, `FESTIVAL` |
+| **Quilaco** | El programa o convenio | `FIGEM 2019`, `SIFIM`, `BECAS PARA ESTUDIANTES`, `OPERATIVO SANITARIO` |
+| **Las Cabras** | Mixta | `CONVENIOS`, `PROGRAMAS DE BIENESTAR SOCIAL`, `PROGRAMA COMUNICACIONAL` |
+
+Y en Villarrica el **subprograma es la ubicación física**: bajo `CONTABILIDAD Y PRESUPUESTO` cuelgan `OOCC-VICENTE REYES 998`, `OMIL-GENERAL KORNER 335`, `BODEGA MUNICIPAL-JUAN ANTONIO RÍOS`, `AVALUACIONES-CAMILO HENRÍQUEZ 225`. Son direcciones de inmuebles, presumiblemente para imputar servicios básicos por edificio.
+
+**Consecuencia directa sobre P-23.** Villarrica ya usa el eje de gestión como dimensión organizacional y como dimensión de ubicación. Introducir `OrganizationalUnit` como dimensión separada **duplicaría** el dato para ese municipio, mientras que para Cochamó lo crearía desde cero. La decisión no es "¿agregamos la dimensión?" sino "¿el modelo permite que el mismo hecho se exprese en el árbol de gestión o en una dimensión propia, según el municipio?". P-23 se replantea en v0.13 con esta evidencia.
+
+#### Invariantes
+
+- El `level` desciende estrictamente respecto del padre; no se permiten saltos.
+- **Solo los nodos hoja admiten imputación**, en paralelo exacto con la regla `DETALLE` del plan de cuentas (Anexo A.6). Es la misma invariante aplicada a los dos ejes.
+- `(tenant_id, fiscal_year, materialized_path)` es único; el código local solo es único entre hermanos.
+
+#### Colisión de nombres con el subtítulo 31
+
+**`ManagementNode` de nivel `PROJECT` y `InvestmentInitiative` (§5.2) son entidades distintas.** El vínculo entre ambas es **opcional y unidireccional**, declarado en `BudgetLine`, no en el nodo.
+
+La colisión es real y previsible: el ítem `31.02` del clasificador se llama *Proyectos*, la posición 7 del Código INI codifica *tipo de iniciativa* con valor `2 = Proyectos`, y el eje de gestión tendrá un nivel llamado *Proyecto*. Fusionarlas tiene dos costos concretos: acopla el eje de gestión con el clasificador solo para el ST 31, y obliga a arrastrar identificación SNI en líneas que no son de inversión (un *Programa de Turismo* no es una iniciativa de inversión). La decisión de v0.12 es mantenerlas separadas.
+
+> Un nodo `PROJECT` **puede** corresponder a una iniciativa con Código INI. Cuando ocurre, la relación se declara y el sistema valida la coherencia; cuando no ocurre, no se exige nada.
+
+#### Aplanamiento para reportes normativos
+
+El BEP y los informes CGR esperan columnas fijas por área. Con profundidad variable, la vista aplanada debe:
+
+1. Proyectar `materialized_path` sobre los cinco niveles.
+2. Rellenar los niveles no utilizados con una **regla única y explícita**, fijada en las bases.
+3. No dejar que el proveedor la invente. Hoy cada sistema municipal resuelve esto distinto —Las Cabras replica el nombre del padre, María Pinto usa `VARIOS`— y esa divergencia es exactamente lo que el SGM debe eliminar.
+
+Ver P-22.
+
+#### Vigencia temporal: el árbol cambia todos los años
+
+En Las Cabras el ejercicio está embebido en el **nombre** del nodo porque el modelo carece de dimensión temporal: `VINCULO ACOMP. VERSION 18`, `VINCULOS ACOMPAÑAMIENTO 19`, `CONVENIO HABITABILIDAD 2024`. Los identificadores bajo `Convenios` van 2, 8, 9, 12, 13, 14, 16, 19, 31, 32, 33, 34, 36 — numeración con huecos, síntoma de acumulación sin depuración.
+
+El módulo debe soportar apertura de ejercicio con **arrastre selectivo, cierre de nodos y trazabilidad** (`superseded_by`), y el caso borde de nodos cerrados con saldo devengado pendiente de pago. Ver P-24. Sin esto, el SGM hereda el problema desde el primer ejercicio.
+
+#### `Centro de Costo`: el campo existe y nadie lo llena
+
+Las plantillas de migración de Quilaco, Cochamó y Villarrica traen la columna `Centro de Costo` en primera posición, junto a `Área de Gestión`, `Programa` y `SubPrograma`. Está **vacía en las 4.919 filas de las cuatro planillas inspeccionadas**, sin una sola excepción.
+
+| Plantilla | Filas | `Centro de Costo` poblado | `Área de Gestión` poblada |
+|---|---|---|---|
+| Quilaco | 635 | **0** | 455 |
+| Cochamó | 259 | **0** | 259 |
+| Villarrica (MIGRAR) | 2.182 | **0** | 1.023 |
+| Villarrica (PPTO DETALLADO) | 1.843 | **0** | 1.513 |
+
+Odoo declara el campo en la distribución de ficha (§3.2) y la plantilla de migración lo expone. Ninguno de los tres municipios lo alimenta. Es el caso más limpio del criterio *campo presente ≠ uso funcional* que aparece en el corpus: la existencia del campo en el ORM y en el importador no acredita nada sobre la práctica.
+
+La responsabilidad organizacional existe, pero **está codificada dentro del árbol de gestión** —explícitamente en Villarrica, implícitamente en María Pinto— y no en una dimensión propia. Ver P-23 replanteado.
+
+#### El eje de gestión no aplica a los ingresos
+
+De las **840 filas de ingreso** (cuentas `115`) presentes en las tres plantillas de migración, **ninguna** lleva área, programa ni subprograma. Todas las filas con eje de gestión poblado son cuentas `215`.
+
+Esto es consistente con el BEP —que desagrega por área solo el gasto municipal (§6.1)— y con el Manual de Imputaciones, cuya hoja de ingresos no tiene marca de área. **Es una regla del modelo, no una omisión de los municipios:** `BudgetLine` de ingreso no tiene `management_node_id`. Debe quedar como invariante verificable, no como convención.
+
+### 5.4 Cuentas analíticas y contracuentas: el mecanismo del devengo dual
+
+Hallazgo de v0.13, sin cobertura previa en el plan. Villarrica, Quilaco y Cochamó mantienen un artefacto llamado **cuenta analítica**, con una estructura común a los tres:
+
+| Columna | Contenido |
+|---|---|
+| `Código completo` | Código concatenado sin separadores (`1150301001001003`) |
+| `Título` · `Grupo` · `Subgrupo` | Descomposición contable: `1` / `11` / `115` |
+| `Nivel 1` … `Nivel 5` | Subtítulo · Ítem · Asignación · Subasignación · **apertura local** |
+| **`Cuenta de Egreso Devengado`** | Contracuenta contable del devengo |
+| **`Cuenta de Egreso Pagado`** | Contracuenta contable del pago |
+| **`Contracuenta`** · **`Cuenta de arrastre`** | Contrapartida y cuenta de traspaso al ejercicio siguiente |
+
+Dos consecuencias de peso:
+
+**1. Confirma la descomposición de ocho niveles del código.** La cuenta analítica hace explícito lo que el Anexo A.6 infiere del código formateado: `Título › Grupo › Subgrupo › Nivel 1…5`, donde los niveles 1 a 4 son el clasificador nacional y el **nivel 5 es la apertura local**. Es la estructura que `BudgetAccount` debe reproducir.
+
+**2. El asiento contable que origina un movimiento presupuestario está determinado por una tabla de datos, no por lógica.** Cada cuenta presupuestaria declara sus contracuentas de devengo y pago. Ejemplo de Quilaco: `115-08-03-003-001-902 FONDOS FET` → devengado `46103`, pagado `1110201`.
+
+Villarrica lo lleva un paso más allá: su tabla `cuentas_comprobantes` (1.009 filas) tiene por clave **(ejercicio, área de gestión, cuenta presupuestaria)** y devuelve `Cta_Devengado`, `Cta_Pagado` y `Cta_Devengado_activo_fijo`. **La contracuenta depende también del área de gestión**, no solo de la cuenta.
+
+Esto es directamente relevante para **D-1 y P-6**: el "devengo dual" —efecto presupuestario en Presupuestos, efecto patrimonial en Contabilidad— no es una abstracción a diseñar desde cero. Los municipios ya lo resuelven con una **tabla de correspondencia configurable**, versionada por ejercicio, que es exactamente la forma que debe tomar el contrato Presupuestos → Contabilidad. Ver **P-26**.
+
+> **Cobertura desigual.** Solo 17 de 82 cuentas analíticas de Quilaco y 25 de 204 de Villarrica traen contracuenta poblada; Cochamó ninguna, y su archivo se titula literalmente *"cuenta analítica **no oficiales**"*. La tabla existe como mecanismo pero está incompleta, y su gobernanza —quién la mantiene y contra qué norma— no está establecida.
+
 ---
 
 ## 6. Contratos inter-módulo
@@ -365,8 +542,9 @@ Insumo para la especificación de independencia modular. Cada uno es un contrato
 
 | Contrapartida | Dirección | Contenido | Criticidad |
 |---|---|---|---|
-| **Adquisiciones** | Presupuestos → Adq | Consulta de disponibilidad; emisión y estado de CDP; preobligación asociada a SOLPED | **Alta** — costura principal del sistema |
-| **Adquisiciones** | Adq → Presupuestos | Evento de resolución de compra que dispara obligación | Alta |
+| **Adquisiciones** | Presupuestos → Adq | Consulta de disponibilidad; emisión y estado de CDP **con la imputación resuelta** (cuenta × nodo de gestión); preobligación asociada a SOLPED. Adquisiciones la recibe como **proyección de solo lectura** en `ProcurementCase` (D-6, P-1) | **Alta** — costura principal del sistema |
+| **Adquisiciones** | Adq → Presupuestos | Solicitud de CDP con monto, SOLPED y —opcionalmente— **imputación propuesta no vinculante**; evento de resolución de compra que dispara obligación | Alta |
+| **Adquisiciones** | Presupuestos → Adq | Catálogo de nodos de gestión hoja del ejercicio (`listManagementNodes`), cacheado, para poblar los campos opcionales de la SOLPED. Un solo endpoint jerárquico, no uno por nivel (D-6) | Media |
 | **Contabilidad** | Presupuestos → Cont | Devengo presupuestario que origina asiento; apertura del ejercicio (traspaso de saldos, Deuda Flotante). Atomicidad: ADR / **C-1** | **Alta** |
 | **Contabilidad** | Cont → Presupuestos | Confirmación de imputación; saldos de cierre del ejercicio anterior | Alta |
 | **Tesorería** | Tes → Presupuestos | Ingresos efectivamente percibidos vs. estimados; **ingresos propios percibidos del año anterior (base del 42% art. 67)**; pagos que cierran la cadena | **Alta** |
@@ -402,6 +580,8 @@ Las planillas de carga BEP definen las magnitudes que el municipio **está oblig
 1. **`presup_ini` y `presup_vig` son magnitudes distintas y ambas se reportan.** El monto aprobado inicialmente y el vigente tras modificaciones deben persistirse por separado durante todo el ejercicio. Odoo ya lo hace (`approved_amount` / `current_amount`); es requisito, no opción.
 2. **`ingresos_por_percib` y `deuda_exigible` son exactamente los conceptos de la apertura del ejercicio** (26.2.8). El BEP los exige, de modo que `ExerciseOpening` no es un refinamiento opcional: sin él no se puede emitir el reporte obligatorio.
 3. **La desagregación por área de gestión aplica solo al gasto municipal.** El archivo `GTOS_Municipales` tiene 25 columnas: seis áreas —gestión interna, servicios a la comunidad, actividades municipales, programas sociales, deportivos y culturales— por tres magnitudes, más totales. Los otros tres sectores tienen siete columnas, sin desagregación. `ManagementArea` es dimensión **obligatoria en gasto municipal y ausente en los demás sectores**; el modelo debe admitir esa asimetría en lugar de imponer la dimensión a todos.
+
+**Precisión de v0.12.** El BEP reporta solo el **nivel superior** del eje de gestión (las seis áreas). Los cuatro niveles inferiores —programa, subprograma, proyecto, actividad— existen en el presupuesto municipal y son la unidad real de imputación, pero **no se reportan**. El contrato de reporte es, por tanto, el piso del modelo de ejecución en las magnitudes (§6.1) pero **no** en la dimensionalidad del eje de gestión: especificar solo lo que el BEP exige dejaría al módulo incapaz de sostener la imputación que los municipios ya practican. Ver §5.3 y P-21.
 
 **Evidencia para P-5 y P-12.** Cada sector tiene archivos propios y **espacio de códigos propio**. No son vistas filtradas de un mismo presupuesto: son entidades presupuestarias con catálogo separado. Esto favorece decididamente la opción 1 de P-5 (entidades independientes) y la opción 1 de P-12 (Cementerio como cuarta `BudgetEntity`), y contradice la lectura de "segmento del presupuesto municipal".
 
@@ -514,6 +694,9 @@ Duraciones en semanas, preliminares y a ajustar según disponibilidad de DM. Las
 | Mapa de obligaciones de reporte | CGR, SINIM, BEP, informes trimestrales del art. 29 d) LOCM, informe semestral SECPLA (art. 21 c), Anexos: qué, cuándo, formato |
 | **Verificación de citas normativas del levantamiento** | Contrastar en fuente primaria toda referencia legal o jurisprudencial del Informe 2 antes de convertirla en requisito. Criterio derivado de §4.2 |
 | **Análisis del Informe de Observaciones Nacional BEP** | Catálogo empírico de errores que los municipios cometen al informar ejecución presupuestaria. Insumo para priorizar validadores y para dimensionar el triage de GP-2 (§7.2) |
+| **Especificación del eje de gestión** | `ManagementArea` + `ManagementNode` según D-5: niveles, invariantes, regla de aplanamiento para BEP e informes CGR, y separación explícita respecto de `InvestmentInitiative` (§5.3; P-21, P-22) |
+| **Especificación del plan de cuentas local** | `BudgetAccount` como entidad del tenant: sexto nivel de apertura, atributos operativos y su origen, invariante de imputabilidad (Anexo A.6; P-25) |
+| ~~**Ampliación de la base de evidencia municipal**~~ | **Cumplido en v0.13.** Los cinco municipios en convenio inspeccionados: Las Cabras, María Pinto, Villarrica, Cochamó y Quilaco. Resultados en §5.3, §5.4 y Anexo A.6 |
 
 ### F2 — Levantamiento de procesos faltantes · 3 semanas
 
@@ -521,12 +704,14 @@ Recuperar como procesos formales lo que hoy solo existe como caja no descompuest
 
 | Entregable | Detalle |
 |---|---|
-| BPMN — Ejecución presupuestaria | Cadena CDP → preobligación → obligación → devengo. Descompone la caja `Ejecutar` del proceso 26. Matriz de doble pool |
+| BPMN — Ejecución presupuestaria | Cadena CDP → preobligación → obligación → devengo. Descompone la caja `Ejecutar` del proceso 26. Matriz de doble pool. **Incluye el paso explícito de clasificación por la DAF previo a la emisión del CDP (D-6), hoy inexistente como actividad formal**, y el tratamiento de la imputación propuesta en la SOLPED cuando difiere de la resuelta |
 | **BPMN — Apertura del ejercicio** | Descompone `Registrar` (26.2.8): generación de disponibilidad, traspaso a ingresos por percibir y Deuda Flotante, saldos patrimoniales. Validar con Contabilidad |
 | BPMN — Examen trimestral, déficit y reportes de Control | Art. 81 más art. 29 letras c) y d) LOCM, incluido el plazo de 10 días con escalamiento a CGR. Descompone `Controlar y Evaluar` (26.2.10). Validar con Control |
 | BPMN — Programación de caja | Derivado de `budget.cash.flow` más práctica municipal |
 | BPMN — Salud y Educación | Ciclo separado y consolidación |
-| Validación con municipios piloto | Contraste con al menos dos de los cinco municipios de referencia |
+| **Contrato de contracuentas con Contabilidad** | Tabla cuenta presupuestaria (× área × ejercicio) → contracuentas de devengo, pago y activo fijo. Se levanta junto con la apertura del ejercicio; contraste contra el Manual de Procedimientos Contables NICSP (P-26) |
+| **BPMN — Mantención del árbol de gestión** | Alta, modificación, cierre y arrastre de nodos entre ejercicios; quién lo opera en el municipio y con qué control. Se levanta junto con la apertura del ejercicio (P-24) |
+| Validación con municipios piloto | Contraste con al menos dos de los cinco municipios de referencia. Incluye validación de los cinco niveles (P-21) y del alcance de `OrganizationalUnit` (P-23) |
 
 ### F3 — Fichas de proceso por etapa · 3 semanas
 
@@ -545,7 +730,7 @@ Formato ficha idéntico al usado en Adquisiciones: actores, precondiciones, paso
 
 | Entregable | Detalle |
 |---|---|
-| Modelo de entidades consolidado | Naming inglés, atributos, cardinalidades, invariantes. Contraste explícito contra el ORM de Odoo, no contra el export de BD |
+| Modelo de entidades consolidado | Naming inglés, atributos, cardinalidades, invariantes. Contraste explícito contra el ORM de Odoo, no contra el export de BD. Incluye `ManagementNode` con vigencia temporal y `path` materializado, `BudgetAccount`, y la advertencia explícita de no fusionar `PROJECT` con `InvestmentInitiative` (D-5) |
 | Máquinas de estado | Una por entidad con ciclo de vida. Incluye la transición por silencio del art. 82 y la asimetría rechazo/no-rechazo entre MP-1 y MP-2 |
 | Contratos de API inter-módulo | Los de §6 (incl. RRHH bidireccional), versionados, con clasificación síncrono / asíncrono / cacheado |
 | Reconciliación con Adquisiciones | Modelo de Adquisiciones actualizado según D-1 |
@@ -589,6 +774,14 @@ Formato ficha idéntico al usado en Adquisiciones: actores, precondiciones, paso
 | **P-18** | Vía alternativa de decretos presupuestarios para municipios sin DocDigital (~20 %); alineado a X-73 de arquitectura y a §5.1 | F3 / MP-1–MP-2 | Equipo + Jurídica | Abierto |
 | **P-19** | Conflicto de folio: migración de `approval_resolution` históricos vs. `ExternalFolio` DocDigital (X-75) | F4 | Equipo interno | Abierto |
 | **P-20** | Efecto de la latencia DocDigital sobre plazos legales del módulo (15 dic art. 82; 10 días art. 29 c) — X-76 | F5 | Equipo + Jurídica | Abierto |
+| **P-21** | Confirmar los cinco niveles del eje de gestión y su obligatoriedad (§5.3, D-5) | F1 / F3 | DM + municipios piloto | Abierto |
+| **P-22** | Regla de aplanamiento del árbol de gestión para BEP e informes CGR (§5.3) | F1 / F5 | Equipo + SUBDERE | Abierto |
+| **P-23** | `OrganizationalUnit` como dimensión de imputación: alcance y costo de configuración (§5.3) | F2 / F4 | DM + municipios piloto | Abierto |
+| **P-24** | Versionado del árbol de gestión entre ejercicios: arrastre, cierre y saldos pendientes (§5.3) | F2 / F4 | Equipo + Contabilidad | Abierto |
+| **P-25** | Origen y gobernanza de los atributos operativos del plan de cuentas local (Anexo A.6) | F1 | DM + Depto. Finanzas Municipales | **Resuelto en parte** (v0.13): invariante MATRIZ/DETALLE corregida y verificada; residual, el origen normativo |
+| **P-26** | Tabla de contracuentas por (ejercicio, área, cuenta) como contrato Presupuestos→Contabilidad (§5.4) | F2 / F4 | Equipo + Contabilidad | Abierto |
+| **P-27** | Semántica heterogénea del nivel `programa` entre municipios (§5.3): ¿se tipifica, se normaliza o se deja libre? | F1 / F3 | DM + municipios piloto | Abierto |
+| **P-28** | Validar D-6 con DM: la solicitud de campos programa/proyecto/actividad en SOLPED se resuelve de otra forma | F0 / F1 | DM + Adquisiciones | Abierto |
 
 Cada pendiente abierto se documenta abajo con: contexto, pregunta a resolver, opciones candidatas, decisión por defecto si no hay respuesta a tiempo, criterio de cierre e insumos.
 
@@ -928,15 +1121,198 @@ Todos disponibles en el índice de SINIM (Anexo A.2). El Oficio DCF 3/19, revisa
 
 ---
 
+### P-21 — Niveles del eje de gestión
+
+**Contexto.** §5.3 y D-5. Los dos municipios inspeccionados operan con tres niveles (área, programa, subprograma); se ha requerido extender a cinco con `Proyecto` y `Actividad`. No hay fuente normativa que fije el número de niveles: el BEP solo reporta el área, y el Manual de Imputaciones solo declara aplicabilidad por área.
+
+**Pregunta.** ¿Cinco niveles son suficientes para todos los municipios? ¿Algún nivel es obligatorio más allá del área, o todos son opcionales según la rama?
+
+**Opciones.**
+1. **Cinco niveles tipados** con profundidad variable por rama (D-5, recomendada). Cubre lo observado y lo requerido, con `level` como enum cerrado.
+2. Árbol de profundidad libre sin tipar el nivel. Máxima flexibilidad; imposibilita el aplanamiento determinista de P-22 y la comparabilidad entre municipios.
+3. Cinco columnas fijas obligatorias. Simple de reportar; genera el relleno masivo con placeholders ya observado (114 de 260 líneas en Las Cabras).
+
+**Default:** opción 1, con el área como único nivel obligatorio.
+
+**Criterio de cierre.** Validación con al menos dos municipios piloto de que ninguna rama requiere un sexto nivel; enum `level` congelado antes de F3; regla de obligatoriedad documentada por nivel.
+
+**Insumos.** §5.3; §6.1; planillas de Las Cabras y María Pinto; Manual V21 (columnas de área de gestión).
+
+---
+
+### P-22 — Regla de aplanamiento para reportes normativos
+
+**Contexto.** El BEP y los informes CGR esperan columnas fijas; D-5 adopta profundidad variable. Sin una regla única, cada implementación aplana distinto y los datos dejan de ser comparables entre municipios — que es precisamente el problema que el SGM debe eliminar.
+
+**Pregunta.** ¿Cómo se rellenan los niveles no utilizados al proyectar el árbol sobre columnas fijas?
+
+**Opciones.**
+1. **Marcador nulo normalizado** (`—` o vacío explícito), único para todos los municipios. Limpio para agregación; cambia lo que los municipios ven hoy en sus reportes.
+2. **Replicar el nombre del nivel superior** (comportamiento actual de Las Cabras). Continuidad con la práctica; perpetúa la ambigüedad entre "nivel no usado" y "nivel con el mismo nombre".
+3. Etiqueta genérica tipo `VARIOS` (comportamiento de María Pinto). Peor de ambos mundos: ni nulo ni informativo.
+
+**Default:** opción 1, con la vista aplanada como proyección de solo lectura y el árbol como fuente de verdad.
+
+**Criterio de cierre.** Regla escrita en las bases como requisito, no como decisión del proveedor; contrato de exportación BEP actualizado; prueba de reproducibilidad sobre los cinco municipios en convenio, incluidos los dos extremos de profundidad (Cochamó y Villarrica).
+
+**Insumos.** §5.3; §6.1; planillas de carga BEP; P-8.
+
+---
+
+### P-23 — `OrganizationalUnit` como dimensión de imputación
+
+**Contexto — replanteado en v0.13.** El presupuesto municipal chileno no tiene dimensión organizacional formal, y el campo `Centro de Costo` está **vacío en las 4.919 filas** de las tres plantillas de migración (§5.3). Pero la evidencia de los cinco municipios muestra que la información **sí existe**: está codificada dentro del árbol de gestión. Villarrica usa el nivel `programa` como organigrama literal (`DEPTO. PERSONAL`, `DEPTO. TESORERÍA`, `ASESORÍA JURÍDICA`) y el `subprograma` como ubicación física con dirección. María Pinto la codifica implícitamente en el objeto de gasto.
+
+**La pregunta de v0.12 estaba mal planteada.** No es "¿agregamos la dimensión?" —para Villarrica sería duplicarla— sino: ¿el modelo admite que el mismo hecho se exprese en el árbol de gestión **o** en una dimensión propia, según el municipio?
+
+**Pregunta.** ¿`OrganizationalUnit` es dimensión independiente de `BudgetLine`, atributo derivable de un nodo del árbol, o ambas cosas según cómo el municipio ya organiza su presupuesto?
+
+**Opciones.**
+1. **Dimensión opcional, alimentable por dos vías**: captura directa, o derivación desde un nodo del árbol marcado con `node_purpose = organizacional` (P-27). Villarrica no captura nada y obtiene la dimensión gratis; Cochamó la captura si la quiere. Recomendada, y depende de que P-27 se resuelva por la opción 1.
+2. **Dimensión independiente de captura obligatoria.** Trazabilidad uniforme y comparable; obliga a Villarrica a mantener el organigrama dos veces y a Cochamó a construirlo desde cero.
+3. **No incorporarla.** Cero fricción; la pregunta "cuánto ejecutó esta dirección" sigue siendo irrespondible salvo que el municipio haya tenido la disciplina de codificarla en el árbol.
+
+**Default:** opción 1, condicionada al cierre de P-27.
+
+**Replanteo de v0.14 — cambia el propósito de la dimensión.** D-6 traslada la imputación de la SOLPED al CDP. Con eso, el mapeo unidad → nodo de gestión **deja de servir para filtrar lo que el solicitante elige** —uso que además era circular, §5.3— y pasa a servir para **pre-sugerir a la DAF** la imputación que confirma o corrige.
+
+Es un fundamento mucho más sólido: no impone criterio a quien no lo tiene, sino que acelera a quien sí. Villarrica lo obtendría sin capturar nada, porque su nivel `programa` ya es el organigrama. Y la **divergencia entre la imputación propuesta en la SOLPED y la resuelta en el CDP** es la señal que permite mejorar la sugerencia con el tiempo, sin modelo predictivo: basta la frecuencia observada por unidad.
+
+Consecuencia sobre las opciones: la opción 2 (captura obligatoria) queda descartada —ya no hay a quién obligar—, y la decisión se reduce a si la dimensión se captura, se deriva del árbol, o ambas.
+
+**Criterio de cierre.** Acta con DM y municipios piloto sobre el costo de configuración; definición de si la unidad es obligatoria en la línea o solo en la ejecución; alineación con el modelo de unidad solicitante de Adquisiciones.
+
+**Insumos.** §5.3; §3.2 (centro de costo en Odoo); modelo de SOLPED de Adquisiciones; organigramas de los municipios piloto.
+
+---
+
+### P-24 — Versionado del árbol de gestión entre ejercicios
+
+**Contexto.** El árbol cambia todos los años. Hoy los municipios embeben el ejercicio en el nombre del nodo (`VINCULOS ACOMPAÑAMIENTO 19`, `CONVENIO HABITABILIDAD 2024`) porque no hay dimensión temporal, y la numeración acumula huecos sin depuración.
+
+**Pregunta.** ¿Cómo se abre el árbol de un ejercicio nuevo, y qué ocurre con nodos cerrados que aún tienen saldo devengado pendiente de pago?
+
+**Sub-preguntas.**
+1. ¿Arrastre completo con cierre selectivo, o construcción desde cero con importación asistida?
+2. ¿Un nodo cerrado puede recibir imputación de una cadena de compromiso abierta en el ejercicio anterior?
+3. ¿La trazabilidad entre versiones (`superseded_by`) es obligatoria o solo cuando el municipio la declara?
+
+**Opciones para la sub-pregunta 2.**
+1. El nodo cerrado admite solo movimientos de cierre de cadenas preexistentes, no nuevas imputaciones (recomendada).
+2. El cierre es total y las cadenas abiertas deben reimputarse a un nodo vigente. Más limpio conceptualmente; obliga a reimputación masiva en enero.
+
+**Default:** arrastre con cierre selectivo; opción 1 para la sub-pregunta 2.
+
+**Criterio de cierre.** Regla integrada al BPMN de apertura del ejercicio (F2, junto con P-6); `ManagementNode` con vigencia temporal especificado en F4.
+
+**Insumos.** §5.3; 26.2.8; P-6; datos de Las Cabras (nombres con año embebido).
+
+---
+
+### P-25 — Atributos operativos del plan de cuentas local
+
+**Contexto.** Anexo A.6. El plan de cuentas municipal trae cuatro atributos por cuenta —`TIPO CUENTA` (MATRIZ/DETALLE), `ANALÍTICO`, `ACTÚA PRESUPUESTO`, `INFORME AGREGADO`— que no aparecen en el clasificador ni en el Manual de Imputaciones. De ellos deriva una invariante central del motor: **solo `DETALLE` es imputable**.
+
+**Pregunta.** ¿Son criterio normativo no levantado, o convención del proveedor del sistema actual? De la respuesta depende si son catálogo gobernado por SUBDERE (§7.5) o configuración del tenant.
+
+**Resuelto en v0.13 — la invariante estaba mal formulada.** Las cuentas `MATRIZ` con monto no son una anomalía: llevan el subtotal agregado. Verificado en Villarrica, donde **241 de 241 cuentas `MATRIZ` con monto cuadran exactamente con la suma de sus hijas**. La invariante correcta es: *el monto de una `MATRIZ` es derivado y no admite imputación directa; solo `DETALLE` recibe movimientos*. El validador verifica el cuadre, no prohíbe el monto.
+
+**Confirmado en v0.13.** Los cuatro atributos existen con idéntico dominio de valores en Villarrica (1.548 cuentas), bajo el rótulo `ASISTENCIA TÉCNICA` en vez de `TIPO CUENTA`. Dos columnas del encabezado están vacías en los cinco municipios: `TIPO RECUR.` y el par `FECHA INICIO` / `FECHA TERMINO` — la vigencia temporal por cuenta existe como campo y nadie la usa.
+
+**Residual.** El origen normativo de `ACTÚA PRESUPUESTO` y `ANALÍTICO`: ¿criterio de CGR no levantado, o convención del proveedor?
+
+**Opciones.**
+1. Atributos derivables de la estructura del código (una cuenta es MATRIZ si tiene hijas). Elimina la captura manual; verificar contra los datos antes de asumirlo.
+2. Atributos declarativos por cuenta, gobernados por SUBDERE como catálogo nacional.
+3. Atributos declarativos, configurables por municipio.
+
+**Default:** opción 1 si la verificación contra los dos planes de cuentas la sostiene; opción 2 en caso contrario.
+
+**Criterio de cierre.** Verificación empírica de la opción 1 sobre Las Cabras y María Pinto; consulta a DM sobre el origen de `ACTÚA PRESUPUESTO`; resolución documentada de las 20 cuentas anómalas; clasificación de los atributos en la tabla de P-14.
+
+**Insumos.** Anexo A.6; planes de cuentas de los dos municipios; Manual V21; §7.5.
+
+---
+
+### P-26 — Contracuentas contables como contrato con Contabilidad
+
+**Contexto.** §5.4. Villarrica, Quilaco y Cochamó mantienen por cuenta presupuestaria las contracuentas de devengo y pago. Villarrica las indexa por **(ejercicio, área de gestión, cuenta presupuestaria)**. Es el mecanismo operativo del devengo dual de D-1, y el plan no lo tenía cubierto: P-6 pregunta *quién* hace el traspaso, no *con qué tabla* se determina el asiento.
+
+**Pregunta.** ¿La correspondencia cuenta presupuestaria → contracuentas es catálogo del módulo Presupuestos, del módulo Contabilidad, o del contrato entre ambos? ¿Quién la mantiene y con qué respaldo normativo?
+
+**Sub-preguntas.**
+1. ¿La clave incluye el área de gestión en todos los casos, o Villarrica es un caso particular? Su tabla tiene una sola área poblada, así que la dependencia está declarada pero no ejercida.
+2. ¿Es derivable del plan de cuentas NICSP y del Manual de Procedimientos Contables (Oficio CGR N° E59549/2020), o es configuración local?
+3. ¿Qué ocurre con las cuentas sin contracuenta declarada? En los datos, la cobertura es de 17/82 en Quilaco, 25/204 en Villarrica y 0 en Cochamó.
+
+**Opciones.**
+1. **Catálogo nacional derivado de la normativa contable CGR**, con override local excepcional y justificado. Coherente con §7.5 (respaldo de órgano rector); requiere verificar que la normativa efectivamente lo determina.
+2. Configuración por municipio, gobernada como parámetro del tenant. Refleja la práctica actual; perpetúa que cada municipio resuelva distinto un asiento que la norma debería fijar.
+3. Derivación automática desde el plan de cuentas sin tabla intermedia. Elimina la configuración; probablemente insuficiente para los casos de activo fijo que Villarrica trata aparte.
+
+**Default:** opción 1, con verificación previa contra el Manual de Procedimientos Contables antes de asumirla.
+
+**Criterio de cierre.** Contraste de la tabla de los tres municipios contra el Oficio CGR N° E59549/2020; decisión de propiedad del catálogo; contrato Presupuestos↔Contabilidad de §6 ampliado con esta correspondencia; resolución del caso `Cta_Devengado_activo_fijo`.
+
+**Insumos.** §5.4; cuentas analíticas de Villarrica, Quilaco y Cochamó; tabla `cuentas_comprobantes` de Villarrica; Oficios CGR E59549 y E64.327 de 2020; P-6; D-1.
+
+---
+
+### P-27 — Semántica heterogénea del nivel `programa`
+
+**Contexto.** §5.3. El mismo nivel del árbol significa cosas distintas en cada municipio: unidad organizacional en Villarrica, objeto de gasto en María Pinto, programa o convenio en Quilaco, mixta en Las Cabras. Villarrica usa además el subprograma como ubicación física, con direcciones de inmuebles.
+
+**Pregunta.** ¿El SGM tipifica la semántica de cada nivel, la normaliza hacia una convención única, o la deja libre y asume que el eje de gestión es un árbol sin semántica declarada?
+
+**Opciones.**
+1. **Libre, con `node_purpose` opcional y declarativo** por nodo (organizacional, funcional, programático, territorial). No fuerza migración, permite análisis nacional agregado cuando el municipio lo declara, y hace explícito lo que hoy está implícito. Recomendada.
+2. **Normalizar hacia una convención única** definida por SUBDERE. Habilita comparabilidad nacional real; obliga a los cinco municipios a rehacer su árbol, y a Villarrica a desmontar su organigrama presupuestario. Costo político y operativo alto.
+3. **Libre sin ninguna tipificación.** Menor fricción; el eje de gestión queda inutilizable para cualquier análisis comparado entre municipios, que es una de las razones de existir de SINIM.
+
+**Default:** opción 1.
+
+**Criterio de cierre.** Validación con los cinco municipios de que la tipificación opcional no les impone trabajo; definición del vocabulario cerrado de `node_purpose`; decisión sobre si SINIM/BEP consumirán ese atributo o lo ignoran.
+
+**Insumos.** §5.3; árboles de gestión de los cinco municipios; P-23 (la opción de dimensión organizacional depende de esta decisión); §7.4 (taxonomía de triage: es un caso categoría 3 típico).
+
+---
+---
+
+### P-28 — Validar D-6 con DM
+
+**Contexto.** DM solicitó incorporar campos de `programa`, `proyecto` y `actividad` en la SOLPED, como tres selectores independientes filtrados por la unidad de destino. La solicitud **no se implementa en esos términos**: los tres son niveles de un mismo árbol y no dimensiones (D-5); la propuesta omitía el área de gestión, que es el único nivel normativo; y el filtro por unidad organizacional es circular con la evidencia de los cinco municipios (§5.3). D-6 resuelve la necesidad de otra forma: un solo campo referido a un nodo hoja, opcional y no vinculante en la SOLPED, con la autoridad de imputación en el CDP.
+
+**Pregunta.** ¿DM valida el cambio de forma, y qué necesidad concreta estaba detrás de la solicitud original?
+
+**Sub-preguntas.**
+1. **¿De qué municipio es ese vocabulario?** Los cinco en convenio usan esos niveles con semánticas distintas —organigrama en Villarrica, objeto de gasto en María Pinto, convenio en Quilaco—. Si el requerimiento viene de uno en particular, el modelo genérico puede no ser lo que esperan ver en pantalla.
+2. **¿Qué problema resolvía tener los campos en la SOLPED?** Si es trazabilidad de para qué se pide, lo cubre el campo de propósito. Si es control previo de disponibilidad por programa, es otra cosa y requiere diseño propio.
+3. **¿Hay conformidad con que la clasificación la haga la DAF?** Es un cambio de carga de trabajo entre unidades, no solo de diseño.
+
+**Opciones.**
+1. **D-6 tal cual**, con la SOLPED espejando la imputación del CDP de forma opcional. Recomendada.
+2. D-6 con los campos de SOLPED ocultos por defecto y habilitables por municipio. Reduce ruido en municipios que no los quieren; agrega configuración.
+3. Revertir a captura en la SOLPED si DM aporta un fundamento normativo o funcional que no esté considerado. Requeriría reabrir la segregación del criterio 6 de §11.
+
+**Default:** opción 1, con el cambio documentado y comunicado a DM antes de F3.
+
+**Criterio de cierre.** Respuesta escrita de DM sobre las tres sub-preguntas; ficha de SOLPED de Adquisiciones actualizada; nota de trazabilidad de qué se pidió, qué se entregó y por qué difiere. Si DM insiste en el diseño original, el desacuerdo se documenta con su fundamento en lugar de resolverse por omisión.
+
+**Insumos.** D-5; D-6; §5.3; §6; P-21; P-23; P-27; ficha 1-solped de Adquisiciones.
+
+---
+
 ### Orden sugerido de resolución
 
 ```
-F0:  P-1, P-4
-F1:  P-8, P-11, P-12, P-17, (P-10 inicia con RRHH) · P-9 cerrado en v0.5; P-3 parcial en v0.6
-F2:  P-5, P-6
-F3:  P-3, P-7, P-10 (cierre)
-F4:  cierre formal P-1 en modelo de Adquisiciones; ContingencyRecord (P-15)
-F5:  P-13, P-14 (track GP), P-15 (cierre)
+F0:  P-1, P-4, P-28 (comunicación a DM)
+F1:  P-8, P-11, P-12, P-17, P-21, P-22, P-25, P-27, (P-10 inicia con RRHH)
+     · P-9 cerrado en v0.5; P-3 parcial en v0.6
+F2:  P-5, P-6, P-23, P-24, P-26
+F3:  P-3, P-7, P-10 (cierre), P-21 (cierre), P-27 (cierre)
+F4:  cierre formal P-1 en modelo de Adquisiciones; ContingencyRecord (P-15);
+     ManagementNode y OrganizationalUnit (P-23, P-24); contrato de contracuentas (P-26)
+F5:  P-13, P-14 (track GP), P-15 (cierre), P-22 (cierre en contrato de reporte)
 ```
 
 ---
@@ -958,6 +1334,14 @@ F5:  P-13, P-14 (track GP), P-15 (cierre)
 | **Citas normativas del levantamiento tomadas como requisito sin verificar** | Medio-alto — §4.2 muestra un caso confirmado | Verificación en fuente primaria como entregable de F1; incorporado a GP-1 como práctica permanente |
 | **Conocimiento normativo operativo almacenado en formato frágil** | Medio-alto — el criterio de acuerdo del Concejo vive como color de celda en una planilla (§4.1) | Ingesta versionada del Manual con importador reproducible y estado objetivo de mantención en SGM (P-17) |
 | **Análisis construido sobre una versión superada de la fuente** | **Alto — §4.1 y Anexo A.4 se basan en el Manual V19; existe V21 (2026)** | Reconfirmación contra V21 antes de cerrar P-3 y P-17. Regla general: fijar y registrar la versión de cada fuente usada, igual que exige el must §11.2 para parámetros |
+| **Fusionar el nivel `PROJECT` del eje de gestión con `InvestmentInitiative` del ST 31** | **Alto — acopla el eje de gestión con el clasificador y arrastra identificación SNI a líneas que no son de inversión** | Separación explícita en D-5 y §5.3, con vínculo opcional en `BudgetLine`. La colisión de nombres (ítem 31.02 "Proyectos", posición 7 del Código INI) hace el error probable: debe quedar advertido en la ficha de modelo de F4 |
+| **Modelar el eje de gestión como columnas fijas** | Medio-alto — reproduce el relleno con placeholders ya observado (114 de 260 líneas en Las Cabras) y contamina toda agregación | D-5: árbol recursivo con profundidad variable; vista aplanada como proyección de solo lectura con regla única (P-22) |
+| **Especificar el eje de gestión solo hasta donde llega el BEP** | Medio-alto — el BEP reporta únicamente el área; la imputación real ocurre cuatro niveles más abajo | §6.1: el contrato de reporte es piso en magnitudes, no en dimensionalidad. Verificar contra datos municipales reales, no contra el formato de reporte |
+| **Cuello de botella de clasificación en la DAF** | Medio-alto — D-6 traslada la imputación a la DAF; en municipios con equipos de finanzas de tres personas y cientos de SOLPED al año, el paso puede convertirse en el limitante del ciclo de compra | Pre-sugerencia de imputación derivada del mapeo unidad → nodo y del histórico de divergencias (P-23). Medir el tiempo del paso en los pilotos antes de generalizar. No se mitiga relajando la segregación |
+| **Asumir que el nivel `programa` significa lo mismo en todos los municipios** | **Alto — en Villarrica es el organigrama, en María Pinto el objeto de gasto, en Quilaco el convenio. Un validador o un reporte nacional que asuma una semántica produce resultados sin sentido** | Tipificación opcional por nodo (P-27) y ninguna regla de negocio que dependa de la semántica del nivel sin que el municipio la haya declarado |
+| **Dimensionar el modelo sobre un municipio promedio** | Medio-alto — el rango real va de Cochamó (un área, un programa, ningún subprograma) a Villarrica (224 programas, uno con 37 subprogramas) | Probar el modelo contra los dos extremos, no contra el caso medio. Ningún nivel obligatorio salvo el área |
+| **Reconciliar catálogos municipales por glosa** | Medio-alto — 45% de los códigos comunes a dos o más municipios tienen glosa distinta, y en el sexto nivel la divergencia es de significado (Anexo A.6) | El código es la única clave, y solo hasta el quinto nivel. Prohibición explícita de join por descripción en las reglas de migración |
+| **Migrar árboles de gestión heredados sin normalización** | Medio — jerarquías incompletas, tipos inconsistentes y ejercicio embebido en el nombre del nodo | Importador con reglas explícitas e informe de excepciones como requisito de bases (Anexo A.6); mismo criterio que P-17 |
 
 ---
 
@@ -968,12 +1352,17 @@ F5:  P-13, P-14 (track GP), P-15 (cierre)
 3. Los contratos inter-módulo de §6 están versionados y clasificados por modo de invocación (incl. RRHH bidireccional — R-1).
 4. Cada etapa tiene ficha completa; ningún paso queda descrito como "según práctica municipal".
 5. La especificación permite construir el módulo sin consultar el código de Odoo.
-6. Segregación de funciones verificable: formulación, aprobación, emisión de CDP, obligación y control son roles distintos, y el motor lo impone.
+6. Segregación de funciones verificable: formulación, aprobación, emisión de CDP, obligación y control son roles distintos, y el motor lo impone. Incluye **quien solicita no imputa**: la unidad requirente puede proponer una imputación, nunca determinarla (D-6).
 7. La cadena de firma del decreto es configurable por municipio sin modificar código.
 8. Cada parámetro normativo está clasificado como de mandato propio o de respaldo de órgano rector, y ninguno de la segunda clase se modifica sin acto del órgano competente registrado en el sistema (P-14).
 9. Los cuatro procesos del track GP tienen ficha propia y el sistema los soporta técnicamente: vigencia temporal de parámetros, versionado de contratos con preaviso, y trazabilidad de cada validador a su fuente (§7, P-13).
 10. Toda operación con plazo legal tiene clase de exposición asignada y vía alternativa documentada; el sistema no da por acreditado el vencimiento de un plazo con efecto jurídico sin verificación humana registrada, y conserva el `ContingencyRecord` asociado (§5.1, P-15).
 11. Ninguna regla del módulo se funda en una cita normativa no verificada en fuente primaria (§4.2).
+12. El eje de gestión está especificado como árbol con profundidad variable y nivel tipado; existe una regla de aplanamiento única y explícita para los reportes normativos; y ningún nivel del eje se confunde con la identificación de iniciativas de inversión del subtítulo 31 (D-5, §5.3, P-21, P-22).
+13. El plan de cuentas local del municipio está modelado como entidad del tenant con referencia al catálogo nacional, y la invariante de imputabilidad es verificable en ambos ejes: los nodos agregados (`MATRIZ`, nodo interno) llevan un monto **derivado** que debe cuadrar con sus hijas, y solo las hojas (`DETALLE`) reciben imputación (Anexo A.6, P-25).
+14. La correspondencia entre cuenta presupuestaria y contracuentas contables está especificada como catálogo versionado con propiedad declarada, y es el contrato que materializa el devengo dual de D-1 (§5.4, P-26).
+15. El modelo se ha probado contra los dos extremos observados en los cinco municipios en convenio —un área con un programa y sin subprogramas, y 224 programas con hasta 37 subprogramas— y no contra un caso medio (§5.3).
+16. Ningún módulo consumidor define un vocabulario de clasificación presupuestaria propio: los campos de imputación de la SOLPED son los del CDP, marcados como propuesta, opcionales y validados solo en su forma (D-6).
 
 ---
 
@@ -992,6 +1381,8 @@ El error habitual es tratarlas como una sola. Son tres artefactos con autoridad,
 | **3. Puente operativo** | Manual de Imputaciones Presupuestarias incorporando plan de cuentas NICSP | **SUBDERE** (Depto. de Finanzas Municipales, vía SINIM) | Tabla de correspondencia clasificador ↔ plan de cuentas. Es el artefacto que los municipios usan en la práctica |
 
 **Implicancia de diseño:** `BudgetClassifier` (capa 1) y el plan de cuentas (capa 2) son **catálogos independientes con una relación de mapeo explícita** (capa 3), no dos vistas de la misma jerarquía. Modelarlos como uno solo hace imposible absorber una modificación de Hacienda que no venga acompañada de una de Contraloría, o viceversa. Odoo colapsa ambos en `account.gov.account` con dominios `115%` / `215%`, lo que es una simplificación que no se debe heredar.
+
+**Cuarta capa (v0.12): la apertura local del municipio.** Las tres capas anteriores son nacionales. Bajo ellas existe una cuarta, específica de cada municipio: el **plan de cuentas operativo**, que extiende el catálogo nacional con un sexto nivel de apertura y con atributos que ninguna fuente normativa entrega. No es una vista del catálogo nacional: es data del tenant. Ver **Anexo A.6**.
 
 ### A.2 Referencias
 
@@ -1069,6 +1460,96 @@ Además de mapear clasificador contra plan de cuentas, el Manual V19 aporta atri
 
 La evidencia de más de veinte años de modificaciones sucesivas al DS 854 confirma el criterio del §11.2: el clasificador **no puede ser una tabla estática del sistema**. Debe ser `NormativeParameter` / catálogo versionado con vigencia temporal, versión, y capacidad de convivencia de dos versiones simultáneas — un ejercicio en curso opera con la versión vigente al momento de su apertura, mientras el ejercicio siguiente se formula con la versión nueva.
 
+### A.6 El plan de cuentas municipal: la capa local
+
+Evidencia: planes de cuentas de los **cinco municipios en convenio**. Las Cabras (228 cuentas de ingreso) y María Pinto (285 de ingreso, 549 de gasto) en v0.12; Villarrica (1.548 cuentas), Quilaco (1.415) y Cochamó (1.000 de ingreso, 1.688 de comprobantes) en v0.13.
+
+Los tres municipios incorporados en v0.13 aportan además el artefacto **cuenta analítica**, que hace explícita la descomposición del código y el mapeo a contracuentas contables. Ver §5.4.
+
+#### Estructura del código: seis segmentos, no cuatro
+
+La jerarquía que el plan describe hasta v0.11 —subtítulo / ítem / asignación / subasignación— es la del **clasificador**. El código que los municipios usan operativamente tiene seis segmentos:
+
+```
+215  -  21  -  01  -  001  -  001  -  000
+ │       │      │      │       │       └── 6º nivel: apertura local del municipio
+ │       │      │      │       └────────── Subasignación   (Sueldos base)
+ │       │      │      └────────────────── Asignación      (Sueldos y sobresueldos)
+ │       │      └───────────────────────── Ítem            (Personal de Planta)
+ │       └──────────────────────────────── Subtítulo       (Gastos en Personal)
+ └──────────────────────────────────────── Cuenta contable: 115 Deudores Presupuestarios
+                                            (ingresos) / 215 Acreedores (gastos)
+```
+
+Dos consecuencias que el modelo debe reflejar:
+
+1. **El prefijo `115` / `215` es contable, no presupuestario.** Son las cuentas de Deudores y Acreedores Presupuestarios del plan de cuentas NICSP. El código presupuestario municipal **es** una cuenta contable: es la costura con Contabilidad materializada en el identificador, no una integración a construir. Refuerza D-1 y P-6.
+2. **El sexto nivel es libre y diverge entre municipios.** Verificado sobre el mismo código en los dos planes de cuentas:
+
+| Código | María Pinto | Las Cabras |
+|---|---|---|
+| `115-03-01-003-999-001` | Alcantarillado | Derechos por mantención de escombros |
+| `115-03-01-003-999-002` | Otros Derechos | De Bienes Nacionales de uso público |
+| `115-03-01-003-999-003` | Certificados de Antecedentes | Estacionamientos Reservados |
+
+El catálogo nacional gobierna hasta el quinto nivel. **`BudgetAccount` es entidad del tenant con FK al `BudgetClassifier`**, no una fila del catálogo nacional. Modelarlos como una sola tabla impide que dos municipios abran cuentas distintas bajo la misma subasignación, que es lo que hacen hoy.
+
+#### Atributos operativos que ninguna fuente normativa entrega
+
+El plan de cuentas de Las Cabras trae cuatro atributos por cuenta que no están en el Manual de Imputaciones (A.4) ni en el clasificador:
+
+| Atributo | Valores observados (228 cuentas de ingreso) | Uso en el módulo |
+|---|---|---|
+| `TIPO CUENTA` | MATRIZ 71 · DETALLE 157 | **Solo `DETALLE` es imputable**; `MATRIZ` únicamente agrega. Invariante del motor |
+| `ANALÍTICO` | Sí 121 · No 107 | La cuenta abre a detalle por contribuyente o documento. Frontera con Tesorería |
+| `ACTÚA PRESUPUESTO` | Sí 76 · No 152 | Si el movimiento afecta ejecución presupuestaria o es solo contable. Cruza con el devengo dual (D-1) |
+| `INFORME AGREGADO` | Ingreso 10 · No en informe 218 | Reporte oficial al que agrega la cuenta |
+
+**Confirmados en Villarrica (v0.13)** con los mismos valores y semántica sobre 1.548 cuentas: `Detalle` 1.187 / `Matriz` 361 · `ANALÍTICO` Sí 431 / No 1.117 · `ACTÚA PRESUP.` Sí 149 / No 1.399. La columna se rotula `ASISTENCIA TÉCNICA` en Villarrica y `TIPO CUENTA` en Las Cabras, con idéntico dominio de valores: son el mismo sistema o la misma familia de sistemas.
+
+Dos columnas presentes en el encabezado están **vacías en todos los municipios**: `TIPO RECUR.` y el par `FECHA INICIO` / `FECHA TERMINO`. Esto último es relevante: **la vigencia temporal por cuenta existe como campo y nadie la usa**, aunque el Manual de Imputaciones sí gobierna estados de cuenta (nueva / no usar, Anexo A.4). Es otro caso de campo presente sin uso funcional.
+
+Estos atributos vienen del **sistema municipal**, no de una fuente normativa identificada. Es la pregunta de P-25: ¿son criterio normativo no levantado, o convención del proveedor del sistema actual? La respuesta cambia si son catálogo gobernado por SUBDERE (§7.5, mandato propio o respaldo de órgano rector) o configuración del tenant.
+
+#### Corrección de v0.12: `MATRIZ` con presupuesto no es una anomalía
+
+v0.12 registró como anomalía que 20 cuentas `MATRIZ` de Las Cabras tuvieran presupuesto asignado. **La lectura era incorrecta.** Verificado sobre Villarrica, que tiene 1.548 cuentas y permite la comprobación completa:
+
+- 361 cuentas `MATRIZ`, de las cuales **241 tienen monto**.
+- De esas 241, **241 cuadran exactamente con la suma de sus cuentas hijas**. Cero excepciones.
+
+`MATRIZ` es el **nodo agregado que lleva el subtotal**, por diseño. La invariante correcta no es "MATRIZ no tiene monto" sino:
+
+> El monto de una cuenta `MATRIZ` es **derivado** —la suma de sus hijas— y no admite imputación directa. Solo `DETALLE` recibe movimientos.
+
+Es la misma distinción entre valor calculado y valor imputable que aplica al árbol de gestión: los nodos internos agregan, las hojas reciben. El validador debe verificar el cuadre, no prohibir el monto.
+
+#### La glosa no es clave de reconciliación
+
+Comparados los planes de cuentas de los cinco municipios: de **742 códigos presentes en dos o más municipios, 334 (45%) tienen glosa semánticamente distinta**. En 244 casos la divergencia está en niveles del catálogo nacional —redacciones distintas del mismo concepto— y en **90 casos está en el sexto nivel, donde la divergencia es de significado, no de redacción**:
+
+| Código | Cochamó | Villarrica |
+|---|---|---|
+| `115-03-01-003-001-002` | Certificados DOM | Venta de terreno de cementerio |
+| `115-03-01-003-001-003` | Derechos varios DOM | Permisos de subdivisión y loteos |
+| `115-03-01-003-001-004` | Cuota permiso de edificación DOM | Ley de copropiedad inmobiliaria |
+
+| Código | Las Cabras | Villarrica |
+|---|---|---|
+| `115-03-01-001-001-002` | Patentes municipales provisorias | Patentes fuera de rol |
+| `115-03-01-003-003-001` | Propaganda enrolada | Derechos por publicidad otras |
+
+**Consecuencia para la migración y para cualquier consolidación nacional:** el código identifica hasta el quinto nivel; la glosa **nunca** es clave de join, ni siquiera para desambiguar. Y en el sexto nivel el código tampoco es interoperable entre municipios: identifica dentro del tenant y nada más.
+
+#### Calidad de datos para la migración
+
+Observado en el presupuesto por área de gestión de Las Cabras:
+
+- Seis filas del área 3 sin programa asignado: jerarquía incompleta.
+- El identificador de área viene a veces como entero y a veces como texto (`3` vs `"3"`), separando filas que pertenecen al mismo nodo.
+
+Son anomalías menores en sí mismas, pero establecen el requisito: las bases deben exigir **importador con reglas de normalización explícitas e informe de excepciones**, no carga silenciosa. Mismo criterio que P-17 para el Manual de Imputaciones.
+
 ---
 
 ## Fuentes
@@ -1084,3 +1565,9 @@ La evidencia de más de veinte años de modificaciones sucesivas al DS 854 confi
 - Dictamen CGR N° 60.449, de 19-XII-2008 — verificado en fuente primaria; ver §4.2
 - [SINIM — Sistema Nacional de Información Municipal](https://www.sinim.gov.cl/)
 - Anexo A de este plan — jerarquía clasificador / plan de cuentas / puente SUBDERE
+- **Datos de los cinco municipios en convenio** — evidencia primaria del eje de gestión, del plan de cuentas local y de las contracuentas contables:
+  - *Las Cabras* (v0.12): plan de cuentas de ingresos 2026 (228 cuentas) y presupuesto por área de gestión 2026 (260 líneas, 53 combinaciones)
+  - *María Pinto* (v0.12): cuentas de ingreso y gasto y presupuesto por área de gestión 2026 (285 + 549 cuentas, 620 líneas, 62 combinaciones)
+  - *Villarrica* (v0.13): cuentas analíticas 2025 (204), plan de cuentas ingreso/gasto (1.548), tabla `cuentas_comprobantes` (1.009), programas y subprogramas (224 / 97), presupuesto detallado I+G (2.182 y 1.843 filas)
+  - *Quilaco* (v0.13): cuentas analíticas ingresos y gastos (1.415), programas y subprogramas (49 / 60), presupuesto detallado I+G (635 filas)
+  - *Cochamó* (v0.13): cuenta analítica no oficial de ingresos (1.000), plan de cuentas (1.783), cuentas comprobantes (1.688), presupuesto detallado (259 filas)

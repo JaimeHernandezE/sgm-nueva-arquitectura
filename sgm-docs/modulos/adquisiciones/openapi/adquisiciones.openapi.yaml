@@ -54,6 +54,8 @@ paths:
     $ref: ./procesos-transversales/1-solped.yaml#/paths/~1purchase-requests~1{id}~1budget-availability-certificate~1scanned
   /purchase-requests/{id}/budget-pre-commitment:
     $ref: ./procesos-transversales/1-solped.yaml#/paths/~1purchase-requests~1{id}~1budget-pre-commitment
+  /management-nodes:
+    $ref: ./procesos-transversales/1-solped.yaml#/paths/~1management-nodes
   /budget-lines/{id}/preview-availability:
     $ref: ./procesos-transversales/1-solped.yaml#/paths/~1budget-lines~1{id}~1preview-availability
   /procurement-cases/{id}/modality:
@@ -512,12 +514,18 @@ components:
           description: DocumentRef — subida previa vía core POST /documents (plataforma/contracts.md §2.10)
         currency:
           $ref: "#/components/schemas/DocumentCurrency"
+        proposed_management_node_id:
+          type: string
+          nullable: true
+          description: >
+            Nodo de gestión propuesto (hoja; D-5/D-6). Opcional y no vinculante.
+            Catálogo vía listManagementNodes; sin filtro por unidad destino (P-23/P-28).
         proposed_budget_line_id:
           type: string
           nullable: true
           description: >
-            Imputación presupuestaria propuesta (opcional). Al seleccionar, la UI consulta
-            Presupuestos (getBudgetLine + previewBudgetAvailability) y muestra
+            Cuenta/imputación propuesta (opcional, no vinculante — D-6). Al seleccionar,
+            la UI consulta Presupuestos (getBudgetLine + previewBudgetAvailability) y muestra
             descripción de la cuenta y saldo (informativo; no sustituye 1.3).
         proposed_fiscal_year:
           type: integer
@@ -627,12 +635,17 @@ components:
           format: uuid
           nullable: true
           description: DocumentRef — subida previa vía core POST /documents (plataforma/contracts.md §2.10)
+        proposed_management_node_id:
+          type: string
+          nullable: true
+          description: >
+            Nodo de gestión propuesto (hoja; D-5/D-6). Opcional y no vinculante (P-28).
         proposed_budget_line_id:
           type: string
           nullable: true
           description: >
-            Imputación presupuestaria propuesta (opcional). Al seleccionar, la UI consulta
-            Presupuestos (getBudgetLine + previewBudgetAvailability) y muestra
+            Cuenta/imputación propuesta (opcional, no vinculante — D-6). Al seleccionar,
+            la UI consulta Presupuestos (getBudgetLine + previewBudgetAvailability) y muestra
             descripción de la cuenta y saldo (informativo; no sustituye 1.3).
         proposed_fiscal_year:
           type: integer
@@ -736,16 +749,53 @@ components:
         projected_balance:
           type: number
           format: double
+    ManagementNodeSummary:
+      type: object
+      required:
+        - id
+        - code
+        - name
+        - level
+        - path_label
+        - is_leaf
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        name:
+          type: string
+        level:
+          type: string
+          enum:
+            - PROGRAM
+            - SUBPROGRAM
+            - PROJECT
+            - ACTIVITY
+          description: Nivel tipado del árbol local (D-5); el área BEP es ManagementArea
+        path_label:
+          type: string
+          description: Path derivado Área › … › Actividad
+        is_leaf:
+          type: boolean
+        parent_id:
+          type: string
+          nullable: true
     BudgetVerificationRequest:
       type: object
       required:
+        - management_node_id
         - budget_line_id
         - amount
         - fiscal_year
         - decision
       properties:
+        management_node_id:
+          type: string
+          description: Nodo hoja resuelto por DAF en 1.3 (D-5/D-6)
         budget_line_id:
           type: string
+          description: Cuenta/imputación resuelta (par cuenta × nodo)
         amount:
           type: number
           format: double
@@ -761,13 +811,10 @@ components:
     IssueBudgetCertificateRequest:
       type: object
       required:
-        - budget_line_id
         - certified_amount
         - fiscal_year
         - signature_mode
       properties:
-        budget_line_id:
-          type: string
         certified_amount:
           type: number
           format: double
@@ -775,6 +822,9 @@ components:
           type: integer
         signature_mode:
           $ref: "#/components/schemas/SignatureMode"
+      description: >
+        La imputación (management_node_id + budget_line_id) se toma de la
+        clasificación/verificación confirmada en 1.3; no se reclasifica en 1.5.
     RegisterScannedBudgetCertificateRequest:
       allOf:
         - $ref: "#/components/schemas/IssueBudgetCertificateRequest"
@@ -810,11 +860,13 @@ components:
         - procurement_case_id
         - purchase_request_id
         - certificate_number
+        - management_node_id
         - budget_line_id
         - certified_amount
         - fiscal_year
         - status
         - signature_mode
+        - imputation_diverged
       properties:
         id:
           type: string
@@ -824,8 +876,12 @@ components:
           type: string
         certificate_number:
           type: string
+        management_node_id:
+          type: string
+          description: Nodo hoja resuelto en 1.3 (D-5/D-6)
         budget_line_id:
           type: string
+          description: Cuenta resuelta en 1.3
         certified_amount:
           type: number
           format: double
@@ -845,6 +901,16 @@ components:
           type: string
         signature_mode:
           $ref: "#/components/schemas/SignatureMode"
+        proposed_management_node_id:
+          type: string
+          nullable: true
+          description: Copia de la propuesta SOLPED al confirmar 1.3
+        proposed_budget_line_id:
+          type: string
+          nullable: true
+        imputation_diverged:
+          type: boolean
+          description: true si resuelto ≠ propuesto (auditoría; no es error)
     BudgetPreCommitment:
       type: object
       required:
@@ -1402,6 +1468,7 @@ components:
         justification: Reposición de stock según plan anual.
         requested_date: 2026-06-24
         purchase_modality: agile_purchase
+        proposed_management_node_id: mn-act-oficina-001
         proposed_budget_line_id: bl-2210-001
         proposed_fiscal_year: 2026
         status: draft

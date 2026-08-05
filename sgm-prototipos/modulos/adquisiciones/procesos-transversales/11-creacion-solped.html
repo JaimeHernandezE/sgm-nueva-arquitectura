@@ -255,10 +255,23 @@
 
         <section class="form-section">
           <h3 class="form-section__title">Pista presupuestaria (opcional)</h3>
+          <div class="banner banner--info">
+            Propuesta no vinculante (D-6). La DAF clasifica y verifica en el sub-paso 1.3.
+            [PENDIENTE P-28]
+          </div>
           <div class="form-row">
-            <label>Imputación presupuestaria (opcional)</label>
+            <label>Nodo de gestión propuesto (opcional)</label>
+            <select id="proposed-management-node">
+              <option value="">(opcional) Área › … › Actividad</option>
+              <option value="mn-act-oficina-001" selected>Administración › … › Actividad Insumos</option>
+              <option value="mn-act-flota-001">Obras › … › Actividad Mantención flota</option>
+            </select>
+            <small class="muted">listManagementNodes — sin filtro por unidad destino ([PENDIENTE P-23])</small>
+          </div>
+          <div class="form-row">
+            <label>Cuenta / imputación propuesta (opcional)</label>
             <select id="proposed-budget-line">
-              <option value="">(opcional) Cuenta/Programa</option>
+              <option value="">(opcional) Cuenta</option>
               <option value="bl-2210-001" selected>22.01.03 — Insumos oficina</option>
               <option value="bl-2210-003">22.04.01 — Mantención flota</option>
             </select>
@@ -311,7 +324,7 @@
           Saldo proyectado: $ 1.300.000
         </div>
         <div class="banner banner--info">
-          Aviso: consulta orientativa — la verificación formal ocurre en Finanzas (paso 1.3).
+          Aviso: consulta orientativa — la clasificación y verificación formales ocurren en Finanzas (paso 1.3).
         </div>
       </div>
       <div class="modal__footer">

@@ -61,10 +61,10 @@
 
 **Detalle:** La Unidad Solicitante (o DAF) crea la SOLPED en el SGM. Hay dos unidades: **`requesting_unit` (Unidad solicitante)** y **`destination_unit` (Unidad de destino)** — para quién es la compra. Ambas se autoasignan según el `RoleAssignment`. Con rol básico (`adq.solicitante`) coinciden y **no son editables**; con rol DAF (`adq.solicitante_daf`) el default es la unidad DAF y **ambos selectores permiten elegir cualquier unidad del tenant**. Puede indicar opcionalmente la **modalidad de compra** prevista (`purchase_modality`): Compra Ágil, Convenio Marco, Licitación Pública o Trato Directo. Es una indicación provisional — puede confirmarse o cambiarse al inicio de la etapa 2 (Modalidad de Compra). **Al seleccionar** una modalidad, la UI muestra una **preview del gateway V1–V8** (mismo validador interactivo que en 2.1, con monto = total bruto de la SOLPED en CLP); es **informativa** y no bloquea guardar ni enviar — la confirmación formal sigue en 2.1. Si se selecciona Trato Directo, es obligatorio adjuntar la **Resolución Fundada** (`founded_resolution_attachment`). La SOLPED declara una **moneda de documento** (`currency`: CLP, UF, UTM o USD; default CLP); todas las líneas se expresan en esa moneda (no se mezclan monedas en una misma solicitud). Si la moneda no es CLP, la UI muestra el total bruto convertido a CLP con tasa referencial del día (orientativa). El **precio se ingresa siempre neto**; cada línea lleva un **código de impuesto** (`tax_code`: IVA 19% por defecto, Exento u Otro) y el sistema calcula subtotal neto, impuestos y total bruto. El municipio es consumidor final (IVA es costo): la autoconsulta y el precompromiso orientativo usan el **total bruto**. Además puede adjuntar **documentos de respaldo** opcionales (`PurchaseRequestAttachment`): cotizaciones, fotos referenciales del producto, fichas técnicas u otros antecedentes, cada uno con tipo, descripción y archivo (`document_ref` vía `storeDocument` del core).
 
-**Autoconsulta de saldo presupuestario (informativa):** el formulario permite indicar opcionalmente una **imputación presupuestaria propuesta** (`proposed_budget_line_id`) y año fiscal. **Al seleccionar** una imputación, SGM consulta Presupuestos y muestra en solo lectura la **descripción de la cuenta** y el **saldo** disponible (y, si aplica, comprometido/proyectado) — dependencia `getBudgetLine` / `previewBudgetAvailability`. Es **solo lectura**: no registra verificación, no avanza el flujo y **no sustituye** el sub-paso 1.3. Un enlace «Detalle de saldo» puede abrir el panel con monto estimado de la SOLPED (**total bruto en equivalente CLP**) para la vista proyectada. La imputación queda como pista para prellenar la consulta al aprobador en 1.2.
+**Autoconsulta presupuestaria (informativa — D-6):** el formulario permite indicar opcionalmente un **nodo de gestión propuesto** (`proposed_management_node_id`, hoja del eje Área › Programa › Subprograma › Proyecto › Actividad — D-5) y una **imputación/cuenta propuesta** (`proposed_budget_line_id`) más año fiscal. Espejan la estructura del CDP de forma **completa, opcional y no vinculante** (**[PENDIENTE P-28]**). Catálogo de nodos: `listManagementNodes` (cacheada; **sin** filtrar por unidad de destino — **[PENDIENTE P-23]**). Al seleccionar cuenta: descripción y saldo vía `getBudgetLine` / `previewBudgetAvailability`. **No** registra verificación ni sustituye el sub-paso **1.3** (clasificación + disponibilidad a cargo de DAF).
 
 **Entidad(es) y campos:**
-- `PurchaseRequest` — `requesting_unit` (ref., **obligatorio** — autoasignado según `RoleAssignment`; con `adq.solicitante` fija; con `adq.solicitante_daf` modificable en el tenant), `destination_unit` (ref., **obligatorio** — unidad de destino; con `adq.solicitante` = misma que solicitante; con `adq.solicitante_daf` = seleccionable en el tenant — [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) §3.1), `title` (texto corto, **obligatorio** — se copia a `ProcurementCase.title` al crear el expediente), `description` (texto largo, **obligatorio** — qué producto/servicio o conjunto se busca), `justification` (texto, **obligatorio** — porqué de la compra), `requested_date` (fecha, **obligatorio** — **generada por sistema** al crear la SOLPED; fecha del día de creación; no editable), `purchase_modality` (enum, **opcional**: `agile_purchase` \| `framework_agreement` \| `public_tender` \| `direct_procurement`), `founded_resolution_attachment` (`DocumentRef`, **obligatorio si** `purchase_modality = direct_procurement` — subida previa vía `storeDocument` del core), `currency` (enum, **obligatorio**, default `CLP`: `CLP` \| `UF` \| `UTM` \| `USD`), `proposed_budget_line_id` (ref. `BudgetLine`, **opcional** — al seleccionar, UI muestra descripción de cuenta y saldo desde Presupuestos), `proposed_fiscal_year` (número, **opcional**), `status` (enum, **obligatorio**: `draft`)
+- `PurchaseRequest` — `requesting_unit` (ref., **obligatorio** — autoasignado según `RoleAssignment`; con `adq.solicitante` fija; con `adq.solicitante_daf` modificable en el tenant), `destination_unit` (ref., **obligatorio** — unidad de destino; con `adq.solicitante` = misma que solicitante; con `adq.solicitante_daf` = seleccionable en el tenant — [`catalogo-roles.md`](../../../arquitectura/especificacion/catalogo-roles.md) §3.1), `title` (texto corto, **obligatorio** — se copia a `ProcurementCase.title` al crear el expediente), `description` (texto largo, **obligatorio** — qué producto/servicio o conjunto se busca), `justification` (texto, **obligatorio** — porqué de la compra; contexto no clasificatorio para DAF), `requested_date` (fecha, **obligatorio** — **generada por sistema** al crear la SOLPED; fecha del día de creación; no editable), `purchase_modality` (enum, **opcional**: `agile_purchase` \| `framework_agreement` \| `public_tender` \| `direct_procurement`), `founded_resolution_attachment` (`DocumentRef`, **obligatorio si** `purchase_modality = direct_procurement` — subida previa vía `storeDocument` del core), `currency` (enum, **obligatorio**, default `CLP`: `CLP` \| `UF` \| `UTM` \| `USD`), `proposed_management_node_id` (ref. `ManagementNode`, **opcional** — hoja; D-5/D-6), `proposed_budget_line_id` (ref. `BudgetLine`, **opcional** — cuenta/`DETALLE` propuesta), `proposed_fiscal_year` (número, **opcional**), `status` (enum, **obligatorio**: `draft`)
 - `PurchaseRequestLine` (1 SOLPED → N líneas, ≥1) — `product_code` (texto, **opcional** hasta catálogo — **[PENDIENTE X-94]**; UI typeahead busca por código o palabra; si elige hit del catálogo, persiste código y puede prellenar descripción), `item_description` (texto, **obligatorio**), `quantity` (número, **obligatorio**), `unit_of_measure` (ref. `UnitOfMeasure`, **obligatorio** — catálogo de plataforma vía `listUnitOfMeasures`; administrable en consola municipal), `unit_price` (número, **obligatorio**, **neto**, en `PurchaseRequest.currency`), `tax_code` (enum, **obligatorio**, default `iva_19`: `iva_19` \| `exempt` \| `other`), `price_source` (ref. `PriceReference`, **obligatorio**)
 - `PurchaseRequestAttachment` (1 SOLPED → 0..N, **opcional**) — `attachment_type` (enum, **obligatorio**: `quote` \| `product_reference_photo` \| `technical_sheet` \| `other`), `description` (texto, **obligatorio**), `document_ref` (`DocumentRef`, **obligatorio** — vía `storeDocument` del core)
 - `PriceReference` — `item_code` / `item_description_hash` (texto, **obligatorio**), `source` (enum, **obligatorio**), `reference_price` (número, **obligatorio**), `reference_date` (fecha, **obligatorio**), `currency` (enum, **obligatorio**, default CLP)
@@ -76,8 +76,9 @@
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
 | 1 | Sistema externo | `getPriceReference` | Core (SII) | Cacheada | `PriceReference` (`item_code`, `reference_price`, `reference_date`, `source`) |
-| 2 | Dependencia | `getBudgetLine` | Presupuestos | Cacheada / informativa | Al seleccionar `proposed_budget_line_id`: `code`, `description` (descripción de la cuenta) |
-| 3 | Dependencia | `previewBudgetAvailability` | Presupuestos | Cacheada / informativa | Al seleccionar línea (y en panel detalle): `available_balance`, `committed_by_others`, `projected_balance` — sin efecto en el expediente |
+| 2 | Dependencia | `listManagementNodes` | Presupuestos | Cacheada / informativa | Hojas / árbol del ejercicio (`id`, `code`, `name`, `level`, `path_label`, `is_leaf`) — D-5/D-6 |
+| 3 | Dependencia | `getBudgetLine` | Presupuestos | Cacheada / informativa | Al seleccionar `proposed_budget_line_id`: `code`, `description` (descripción de la cuenta) |
+| 4 | Dependencia | `previewBudgetAvailability` | Presupuestos | Cacheada / informativa | Al seleccionar línea (y en panel detalle): `available_balance`, `committed_by_others`, `projected_balance` — sin efecto en el expediente |
 
 > La verificación de stock / catálogo CM se anticipa en el sub-paso **1.0** (optativo). En 1.1 solo se refleja el contexto si el usuario llegó desde 1.0 con hallazgo CM (advertencia no bloqueante en modalidad).
 
@@ -154,7 +155,7 @@
 | Plataforma | SGM |
 | Optativo | Falso |
 
-**Detalle:** Jefatura de la unidad revisa y aprueba la SOLPED antes de que pase a Finanzas. La aprobación requiere firma electrónica avanzada conforme a normativa (QA ítems 5, 7). Al aprobar, SGM **genera el documento de solicitud de pedido** (plantilla `adq.solped_vb`) con los datos de la SOLPED, lo envía a FirmaGob y, tras `confirmSignature`, deja el **PDF firmado** disponible para **descarga** en el expediente (`PurchaseRequestApproval.signed_document_ref`). La plantilla y las anclas de firma se administran en el **mantenedor de documentos firmables** del módulo (Configuraciones → Firmas). Si la SOLPED trae `proposed_budget_line_id`, se muestran (solo lectura, desde Presupuestos) la **descripción de la cuenta** y el **saldo** (`getBudgetLine` / `previewBudgetAvailability`); el aprobador puede abrir el detalle proyectado antes de firmar sin que ello constituya verificación formal (eso ocurre en 1.3, a cargo de DAF Finanzas).
+**Detalle:** Jefatura de la unidad revisa y aprueba la SOLPED antes de que pase a Finanzas. La aprobación requiere firma electrónica avanzada conforme a normativa (QA ítems 5, 7). Al aprobar, SGM **genera el documento de solicitud de pedido** (plantilla `adq.solped_vb`) con los datos de la SOLPED, lo envía a FirmaGob y, tras `confirmSignature`, deja el **PDF firmado** disponible para **descarga** en el expediente (`PurchaseRequestApproval.signed_document_ref`). La plantilla y las anclas de firma se administran en el **mantenedor de documentos firmables** del módulo (Configuraciones → Firmas). Si la SOLPED trae propuesta presupuestaria (`proposed_management_node_id` / `proposed_budget_line_id`), se muestran (solo lectura, desde Presupuestos) el **path del nodo**, la **descripción de la cuenta** y el **saldo** (`listManagementNodes` / `getBudgetLine` / `previewBudgetAvailability`); el aprobador puede abrir el detalle proyectado antes de firmar sin que ello constituya clasificación ni verificación formal (eso ocurre en 1.3, a cargo de DAF Finanzas — D-6).
 
 **Entidad(es) y campos:**
 - `PurchaseRequestApproval` — `purchase_request_id` (ref., **obligatorio**), `approver_id` (ref. `User`, **obligatorio**), `decision` (enum, **obligatorio**: `approved`, `rejected`), `disposition` (enum, **obligatorio si** `decision = rejected`: `return_to_draft` \| `cancel`), `decision_date` (fecha, **obligatorio**), `comments` (texto, **obligatorio si** `decision = rejected`), `signed_document_ref` (`DocumentRef`, **obligatorio si** `decision = approved` — PDF de solicitud de pedido firmado, vía C10 tras FirmaGob)
@@ -169,7 +170,7 @@
 | 1 | Dependencia | `storeDocument` / render de plantilla | Core (documentos C10) | Síncrona | Genera PDF de solicitud de pedido desde plantilla `adq.solped_vb` |
 | 2 | Dependencia | `requestSignature` | Core (FirmaGob) | Síncrona bloqueante | Entrada: `document_id`, `document_type` (= `adq.solped_vb`), `signer_id` — Respuesta: `signature_request_id`, `status` |
 | 3 | Dependencia | `confirmSignature` | Core (FirmaGob) | Síncrona bloqueante | Entrada: `signature_request_id` — Respuesta: `signed_at`, `certificate_ref`; persiste `signed_document_ref` |
-| 4 | Dependencia | `getBudgetLine` / `previewBudgetAvailability` | Presupuestos | Cacheada / informativa | Descripción de cuenta + saldo si hay `proposed_budget_line_id`; detalle proyectado opcional |
+| 4 | Dependencia | `listManagementNodes` / `getBudgetLine` / `previewBudgetAvailability` | Presupuestos | Cacheada / informativa | Path del nodo + descripción de cuenta + saldo si hay propuesta; detalle proyectado opcional |
 | 5 | Evento | `PurchaseRequestApproved` | — (consumidores: Presupuestos, auditoría) | Asíncrona | `PurchaseRequest` (`id`, `requesting_unit`, `destination_unit`, `status`), `PurchaseRequestApproval` (incluye `signed_document_ref`) |
 
 **Validaciones:**
@@ -193,7 +194,7 @@
 
 ---
 
-## 1.3 — Verificación de disponibilidad presupuestaria
+## 1.3 — Clasificación y verificación presupuestaria
 
 | Materia | Valor |
 |---|---|
@@ -202,25 +203,29 @@
 | Plataforma | SGM |
 | Optativo | Falso |
 
-**Detalle:** El formulador de DAF Finanzas consulta la disponibilidad presupuestaria de la SOLPED aprobada (QA ítem 8 P1). Muestra trazabilidad de saldo (disponible, comprometido por otras SOLPED, proyectado) y confirma o rechaza con justificación. Quien verifica aquí no es quien firma el CDP (segregación QA ítem 9).
+**Detalle:** El formulador de DAF Finanzas **clasifica** la SOLPED (imputación **cuenta × nodo de gestión**, D-5/D-6) y **verifica** disponibilidad (QA ítem 8 P1). Es el paso de autoridad presupuestaria previo al CDP: la unidad solicitante solo pudo **proponer** en 1.1; aquí se **resuelve**. Prefill desde `proposed_management_node_id` / `proposed_budget_line_id` si existen; la DAF puede cambiarlos. Si no hay propuesta, puede aplicarse pre-sugerencia por unidad destino (**[PENDIENTE P-23]**). Si lo resuelto diverge de lo propuesto, se registra `imputation_diverged` (no es error; alimenta P-23). Muestra trazabilidad de saldo sobre la imputación **resuelta** y confirma o rechaza con justificación. Quien clasifica/verifica aquí **no** es quien firma el CDP (segregación QA ítem 9).
 
 **Entidad(es) y campos:**
 - `PurchaseRequest.status` (enum, **obligatorio** — permanece en `pending_finance` hasta completar 1.6)
-- Verificación en pantalla: `budget_line_id` (ref., **obligatorio**), `amount` (número, **obligatorio**), `fiscal_year` (número, **obligatorio**), `comments` (texto, **obligatorio si** rechazo)
+- Contexto SOLPED (solo lectura): `title`, `justification`, `destination_unit`, propuestas `proposed_management_node_id` / `proposed_budget_line_id`
+- Resolución en pantalla (persisten en CDP al emitir): `management_node_id` (ref. `ManagementNode`, **obligatorio** — hoja), `budget_line_id` (ref. `BudgetLine`, **obligatorio**), `amount` (número, **obligatorio**), `fiscal_year` (número, **obligatorio**), `comments` (texto, **obligatorio si** rechazo), `imputation_diverged` (booleano)
 - `BudgetAvailabilityCertificate.verified_by` (ref. `User`, **obligatorio** — se registra al confirmar verificación)
 
 **Borde de módulo:**
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Dependencia | `checkBudgetAvailability` | Presupuestos | Síncrona bloqueante | Entrada: `budget_line_id`, `amount`, `fiscal_year` — Respuesta: `available_balance`, `committed_by_others`, `projected_balance` |
-| 2 | Operación | `verifyBudgetAvailability` | — (Adquisiciones) | — | Entrada: `decision` (`confirmed` \| `rejected`), `comments` si rechazo |
+| 1 | Dependencia | `listManagementNodes` | Presupuestos | Cacheada | Catálogo de nodos hoja / árbol del ejercicio |
+| 2 | Dependencia | `checkBudgetAvailability` | Presupuestos | Síncrona bloqueante | Entrada: `budget_line_id`, `management_node_id`, `amount`, `fiscal_year` — Respuesta: `available_balance`, `committed_by_others`, `projected_balance` |
+| 3 | Operación | `verifyBudgetAvailability` | — (Adquisiciones) | — | Entrada: `management_node_id`, `budget_line_id`, `amount`, `fiscal_year`, `decision` (`confirmed` \| `rejected`), `comments` si rechazo |
 
 **Validaciones:**
 
 | Acción UI | Operación | Código | Campo | Mensaje (`rule`) | Severidad | Fundamento (`legal_reference`) |
 |---|---|---|---|---|---|---|
+| Confirmar verificación | `verifyBudgetAvailability` | `MISSING_REQUIRED_FIELD` | `management_node_id` | El campo Nodo de gestión es obligatorio. | blocking | integridad:campo_requerido |
 | Confirmar verificación | `verifyBudgetAvailability` | `MISSING_REQUIRED_FIELD` | `budget_line_id` | El campo Imputación presupuestaria es obligatorio. | blocking | integridad:campo_requerido |
+| Confirmar verificación | `verifyBudgetAvailability` | `INVALID_MANAGEMENT_NODE` | `management_node_id` | El nodo de gestión debe ser una hoja vigente del ejercicio. | blocking | integridad:campo_requerido |
 | Confirmar verificación | `verifyBudgetAvailability` | `MISSING_REQUIRED_FIELD` | `amount` | El campo Monto es obligatorio. | blocking | integridad:campo_requerido |
 | Confirmar verificación | `verifyBudgetAvailability` | `MISSING_REQUIRED_FIELD` | `fiscal_year` | El campo Año fiscal es obligatorio. | blocking | integridad:campo_requerido |
 | Confirmar verificación | `verifyBudgetAvailability` | `BUDGET_UNAVAILABLE` | `budget_line_id` | La imputación presupuestaria no tiene saldo disponible para el monto solicitado. | blocking | DL 1.263 — fase de compromiso presupuestario |
@@ -231,8 +236,9 @@
 - Sin disponibilidad presupuestaria → verificación rechazada; camino a 1.4 (solicitar financiamiento) o devolución al solicitante con justificación.
 - Proveedor Presupuestos no responde → `BUDGET_PROVIDER_UNAVAILABLE` (`severity: blocking`); SOLPED permanece en `pending_finance`.
 - Rechazo DAF con justificación → `PurchaseRequest` vuelve al solicitante; camino optativo a 1.4 (línea punteada BPMN).
+- Divergencia propuesta vs resuelto → se confirma igual; queda `imputation_diverged = true`.
 
-> ⚠ **Pendiente de definir:** gateway de disponibilidad presupuestaria — probablemente requiere campo calculado `available_balance` en `BudgetLine`.
+> ⚠ **Pendiente de definir:** gateway de disponibilidad — campo calculado `available_balance` en `BudgetLine`; pre-sugerencia unidad→nodo (**[PENDIENTE P-23]**); validación `DETALLE` (**[PENDIENTE P-25]**).
 
 ---
 
@@ -281,7 +287,7 @@
 | Plataforma | SGM |
 | Optativo | Falso |
 
-**Detalle:** El Firmante CDP de DAF Finanzas emite y firma el **Certificado de Disponibilidad Presupuestaria** (CDP) sobre la SOLPED con verificación confirmada en 1.3. El Formulador DAF / verificación (1.3, `adq.formulador_presupuesto`) y el Firmante CDP (`adq.firmante_cdp`) deben ser personas distintas (QA ítem 9 P1 / SoD S2). La firma admite **dos caminos**, mutuamente excluyentes:
+**Detalle:** El Firmante CDP de DAF Finanzas emite y firma el **Certificado de Disponibilidad Presupuestaria** (CDP) sobre la SOLPED con **clasificación y verificación confirmadas en 1.3**. La imputación (`management_node_id` + `budget_line_id`) se muestra en **solo lectura** — no se reclasifica en 1.5 (D-6; SoD: quien clasifica ≠ quien firma). El Formulador DAF / verificación (1.3, `adq.formulador_presupuesto`) y el Firmante CDP (`adq.firmante_cdp`) deben ser personas distintas (QA ítem 9 P1 / SoD S2). La firma admite **dos caminos**, mutuamente excluyentes:
 
 | Camino | Cuándo | Mecanismo |
 |---|---|---|
@@ -291,13 +297,13 @@
 En ambos caminos se ejecuta `checkBudgetAvailability` antes de cerrar el paso. El expediente debe dejar visible el modo usado (`signature_mode`) en la línea secundaria de la fila del sub-paso.
 
 **Entidad(es) y campos:**
-- `BudgetAvailabilityCertificate` — `procurement_case_id` (ref., **obligatorio**), `purchase_request_id` (ref., **obligatorio**), `certificate_number` (texto, **obligatorio**), `budget_line_id` (ref., **obligatorio**), `certified_amount` (número, **obligatorio**), `fiscal_year` (número, **obligatorio**), `verified_by` (ref., **obligatorio**), `signed_by` (ref., **obligatorio**), `signed_at` (fecha/hora, **obligatorio**), `status` (enum, **obligatorio**: `issued`, `rejected`, `pending_signature`), `rejection_reason` (texto, **obligatorio si** `rejected`), `signature_mode` (enum, **obligatorio**: `electronic` \| `scanned`), `scanned_certificate_attachment` (ref., **obligatorio si** `signature_mode = scanned`)
+- `BudgetAvailabilityCertificate` — `procurement_case_id` (ref., **obligatorio**), `purchase_request_id` (ref., **obligatorio**), `certificate_number` (texto, **obligatorio**), `management_node_id` (ref. `ManagementNode`, **obligatorio** — resuelto en 1.3, solo lectura en 1.5), `budget_line_id` (ref., **obligatorio** — resuelto en 1.3), `certified_amount` (número, **obligatorio**), `fiscal_year` (número, **obligatorio**), `verified_by` (ref., **obligatorio**), `signed_by` (ref., **obligatorio**), `signed_at` (fecha/hora, **obligatorio**), `status` (enum, **obligatorio**: `issued`, `rejected`, `pending_signature`), `rejection_reason` (texto, **obligatorio si** `rejected`), `signature_mode` (enum, **obligatorio**: `electronic` \| `scanned`), `scanned_certificate_attachment` (ref., **obligatorio si** `signature_mode = scanned`), `proposed_management_node_id` / `proposed_budget_line_id` / `imputation_diverged` (auditoría desde 1.3)
 
 **Borde de módulo:**
 
 | # | Tipo | Contrato / Evento | Contraparte | Clasificación | Payload |
 |---|---|---|---|---|---|
-| 1 | Dependencia | `checkBudgetAvailability` | Presupuestos | Síncrona bloqueante | Revalidación de saldo al emitir |
+| 1 | Dependencia | `checkBudgetAvailability` | Presupuestos | Síncrona bloqueante | Revalidación de saldo sobre imputación **resuelta en 1.3** (`management_node_id` + `budget_line_id`) |
 | 1.2 | Dependencia | `requestSignature`, `confirmSignature` | Core (documentos) *(PDF vía C10)*, Core (FirmaGob) | Síncrona bloqueante | Solo si `signature_mode = electronic` |
 | 3 | Operación | `issueBudgetAvailabilityCertificate` | — (Adquisiciones) | — | Entrada: metadatos del CDP + `signature_mode`; si `electronic`, dispara firma; respuesta: `BudgetAvailabilityCertificate` |
 | 4 | Operación | `registerScannedBudgetAvailabilityCertificate` | — (Adquisiciones) | — | Entrada: mismos metadatos + `scanned_certificate_attachment`; sin FirmaGob |
@@ -391,12 +397,13 @@ En ambos caminos se ejecuta `checkBudgetAvailability` antes de cerrar el paso. E
 | 1.0 | Dependencia *(propuesta / X-44)* | `checkStockAvailability` | Inventario *(omitible)* |
 | 1.0 | Dependencia *(condicional sync ChileCompra)* | `checkCatalogAvailability` | Catálogo CM espejado |
 | 1.1 | Sistema externo | `getPriceReference` | Core (SII) |
+| 1.1 | Dependencia | `listManagementNodes` | Presupuestos *(nodo propuesto; D-5/D-6)* |
 | 1.1 | Dependencia | `getBudgetLine` | Presupuestos *(descripción al seleccionar)* |
 | 1.1 | Dependencia | `previewBudgetAvailability` | Presupuestos *(saldo / informativa)* |
 | 1.2 | Dependencia | `requestSignature`, `confirmSignature` | Core (FirmaGob) |
 | 1.2 | Dependencia | `previewBudgetAvailability` | Presupuestos *(informativa)* |
 | 1.2 | Evento | `PurchaseRequestApproved` | — |
-| 1.3 | Dependencia | `checkBudgetAvailability` | Presupuestos |
+| 1.3 | Dependencia | `listManagementNodes`, `checkBudgetAvailability` | Presupuestos |
 | 1.3 | Operación | `verifyBudgetAvailability` | — |
 | 1.4 | Operación / Evento | `requestBudgetFinancing`, `BudgetFinancingRequested` | Presupuestos *(externo)* |
 | 1.5 | Dependencia | `checkBudgetAvailability`, `requestSignature`, `confirmSignature` | Presupuestos, FirmaGob |

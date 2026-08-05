@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>1.3 — Verificación presupuestaria</title>
+  <title>1.3 — Clasificación y verificación presupuestaria</title>
   <link rel="stylesheet" href="../../../shared/tokens.css" />
   <link rel="stylesheet" href="../../../shared/layout.css" />
   <link rel="stylesheet" href="../../../shared/shell.css" />
@@ -19,18 +19,48 @@
 
     <div class="form-card">
       <div class="form-card__header">
-        <span>SOLPED #1234 — Verificación presupuestaria</span>
+        <span>SOLPED #1234 — Clasificación y verificación</span>
         <span class="badge">En curso</span>
       </div>
       <div class="form-card__body">
         <section class="form-section">
-          <h3 class="form-section__title">Verificación presupuestaria</h3>
+          <h3 class="form-section__title">Contexto SOLPED (solo lectura)</h3>
+          <div class="form-row form-row--readonly">
+            <strong>Título:</strong> Insumos de oficina — reposición anual
+          </div>
+          <div class="form-row form-row--readonly">
+            <strong>Justificación:</strong> Reposición de stock según plan anual
+          </div>
+          <div class="form-row form-row--readonly">
+            <strong>Unidad destino:</strong> Dirección de Administración
+          </div>
+          <div class="info-panel info-panel--ok" id="proposal-panel">
+            <strong>Propuesta del solicitante (no vinculante)</strong><br />
+            Nodo: Administración › Programa Gestión Interna › Subprograma Soporte › Proyecto Oficina › Actividad Insumos<br />
+            Cuenta: 22.01.03 — Insumos oficina<br />
+            <span class="muted">[PENDIENTE P-28] — la DAF resuelve la imputación aquí</span>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h3 class="form-section__title">Clasificación presupuestaria</h3>
           <div class="form-row">
-            <label>Imputación presupuestaria <span class="required">*</span></label>
-            <select>
-              <option>22.01.03 — Insumos oficina</option>
-              <option>22.01.05 — Útiles de escritorio</option>
+            <label>Nodo de gestión (hoja) <span class="required">*</span></label>
+            <select id="management-node">
+              <option value="mn-act-oficina-001" selected>Administración › … › Actividad Insumos</option>
+              <option value="mn-act-flota-001">Obras › … › Actividad Mantención flota</option>
             </select>
+            <small class="muted">Catálogo `listManagementNodes` — path derivado (D-5)</small>
+          </div>
+          <div class="form-row">
+            <label>Imputación / cuenta <span class="required">*</span></label>
+            <select id="budget-line">
+              <option value="bl-2210-001" selected>22.01.03 — Insumos oficina</option>
+              <option value="bl-2210-003">22.04.01 — Mantención flota</option>
+            </select>
+          </div>
+          <div class="banner banner--info" id="divergence-banner" hidden>
+            Imputación distinta a la propuesta del solicitante (`imputation_diverged`). No es error.
           </div>
           <div class="form-row">
             <label>Monto estimado <span class="required">*</span></label>
@@ -40,6 +70,7 @@
             <label>Año fiscal <span class="required">*</span></label>
             <input type="number" value="2026" />
           </div>
+          <p class="muted">Sin propuesta: pre-sugerencia por unidad destino — [PENDIENTE P-23] (demo stub).</p>
         </section>
 
         <section class="form-section">
@@ -92,7 +123,7 @@
     document.getElementById('breadcrumb').innerHTML = renderBreadcrumb({
       expedienteId,
       stageName: 'Etapa 1 · SOLPED',
-      stepName: 'Verificación de disponibilidad presupuestaria',
+      stepName: 'Clasificación y verificación presupuestaria',
       stepId: '1.3',
     });
     initStepSimulation({ stepId: '1.3' });
@@ -105,6 +136,17 @@
 
     document.getElementById('financing-link').href = relativeFormHref('16-solicitar-financiamiento.html');
     document.getElementById('financing-btn').href = relativeFormHref('16-solicitar-financiamiento.html');
+
+    const proposedNode = 'mn-act-oficina-001';
+    const proposedLine = 'bl-2210-001';
+    function refreshDivergence() {
+      const node = document.getElementById('management-node').value;
+      const line = document.getElementById('budget-line').value;
+      const diverged = node !== proposedNode || line !== proposedLine;
+      document.getElementById('divergence-banner').hidden = !diverged;
+    }
+    document.getElementById('management-node').addEventListener('change', refreshDivergence);
+    document.getElementById('budget-line').addEventListener('change', refreshDivergence);
 
     if (budget?.insufficient) {
       const panel = document.getElementById('budget-panel');

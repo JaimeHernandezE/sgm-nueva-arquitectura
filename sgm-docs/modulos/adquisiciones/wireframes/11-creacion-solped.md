@@ -62,11 +62,14 @@
 | +----------+---------------------+---------------------+  |
 | [+ Agregar adjunto]                                       |
 +----------------------------------------------------------+
-| Pista presupuestaria (opcional)                           |
-| Imputación presupuestaria       [ (opcional) 22.01.03      v ]|
+| Pista presupuestaria (opcional — D-6; no vinculante) [PENDIENTE P-28] |
+| Nodo de gestión propuesto   [ Adm. › … › Act. Oficina      v ]|
+|   (listManagementNodes; sin filtro por unidad — P-23)     |
+| Cuenta / imputación propuesta [ (opcional) 22.01.03      v ]|
 |   → Descripción cuenta: Insumos de oficina   (Presupuestos)|
 |   → Saldo disponible: $ 2.100.000            (informativo)|
 | Año fiscal propuesto (opcional) [ 2026 ]                  |
+| Hint: la DAF clasifica y verifica en 1.3                  |
 | [ Detalle de saldo… ]  (panel: proyectado vs monto SOLPED)|
 +----------------------------------------------------------+
 | [ Guardar borrador ]              [ Enviar a aprobación ] |
@@ -87,7 +90,8 @@
 | Resolución Fundada | `PurchaseRequest.founded_resolution_attachment` | Sí si modalidad = Trato Directo |
 | Causal TD / justif. bypass CM | — (UI demo gateway) | Condicionales al preview V3 / V2 |
 | Moneda | `PurchaseRequest.currency` | Sí (default CLP). Una sola moneda por documento; las líneas heredan |
-| Imputación presupuestaria (opcional) | `PurchaseRequest.proposed_budget_line_id` | No — al seleccionar: muestra **descripción de la cuenta** y **saldo** desde Presupuestos (`getBudgetLine` + `previewBudgetAvailability`); no sustituye 1.3 |
+| Nodo de gestión propuesto (opcional) | `PurchaseRequest.proposed_management_node_id` | No — hoja; `listManagementNodes`; no vinculante (D-6 / **[PENDIENTE P-28]**); **sin** filtro por unidad (**[PENDIENTE P-23]**) |
+| Cuenta / imputación propuesta (opcional) | `PurchaseRequest.proposed_budget_line_id` | No — al seleccionar: muestra **descripción de la cuenta** y **saldo** desde Presupuestos (`getBudgetLine` + `previewBudgetAvailability`); no sustituye 1.3 |
 | Descripción de la cuenta (lectura) | `BudgetLine.description` (Presupuestos) | — (derivado al seleccionar) |
 | Saldo disponible (lectura) | `previewBudgetAvailability.available_balance` | — (derivado al seleccionar; informativo) |
 | Año fiscal propuesto | `PurchaseRequest.proposed_fiscal_year` | No |
@@ -131,8 +135,8 @@
 | Saldo proyectado: $ 1.300.000                             |
 +----------------------------------------------------------+
 | Aviso                                                     |
-| Consulta orientativa — la verificación formal ocurre     |
-| en Finanzas (paso 1.3).                                   |
+| Consulta orientativa — la clasificación y verificación   |
+| formales ocurren en Finanzas (paso 1.3; D-6).             |
 +----------------------------------------------------------+
 | [ Cerrar ]                                                |
 +----------------------------------------------------------+
