@@ -46,7 +46,7 @@ Serie canónica declarada en planes / registro:
 | Prefijo | Serie declarada en documentos de origen | Filas en registro tabular central |
 |---|---|---|
 | X- | X-01…X-93 | **93** filas en `sgm-docs/arquitectura/decisiones/pendientes.md` |
-| P- | P-1…P-20 (plan Presupuestos / plan-general) | Marcadores `> **PENDIENTE P-…**` y tablas |
+| P- | P-1…P-30 (plan Presupuestos / plan-general) | Marcadores `> **PENDIENTE P-…**` y tablas |
 | C- | C-1…C-18 | Marcadores en plan Contabilidad |
 | T- | T-1…T-14 | Marcadores en plan Tesorería |
 | R- | R-1…R-14 | Marcadores en plan RRHH |
@@ -80,7 +80,7 @@ En `entidades-plataforma.md`, varios encabezados agrupan alias con `/` (p. ej. `
 
 | Norma / hecho | Archivo |
 |---|---|
-| Dictamen CGR N° 60.449/2008 (y corrección de cita del levantamiento) — **N-27** | `sgm-docs/modulos/presupuestos/plan-de-trabajo.md` |
+| Dictamen CGR N° 60.449/2008 (y corrección de cita del levantamiento) — **N-27** | `sgm-docs/modulos/presupuestos/plan-de-trabajo_presupuestos.md` |
 | art. 24 DL 3.063; art. 65 c) LOCM (**N-02**); composición IPP/SINIM | `sgm-docs/arquitectura/decisiones/Nota-sobre-rentas.md` |
 | Cobertura DocDigital 80 % municipios / funciones de la plataforma (fuente Ministerio de Hacienda); mecanismo M2M **no** verificado | `sgm-docs/arquitectura/especificacion/integracion-docdigital.md` y ADR DocDigital |
 
@@ -117,7 +117,7 @@ El resto de normas del corpus **no** declara verificación en fuente primaria en
 | Ruta | Título (H1) | Versión / estado | Líneas | H2 | D-n | Macros | Pendientes (únicos en archivo) |
 |---|---|---|---:|---:|---:|---|---|
 | `sgm-docs/plan-general.md` | Plan de trabajo general — Corpus SGM | v0.2 / consolidación B0 — no validado con DM | 299 | 11 | 11 DC | — | P18 C12 T3 R5 A5 X23 |
-| `sgm-docs/modulos/presupuestos/plan-de-trabajo.md` | Plan de trabajo — Módulo Presupuestos | 0.11 / no validado con DM | 1086 | 13 | 4 | — | P20 (+menciones C/R/X) |
+| `sgm-docs/modulos/presupuestos/plan-de-trabajo_presupuestos.md` | Plan de trabajo — Módulo Presupuestos | 0.15 / no validado con DM | ~1664 | 13 | 4 | — | P30 (+menciones C/R/X) |
 | `sgm-docs/modulos/contabilidad/plan-de-trabajo-contabilidad.md` | Plan de trabajo — Módulo Contabilidad | 0.6 / no validado con DM | 438 | 11 | 5 | MC-1…7 | C18 |
 | `sgm-docs/modulos/tesoreria/plan-de-trabajo-tesoreria.md` | Plan de trabajo — Módulo Tesorería | 0.3 / no validado con DM | 393 | 11 | 6 | MT-1…7 | T14 |
 | `sgm-docs/modulos/rrhh/plan-de-trabajo-rrhh.md` | Plan de trabajo — Módulo RRHH y Remuneraciones | 0.3 / no validado con DM | 439 | 11 | 6 | MR-1…7 | R14 |
@@ -331,7 +331,7 @@ HTML por área: Compra Ágil 6; Convenio Marco 8; Licitación Pública 14; Trato
 | ``sgm-docs/modulos/contabilidad/plan-de-trabajo-contabilidad.md`` | Plan de trabajo — Módulo Contabilidad | 438 | 11 | 0.6 (borrador para revisión interna) propuesta de plan, no validada con DM |
 | ``sgm-docs/modulos/presupuestos/modelos-odoo.md`` | Modelos Odoo — Presupuestos | 452 | 12 |  |
 | ``sgm-docs/modulos/presupuestos/overview.md`` | Módulo: Presupuestos | 15 | 2 |  |
-| ``sgm-docs/modulos/presupuestos/plan-de-trabajo.md`` | Plan de trabajo — Módulo Presupuestos | 1086 | 13 | 0.11 (borrador para revisión interna) propuesta de plan, no validado con DM |
+| ``sgm-docs/modulos/presupuestos/plan-de-trabajo_presupuestos.md`` | Plan de trabajo — Módulo Presupuestos | ~1664 | 13 | 0.15 (borrador; Anexo B; P-1…P-30) propuesta de plan, no validado con DM |
 | ``sgm-docs/modulos/rrhh/modelos-odoo.md`` | Modelos Odoo — RRHH / Remuneraciones | 435 | 15 |  |
 | ``sgm-docs/modulos/rrhh/overview.md`` | Módulo: RRHH / Remuneraciones | 17 | 2 |  |
 | ``sgm-docs/modulos/rrhh/plan-de-trabajo-rrhh.md`` | Plan de trabajo — Módulo RRHH y Remuneraciones | 439 | 11 | 0.3 (borrador para revisión interna) propuesta de plan, no validada con DM |
@@ -428,7 +428,7 @@ Leyenda: **existe** = hay archivo(s) de ese tipo; **parcial** = hay material per
 
 | Tipo de artefacto | Adquisiciones | Presupuestos | Contabilidad | Tesorería | RRHH | Rentas | Transversal / plataforma |
 |---|---|---|---|---|---|---|---|
-| Plan de trabajo | no existe (spec directa; plan-general la referencia) | existe `modulos/presupuestos/plan-de-trabajo.md` | existe `…/plan-de-trabajo-contabilidad.md` | existe `…/plan-de-trabajo-tesoreria.md` | existe `…/plan-de-trabajo-rrhh.md` | no existe | existe `plan-general.md` |
+| Plan de trabajo | no existe (spec directa; plan-general la referencia) | existe `modulos/presupuestos/plan-de-trabajo_presupuestos.md` | existe `…/plan-de-trabajo-contabilidad.md` | existe `…/plan-de-trabajo-tesoreria.md` | existe `…/plan-de-trabajo-rrhh.md` | no existe | existe `plan-general.md` |
 | Overview de módulo | existe | existe (15 líneas) | existe (16) | existe (20) | existe (17) | no existe | existe `plataforma/overview.md` |
 | Fichas de proceso / modalidad | existe (CA/CM/LP/TD + transversales) | no existe | no existe | no existe | no existe | no existe | N/A |
 | Contrato API / `contracts.md` | existe (855 líneas) | no existe | no existe | no existe | no existe | no existe | existe `plataforma/contracts.md` |
@@ -451,7 +451,7 @@ Fuente citada en planes: *Informe 2 — Anexo procesos, Magenta / C Amable para 
 
 | Módulo | N | Procesos (números) | Documento |
 |---|---:|---|---|
-| Presupuestos | 2 | 26 Elaboración; 27 Modificación | `presupuestos/plan-de-trabajo.md` |
+| Presupuestos | 2 | 26 Elaboración; 27 Modificación | `presupuestos/plan-de-trabajo_presupuestos.md` |
 | Contabilidad | 10 | 28…37 | `contabilidad/plan-de-trabajo-contabilidad.md` |
 | Tesorería | 5 | 38…42 | `tesoreria/plan-de-trabajo-tesoreria.md` |
 | RRHH | 18 | 1…18 | `rrhh/plan-de-trabajo-rrhh.md` |
@@ -473,7 +473,7 @@ La tabla de `plan-general.md` §2 usa porcentajes aproximados de cobertura («~3
 
 | Hallazgo (síntesis factual del texto fuente) | Ruta |
 |---|---|
-| Diagnóstico Presupuestos contrastado con el ORM real; tablas «qué hace bien/mal» con evidencia en código | `modulos/presupuestos/plan-de-trabajo.md` |
+| Diagnóstico Presupuestos contrastado con el ORM real; tablas «qué hace bien/mal» con evidencia en código | `modulos/presupuestos/plan-de-trabajo_presupuestos.md` |
 | Regla: contrastar ORM, no el export de BD | mismo |
 | Contabilidad: diagnóstico contrastado con ORM y `modelos-odoo.md`; factoring/suspensión como expediente sin efecto de dominio | `modulos/contabilidad/plan-de-trabajo-contabilidad.md` |
 | Tesorería: contraste ORM julio 2026; garantía sin cron; consolidación `action_done` sin asiento; API SEM `POST /api/sem/data`; conciliación auxiliar «entero comentado» | `modulos/tesoreria/plan-de-trabajo-tesoreria.md` |
@@ -682,7 +682,7 @@ Origen: `sgm-docs/arquitectura/especificacion/estandar-pruebas.md` §11 (registr
 | 438 | ``sgm-docs/modulos/contabilidad/plan-de-trabajo-contabilidad.md`` |
 | 452 | ``sgm-docs/modulos/presupuestos/modelos-odoo.md`` |
 | 15 | ``sgm-docs/modulos/presupuestos/overview.md`` |
-| 1086 | ``sgm-docs/modulos/presupuestos/plan-de-trabajo.md`` |
+| 1664 | ``sgm-docs/modulos/presupuestos/plan-de-trabajo_presupuestos.md`` |
 | 435 | ``sgm-docs/modulos/rrhh/modelos-odoo.md`` |
 | 17 | ``sgm-docs/modulos/rrhh/overview.md`` |
 | 439 | ``sgm-docs/modulos/rrhh/plan-de-trabajo-rrhh.md`` |

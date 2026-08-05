@@ -2,11 +2,15 @@
 
 **Proyecto:** SGM — Sistema de Gestión Municipal
 **Módulo:** Presupuestos
-**Versión:** 0.14 (borrador para revisión interna)
+**Versión:** 0.16 (borrador para revisión interna)
 **Fecha:** agosto 2026
 **Estado:** propuesta de plan, no validado con DM
 
 **Gobierno del corpus:** [`../../plan-general.md`](../../plan-general.md). Criterios de calidad comunes: plan general §7. Decisiones transversales: plan general §4.
+
+**Cambios v0.16:** dos precisiones al contrato con Adquisiciones, sobre el Anexo B. **(1) La cuenta es de la línea; el nodo de gestión es de la solicitud** — `budget_account_id` por línea de SOLPED, `management_node_id` único por SOLPED. Una solicitud no puede servir a dos programas. **(2) Ninguna solicitud de personal pasa por Adquisiciones**, y la separación es **legal**: el art. 3 letra a) de la Ley 19.886 excluye de su ámbito las contrataciones de personal y los contratos a honorarios. Todo el subtítulo 21 entra a la cadena de compromiso por RRHH. Nuevo caso a verificar en P-28 (compra centralizada de bodega).
+
+**Cambios v0.15:** producido el **Anexo B — ciclo presupuestario completo sobre dos casos trabajados** (compra de insumos de una dirección de Gestión Interna, y un proyecto de DIDECO con cinco niveles y financiamiento externo). El ejercicio destapa cuatro cosas sin resolver: **P-29** —reasignar entre nodos de gestión con la misma cuenta no cambia el clasificador ni el BEP, pero sí la distribución programática que el Concejo aprobó, y el criterio de §4.1 es ciego a ello—; **P-30** —la trazabilidad de un convenio cruza los dos ejes sin identificador común—; la invariante **`ACTIVITY` es categoría de imputación, no ocurrencia en el tiempo** (ampliación de P-21); y el **alcance de D-6**, que rige la ejecución y no dice quién clasifica en la formulación (ampliación de D-6, con default). Dos precisiones al contrato con Adquisiciones: una SOLPED puede generar **más de una imputación**, y la cadena de compromiso tiene **al menos dos puertas de entrada** (Adquisiciones y RRHH).
 
 **Cambios v0.14:** nueva decisión **D-6 — la autoridad de imputación reside en el CDP, no en la SOLPED**, a raíz de una solicitud de DM de incorporar campos de programa, proyecto y actividad en la solicitud de pedido. La SOLPED **espeja** la estructura de imputación del CDP de forma completa, opcional y no vinculante; la resolución definitiva la toma la DAF al certificar disponibilidad. Fundamento de segregación de funciones (*quien solicita no imputa*) antes que de usabilidad. Consecuencias en §6 (contrato Adq↔Presupuestos), F2 (paso de clasificación explícito), §11 (criterio 16) y §10 (riesgo de cuello de botella en la DAF). **P-23 se replantea por tercera vez**: el mapeo unidad → nodo pasa de filtro a pre-sugerencia. Nuevo **P-28** (validación con DM). Los tres campos independientes solicitados no se incorporan: son niveles de un árbol, no dimensiones (§5.3, D-5).
 
@@ -92,7 +96,31 @@ Adquisiciones ya declaró la entidad `BudgetPreCommitment` en su modelo prelimin
 4. **La divergencia entre lo propuesto y lo resuelto se conserva.** Cuando el CDP imputa a un nodo distinto del propuesto en la SOLPED, la diferencia queda registrada. No es un error a corregir: es la señal que alimenta la pre-sugerencia de P-23.
 5. **Contexto no clasificatorio.** La SOLPED conserva un campo de propósito en texto libre. Sin él, sacar la clasificación deja a la DAF imputando a ciegas, con el resultado previsible de que todo termine en Gestión Interna.
 
+6. **La cuenta es de la línea; el nodo de gestión es de la solicitud.** Los dos ejes no viven al mismo nivel de la SOLPED:
+
+   | Nivel | Campo | Cardinalidad | Responde a |
+   |---|---|---|---|
+   | `PurchaseRequest` | `management_node_id` | **uno** por solicitud | *para qué se pide* |
+   | `PurchaseRequestLine` | `budget_account_id` | **uno por línea** | *qué se compra* |
+
+   Los ítems de una solicitud pueden clasificar a cuentas distintas —ingredientes a `22-01-001`, delantales a `22-04-999`— pero todos sirven al mismo propósito. En consecuencia, **el CDP tiene una línea por cuenta distinta, todas contra el mismo nodo**: no es un monto único, pero tampoco un producto cartesiano.
+
+   Restricción deliberada: **una SOLPED no puede servir a dos programas.** Si se necesita, son dos solicitudes. Mantiene el expediente legible y hace que la imputación del nodo sea **una sola decisión** de la DAF, no una por línea. El caso que tensiona la regla —compra centralizada de bodega distribuida a varias unidades— queda a verificar en P-28.
+
+7. **Ninguna solicitud de personal pasa por Adquisiciones, y la separación es legal.** El **art. 3 letra a) de la Ley 19.886** excluye de su ámbito las contrataciones de personal de la Administración regidas por estatutos especiales y los contratos a honorarios con personas naturales. **Todo el subtítulo 21** —planta, contrata, honorarios, cometidos, trabajos extraordinarios— entra a la cadena de compromiso por **RRHH**.
+
+   `CommitmentChain` no puede asumir origen único. El contrato **R-1** no es un caso secundario del de Adquisiciones: es paralelo, con la misma criticidad y **fundamento normativo propio**. *(Cita verificada en fuente secundaria; confirmar en el texto consolidado de LeyChile antes de usarla como `legal_reference`, según el criterio de §4.2.)*
+
 > **Riesgo aceptado.** Cada SOLPED pasa a requerir una acción de clasificación de la DAF antes del CDP. En municipios con equipos de finanzas de tres personas eso es throughput real. La mitigación es la pre-sugerencia de P-23, no relajar la segregación.
+
+#### Alcance de D-6: rige la ejecución, no la formulación
+
+D-6 resuelve quién imputa cuando se compromete un gasto. **No dice quién clasifica la ficha presupuestaria en la formulación**, y el argumento no se traslada sin más:
+
+- En **ejecución**, la unidad solicita una compra puntual y no tiene por qué saber a qué cuenta y nodo corresponde. El volumen está distribuido en el año.
+- En **formulación**, la unidad sí conoce el destino del gasto que presupuesta, y el volumen está concentrado: decenas de fichas en las tres semanas entre la convocatoria y la consolidación. Centralizar la clasificación ahí es un cuello de botella peor que el de la ejecución, y en una ventana con plazo legal (art. 82).
+
+> **Default mientras no haya acta:** en formulación la **unidad propone** la clasificación en su ficha y la **DAF valida** durante la consolidación (26.2.4), con facultad de corregir sin devolver la ficha. La autoridad sigue siendo de la DAF; lo que cambia respecto de la ejecución es que la propuesta es esperada, no opcional. Debe cerrarse antes de las fichas de MP-1 en F3.
 
 ---
 
@@ -211,6 +239,7 @@ Cada regla normativa se traduce en una regla verificable del motor. Esta tabla e
 | LOCM art. 65 letra a) | Acuerdo del Concejo para aprobar presupuesto municipal, de salud y educación, y **sus modificaciones** | `CouncilAgreement` como entidad de primera clase, no un campo booleano |
 | LOCM art. 67 | Gasto anual en personal ≤ **42% de los ingresos propios percibidos el año anterior** | Validador bloqueante en formulación. Requiere ingresos percibidos del ejercicio anterior — contrato con Tesorería |
 | Ley 18.883 art. 2 | Gasto en cargos a contrata ≤ **20% del gasto en remuneraciones de la planta** | Validador bloqueante en formulación. Contrato con RRHH |
+| **Ley 19.886 art. 3 letra a)** | Quedan **excluidas** de la ley de compras públicas las contrataciones de personal de la Administración regidas por estatutos especiales y los **contratos a honorarios** con personas naturales | El subtítulo 21 completo entra a la cadena de compromiso por **RRHH, no por Adquisiciones**. Es fundamento normativo del contrato R-1, no una convención de diseño (D-6) |
 | LOCM art. 81 | Solo presupuestos debidamente financiados; el jefe de la unidad de control **debe representar** el déficit; examen **trimestral** del programa de ingresos y gastos; responsabilidad personal y solidaria de alcalde y concejales | Validador de financiamiento bloqueante; entidad `DeficitRepresentation`; proceso trimestral obligatorio; log inmutable con identificación nominal de quién aprobó qué |
 | LOCM art. 82 letra a) | Alcalde presenta en la **primera semana de octubre**; Concejo se pronuncia **antes del 15 de diciembre**; si no se pronuncia en plazo, **rige lo propuesto por el alcalde** | Máquina de estados con plazos legales parametrizados y **transición automática por silencio**. Único punto del sistema donde el tiempo cambia el estado sin acción humana |
 | **Manual de Imputaciones V19** (SUBDERE / Depto. Finanzas Municipales) | Enumera **por cuenta** cuáles requieren acuerdo del Concejo: 106 cuentas de gasto, en niveles ítem, asignación, subasignación y subtítulo. Ninguna cuenta de ingreso marcada | **`requires_council_agreement` es atributo del `BudgetClassifier`, no regla sobre la profundidad del código.** El enunciado de 26.2.6 (subtítulo e ítem) es una simplificación. Ver §4.1 |
@@ -545,11 +574,12 @@ Insumo para la especificación de independencia modular. Cada uno es un contrato
 | **Adquisiciones** | Presupuestos → Adq | Consulta de disponibilidad; emisión y estado de CDP **con la imputación resuelta** (cuenta × nodo de gestión); preobligación asociada a SOLPED. Adquisiciones la recibe como **proyección de solo lectura** en `ProcurementCase` (D-6, P-1) | **Alta** — costura principal del sistema |
 | **Adquisiciones** | Adq → Presupuestos | Solicitud de CDP con monto, SOLPED y —opcionalmente— **imputación propuesta no vinculante**; evento de resolución de compra que dispara obligación | Alta |
 | **Adquisiciones** | Presupuestos → Adq | Catálogo de nodos de gestión hoja del ejercicio (`listManagementNodes`), cacheado, para poblar los campos opcionales de la SOLPED. Un solo endpoint jerárquico, no uno por nivel (D-6) | Media |
+| **Adquisiciones** | ambas direcciones | **Cardinalidad de la imputación:** un `management_node_id` por SOLPED, un `budget_account_id` por línea. El CDP resulta en una línea por cuenta distinta contra el mismo nodo (D-6). Debe contrastarse contra la ficha 1-solped de Adquisiciones | Alta |
 | **Contabilidad** | Presupuestos → Cont | Devengo presupuestario que origina asiento; apertura del ejercicio (traspaso de saldos, Deuda Flotante). Atomicidad: ADR / **C-1** | **Alta** |
 | **Contabilidad** | Cont → Presupuestos | Confirmación de imputación; saldos de cierre del ejercicio anterior | Alta |
 | **Tesorería** | Tes → Presupuestos | Ingresos efectivamente percibidos vs. estimados; **ingresos propios percibidos del año anterior (base del 42% art. 67)**; pagos que cierran la cadena | **Alta** |
 | **RRHH / Remuneraciones** | RRHH → Presupuestos | Dotación, jubilaciones previstas, concursos, honorarios; **base de cálculo de los límites 42% y 20%** | **Alta** |
-| **RRHH / Remuneraciones** | Presupuestos → RRHH | **Consulta de disponibilidad presupuestaria bloqueante** (contratación, cometidos, HE) y **emisión de CDP de gasto en personal** (p. ej. proceso 3.2.4). Contrato no previsto en v≤0.10 — ver **R-1** | **Crítica — bloqueante** |
+| **RRHH / Remuneraciones** | Presupuestos → RRHH | **Consulta de disponibilidad presupuestaria bloqueante** (contratación, cometidos, HE) y **emisión de CDP de gasto en personal** (p. ej. proceso 3.2.4). **Única puerta de entrada del subtítulo 21 a la cadena de compromiso**: el art. 3 letra a) de la Ley 19.886 excluye personal y honorarios del ámbito de Adquisiciones (D-6). Contrato no previsto en v≤0.10 — ver **R-1** | **Crítica — bloqueante** |
 | **Salud / Educación** | Bidireccional | Presupuestos separados con consolidación y reporte propios | Media |
 | **SINIM / CGR** | Presupuestos → externo | BEP, informes CGR, cálculo de déficit, informes trimestrales del art. 29 d) | Alta (obligación legal) |
 
@@ -782,6 +812,8 @@ Formato ficha idéntico al usado en Adquisiciones: actores, precondiciones, paso
 | **P-26** | Tabla de contracuentas por (ejercicio, área, cuenta) como contrato Presupuestos→Contabilidad (§5.4) | F2 / F4 | Equipo + Contabilidad | Abierto |
 | **P-27** | Semántica heterogénea del nivel `programa` entre municipios (§5.3): ¿se tipifica, se normaliza o se deja libre? | F1 / F3 | DM + municipios piloto | Abierto |
 | **P-28** | Validar D-6 con DM: la solicitud de campos programa/proyecto/actividad en SOLPED se resuelve de otra forma | F0 / F1 | DM + Adquisiciones | Abierto |
+| **P-29** | Reasignación entre nodos de gestión con la misma cuenta: ¿es modificación presupuestaria? (Anexo B §B.4) | F1 / F3 | Jurídica + DM · candidato GP-4 | Abierto |
+| **P-30** | Trazabilidad de convenios: el ingreso se traza por la cuenta y el gasto por el nodo, sin identificador común (Anexo B §B.2) | F2 / F4 | DM + Contabilidad | Abierto |
 
 Cada pendiente abierto se documenta abajo con: contexto, pregunta a resolver, opciones candidatas, decisión por defecto si no hay respuesta a tiempo, criterio de cierre e insumos.
 
@@ -1134,6 +1166,16 @@ Todos disponibles en el índice de SINIM (Anexo A.2). El Oficio DCF 3/19, revisa
 
 **Default:** opción 1, con el área como único nivel obligatorio.
 
+**Ampliación de v0.15 — `ACTIVITY` es categoría, no ocurrencia.** El Anexo B parte de un caso real de DIDECO que declara *diez actividades a lo largo del año*. No son diez nodos:
+
+> El nivel `ACTIVITY` es una **categoría de imputación**, no una ocurrencia en el tiempo. Si el mismo taller se repite ocho veces, es **un nodo con ocho ejecuciones**. Si son actividades distintas con presupuesto propio, son nodos distintos.
+
+Las diez actividades declaradas se modelan como **tres nodos**: talleres mensuales (una categoría, ocho ejecuciones), feria gastronómica y ceremonia de cierre.
+
+Sin esta invariante explícita en la especificación, los municipios crearán un nodo por ocurrencia. El resultado es predecible porque ya está en los datos: nodos que solo existen una vez, con el ejercicio embebido en el nombre —`VINCULOS ACOMPAÑAMIENTO 19`, `CONVENIO HABITABILIDAD 2024` en Las Cabras— y comparabilidad interanual nula. Es el mismo problema que P-24 intenta resolver por el lado del versionado; esta invariante lo ataca por el lado de la definición.
+
+La regla debe quedar en la especificación del árbol y en la ayuda contextual del mantenedor, no solo en el modelo de datos.
+
 **Criterio de cierre.** Validación con al menos dos municipios piloto de que ninguna rama requiere un sexto nivel; enum `level` congelado antes de F3; regla de obligatoriedad documentada por nivel.
 
 **Insumos.** §5.3; §6.1; planillas de Las Cabras y María Pinto; Manual V21 (columnas de área de gestión).
@@ -1288,6 +1330,7 @@ Consecuencia sobre las opciones: la opción 2 (captura obligatoria) queda descar
 1. **¿De qué municipio es ese vocabulario?** Los cinco en convenio usan esos niveles con semánticas distintas —organigrama en Villarrica, objeto de gasto en María Pinto, convenio en Quilaco—. Si el requerimiento viene de uno en particular, el modelo genérico puede no ser lo que esperan ver en pantalla.
 2. **¿Qué problema resolvía tener los campos en la SOLPED?** Si es trazabilidad de para qué se pide, lo cubre el campo de propósito. Si es control previo de disponibilidad por programa, es otra cosa y requiere diseño propio.
 3. **¿Hay conformidad con que la clasificación la haga la DAF?** Es un cambio de carga de trabajo entre unidades, no solo de diseño.
+4. **¿Cómo operan hoy la compra centralizada?** La regla de un nodo por SOLPED (D-6, punto 6) supone que la adquisición de bodega para todo el municipio se imputa al nodo de abastecimiento, y que la distribución posterior a cada dirección no se traza presupuestariamente. Es coherente con que Villarrica tenga `BODEGA MUNICIPAL` como subprograma propio, pero hay que confirmarlo antes de cerrar la regla.
 
 **Opciones.**
 1. **D-6 tal cual**, con la SOLPED espejando la imputación del CDP de forma opcional. Recomendada.
@@ -1302,14 +1345,75 @@ Consecuencia sobre las opciones: la opción 2 (captura obligatoria) queda descar
 
 ---
 
+### P-29 — Reasignación entre nodos de gestión con la misma cuenta
+
+**Contexto.** Anexo B §B.3. Un proyecto mueve $500.000 desde la actividad *Talleres* hacia la actividad *Feria*, ambas imputadas a la misma cuenta `215-22-01-001`. Efecto sobre cada eje:
+
+| | Antes | Después |
+|---|---|---|
+| Monto de la cuenta `22-01-001` | $4.800.000 | $4.800.000 — **sin cambio** |
+| Área 4 en el BEP | igual | igual — **sin cambio** |
+| Nodo `Talleres` | $2.400.000 | $1.900.000 |
+| Nodo `Feria` | $1.800.000 | $2.300.000 |
+
+Ni el clasificador ni el reporte externo registran nada. El atributo `requires_council_agreement` (§4.1) está definido **por cuenta**, y aquí ninguna cuenta cambia de monto: el gateway del proceso 27 no se dispara.
+
+Pero el art. 82 exige que el Concejo apruebe presupuestos **por programa**, y lo que cambió es exactamente la distribución programática.
+
+**Pregunta.** ¿Una reasignación entre nodos del eje de gestión, sin alteración de montos por cuenta, constituye modificación presupuestaria? Y si lo es, ¿por decreto o con acuerdo del Concejo?
+
+**El problema de fondo.** Todo el criterio de §4.1 —incluida la fuente autoritativa, el Manual de Imputaciones— está construido sobre el eje de la cuenta y es **estructuralmente ciego al eje de gestión**. No es que responda que no: es que la pregunta no está formulada en su vocabulario. Lo mismo ocurre con el instructivo de inversiones, que tipifica por operación pero también sobre cuentas del ST 31.
+
+**Opciones.**
+1. **No es modificación.** Reasignación interna, resuelta por acto administrativo simple con registro. Coherente con que ningún reporte externo cambie; deja sin control una redistribución programática que el Concejo aprobó.
+2. **Es modificación por decreto alcaldicio**, con obligación de informar en el reporte trimestral del art. 29 d). Punto medio; requiere fundamento para no exigir acuerdo.
+3. **Requiere acuerdo del Concejo** cuando cruza nodos de distinto programa, y decreto cuando ocurre dentro del mismo programa. Coherente con la lógica del art. 82; sin respaldo normativo explícito hoy.
+
+**Default mientras no haya pronunciamiento:** opción 2, con el movimiento registrado y trazable, y el criterio **configurable por municipio** hasta que se consolide (§7.5, clase de respaldo de órgano rector).
+
+**Advertencia de §7.5.** Resolver esto internamente sería crear interpretación normativa de hecho, atribución que corresponde a Contraloría. Es un **candidato natural a GP-4**: el criterio debe escalarse a consulta, no cerrarse por decisión de equipo. Mismo patrón que la advertencia asociada a P-3.
+
+**Criterio de cierre.** Consulta formulada a CGR por la vía de GP-4, o dictamen existente que resuelva la materia; hasta entonces, parámetro configurable con valor por defecto marcado y `legal_reference` apuntando al art. 82 y al `NormativeRuling` cuando exista.
+
+**Insumos.** Anexo B §B.3 y §B.4; §4.1; art. 82 LOCM; proceso 27; §7.4 (taxonomía de triage, categoría 2: norma ambigua); P-3.
+
+---
+
+### P-30 — Trazabilidad de convenios y financiamiento externo
+
+**Contexto.** Anexo B §B.2. Un programa de DIDECO recibe $6.000.000 por convenio con SENAMA y gasta contra varios nodos del eje de gestión. Pero **las cuentas de ingreso no llevan nodo de gestión** —0 de 840 filas en los cinco municipios (§5.3)—, de modo que los dos lados del convenio se trazan por ejes distintos:
+
+- **Ingreso:** por la **apertura local del sexto nivel** de la cuenta `115`. Es lo que los municipios ya hacen: Quilaco tiene `FONDO MINERO`, `FONDOS FET` y hasta iniciativas nominadas como `REPARACIONES ESCUELA G-1085` y `VEREDAS LONCORUCA` abiertas en el nivel 5 de cuentas de ingreso (Anexo A.6).
+- **Gasto:** por el conjunto de nodos del eje de gestión del programa.
+
+**No existe entidad que una ambos lados.** Cualquier rendición a la entidad convenante exige reconstruir la relación a mano.
+
+**Pregunta.** ¿Cómo se modela la relación entre una fuente de financiamiento y el gasto que financia, dado que cada lado vive en un eje distinto?
+
+**Opciones.**
+1. **Entidad `FundingSource`** transversal, referenciada opcionalmente desde la cuenta de ingreso y desde la línea de gasto. Resuelve la rendición y habilita el reporte por convenio; agrega una tercera dimensión al modelo y carga de captura.
+2. **Convención de nomenclatura** en la apertura local de ambos ejes: mismo sufijo en la cuenta de ingreso y en el nodo de gestión. Cero cambio de modelo; frágil, dependiente de disciplina, y ya sabemos que las glosas divergen (Anexo A.6).
+3. **No modelarlo.** La rendición se arma fuera del sistema, como hoy. Coherente con no inventar requisitos; deja sin cubrir una obligación real de los municipios frente a las entidades convenantes.
+
+**Default:** opción 1 como dimensión **opcional**, activable cuando el municipio opera convenios con rendición.
+
+**A verificar antes de decidir.** Si el financiamiento es de **iniciativas de inversión**, la posición 12 del Código INI ya codifica el tipo de financiamiento (0 institucional, 1 gobierno central, 2 regional, 3 mixto — §5.2). Hay que determinar si ese mecanismo se extiende a convenios de gasto corriente o si es exclusivo del ST 31, antes de crear una entidad paralela.
+
+**Criterio de cierre.** Inventario con DM de las obligaciones de rendición que efectivamente enfrentan los municipios; decisión sobre `FundingSource`; contraste con el mecanismo del Código INI; contrato de reporte de rendición si procede.
+
+**Insumos.** Anexo B §B.2 y §B.4; §5.2 (Código INI, posición 12); §5.3; Anexo A.6; planes de cuentas de Quilaco y Cochamó.
+
+---
+
 ### Orden sugerido de resolución
 
 ```
 F0:  P-1, P-4, P-28 (comunicación a DM)
-F1:  P-8, P-11, P-12, P-17, P-21, P-22, P-25, P-27, (P-10 inicia con RRHH)
+F1:  P-8, P-11, P-12, P-17, P-21, P-22, P-25, P-27, P-29 (consulta GP-4), (P-10 inicia con RRHH)
      · P-9 cerrado en v0.5; P-3 parcial en v0.6
-F2:  P-5, P-6, P-23, P-24, P-26
-F3:  P-3, P-7, P-10 (cierre), P-21 (cierre), P-27 (cierre)
+F2:  P-5, P-6, P-23, P-24, P-26, P-30
+F3:  P-3, P-7, P-10 (cierre), P-21 (cierre), P-27 (cierre), P-29 (cierre)
+     · alcance de D-6 en formulación: quién clasifica la ficha (antes de fichas MP-1)
 F4:  cierre formal P-1 en modelo de Adquisiciones; ContingencyRecord (P-15);
      ManagementNode y OrganizationalUnit (P-23, P-24); contrato de contracuentas (P-26)
 F5:  P-13, P-14 (track GP), P-15 (cierre), P-22 (cierre en contrato de reporte)
@@ -1337,6 +1441,7 @@ F5:  P-13, P-14 (track GP), P-15 (cierre), P-22 (cierre en contrato de reporte)
 | **Fusionar el nivel `PROJECT` del eje de gestión con `InvestmentInitiative` del ST 31** | **Alto — acopla el eje de gestión con el clasificador y arrastra identificación SNI a líneas que no son de inversión** | Separación explícita en D-5 y §5.3, con vínculo opcional en `BudgetLine`. La colisión de nombres (ítem 31.02 "Proyectos", posición 7 del Código INI) hace el error probable: debe quedar advertido en la ficha de modelo de F4 |
 | **Modelar el eje de gestión como columnas fijas** | Medio-alto — reproduce el relleno con placeholders ya observado (114 de 260 líneas en Las Cabras) y contamina toda agregación | D-5: árbol recursivo con profundidad variable; vista aplanada como proyección de solo lectura con regla única (P-22) |
 | **Especificar el eje de gestión solo hasta donde llega el BEP** | Medio-alto — el BEP reporta únicamente el área; la imputación real ocurre cuatro niveles más abajo | §6.1: el contrato de reporte es piso en magnitudes, no en dimensionalidad. Verificar contra datos municipales reales, no contra el formato de reporte |
+| **El criterio de modificación presupuestaria es ciego al eje de gestión** | **Medio-alto — toda la regla de §4.1 está construida sobre cuentas; una redistribución programática completa puede ejecutarse sin disparar ningún control** | P-29, escalado por GP-4. Mientras tanto, registro trazable del movimiento y criterio configurable con valor por defecto marcado |
 | **Cuello de botella de clasificación en la DAF** | Medio-alto — D-6 traslada la imputación a la DAF; en municipios con equipos de finanzas de tres personas y cientos de SOLPED al año, el paso puede convertirse en el limitante del ciclo de compra | Pre-sugerencia de imputación derivada del mapeo unidad → nodo y del histórico de divergencias (P-23). Medir el tiempo del paso en los pilotos antes de generalizar. No se mitiga relajando la segregación |
 | **Asumir que el nivel `programa` significa lo mismo en todos los municipios** | **Alto — en Villarrica es el organigrama, en María Pinto el objeto de gasto, en Quilaco el convenio. Un validador o un reporte nacional que asuma una semántica produce resultados sin sentido** | Tipificación opcional por nodo (P-27) y ninguna regla de negocio que dependa de la semántica del nivel sin que el municipio la haya declarado |
 | **Dimensionar el modelo sobre un municipio promedio** | Medio-alto — el rango real va de Cochamó (un área, un programa, ningún subprograma) a Villarrica (224 programas, uno con 37 subprogramas) | Probar el modelo contra los dos extremos, no contra el caso medio. Ningún nivel obligatorio salvo el área |
@@ -1565,6 +1670,7 @@ Son anomalías menores en sí mismas, pero establecen el requisito: las bases de
 - Dictamen CGR N° 60.449, de 19-XII-2008 — verificado en fuente primaria; ver §4.2
 - [SINIM — Sistema Nacional de Información Municipal](https://www.sinim.gov.cl/)
 - Anexo A de este plan — jerarquía clasificador / plan de cuentas / puente SUBDERE
+- [`anexo-b_ciclo-presupuestario-ejemplos.md`](anexo-b_ciclo-presupuestario-ejemplos.md) — ciclo presupuestario completo sobre dos casos trabajados; origen de P-29, P-30, la invariante de `ACTIVITY` y el alcance de D-6
 - **Datos de los cinco municipios en convenio** — evidencia primaria del eje de gestión, del plan de cuentas local y de las contracuentas contables:
   - *Las Cabras* (v0.12): plan de cuentas de ingresos 2026 (228 cuentas) y presupuesto por área de gestión 2026 (260 líneas, 53 combinaciones)
   - *María Pinto* (v0.12): cuentas de ingreso y gasto y presupuesto por área de gestión 2026 (285 + 549 cuentas, 620 líneas, 62 combinaciones)

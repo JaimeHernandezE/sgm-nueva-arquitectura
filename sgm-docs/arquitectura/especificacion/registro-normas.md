@@ -48,11 +48,11 @@ Registro centralizado de normas citadas en el corpus `sgm-docs`. Prefijo **N-nn*
 
 | ID | Forma canónica | Tipo | Verificación | Apariciones (ruta) | Notas / artículo si el corpus lo dice |
 |---|---|---|---|---|---|
-| N-01 | Ley 15.076 | Ley | No verificada | `modulos/presupuestos/plan-de-trabajo.md` §4 | Componentes remuneratorios (cementerios / honorarios médicos en cuadro SUBDERE) |
-| N-02 | Ley 18.695 (LOCM) | Ley | Verificada en fuente (arts. citados en Nota-sobre-rentas) | `modulos/presupuestos/plan-de-trabajo.md` §4; `arquitectura/decisiones/Nota-sobre-rentas.md`; planes Contabilidad, Tesorería, RRHH; `musts-arquitectura.md`; `estandar-pruebas.md`; `alcance-minimo-modulos-adyacentes.md`; `2026-07-patrones-transversales-corpus.md` | art. 65 a)/c), 67, 81, 82 a), 29 c)/d), 21 b)/c), 63 j) según planes §4 / Nota-sobre-rentas. Alias documental: **N-36** |
-| N-03 | Ley 18.883 | Ley | No verificada | `modulos/rrhh/plan-de-trabajo-rrhh.md` §4; `modulos/presupuestos/plan-de-trabajo.md` §4; `alcance-minimo-modulos-adyacentes.md` | art. 2 — cupo contrata ≤ 20 % remuneraciones planta |
-| N-04 | Ley 19.070 | Ley | No verificada | `modulos/rrhh/plan-de-trabajo-rrhh.md`; `modulos/presupuestos/plan-de-trabajo.md` §4 | Estatuto docente; componentes remuneratorios |
-| N-05 | Ley 19.378 | Ley | No verificada | `modulos/rrhh/plan-de-trabajo-rrhh.md`; `modulos/presupuestos/plan-de-trabajo.md` §4 | Estatuto atención primaria; componentes remuneratorios |
+| N-01 | Ley 15.076 | Ley | No verificada | `modulos/presupuestos/plan-de-trabajo_presupuestos.md` §4 | Componentes remuneratorios (cementerios / honorarios médicos en cuadro SUBDERE) |
+| N-02 | Ley 18.695 (LOCM) | Ley | Verificada en fuente (arts. citados en Nota-sobre-rentas) | `modulos/presupuestos/plan-de-trabajo_presupuestos.md` §4; `arquitectura/decisiones/Nota-sobre-rentas.md`; planes Contabilidad, Tesorería, RRHH; `musts-arquitectura.md`; `estandar-pruebas.md`; `alcance-minimo-modulos-adyacentes.md`; `2026-07-patrones-transversales-corpus.md` | art. 65 a)/c), 67, 81, 82 a), 29 c)/d), 21 b)/c), 63 j) según planes §4 / Nota-sobre-rentas. Alias documental: **N-36** |
+| N-03 | Ley 18.883 | Ley | No verificada | `modulos/rrhh/plan-de-trabajo-rrhh.md` §4; `modulos/presupuestos/plan-de-trabajo_presupuestos.md` §4; `alcance-minimo-modulos-adyacentes.md` | art. 2 — cupo contrata ≤ 20 % remuneraciones planta |
+| N-04 | Ley 19.070 | Ley | No verificada | `modulos/rrhh/plan-de-trabajo-rrhh.md`; `modulos/presupuestos/plan-de-trabajo_presupuestos.md` §4 | Estatuto docente; componentes remuneratorios |
+| N-05 | Ley 19.378 | Ley | No verificada | `modulos/rrhh/plan-de-trabajo-rrhh.md`; `modulos/presupuestos/plan-de-trabajo_presupuestos.md` §4 | Estatuto atención primaria; componentes remuneratorios |
 | N-06 | Ley 19.799 | Ley | No verificada | `estandar-firma-electronica.md`; `seguridad.md`; `principios-no-negociables.md`; Adq `1-solped.md`, `2-modalidad-compra.md`, `5-pago.md`; LP `3-resolucion-compra.md` | Documentos electrónicos y firma electrónica |
 | N-07 | Ley 19.880 | Ley | No verificada | `brechas-estandarizacion-ntdee-pisee.md`; `plataforma/notificaciones/matriz-evento-canal.md` | Procedimiento administrativo |
 | N-08 | Ley 19.883 | Ley | No verificada | `modulos/rrhh/plan-de-trabajo-rrhh.md` | Citada en plan RRHH |
@@ -70,17 +70,17 @@ Registro centralizado de normas citadas en el corpus `sgm-docs`. Prefijo **N-nn*
 | N-20 | DS N° 7/2023 | DS/Decreto | No verificada | `seguridad.md`; `principios-no-negociables.md`; `pendientes.md` (X-21) | Obligaciones → controles en bases (X-21) |
 | N-21 | DS N° 10/2023 | DS/Decreto | No verificada | `seguridad.md`; `principios-no-negociables.md`; `brechas-estandarizacion-ntdee-pisee.md`; `nodo-integracion-subdere.md` | Relacionado NTDEE / estandarización |
 | N-22 | DS N° 12/2023 | DS/Decreto | No verificada | `seguridad.md`; `principios-no-negociables.md`; `brechas-estandarizacion-ntdee-pisee.md`; `nodo-integracion-subdere.md` | Relacionado PISEE / interoperabilidad |
-| N-23 | Decreto 854/2004 | DS/Decreto | No verificada | `modulos/presupuestos/plan-de-trabajo.md` §4 | Clasificador presupuestario (mod. N-25) |
+| N-23 | Decreto 854/2004 | DS/Decreto | No verificada | `modulos/presupuestos/plan-de-trabajo_presupuestos.md` §4 | Clasificador presupuestario (mod. N-25) |
 | N-24 | DS N° 661/2024 | DS/Decreto | No verificada | `2-modalidad-compra.md` §2.1; CM `3-resolucion-compra-convenio-marco v2.md`; wireframe `31-evaluacion-umbral.md` | Reglamento Ley 19.886; art. 90 Gran Compra (corpus) |
-| N-25 | Decreto 1227/2024 | DS/Decreto | No verificada | `modulos/presupuestos/plan-de-trabajo.md` §4 | Modifica clasificador (información presupuestaria 2026) |
-| N-26 | Resolución CGR N° 3/2020 | Resolución | No verificada | `modulos/contabilidad/plan-de-trabajo-contabilidad.md` §4; `modulos/presupuestos/plan-de-trabajo.md` (v0.9, Anexo A); `alcance-minimo-modulos-adyacentes.md` | NICSP-CGR Sector Municipal; vigente desde 1-I-2021; supersede Oficio 36.640/2007 en relato del corpus |
-| N-27 | Dictamen CGR N° 60.449/2008 | Dictamen | Verificada en fuente | `modulos/presupuestos/plan-de-trabajo.md` §4; `modulos/rrhh/plan-de-trabajo-rrhh.md`; `2026-07-patrones-transversales-corpus.md` | SECPLA / modificaciones presupuestarias (corpus §4 Presupuestos) |
+| N-25 | Decreto 1227/2024 | DS/Decreto | No verificada | `modulos/presupuestos/plan-de-trabajo_presupuestos.md` §4 | Modifica clasificador (información presupuestaria 2026) |
+| N-26 | Resolución CGR N° 3/2020 | Resolución | No verificada | `modulos/contabilidad/plan-de-trabajo-contabilidad.md` §4; `modulos/presupuestos/plan-de-trabajo_presupuestos.md` (v0.9, Anexo A); `alcance-minimo-modulos-adyacentes.md` | NICSP-CGR Sector Municipal; vigente desde 1-I-2021; supersede Oficio 36.640/2007 en relato del corpus |
+| N-27 | Dictamen CGR N° 60.449/2008 | Dictamen | Verificada en fuente | `modulos/presupuestos/plan-de-trabajo_presupuestos.md` §4; `modulos/rrhh/plan-de-trabajo-rrhh.md`; `2026-07-patrones-transversales-corpus.md` | SECPLA / modificaciones presupuestarias (corpus §4 Presupuestos) |
 | N-28 | Dictamen CGR N° 11.365/2006 | Dictamen | Pendiente de verificación | `modulos/rrhh/plan-de-trabajo-rrhh.md` §4 (R-3) | Calificación anual — no usar como validador antes de R-3 |
 | N-29 | Oficio CGR N° 3.899/2018 | Oficio | Pendiente de verificación | `modulos/contabilidad/plan-de-trabajo-contabilidad.md` §4 (C-6) | EE.FF.; vigencia post N-26 dudosa en corpus |
-| N-30 | Oficio CGR N° 36.640/2007 | Oficio | No verificada | `modulos/contabilidad/plan-de-trabajo-contabilidad.md`; `modulos/presupuestos/plan-de-trabajo.md` | Corpus: superado por N-26 |
-| N-31 | Oficio N° 32.228 | Oficio | No verificada | `modulos/presupuestos/plan-de-trabajo.md` | Año omitido en varias citas del corpus |
+| N-30 | Oficio CGR N° 36.640/2007 | Oficio | No verificada | `modulos/contabilidad/plan-de-trabajo-contabilidad.md`; `modulos/presupuestos/plan-de-trabajo_presupuestos.md` | Corpus: superado por N-26 |
+| N-31 | Oficio N° 32.228 | Oficio | No verificada | `modulos/presupuestos/plan-de-trabajo_presupuestos.md` | Año omitido en varias citas del corpus |
 | N-32 | Directiva N° 15 ChileCompra | Directiva/marco | No verificada | CM `3-resolucion-compra-convenio-marco v2.md` §3.1/§3.3; wireframe `33-intencion-gran-compra.md`; `modelo-datos/entidades-adquisiciones.md` | Plazo 10 días corridos intención Gran Compra |
-| N-33 | NICSP | Directiva/marco | No verificada | `modulos/contabilidad/plan-de-trabajo-contabilidad.md`; `modulos/presupuestos/plan-de-trabajo.md`; `alcance-minimo-modulos-adyacentes.md`; `plan-general.md` | Marco contable; anclado a N-26 en Sector Municipal |
+| N-33 | NICSP | Directiva/marco | No verificada | `modulos/contabilidad/plan-de-trabajo-contabilidad.md`; `modulos/presupuestos/plan-de-trabajo_presupuestos.md`; `alcance-minimo-modulos-adyacentes.md`; `plan-general.md` | Marco contable; anclado a N-26 en Sector Municipal |
 | N-34 | NTDEE | Directiva/marco | No verificada | `brechas-estandarizacion-ntdee-pisee.md`; `nodo-integracion-subdere.md`; `seguridad.md`; `integracion-docdigital.md`; `principios-no-negociables.md`; `pendientes.md`; `matriz-evento-canal.md` | Norma técnica de documentos electrónicos |
 | N-35 | PISEE | Directiva/marco | No verificada | `brechas-estandarizacion-ntdee-pisee.md`; `nodo-integracion-subdere.md`; `seguridad.md`; `principios-no-negociables.md`; `pendientes.md`; `glosario-siglas.md`; `2026-07-eliminacion-odoo.md` | Plataforma de interoperabilidad |
 | N-36 | LOCM (acrónimo) | Directiva/marco | Verificada en fuente (vía N-02) | Mismas que N-02 | **Alias de N-02.** Preferir N-02 en altas nuevas; conservar N-36 solo por compatibilidad con el conteo §1.3 del inventario |
@@ -99,7 +99,7 @@ Para enlaces markdown: `#n-01` … `#n-36` (minúsculas, guion). Ejemplo: [`N-09
 
 | ID | Hecho que el corpus declara verificado | Archivo ancla |
 |---|---|---|
-| N-27 | Dictamen CGR N° 60.449/2008 (y corrección de cita del levantamiento) | `modulos/presupuestos/plan-de-trabajo.md` |
+| N-27 | Dictamen CGR N° 60.449/2008 (y corrección de cita del levantamiento) | `modulos/presupuestos/plan-de-trabajo_presupuestos.md` |
 | N-02 / N-36 | art. 65 c) LOCM (y hechos conexos en Nota-sobre-rentas; art. 24 DL 3.063 no tiene fila propia aún) | `arquitectura/decisiones/Nota-sobre-rentas.md` |
 
 El resto de filas **no** declara verificación en fuente primaria en el texto leído al sembrar este registro. Normas citadas fuera de esta tabla (p. ej. DL 1.263, DL 3.063) deben **darse de alta** al tocarse de nuevo.

@@ -205,6 +205,8 @@
 
 **Detalle:** El formulador de DAF Finanzas **clasifica** la SOLPED (imputación **cuenta × nodo de gestión**, D-5/D-6) y **verifica** disponibilidad (QA ítem 8 P1). Es el paso de autoridad presupuestaria previo al CDP: la unidad solicitante solo pudo **proponer** en 1.1; aquí se **resuelve**. Prefill desde `proposed_management_node_id` / `proposed_budget_line_id` si existen; la DAF puede cambiarlos. Si no hay propuesta, puede aplicarse pre-sugerencia por unidad destino (**[PENDIENTE P-23]**). Si lo resuelto diverge de lo propuesto, se registra `imputation_diverged` (no es error; alimenta P-23). Muestra trazabilidad de saldo sobre la imputación **resuelta** y confirma o rechaza con justificación. Quien clasifica/verifica aquí **no** es quien firma el CDP (segregación QA ítem 9).
 
+> **[PENDIENTE P-28]** — Presupuestos v0.15 (Anexo B): una SOLPED puede resolverse en **varias imputaciones** (CDP con líneas). El corpus Adq modela hoy **una** pareja `management_node_id` × `budget_line_id`; el rediseño multi-línea queda pendiente de validación DM / contrato.
+
 **Entidad(es) y campos:**
 - `PurchaseRequest.status` (enum, **obligatorio** — permanece en `pending_finance` hasta completar 1.6)
 - Contexto SOLPED (solo lectura): `title`, `justification`, `destination_unit`, propuestas `proposed_management_node_id` / `proposed_budget_line_id`
@@ -238,7 +240,7 @@
 - Rechazo DAF con justificación → `PurchaseRequest` vuelve al solicitante; camino optativo a 1.4 (línea punteada BPMN).
 - Divergencia propuesta vs resuelto → se confirma igual; queda `imputation_diverged = true`.
 
-> ⚠ **Pendiente de definir:** gateway de disponibilidad — campo calculado `available_balance` en `BudgetLine`; pre-sugerencia unidad→nodo (**[PENDIENTE P-23]**); validación `DETALLE` (**[PENDIENTE P-25]**).
+> ⚠ **Pendiente de definir:** gateway de disponibilidad — campo calculado `available_balance` en `BudgetLine`; pre-sugerencia unidad→nodo (**[PENDIENTE P-23]**); validación `DETALLE` (**[PENDIENTE P-25]**); CDP multi-línea vs modelo 1:1 actual (**[PENDIENTE P-28]** / Pres v0.15).
 
 ---
 
