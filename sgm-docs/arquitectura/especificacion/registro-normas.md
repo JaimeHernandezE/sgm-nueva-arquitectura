@@ -69,7 +69,7 @@ Registro centralizado de normas citadas en el corpus `sgm-docs`. Prefijo **N-nn*
 | N-19 | DS N° 4/2020 | DS/Decreto | No verificada | `seguridad.md`; `principios-no-negociables.md` | Citado en marco de seguridad / principios |
 | N-20 | DS N° 7/2023 | DS/Decreto | No verificada | `seguridad.md`; `principios-no-negociables.md`; `pendientes.md` (X-21) | Obligaciones → controles en bases (X-21) |
 | N-21 | DS N° 10/2023 | DS/Decreto | No verificada | `seguridad.md`; `principios-no-negociables.md`; `brechas-estandarizacion-ntdee-pisee.md`; `nodo-integracion-subdere.md`; `especificacion/integraciones-terceros.md` | Relacionado NTDEE / estandarización |
-| N-22 | DS N° 12/2023 | DS/Decreto | No verificada | `seguridad.md`; `principios-no-negociables.md`; `brechas-estandarizacion-ntdee-pisee.md`; `nodo-integracion-subdere.md`; `especificacion/integraciones-terceros.md` | Relacionado PISEE / interoperabilidad |
+| N-22 | DS N° 12/2023 | DS/Decreto | No verificada | `seguridad.md`; `principios-no-negociables.md`; `brechas-estandarizacion-ntdee-pisee.md`; `nodo-integracion-subdere.md`; `especificacion/integraciones-terceros.md` | Relacionado red de interoperabilidad / D.S. N° 12/2023 |
 | N-23 | Decreto 854/2004 | DS/Decreto | No verificada | `modulos/presupuestos/plan-de-trabajo_presupuestos.md` §4 | Clasificador presupuestario (mod. N-25) |
 | N-24 | DS N° 661/2024 | DS/Decreto | No verificada | `2-modalidad-compra.md` §2.1; CM `3-resolucion-compra-convenio-marco v2.md`; wireframe `31-evaluacion-umbral.md` | Reglamento Ley 19.886; art. 90 Gran Compra (corpus) |
 | N-25 | Decreto 1227/2024 | DS/Decreto | No verificada | `modulos/presupuestos/plan-de-trabajo_presupuestos.md` §4 | Modifica clasificador (información presupuestaria 2026) |
