@@ -26,7 +26,7 @@ Sin dependencias de licenciamiento propietario que reintroduzcan lock-in. Compon
 - **DS N°7/2023** — ciberseguridad: gestión de incidentes, coordinación CSIRT, estándares mínimos de plataformas del Estado (detalle en [`seguridad.md`](../especificacion/seguridad.md)).
 - **DS N°1/2015 (Ley N°20.422)** — accesibilidad del frontend base. **[PENDIENTE X-20]** especificación de accesibilidad no existe aún como documento.
 - **DS N°10/2023 (NTDEE)** — documentos y expedientes electrónicos: metadatos, estructura, formatos, actuaciones, retención y enlaces persistentes. Cumplimiento vía perfiles de mapeo sobre el dominio SGM — ver [`brechas-estandarizacion-ntdee-pisee.md`](../decisiones/brechas-estandarizacion-ntdee-pisee.md).
-- **DS N°12/2023 (NTI / Red PISEE)** — interoperabilidad entre OAE vía nodo y Catálogo; borde PISEE en el core, sin confundir con la API interna — ver [`brechas-estandarizacion-ntdee-pisee.md`](../decisiones/brechas-estandarizacion-ntdee-pisee.md).
+- **DS N°12/2023 (NTI / red de interoperabilidad)** — interoperabilidad entre OAE vía nodo y Catálogo; borde hacia la red de interoperabilidad en el core, sin confundir con la API interna — ver [`brechas-estandarizacion-ntdee-pisee.md`](../decisiones/brechas-estandarizacion-ntdee-pisee.md).
 - **Ley 21.719** (protección de datos personales) — aplicable especialmente a datos de RRHH, proveedores y ciudadanos en módulos futuros (Rentas, JPL).
 - **Ley 19.886** (compras públicas) — tratamiento diferenciado por modalidad de compra (ver `modulos/adquisiciones/`), no un flujo genérico.
 - **Ley 19.799** (firma electrónica) — relevante para integración con FirmaGob/FirmaDigital.
