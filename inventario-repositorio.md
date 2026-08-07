@@ -88,6 +88,8 @@ El resto de normas del corpus **no** declara verificación en fuente primaria en
 
 ### 1.4 Integraciones Estado (deduplicadas)
 
+**Registro canónico:** [`sgm-docs/arquitectura/especificacion/integraciones-terceros.md`](sgm-docs/arquitectura/especificacion/integraciones-terceros.md) — 21 fichas Estado/organismos (Grupo A) + 7 dependencias infra/ecosistema en tabla (Grupo B). Esta tabla §1.4 conserva el índice histórico de **15**; el registro explica la diferencia (organismos adicionales en planes, desglose FCM/TGR/SEM/giradores, NTDEE como marco).
+
 | Sistema | Evidencia en corpus (ejemplos de ruta) |
 |---|---|
 | Mercado Público / ChileCompra | `sgm-docs/arquitectura/especificacion/integracion-mercado-publico.md`; wireframes/fichas Adq |
@@ -154,9 +156,9 @@ Propósito overview Adq: «Todo el ciclo de compras públicas municipales, desde
 
 **Qué pregunta responde:** ¿Qué servicios compartidos, seguridad, API e integraciones debe ofrecer la plataforma con independencia del módulo?
 
-Incluye: `arquitectura/especificacion/*` (11, incluido `estandar-pruebas.md`), `plataforma/*` sustantivo (5), `modelo-datos/entidades-*.md` (2).
+Incluye: `arquitectura/especificacion/*` (12, incluido `estandar-pruebas.md` e `integraciones-terceros.md`), `plataforma/*` sustantivo (5), `modelo-datos/entidades-*.md` (2).
 
-Documentos con más líneas: `estandares-api.md` (328), `plataforma-core.md` (270), `estandar-pruebas.md` (273), `entidades-core.md` (629), `entidades-plataforma.md` (443), `plataforma/contracts.md` (381), `seguridad.md` (162), `integracion-docdigital.md` (181).
+Documentos con más líneas: `estandares-api.md` (328), `plataforma-core.md` (270), `estandar-pruebas.md` (273), `entidades-core.md` (629), `entidades-plataforma.md` (443), `plataforma/contracts.md` (381), `seguridad.md` (162), `integracion-docdigital.md` (181), `integraciones-terceros.md` (registro canónico §1.4).
 
 Estados frecuentes en cabecera: «borrador», «borrador condicionado a X-72», «borrador X-24», «borrador X-06». `estandar-pruebas.md`: borrador julio 2026, no validado con DM.
 
