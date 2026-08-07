@@ -16,7 +16,7 @@
 | **DS N°7/2023** | Ciberseguridad: incidentes, coordinación con CSIRT de Gobierno, estándares mínimos para plataformas del Estado. |
 | **DS N°4/2020 (Ley 21.180)** | Normas técnicas de autenticación e interoperabilidad. |
 | **DS N°10/2023 (NTDEE)** | Documentos y expedientes electrónicos: metadatos, estructura, formatos, actuaciones, retención, enlaces persistentes. Diagnóstico y propuestas en [`brechas-estandarizacion-ntdee-pisee.md`](../decisiones/brechas-estandarizacion-ntdee-pisee.md). |
-| **DS N°12/2023 (NTI / PISEE)** | Interoperabilidad OAE↔OAE vía nodo, Catálogo y Portal PISEE; traza PISEE distinta de auditoría interna. Diagnóstico y propuestas en [`brechas-estandarizacion-ntdee-pisee.md`](../decisiones/brechas-estandarizacion-ntdee-pisee.md). |
+| **DS N°12/2023 (NTI / red de interoperabilidad)** | Interoperabilidad OAE↔OAE vía nodo, Catálogo y Portal PISEE; traza de la red de interoperabilidad distinta de auditoría interna. Diagnóstico y propuestas en [`brechas-estandarizacion-ntdee-pisee.md`](../decisiones/brechas-estandarizacion-ntdee-pisee.md). |
 | **Ley 19.799** | Firma electrónica (FirmaGob/FEA en actos administrativos). |
 
 **[PENDIENTE X-21]** Mapeo detallado de obligaciones DS N°7/2023 → controles exigibles en bases (candidato a asesoría jurídico-técnica).
