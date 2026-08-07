@@ -69,7 +69,7 @@ Sin respuesta no se puede escribir la exigencia contractual con precisión.
 | DocDigital | ¿API máquina-a-máquina (M2M: sistema a sistema) o solo web? (X-72) | Exigencia C11, modos M2M vs asistido, recepción | Gobierno Digital | Consulta institucional |
 | SIAPER | ¿Interfaz M2M o solo portal? (R-2) | Exigencia MR-6 y vía alternativa | CGR / SIAPER | Consulta institucional |
 | Mercado Público | Canal de lectura push vs polling (X-70); sandbox/rate limits a negociar | Texto de borde C7 y SLA de lectura | ChileCompra (+ SUBDERE negociación) | **Ambas** — ChileCompra (canal/sandbox); RFI para resiliencia si MP no responde (X-32) |
-| PISEE | Quién opera el nodo y si el borde entra en v1 (X-61) | Alcance de interoperabilidad OAE en bases | DM / operación; oferta si entra RFI de diseño | Ambas |
+| Red de interoperabilidad (D.S. N° 12/2023) | Quién opera el nodo y si el borde entra en v1 (X-61) | Alcance de interoperabilidad OAE en bases | DM / operación; oferta si entra RFI de diseño | Ambas |
 | Giradores / SEM | Contrato de entrada de órdenes de ingreso (T-1) + feed SEM con auth (T-12) | Exigencia de Caja y superficie M2M | DM / giradores; plataforma | Ambas |
 | SII (cesión) | ¿Existe push/consulta dirigida al Registro de Transferencias? (C-4) | Si las bases exigen automatizar factoring | SII | Consulta institucional |
 
@@ -92,7 +92,7 @@ De las 19 preguntas de mecanismo abiertas (Parte 3.2), el destino se reparte as�
 | Destino | Cantidad |
 |---|---|
 | **Consulta institucional** — solo la responde el organismo | **13** |
-| **Ambas** — un tramo institucional y un tramo de oferta | **3** (Mercado Público, PISEE, SEM to-be) |
+| **Ambas** — un tramo institucional y un tramo de oferta | **3** (Mercado Público, red de interoperabilidad, SEM to-be) |
 | **Consulta al mercado (RFI)** | **3** (NTDEE, bancos, giradores) |
 
 **La fase exploratoria del CPI puede correr en paralelo, pero no destraba las integraciones.** Trece de estas preguntas se resuelven solo escribiendo a un organismo del Estado y sentándose con él, con CPI o sin CPI; las tres **Ambas** siguen exigiendo ese tramo institucional. La consulta al mercado no le puede preguntar al SII si existe un canal hacia el Registro de Transferencias de Créditos.
@@ -118,7 +118,7 @@ La diferencia entre ambos escenarios no es de esfuerzo: es de si existe o no una
 | Mercado Público | ChileCompra / Dirección de Compras |
 | SIAPER / Toma de Razón CGR | CGR / SIAPER |
 | SII (cesión, UTM) | SII |
-| PISEE / nodo | SGD / DM / operación (X-61, X-82) — **sin persona o unidad nominada** |
+| Red de interoperabilidad / nodo | SGD / DM / operación (X-61, X-82) — **sin persona o unidad nominada** |
 | SEM / giradores | DM / giradores — **sin contraparte designada por organismo** |
 | Previred | **sin contraparte designada** |
 | DIPRES | **sin contraparte designada** |
@@ -131,7 +131,7 @@ La diferencia entre ambos escenarios no es de esfuerzo: es de si existe o no una
 | Bancos | **sin contraparte designada** (bancos del municipio) |
 | ClaveÚnica | Operación plataforma SUBDERE; IdP Estado — **sin unidad nominada** |
 
-*Las 10 sin contraparte designada (para el conteo de §1.1):* PISEE; SEM / giradores; Previred; DIPRES; TGR / FCM; COMPIN / Isapre; Registro Deudores; Transparencia / INE / LRE; Bancos; ClaveÚnica.
+*Las 10 sin contraparte designada (para el conteo de §1.1):* red de interoperabilidad; SEM / giradores; Previred; DIPRES; TGR / FCM; COMPIN / Isapre; Registro Deudores; Transparencia / INE / LRE; Bancos; ClaveÚnica.
 
 #### 2. Convenios o habilitaciones por gestionar
 
@@ -140,7 +140,7 @@ La diferencia entre ambos escenarios no es de esfuerzo: es de si existe o no una
 | Habilitación municipal DocDigital | Municipio; config en `TenantIntegrationConfig` (`plataforma-core.md` §7) |
 | Negociación nacional ChileCompra (webhooks, sandbox MP, rate limits) | SUBDERE como activo de plataforma (`integracion-mercado-publico.md`) |
 | Negociación / verificación Gobierno Digital (DocDigital, FirmaGob) | SUBDERE / mesa citada en estándares |
-| Enrolamiento / autorizaciones PISEE | Según X-61; Gestor PISEE citado en brechas |
+| Enrolamiento / autorizaciones de la red de interoperabilidad | Según X-61; Gestor PISEE citado en brechas |
 | Convenio tipo soberanía del dato / acceso ecosistema | Jurídica — X-01, X-15 |
 | Onboarding municipio (ficha + migración) | Flujo SUBDERE — X-50 (aún sin ficha de proceso) |
 
@@ -158,7 +158,7 @@ La diferencia entre ambos escenarios no es de esfuerzo: es de si existe o no una
 - **Plataforma (SUBDERE):** ClaveÚnica OIDC, webhook MP nacional, negociación ChileCompra / Gobierno Digital, catálogos `ExternalProvider` / `DmsAdapter`.
 - **Tenant (municipio):** organismo comprador MP, habilitación DocDigital, `SignatureChain`, bucket propio o DMS, rotación delegada donde aplique.
 
-Sigue abierto: gobernanza exacta del catálogo y rotación (**X-57**), operación del nodo PISEE (**X-61**), proceso real de incorporación (**X-50**).
+Sigue abierto: gobernanza exacta del catálogo y rotación (**X-57**), operación del nodo de la red de interoperabilidad (**X-61**), proceso real de incorporación (**X-50**).
 
 ---
 
@@ -544,30 +544,30 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 
 ---
 
-### A15. PISEE
+### A15. Red de interoperabilidad
 
 | Campo | Contenido |
 |---|---|
-| **Organismo y sistema** | Red de interoperabilidad del Estado (PISEE / NTI) — SGM no es el nodo |
-| **Qué hace SGM con esto** | Consume/publica servicios entre organismos del Estado a través de un nodo PISEE, con traza distinta de la auditoría interna SGM |
+| **Organismo y sistema** | Red de interoperabilidad del Estado (D.S. N° 12/2023 / NTI) — SGM no es el nodo |
+| **Qué hace SGM con esto** | Consume/publica servicios entre organismos del Estado a través de un nodo de la red de interoperabilidad, con traza distinta de la auditoría interna SGM |
 | **Módulos afectados** | Plataforma (borde C-PISEE futuro); consumidores iniciales propuestos (p. ej. consulta expediente) |
 | **Obligatoria por ley o por conveniencia** | Marco **[NORMA N-22]** DS N° 12/2023. Entrada en v1: abierta (X-61 opción diferir) |
-| **Dirección del flujo** | OAE ↔ OAE vía nodo. No privados por PISEE (deslinde en nodo SUBDERE) |
+| **Dirección del flujo** | OAE ↔ OAE vía nodo. No privados por la red de interoperabilidad (deslinde en nodo SUBDERE) |
 | **Estado del mecanismo** | Requisitos NTI documentados desde guías; capacidad SGM: **ausente**. Operación del nodo: **Desconocido** (X-61) |
 | **Convenio o habilitación previa** | Autorizaciones Gestor PISEE / enrolamiento Portal (brechas) |
 | **Ambiente de pruebas del tercero** | Validación nodo — plazos citados en guías de brechas; ambiente SGM: no está en el corpus |
 | **Modo degradado** | Diferir a fase 2 (opción c X-61) |
 | **Consecuencia jurídica de la falla** | Incumplir interoperabilidad exigida si se compromete en bases; si se difiere, no hay falla operativa inmediata |
-| **Plazos legales asociados** | Según guías PISEE citadas en brechas (p. ej. validación) |
+| **Plazos legales asociados** | Según guías de la red de interoperabilidad citadas en brechas (p. ej. validación) |
 | **Quién opera** | (a) nodo SGD municipio o (b) nodo en infra SUBDERE a nombre tenant — sin default (X-61) |
 | **¿Condición de puesta en marcha?** | No, si se difiere fase 2; sí, si las bases lo exigen en v1 |
 | **Datos personales que cruzan** | Según servicio del Catálogo; minimización citada en brechas |
 | **Contraparte institucional** | SGD / DM / operación — sin persona nominada |
 | **Qué hacía el sistema anterior** | Integraciones directas a terceros (patrón a no replicar para OAE↔OAE) |
 | **Pendientes asociados** | X-61, X-82, X-57 |
-| **Destino CPI / consulta** | **Ambas** — Institucional: quién opera el nodo y enrolamiento. **Consulta al mercado (RFI):** «¿Cómo resolverían la integración con múltiples organismos del Estado bajo estándar PISEE sin que SGM sea el nodo?» |
+| **Destino CPI / consulta** | **Ambas** — Institucional: quién opera el nodo y enrolamiento. **Consulta al mercado (RFI):** «¿Cómo resolverían la integración con múltiples organismos del Estado bajo la red de interoperabilidad del D.S. N° 12/2023 sin que SGM sea el nodo?» |
 
-**Riesgo:** prometer PISEE en v1 sin decisión de operación, o omitirlo del RFI y descubrir el costo tarde.
+**Riesgo:** prometer la red de interoperabilidad en v1 sin decisión de operación, o omitirla del RFI y descubrir el costo tarde.
 
 ---
 
@@ -751,7 +751,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 
 ### 3.1 Integraciones sin contraparte designada
 
-Las mismas **10** filas del listado bajo §1.4 punto 1: PISEE; SEM / giradores; Previred; DIPRES; TGR / FCM; COMPIN / Isapre; Registro Deudores Pensiones Alimentos; Transparencia / INE / LRE; Bancos; ClaveÚnica.
+Las mismas **10** filas del listado bajo §1.4 punto 1: red de interoperabilidad; SEM / giradores; Previred; DIPRES; TGR / FCM; COMPIN / Isapre; Registro Deudores Pensiones Alimentos; Transparencia / INE / LRE; Bancos; ClaveÚnica.
 
 ### 3.2 Mecanismos nunca verificados — pregunta exacta y destino CPI
 
@@ -770,7 +770,7 @@ Las mismas **10** filas del listado bajo §1.4 punto 1: PISEE; SEM / giradores; 
 | Registro Civil RMTNP | ¿API, archivo o portal? | Consulta institucional — Registro Civil |
 | Deudores alimentos | ¿Consulta integrable? | Consulta institucional — administrador del Registro |
 | COMPIN/Isapre | ¿Canal de estado de licencias/subsidios? | Consulta institucional (si v1) |
-| PISEE | ¿Quién opera el nodo? / ¿Cómo diseñar borde C-PISEE multi-organismo? | Ambas — DM/SGD + RFI |
+| Red de interoperabilidad | ¿Quién opera el nodo? / ¿Cómo diseñar borde C-PISEE multi-organismo? | Ambas — DM/SGD + RFI |
 | NTDEE | ¿Cómo demostrar matriz + art. 35? | RFI (+ jurídico si interpreta norma) |
 | Giradores | ¿Contrato OI multi-origen? | RFI + inventario DM |
 | SEM to-be | ¿Auth M2M sobre semántica SEM? | Ambas |
