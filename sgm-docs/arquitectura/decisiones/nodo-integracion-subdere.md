@@ -11,15 +11,15 @@
 
 ## 1. De qué se trata
 
-La propuesta en discusión es que SUBDERE disponga de un **nodo de integración** propio. La v1 de este documento lo describía como una capa con tres funciones equivalentes (integrar plataformas SUBDERE entre sí, conectarse a PISEE, exponer datos a municipios y privados). La conversación posterior precisó la jerarquía, y esa precisión ordena todo lo demás:
+La propuesta en discusión es que SUBDERE disponga de un **nodo de integración** propio. La v1 de este documento lo describía como una capa con tres funciones equivalentes (integrar plataformas SUBDERE entre sí, conectarse a la red de interoperabilidad del D.S. N° 12/2023, exponer datos a municipios y privados). La conversación posterior precisó la jerarquía, y esa precisión ordena todo lo demás:
 
 > **La razón de ser distintiva del nodo es habilitar que desarrolladores privados construyan aplicaciones para las municipalidades, integrándose con datos y servicios de SUBDERE.**
 
-La integración interna de plataformas SUBDERE (SEM, SIFIM, SIM y otras) es un beneficio real y un caso de uso legítimo, pero **no es lo que justifica un nodo propio**: para el intercambio entre organismos del Estado ya existe PISEE. Lo que PISEE no puede hacer —y no podrá hacer, por diseño normativo— es dar acceso a un privado.
+La integración interna de plataformas SUBDERE (SEM, SIFIM, SIM y otras) es un beneficio real y un caso de uso legítimo, pero **no es lo que justifica un nodo propio**: para el intercambio entre organismos del Estado ya existe la red de interoperabilidad. Lo que la red de interoperabilidad no puede hacer —y no podrá hacer, por diseño normativo— es dar acceso a un privado.
 
 Esta precisión tiene tres consecuencias que recorren el documento:
 
-1. **Desaparece la objeción de duplicación.** El nodo no compite con PISEE ni lo reemplaza: atiende a un consumidor que PISEE estructuralmente no admite (§2).
+1. **Desaparece la objeción de duplicación.** El nodo no compite con la red de interoperabilidad ni la reemplaza: atiende a un consumidor que la red de interoperabilidad estructuralmente no admite (§2).
 2. **El centro de gravedad se desplaza de lo técnico a lo jurídico.** La arquitectura es estándar y conocida; lo que no está resuelto es con qué título un privado accede y quién responde (§4–§5).
 3. **El financiamiento debe argumentarse por partes.** Integración interna y exposición a privados son la misma plataforma, pero no el mismo fundamento (§13).
 
@@ -37,24 +37,24 @@ Estructura del documento:
 
 ---
 
-## 2. Delimitación frente a PISEE
+## 2. Delimitación frente a la red de interoperabilidad
 
-El riesgo declarado por el equipo —«no queremos transformarnos en otro PISEE»— es legítimo, y con la reformulación de §1 tiene una respuesta estructural, no solo una línea de deslinde.
+El riesgo declarado por el equipo —«no queremos transformarnos en otra red de interoperabilidad»— es legítimo, y con la reformulación de §1 tiene una respuesta estructural, no solo una línea de deslinde.
 
 > **OAE** — Órgano de la Administración del Estado. Es el sujeto obligado de la Ley 21.180 y de sus normas técnicas (D.S. N° 10/2023 y D.S. N° 12/2023). Tanto SUBDERE como cada municipalidad son OAE, lo que resulta determinante para la delimitación que sigue.
 
-| | PISEE (Red de Interoperabilidad) | Nodo SUBDERE (propuesta) |
+| | Red de interoperabilidad (D.S. N° 12/2023) | Nodo SUBDERE (propuesta) |
 |---|---|---|
 | Naturaleza | Infraestructura de intercambio **OAE ↔ OAE** | Capa de publicación y gobierno de acceso **de un OAE específico** |
 | Mandato | D.S. N° 12/2023 (NTI); operador designado (SGD) | Decisión institucional de SUBDERE |
 | Consumidor admitido | Organismos del Estado | Municipios y **privados en convenio con municipios** |
-| Consumidor **no** admitido | Privados | Otros OAE, para tráfico que corresponde a PISEE |
+| Consumidor **no** admitido | Privados | Otros OAE, para tráfico que corresponde a la red de interoperabilidad |
 
-**El argumento central:** PISEE no puede atender a un desarrollador privado, porque su universo de sujetos es el de los organismos del Estado. El nodo SUBDERE no duplica PISEE; **cubre un consumidor que PISEE no admite**. No hay superposición de propósito, y por lo tanto no hay riesgo de constituirse en red paralela mientras se respete la regla siguiente.
+**El argumento central:** la red de interoperabilidad no puede atender a un desarrollador privado, porque su universo de sujetos es el de los organismos del Estado. El nodo SUBDERE no duplica la red de interoperabilidad; **cubre un consumidor que la red de interoperabilidad no admite**. No hay superposición de propósito, y por lo tanto no hay riesgo de constituirse en red paralela mientras se respete la regla siguiente.
 
-**Regla de deslinde (se mantiene de la v1):** cuando el consumidor es **otro OAE**, el intercambio va por PISEE (vía nodo y Catálogo, conforme al D.S. N° 12/2023). El nodo SUBDERE **no** puede constituirse en vía paralela al Catálogo para tráfico OAE ↔ OAE — eso es lo prohibido por la NTI, y ya está registrado como riesgo en [`brechas-estandarizacion-ntdee-pisee.md`](./brechas-estandarizacion-ntdee-pisee.md) §4.
+**Regla de deslinde (se mantiene de la v1):** cuando el consumidor es **otro OAE**, el intercambio va por la red de interoperabilidad (vía nodo y Catálogo, conforme al D.S. N° 12/2023). El nodo SUBDERE **no** puede constituirse en vía paralela al Catálogo para tráfico OAE ↔ OAE — eso es lo prohibido por la NTI, y ya está registrado como riesgo en [`brechas-estandarizacion-ntdee-pisee.md`](./brechas-estandarizacion-ntdee-pisee.md) §4.
 
-**Zona gris que persiste:** el municipio **es** OAE. Falta determinar si el consumo municipal de datos SUBDERE debe canalizarse por PISEE o admite canal propio (**X-82**). Con la reformulación de §1, esta pregunta ya **no es bloqueante del proyecto completo**: aunque la respuesta fuera que el tráfico municipal debe ir por PISEE, el acceso de privados seguiría requiriendo el nodo. La zona gris afecta al alcance, no a la existencia.
+**Zona gris que persiste:** el municipio **es** OAE. Falta determinar si el consumo municipal de datos SUBDERE debe canalizarse por la red de interoperabilidad o admite canal propio (**X-82**). Con la reformulación de §1, esta pregunta ya **no es bloqueante del proyecto completo**: aunque la respuesta fuera que el tráfico municipal debe ir por la red de interoperabilidad, el acceso de privados seguiría requiriendo el nodo. La zona gris afecta al alcance, no a la existencia.
 
 ---
 
@@ -66,7 +66,7 @@ El nodo sirve a dos propósitos que comparten plataforma pero no comparten funda
 |---|---|---|
 | Qué resuelve | Plataformas SUBDERE desconectadas entre sí; datos duplicados y contradictorios; integraciones manuales | Que un desarrollador privado pueda construir aplicaciones para municipios sobre datos y servicios de SUBDERE |
 | Fundamento | Cumplimiento: obligación de interoperar (D.S. N° 12/2023) y eficiencia interna | Desarrollo de ecosistema; fortalecimiento de capacidad municipal |
-| ¿Requiere nodo propio? | No necesariamente — parte podría resolverse vía PISEE | **Sí. No hay alternativa** (§2) |
+| ¿Requiere nodo propio? | No necesariamente — parte podría resolverse vía la red de interoperabilidad | **Sí. No hay alternativa** (§2) |
 | Riesgo de argumentar mal | Bajo | Alto: si se financia con argumento de cumplimiento, se replica el problema de finalidad del gasto (§11) |
 
 **Advertencia.** Apoyar la solicitud de financiamiento del Caso B en el argumento de cumplimiento del D.S. N° 12/2023 reproduce, un nivel más arriba, el mismo problema que este documento advierte respecto de meter el nodo dentro de SGM: financiar con el fundamento de A un alcance que en realidad es B. Técnicamente son la misma plataforma; jurídicamente no son el mismo gasto. Deben quedar como **dos alcances con dos fundamentos** en cualquier documento que vaya a decisión presupuestaria.
@@ -463,7 +463,7 @@ A registrar en [`pendientes.md`](./pendientes.md) si el equipo acoge el document
 
 | ID propuesto | Título corto | Contraparte |
 |---|---|---|
-| **X-82** | Criterio jurídico: ¿el consumo municipal de datos SUBDERE debe canalizarse por PISEE (municipio = OAE) o admite canal propio? Afecta al alcance, no a la existencia del nodo (§2) | jurídica / SGD |
+| **X-82** | Criterio jurídico: ¿el consumo municipal de datos SUBDERE debe canalizarse por la red de interoperabilidad (municipio = OAE) o admite canal propio? Afecta al alcance, no a la existencia del nodo (§2) | jurídica / SGD |
 | **X-83** | Inventario de plataformas SUBDERE: datos, integraciones existentes (incl. manuales), duplicaciones, clasificación por origen del dato, candidatas a piloto (§3) | Camila / equipo |
 | **X-84** | Decisión producto vs. capacidad y modelo de operación permanente: quién opera, con qué equipo y presupuesto recurrente (§10) | jefatura |
 | **X-85** | Propiedades verificables de extensibilidad de la capa de integración SGM (Opción C) para bases de licitación (§11) | arquitectura |
@@ -477,7 +477,7 @@ A registrar en [`pendientes.md`](./pendientes.md) si el equipo acoge el document
 
 ## 16. Qué decide este documento y qué no
 
-**No decide:** qué producto tecnológico se adopta; si el nodo se financia y por qué vía; si el consumo municipal va por PISEE; con qué instrumento jurídico se habilita a privados.
+**No decide:** qué producto tecnológico se adopta; si el nodo se financia y por qué vía; si el consumo municipal va por la red de interoperabilidad; con qué instrumento jurídico se habilita a privados.
 
 **Propone decidir:**
 
@@ -498,5 +498,5 @@ A registrar en [`pendientes.md`](./pendientes.md) si el equipo acoge el document
 - [`musts-arquitectura.md`](../especificacion/musts-arquitectura.md) §7, §8 — pruebas de carga; observabilidad exigida
 - [`seguridad.md`](../especificacion/seguridad.md) §5, §7.3 — auditoría; secretos y logging
 - [`sandbox-desarrolladores.md`](../licitacion/sandbox-desarrolladores.md) — portal de desarrollador y catálogo
-- D.S. N° 12/2023 (NTI / PISEE); D.S. N° 10/2023 (NTDEE); Ley 21.180; Ley 21.719; Ley 20.285
+- D.S. N° 12/2023 (NTI / red de interoperabilidad); D.S. N° 10/2023 (NTDEE); Ley 21.180; Ley 21.719; Ley 20.285
 - Dirección del Trabajo — Libro de Remuneraciones Electrónico: <https://www.dt.gob.cl/portal/1628/w3-article-120083.html>
