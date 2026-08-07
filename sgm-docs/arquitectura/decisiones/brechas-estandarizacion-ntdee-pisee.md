@@ -14,7 +14,11 @@ Este documento evalúa el diseño actual del SGM frente a dos marcos de la Secre
 | Marco | Norma | Guía técnica | Qué regula |
 |---|---|---|---|
 | **NTDEE** | Decreto N° 10, de 2023 | [Guía Técnica de Documentos y Expedientes Electrónicos](https://wikiguias.digital.gob.cl/guias/guia-tecnica-documentosyexpedientes) | Estructura del expediente electrónico, metadatos, formatos, actuaciones, retención, enlaces persistentes, estándar mínimo de plataformas de gestión documental |
-| **NTI / PISEE** | Decreto N° 12, de 2023 | [Guía Técnica de Interoperabilidad](https://wikiguias.digital.gob.cl/es/guias/guia-tecnica-interoperabilidad) | Red de interoperabilidad: nodo, servicios centralizados, Portal PISEE, protocolos autorizados, trazabilidad inter-OAE, responsables de servicios |
+| **NTI / red de interoperabilidad** | Decreto N° 12, de 2023 | [Guía Técnica de Interoperabilidad](https://wikiguias.digital.gob.cl/es/guias/guia-tecnica-interoperabilidad) | Red de interoperabilidad: nodo, servicios centralizados, Portal PISEE, protocolos autorizados, trazabilidad inter-OAE, responsables de servicios |
+
+> **Transición de plataforma.** El artículo segundo transitorio del D.S. N° 12/2023 fija el 31 de diciembre de 2026 como último día de funcionamiento de la Plataforma Integrada de Servicios Electrónicos del Estado (PISEE). A contar de esa fecha, la red de interoperabilidad basada en nodos descrita en la misma norma es la única vía de interoperabilidad entre órganos de la Administración del Estado. En este repositorio, «red de interoperabilidad» designa el régimen vigente; «PISEE» se conserva únicamente en nombres propios de componentes y en el identificador interno `C-PISEE`.
+>
+> ⚠ **Pendiente de verificación:** el texto del artículo segundo transitorio no ha sido leído directamente en el decreto. Confirmar antes de usar la fecha en cualquier documento dirigido fuera de SUBDERE.
 
 **Qué no es este documento.** No reescribe Adquisiciones, no redefine entidades de negocio ni obliga a renombrar `ProcurementCase`. No prescribe implementación de código.
 
@@ -23,7 +27,7 @@ Este documento evalúa el diseño actual del SGM frente a dos marcos de la Secre
 El dominio interno SGM se mantiene (API-first, inglés técnico, contratos por módulo). El cumplimiento normativo se logra con:
 
 1. **Perfiles de mapeo / exportación** hacia el esquema NTDEE.
-2. Un **borde PISEE en el core** (SGM habla al nodo del OAE; SGM no *es* el nodo).
+2. Un **borde hacia la red de interoperabilidad en el core** (SGM habla al nodo del OAE; SGM no *es* el nodo).
 
 ```mermaid
 flowchart LR
@@ -57,7 +61,7 @@ flowchart LR
 | Expediente raíz con timeline | `ProcurementCase`, `CaseStep` en [`entidades-core.md`](../../modelo-datos/entidades-core.md) | Agregación de procedimiento y actuaciones de negocio |
 | Documentos centralizados, sin BLOB en módulos | `Document` / `DocumentRef`, C10 en [`entidades-plataforma.md`](../../modelo-datos/entidades-plataforma.md), [`plataforma-core.md`](../especificacion/plataforma-core.md) §7bis | Gestión documental como capacidad de plataforma |
 | Contrato HTTP versionado | OpenAPI Adquisiciones, [`contracts.md`](../../modulos/adquisiciones/contracts.md), mandato API | Publicación gobernada de operaciones (base para Catálogo) |
-| Auditoría append-only + origen de escrituras M2M | [`seguridad.md`](../especificacion/seguridad.md) §2.2, §5 | Trazabilidad administrativa (distinta de traza PISEE, ver §4) |
+| Auditoría append-only + origen de escrituras M2M | [`seguridad.md`](../especificacion/seguridad.md) §2.2, §5 | Trazabilidad administrativa (distinta de la traza de la red de interoperabilidad, ver §4) |
 | ClaveÚnica + FirmaGob | [`seguridad.md`](../especificacion/seguridad.md) §2.1; `SignatureRequest` | Autenticación Estado y firma en actos administrativos |
 | Integraciones externas en el core (C7/C9) | [`contrato-api-first.md`](../especificacion/contrato-api-first.md), [`integracion-mercado-publico.md`](../especificacion/integracion-mercado-publico.md) | Mismo patrón aplicable a un futuro C-PISEE |
 | Multi-tenant por municipio | [`decisiones-macro-stack.md`](./decisiones-macro-stack.md) | Cada OAE (municipio) como proveedor/consumidor aislado |
@@ -75,7 +79,7 @@ Leyenda de estado: **cubierto** · **parcial** · **ausente**.
 | Metadatos de documentos — obligatorios / condicionales / sugeridos (art. 14) | parcial | `Document`: `id`, MIME, tamaño, `sha256`, backend, `retention_class`, fechas. Faltan tipología, productor, fechas de incorporación al expediente, clasificación, etc. | Exportación NTDEE incompleta; interoperabilidad documental débil |
 | Metadatos de creación del expediente electrónico (art. 18) | parcial | `ProcurementCase`: folio, descripción, unidad, tipo, estado, timestamps, vínculo MP. Falta mapeo explícito a campos mínimos NTDEE (órgano, procedimiento, identificador persistente…) | Identidad del expediente no demostrable frente a la norma |
 | Esquema estructural y elementos del expediente (arts. 19–20, 22) | parcial | `CaseStep` modela el **flujo de negocio**, no el índice / componentes NTDEE (actuaciones, índice, vínculos formales) | Confusión flujo ≠ expediente electrónico; auditoría documental incompleta |
-| Documentos/datos aportados por interoperabilidad — formatos y metadatos (art. 24) | ausente | No hay tipo ni traza de “origen PISEE / nodo” en `Document` ni en el expediente | Imposible distinguir evidencia interna vs. aportada por otro OAE |
+| Documentos/datos aportados por interoperabilidad — formatos y metadatos (art. 24) | ausente | No hay tipo ni traza de “origen red de interoperabilidad / nodo” en `Document` ni en el expediente | Imposible distinguir evidencia interna vs. aportada por otro OAE |
 | Expedientes híbridos — excepción documental física (art. 26) | parcial | Existe `signature_mode = scanned` y adjuntos escaneados; no hay modelo de expediente híbrido ni inventario de pieza física | Casos municipales con papel sin regla única |
 | Incorporación de comunicaciones oficiales y notificaciones (arts. 27–28) | parcial | DocDigital como **tramitación de actos** (C11 — decisión 2026-07) además de canal de **notificación** (C6). Pendiente: incorporar el acto retornado al expediente NTDEE de forma explícita; vía alternativa X-73 | Hueco residual frente a Ley 19.880 si no se cierra el vínculo expediente ↔ `DocumentProcedure` |
 | Plazo de disponibilidad / acceso cuando no hay norma de transferencia (art. 32) | parcial | `retention_class` existe; plazos no calibrados (**X-26** es auditoría, no disponibilidad de expediente) | Incumplimiento archivístico / acceso |
@@ -85,18 +89,18 @@ Leyenda de estado: **cubierto** · **parcial** · **ausente**.
 
 ---
 
-## 4. Brechas PISEE / NTI (D.S. N° 12/2023)
+## 4. Brechas de la red de interoperabilidad / NTI (D.S. N° 12/2023)
 
 | Exigencia | Estado | Evidencia en SGM | Impacto si no se cierra |
 |---|---|---|---|
 | Nodo como único medio autorizado de intercambio inter-OAE | ausente | No hay capacidad core de cliente/adaptador al nodo; integraciones son MP/FirmaGob/SII (C7/C9) | Cualquier consumo OAE↔OAE por API directa incumple la guía |
 | SGM no es el nodo: hospedaje en infraestructura del OAE | — (decisión) | Hosting SUBDERE / híbrido documentado; **quién opera el nodo** (municipio vs. SUBDERE por tenant) no está decidido | Bloquea diseño de C-PISEE y operación |
 | Publicación / consumo vía Catálogo de Servicios y Portal PISEE | ausente | OpenAPI existe para M2M municipal y ecosistemas; no hay perfil “servicio de interoperabilidad” ni alta en Catálogo | Otros OAE no pueden descubrir/consumir datos SGM por la Red |
-| Autenticación mutua, cifrado E2E y protocolos autorizados | ausente en borde PISEE | TLS y secretos sí en perímetro SGM ([`seguridad.md`](../especificacion/seguridad.md) §7); no equivalen a requisitos del nodo | No sustituible “solo con HTTPS propio” |
-| Registro de trazabilidad PISEE (metadatos de transacción inter-nodo) | ausente | Auditoría SGM (§5 seguridad) es **otra** capa — no genera traza hacia servicios centralizados PISEE | Doble registro: hay que diseñar ambos, no fusionarlos |
+| Autenticación mutua, cifrado E2E y protocolos autorizados | ausente en borde hacia la red de interoperabilidad | TLS y secretos sí en perímetro SGM ([`seguridad.md`](../especificacion/seguridad.md) §7); no equivalen a requisitos del nodo | No sustituible “solo con HTTPS propio” |
+| Registro de trazabilidad de la red de interoperabilidad (metadatos de transacción inter-nodo) | ausente | Auditoría SGM (§5 seguridad) es **otra** capa — no genera traza hacia servicios centralizados de la red de interoperabilidad | Doble registro: hay que diseñar ambos, no fusionarlos |
 | Gestor de Autorizaciones para datos sensibles | ausente | Scopes OAuth M2M por módulo/municipio; sin integración al Gestor de Autorizaciones | Consumos sensibles inter-OAE sin permiso normativo |
 | Prohibición de vías paralelas al Catálogo para OAE↔OAE | ausente (regla) | Modelo abierto API favorece ecosistema; falta regla explícita: M2M del *mismo* OAE OK; OAE distinto → nodo | Riesgo de diseñareludir el nodo “porque ya hay OpenAPI” |
-| Designación de responsables de información y de publicación de servicios (arts. 7–8 NTI) | ausente | RBAC municipal sí; no hay rol/responsable PISEE por servicio publicado | Impide enrolamiento formal en Portal PISEE |
+| Designación de responsables de información y de publicación de servicios (arts. 7–8 NTI) | ausente | RBAC municipal sí; no hay rol/responsable de la red de interoperabilidad por servicio publicado | Impide enrolamiento formal en Portal PISEE |
 | Validación de nodo propio / proveedor externo (si aplica) | fuera por ahora | SGD disponibiliza nodo; alternativa propia requiere validación 15 días hábiles | Solo relevante si SUBDERE o municipio optan por nodo no oficial |
 
 ---
@@ -148,7 +152,7 @@ Acción: `usar` (campo existente alcanza) · `extender` (enriquecer semántica) 
 
 ### 5.3 Extensión C10 / `Document` (alimenta X-58 y X-60)
 
-Sin implementar aquí: tipología, productor, fechas de incorporación, origen PISEE, lista MIME NTDEE, política de visación de formatos, PID.
+Sin implementar aquí: tipología, productor, fechas de incorporación, origen red de interoperabilidad, lista MIME NTDEE, política de visación de formatos, PID.
 
 ### 5.4 Capacidad core **C-PISEE**
 
@@ -158,7 +162,7 @@ Mismo patrón que C7 (MP) / C9 (FirmaGob, SII) / C10 (documentos):
 - Configuración candidata: `TenantIntegrationConfig` + proveedor `pisee` (**X-57** / **X-61**).
 - Decisión operativa a fijar en X-61: nodo provisionado por SGD operado por el municipio, vs. nodo en infraestructura SUBDERE en nombre del tenant (hosting completo).
 
-### 5.5 Servicios candidatos a Catálogo PISEE (inicial)
+### 5.5 Servicios candidatos a Catálogo de Servicios de la red de interoperabilidad (inicial)
 
 Solo lectura, mínimo privilegio, siempre vía nodo:
 
@@ -175,7 +179,7 @@ Escrituras inter-OAE quedan fuera del alcance inicial.
 | Capa | Para qué | Dónde vive |
 |---|---|---|
 | Auditoría SGM | Contraloría municipal, SoD, Ley 21.719, recepción | Core auditoría ([`seguridad.md`](../especificacion/seguridad.md) §5) |
-| Trazabilidad PISEE | Metadatos de mensaje inter-nodo exigidos por NTI | Emitidos por el nodo / C-PISEE hacia servicios centralizados |
+| Trazabilidad de la red de interoperabilidad | Metadatos de mensaje inter-nodo exigidos por NTI | Emitidos por el nodo / C-PISEE hacia servicios centralizados |
 
 No fusionar ambas en un solo log.
 
