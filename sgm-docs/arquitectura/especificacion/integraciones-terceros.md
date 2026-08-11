@@ -1,13 +1,17 @@
 # Integraciones SGM con terceros — registro único
 
 > Documento de trabajo — arquitectura / especificación  
-> Estado: borrador (primera versión orientada a jefatura y fase exploratoria CPI/RFI)  
+> Estado: borrador (primera versión orientada a jefatura)  
 > Fuente de pendientes: [`../decisiones/pendientes.md`](../decisiones/pendientes.md)  
 > No inventa capacidades de terceros: solo afirma lo que el corpus declara.
 
-**Audiencias.** (1) Jefatura — Parte 1 en unos diez minutos. (2) Fase exploratoria CPI / RFI — columna *Destino CPI* y Parte 3.2. (3) Bases de licitación y diseño de bordes — fichas y aperturas.
+**Audiencias.** (1) Jefatura — Parte 1 en unos diez minutos. (2) Bases de licitación y diseño de bordes — fichas y aperturas.
 
-**Regla central.** Prohibido afirmar qué ofrece un sistema de un tercero si el corpus no lo declara. Marcadores del mecanismo:
+**Alcance.** Este documento **indexa las integraciones y su estado**. No propone mecanismo de compra ni plan de trabajo: las conclusiones de planificación pertenecen a otros documentos.
+
+**Qué es el corpus.** El conjunto de documentos de especificación escritos del proyecto: planes de módulo, especificaciones transversales, decisiones de arquitectura, fichas de proceso y registro de pendientes. Cuando este documento dice que algo **«no está en el corpus»**, significa que no está escrito en ninguno de ellos — no que sea falso ni que nadie lo sepa. La distinción es deliberada: separa lo documentado de lo sabido, lo supuesto y lo conversado. Ver [`glosario-siglas.md`](../../glosario-siglas.md).
+
+**Regla central.** Prohibido afirmar qué ofrece un sistema de un tercero si el corpus no lo declara. Es decir: si no hay un archivo del repositorio que lo respalde, no se afirma. Marcadores del mecanismo:
 
 | Marcador | Cuándo |
 |---|---|
@@ -15,16 +19,14 @@
 | **Supuesto** | El corpus lo asume para diseñar, sin verificación declarada |
 | **Desconocido** | El corpus no dice nada sobre el mecanismo |
 
-**Destino CPI / consulta** (fase exploratoria). Cada mecanismo no verificado declara a quién se pregunta:
+**Quién puede responder.** Cada mecanismo no confirmado declara de quién depende la respuesta:
 
 | Valor | Significado |
 |---|---|
-| **Consulta institucional** | Organismo del Estado; no admite consulta al mercado |
-| **Consulta al mercado (RFI)** | Material de RFI / oferta |
-| **Ambas** | Tramo institucional y tramo de oferta |
-| **No aplica** | Verificado, fuera de alcance, o no hay pregunta de mecanismo |
-
-Las integraciones son, para el diagnóstico CPI, parte de «las condiciones o recursos que deberá proveer la institución para instalar la solución».
+| **Solo el organismo** | La respuesta la tiene el organismo titular; nadie más puede darla |
+| **El organismo y, en parte, un proveedor** | Un tramo depende del organismo; otro admite respuesta de quien implemente |
+| **Un proveedor** | Es materia de diseño o de oferta, no de una definición institucional |
+| **No aplica** | Confirmado, fuera de alcance, o sin pregunta de mecanismo pendiente |
 
 **Conteo frente a inventario.** [`inventario-repositorio.md`](../../../inventario-repositorio.md) §1.4 lista **15** sistemas Estado. Este registro cubre **21** fichas de organismos/Estado (Grupo A) más **7** dependencias infra/ecosistema en tabla (Grupo B). La diferencia son organismos citados en planes (Registro Civil, COMPIN/Isapre, deudores de alimentos, reportes RRHH, bancos, giradores) y la separación FCM / TGR / SEM; NTDEE se mantiene aunque es marco, no endpoint.
 
@@ -34,79 +36,86 @@ Las integraciones son, para el diagnóstico CPI, parte de «las condiciones o re
 
 ## Parte 1 — Triage
 
-*Derivada de las fichas de la Parte 2. Leer sola.*
+*Derivada de las fichas de la Parte 2.*
 
-### 1.1 En diez líneas
+### 1.1 Panorama
 
-SGM depende de **21 sistemas de terceros** para operar. **Sobre ninguno de ellos hay una capacidad de integración verificada:** no se ha confirmado con ningún organismo qué interfaz ofrece, en qué formato ni con qué disponibilidad.
+SGM no opera aislado. Para cumplir su función tiene que relacionarse con sistemas de otras instituciones: publicar los procesos de compra en Mercado Público, tramitar decretos y resoluciones en DocDigital, autenticar a los funcionarios contra Clave Única, declarar la nómina previsional, informar a Contraloría y a SINIM, consultar valores al SII, enterar fondos en Tesorería General. **Este documento indexa esas relaciones y deja constancia del estado en que está cada una.**
 
-De las 16 filas de organismos de la tabla §1.4 (algunas agrupan sistemas), **10 no tienen contraparte designada.** No es que esté ocupada: no existe.
+Son **21 relaciones con instituciones**, más siete dependencias de infraestructura y ecosistema que se tratan aparte por ser de otra naturaleza.
 
-Y de las 19 preguntas de mecanismo abiertas, **13 no las puede responder el mercado** (solo el organismo). Otras **3** tienen tramo institucional y tramo de oferta (**Ambas**). Hay que preguntar a cada organismo del Estado, una por una, lo que no es RFI puro.
+**Ninguna es condición técnica de funcionamiento.** El sistema opera sin ellas. Lo que cambia es quién hace el trabajo: la obligación legal no desaparece, la ejecuta un funcionario a mano, con el reingreso de datos y la verificación manual que eso implica. No todas pesan igual — §1.2 las clasifica según qué ocurre si faltan.
 
-| Cifra | Valor |
+**El estado general es que casi nada está confirmado.** En 20 de las 21 no existe una confirmación del organismo titular sobre qué interfaz ofrece, en qué formato ni con qué disponibilidad. El diseño avanza sobre supuestos razonables, no sobre respuestas. La única confirmada es **Clave Única**, por respuesta escrita de Gobierno Digital del 27-01-2026.
+
+Eso pesa menos sobre el diseño —que se corrige— que sobre las bases de licitación. Exigir *«el sistema se integra con Previred»* y exigir *«el sistema genera el archivo para que alguien lo cargue»* son dos objetos contractuales distintos, con dos precios distintos. Sin la confirmación no se puede escribir ninguno de los dos con precisión.
+
+**Y buena parte de esas relaciones no tiene interlocutor.** En diez de los organismos listados no hay una persona ni una unidad designada para conducir la consulta. No es que la contraparte esté ocupada: no existe. El detalle está en §1.4.
+
+| | |
 |---|---|
-| Integraciones fichadas (Grupo A) | **21** |
-| Capacidades de integración **verificadas con el organismo titular** | **0** |
-| Mecanismo **Supuesto** o **Desconocido** | **19** de 21 |
-| Organismos **sin contraparte designada** | **10** de 16 |
-| Preguntas que **solo responde el organismo**, no el mercado | **13** de 19 |
+| Relaciones con instituciones indexadas | **21** (más 7 dependencias de infraestructura) |
+| Con interfaz confirmada por el organismo titular | **1** — Clave Única |
+| Sobre supuesto de diseño o sin información alguna | **20** |
+| Organismos sin contraparte designada | **10** |
 
-Las **2** fichas que no entran en esos 19 no tienen capacidad de tercero verificada: Mercado Público (decisión propia read-only **Verificada**; el canal de lectura sigue **Desconocido**) y SEM (hallazgo H-2 del as-is **Verificado**; el feed to-be con auth sigue **Supuesto**).
+Hay además tres hechos verificados que **no** son capacidades ofrecidas por un tercero, y conviene no contarlos como tales: la cobertura municipal de DocDigital (~80 %, fuente Ministerio de Hacienda), el hallazgo de seguridad H-2 sobre el sistema anterior, y la decisión propia de consumir Mercado Público en solo lectura.
 
-Hay tres hechos verificados en el corpus, y conviene ser preciso sobre qué son: la cobertura municipal de DocDigital (~80 %, fuente Ministerio de Hacienda), el hallazgo H-2 sobre el sistema anterior, y la decisión propia de consumir Mercado Público en solo lectura. **Ninguno de los tres es una capacidad ofrecida por un tercero.**
+### 1.2 Qué pasa si una integración no existe
 
-Grupo B (7 filas): ninguna API de tercero Estado verificada; diseño de plataforma o pendiente.
+No todas pesan igual. La clasificación siguiente no es un criterio añadido aquí: se deriva de dos campos que trae cada ficha de la Parte 2.
 
-### 1.2 Las que bloquean
+**Modo degradado** es qué hace el sistema cuando esa integración no está disponible — sea porque nunca se construyó, porque el organismo no la ofrece, o porque falló el día que se necesitaba. En la mayoría de los casos la degradación es que **el trabajo lo hace una persona**: el sistema genera un archivo y alguien lo carga en el portal del organismo, o el funcionario reingresa a mano lo que la integración habría traído sola. En unos pocos casos no hay degradación posible y la ausencia obliga a resolver el asunto de otra manera.
+
+**Condición de puesta en marcha** es si un municipio puede empezar a operar sin esa integración.
+
+| Clase | Qué significa | Integraciones |
+|---|---|---|
+| **Indispensable** | Su ausencia no se resuelve con trabajo manual: obliga a diseñar otro mecanismo | **ClaveÚnica** (A5) — sin ella no hay autenticación de personas; **mecanismo ya verificado**: Identity Broker federado, aceptado por Gobierno Digital · **Giradores de OI y feed SEM** (A6, A7) — sin contrato de entrada, Caja no cobra de forma fiable; **sigue sin resolver** |
+| **Degradable con costo alto** | El sistema opera, pero la degradación reintroduce el problema que SGM viene a resolver: reingreso de datos, registro paralelo y riesgo sobre actos con efecto jurídico | DocDigital (A1) · Mercado Público (A3) · FirmaGob (A4) · SII cesión (A8) · Toma de Razón CGR (A9) · Bancos (A21) |
+| **Degradable con costo acotado** | Genera un archivo y alguien lo carga; el trabajo manual es periódico y delimitado | SINIM / BEP (A14) · TGR y FCM (A12, A13) · Previred (A10) · DIPRES (A11) · Transparencia, INE y LRE (A20) · Registro Civil (A17) · Deudores de alimentos (A19) |
+| **Diferible por decisión ya contemplada** | El propio corpus ya prevé dejarla fuera de la primera versión | Red de interoperabilidad (A15, opción c de X-61) · COMPIN / Isapre (A18, opción c de R-7) · NTDEE (A16, según alcance X-60) · SIAPER (A2, opción c de R-2) |
+
+**Consecuencia para las bases.** La clasificación no es descriptiva. Define qué se compra y se construye ahora, qué se compra escrito pero sin construir, y qué no corresponde volver a discutir.
+
+**Las indispensables tienen que estar resueltas y construidas en la primera versión.** No admiten segunda fase: sin ellas no hay sistema operable. Por eso el contrato de entrada de las órdenes de ingreso (T-1) está marcado como bloqueante — no se puede licitar un módulo de caja sin decir de dónde llegan las órdenes que esa caja va a cobrar.
+
+**Las degradables de costo alto son donde se decide el valor de toda la licitación.** El sistema funciona sin ellas, pero funciona reproduciendo el trabajo manual que hoy existe: el funcionario teclea lo mismo en dos sistemas, el decreto se numera a mano, la cesión de una factura se detecta revisando. Si las bases las dejan como «generar un archivo», lo que se compra es la situación actual con una interfaz nueva. Acá hay que decidir explícitamente si se está comprando automatización o un formulario.
+
+**Las degradables de costo acotado admiten una compra parcial legítima.** Es la figura que el corpus llama *contrato completo sin implementación*: se especifica la integración entera —qué datos, en qué formato, con qué operaciones— pero se construye solo la generación del archivo que hoy alguien carga a mano en el portal del organismo. La automatización queda contratada en su definición y se activa después sin rediseñar nada. Lo que hace legítima esa reducción es que **el modelo de datos no se recorta**: recortarlo es exactamente lo que obliga a migrar más tarde. Es el patrón de **X-81**.
+
+**Las diferibles ya tienen la decisión formulada en su propio pendiente.** En las bases se aplica la opción de diferimiento que ese pendiente declara y se escribe su condición de activación. No corresponde reabrir la discusión caso a caso.
+
+**Dos huecos detectados al clasificar.** Las fichas de **Previred** y **DIPRES** declaran «modo degradado: no está en el corpus». Es un vacío real: son obligaciones legales con plazo duro y nadie escribió qué ocurre si la integración falla el día del vencimiento. (ClaveÚnica también lo declaraba; se cerró al verificar el mecanismo — su ausencia no degrada a trabajo manual, obliga a otro mecanismo de autenticación.)
+
+---
+
+### 1.3 Las que bloquean
 
 #### Bloquean la redacción de las bases
 
 Sin respuesta no se puede escribir la exigencia contractual con precisión.
 
-| Integración | Qué está sin resolver | Qué bloquea | Quién puede resolverlo | Destino CPI |
+| Integración | Qué está sin resolver | Qué bloquea | Quién puede resolverlo | Quién puede responder |
 |---|---|---|---|---|
-| DocDigital | ¿API máquina-a-máquina (M2M: sistema a sistema) o solo web? (X-72) | Exigencia C11, modos M2M vs asistido, recepción | Gobierno Digital | Consulta institucional |
-| SIAPER | ¿Interfaz M2M o solo portal? (R-2) | Exigencia MR-6 y vía alternativa | CGR / SIAPER | Consulta institucional |
-| Mercado Público | Canal de lectura push vs polling (X-70); sandbox/rate limits a negociar | Texto de borde C7 y SLA de lectura | ChileCompra (+ SUBDERE negociación) | **Ambas** — ChileCompra (canal/sandbox); RFI para resiliencia si MP no responde (X-32) |
-| Red de interoperabilidad (D.S. N° 12/2023) | Quién opera el nodo y si el borde entra en v1 (X-61) | Alcance de interoperabilidad OAE en bases | DM / operación; oferta si entra RFI de diseño | Ambas |
-| Giradores / SEM | Contrato de entrada de órdenes de ingreso (T-1) + feed SEM con auth (T-12) | Exigencia de Caja y superficie M2M | DM / giradores; plataforma | Ambas |
-| SII (cesión) | ¿Existe push/consulta dirigida al Registro de Transferencias? (C-4) | Si las bases exigen automatizar factoring | SII | Consulta institucional |
+| DocDigital | ¿API máquina-a-máquina (M2M: sistema a sistema) o solo web? (X-72) | Exigencia C11, modos M2M vs asistido, recepción | Gobierno Digital | Solo el organismo |
+| SIAPER | ¿Interfaz M2M o solo portal? (R-2) | Exigencia MR-6 y vía alternativa | CGR / SIAPER | Solo el organismo |
+| Mercado Público | Canal de lectura push vs polling (X-70); sandbox/rate limits a negociar | Texto de borde C7 y SLA de lectura | ChileCompra (+ SUBDERE negociación) | **El organismo y, en parte, un proveedor** — ChileCompra (canal/sandbox); RFI para resiliencia si MP no responde (X-32) |
+| Red de interoperabilidad (D.S. N° 12/2023) | Quién opera el nodo y si el borde entra en v1 (X-61) | Alcance de interoperabilidad OAE en bases | DM / operación; oferta si entra RFI de diseño | El organismo y, en parte, un proveedor |
+| Giradores / SEM | Contrato de entrada de órdenes de ingreso (T-1) + feed SEM con auth (T-12) | Exigencia de Caja y superficie M2M | DM / giradores; plataforma | El organismo y, en parte, un proveedor |
+| SII (cesión) | ¿Existe push/consulta dirigida al Registro de Transferencias? (C-4) | Si las bases exigen automatizar factoring | SII | Solo el organismo |
 
 #### Bloquean la puesta en marcha de un municipio
 
 Las bases pueden redactarse; el municipio no opera completo sin esto.
 
-| Integración | Qué está sin resolver | Qué bloquea | Quién puede resolverlo | Destino CPI |
+| Integración | Qué está sin resolver | Qué bloquea | Quién puede resolverlo | Quién puede responder |
 |---|---|---|---|---|
-| DocDigital (habilitación) | Vía del ~20 % sin DocDigital (X-73); habilitación por tenant | Dictar actos con folio oficial | DM / jurídica; municipio | Consulta institucional (política); operación municipal |
-| ClaveÚnica | Operación OIDC del plano personas; duración de sesión (X-22) | Login de funcionarios | SUBDERE plataforma | Consulta institucional (valores de sesión si aplica) |
+| DocDigital (habilitación) | Vía del ~20 % sin DocDigital (X-73); habilitación por tenant | Dictar actos con folio oficial | DM / jurídica; municipio | Solo el organismo (política); operación municipal |
+| ClaveÚnica | Operación OIDC del plano personas; duración de sesión (X-22) | Login de funcionarios | SUBDERE plataforma | Solo el organismo (valores de sesión si aplica) |
 | Credenciales tenant (MP, FirmaGob, SII, DocDigital) | `TenantIntegrationConfig` / rotación (X-57) | Uso real de C7/C9/C11 | SUBDERE y/o admin municipal según proveedor | No aplica (gobernanza interna) |
-| Previred / TGR Form. 10 / DIPRES | Canal, formato y acuse | Nómina previsional, aporte FCM, informe DIPRES | Municipio + organismo; formatos a verificar | Consulta institucional |
-| SINIM / BEP / CGR reportes | Canal y periodicidad residuales (P-8, C-5) | Cumplir cargas e informes | SUBDERE / CGR / DM | Consulta institucional |
-
-### 1.3 Lo que la consulta al mercado no resuelve
-
-De las 19 preguntas de mecanismo abiertas (Parte 3.2), el destino se reparte así:
-
-| Destino | Cantidad |
-|---|---|
-| **Consulta institucional** — solo la responde el organismo | **13** |
-| **Ambas** — un tramo institucional y un tramo de oferta | **3** (Mercado Público, red de interoperabilidad, SEM to-be) |
-| **Consulta al mercado (RFI)** | **3** (NTDEE, bancos, giradores) |
-
-**La fase exploratoria del CPI puede correr en paralelo, pero no destraba las integraciones.** Trece de estas preguntas se resuelven solo escribiendo a un organismo del Estado y sentándose con él, con CPI o sin CPI; las tres **Ambas** siguen exigiendo ese tramo institucional. La consulta al mercado no le puede preguntar al SII si existe un canal hacia el Registro de Transferencias de Créditos.
-
-**Y esa es, probablemente, la ruta crítica del proyecto.** Estimación gruesa, para discutir y no para comprometer:
-
-| Escenario | Resultado |
-|---|---|
-| Consultas institucionales ejecutadas en serie por una persona, a razón de 3 a 6 semanas cada una entre envío y respuesta utilizable | Las 13 (+ tramo institucional de las Ambas) superan el año |
-| Consultas ejecutadas en paralelo, con contraparte designada por organismo | Las bloqueantes se cierran en 1 a 2 meses |
-
-La diferencia entre ambos escenarios no es de esfuerzo: es de si existe o no una contraparte designada que conduzca cada consulta.
-
----
+| Previred / TGR Form. 10 / DIPRES | Canal, formato y acuse | Nómina previsional, aporte FCM, informe DIPRES | Municipio + organismo; formatos a verificar | Solo el organismo |
+| SINIM / BEP / CGR reportes | Canal y periodicidad residuales (P-8, C-5) | Cumplir cargas e informes | SUBDERE / CGR / DM | Solo el organismo |
 
 ### 1.4 Qué se necesita de jefatura
 
@@ -153,6 +162,12 @@ La diferencia entre ambos escenarios no es de esfuerzo: es de si existe o no una
 | **A — Todo centralizado SUBDERE** | Un solo set de credenciales hacia terceros; el alta del municipio no exige gestionar secretos locales hacia MP/FirmaGob/SII/DocDigital. Menor autonomía municipal; mayor carga y responsabilidad SUBDERE frente a cada organismo. |
 | **B — Todo por municipio** | Cada alta exige habilitar y rotar credenciales del tenant; el municipio no opera si faltan. Escala con el número de municipios; negociación con terceros se multiplica. |
 
+**Un dato verificado que acota la decisión.** Gobierno Digital respondió el 27-01-2026 que, para ClaveÚnica, la elección **no es libre**: depende de quién sea el responsable del tratamiento de los datos. Si SGM opera como servicio centralizado y los municipios son usuarios, SUBDERE puede usar sus credenciales institucionales. Si el municipio opera una instancia propia y es responsable del tratamiento, **cada municipio debe solicitar su propio Client ID y Secret ante Gobierno Digital**, y SUBDERE queda solo como administrador técnico.
+
+Es un precedente relevante para el resto: la pregunta «¿centralizado o por municipio?» probablemente no se responde igual para todas las integraciones, y en varias estará determinada por la misma cuestión jurídica —quién es responsable y quién encargado— que plantea **X-01**. La respuesta también agrega un trámite por municipio al proceso de incorporación en el modo à la carte (**X-50**, sin ficha).
+
+**Consecuencia para ClaveÚnica: no es elegir entre centralizado y por municipio, es repartir por modo.** Hosting completo cae en el escenario centralizado por definición —SUBDERE opera el servicio—; à la carte cae en el de credenciales propias, sin margen de elección. Informática de SUBDERE recomendó en su momento el segundo escenario para todo el proyecto Odoo, por el riesgo de que un fallo de la integración responsabilice a SUBDERE; esa recomendación no ha sido reevaluada para un servicio nacional de 345 municipios. Ambos argumentos y su tensión quedan en [`plataforma-core.md`](./plataforma-core.md) §7ter.1.
+
 **Postura ya escrita en el corpus (híbrida), no inventada aquí:** [`plataforma-core.md`](./plataforma-core.md) §7 distingue dos planos y dos niveles:
 
 - **Plataforma (SUBDERE):** ClaveÚnica OIDC, webhook MP nacional, negociación ChileCompra / Gobierno Digital, catálogos `ExternalProvider` / `DmsAdapter`.
@@ -174,7 +189,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Qué hace SGM con esto** | SGM prepara el acto (decreto, resolución); DocDigital lo visa, firma, numera y lo devuelve con folio oficial |
 | **Módulos afectados** | Presupuestos, Contabilidad, Tesorería, Adquisiciones, RRHH — paso de tramitación de actos (proceso 25 «Alcaldía: Firmar»); core C11 |
 | **Obligatoria por ley o por conveniencia** | Conveniencia de plataforma estatal + FEA (**[NORMA N-06]** Ley 19.799). Cobertura ~80 % municipios: Verificado (fuente Ministerio de Hacienda en ADR) |
-| **Dirección del flujo** | Ambas: SGM envía contenido; DocDigital devuelve acto firmado + `ExternalFolio`. Fuente de verdad del folio oficial: DocDigital |
+| **Dirección del flujo** | El organismo y, en parte, un proveedor: SGM envía contenido; DocDigital devuelve acto firmado + `ExternalFolio`. Fuente de verdad del folio oficial: DocDigital |
 | **Estado del mecanismo** | Cobertura y funciones de plataforma: **Verificado**. Interfaz M2M: **Desconocido** — no asumir API (`integracion-docdigital.md`; ADR; X-72) |
 | **Convenio o habilitación previa** | Habilitación municipal DocDigital; config por tenant. Quién tramita la habilitación municipal: no está en el corpus más allá del municipio/tenant |
 | **Ambiente de pruebas del tercero** | no está en el corpus |
@@ -187,7 +202,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | Gobierno Digital (X-72) |
 | **Qué hacía el sistema anterior** | Correlativos internos Odoo (`approval_resolution`, `payment.decree.code`) como folio; cableado de actos a FirmaGob — cambio respecto del as-is (ADR) |
 | **Pendientes asociados** | X-72, X-73, X-74, X-75, X-76; P-18…P-20; C-16…C-18; T-11 |
-| **Destino CPI / consulta** | **Consulta institucional** — Gobierno Digital: «¿DocDigital expone interfaz M2M para originar documentos desde un sistema externo y devolver el acto firmado con folio?» |
+| **Quién puede responder** | **Solo el organismo** — Gobierno Digital. Pregunta a formular: «¿DocDigital expone una interfaz máquina a máquina que permita originar documentos desde un sistema externo y recuperar el acto firmado con su folio oficial?» |
 
 **Riesgo:** diseñar C11 asumiendo API inexistente y rehacer el borde (bloqueo X-72).
 
@@ -214,7 +229,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | CGR / SIAPER |
 | **Qué hacía el sistema anterior** | Campos/wizards Odoo; sin integración ni estado de registro (plan RRHH) |
 | **Pendientes asociados** | R-2 |
-| **Destino CPI / consulta** | **Consulta institucional** — CGR/SIAPER: «¿Existe interfaz M2M para registrar actos de personal desde un sistema municipal, o solo portal?» |
+| **Quién puede responder** | **Solo el organismo** — CGR/SIAPER: «¿Existe interfaz M2M para registrar actos de personal desde un sistema municipal, o solo portal?» |
 
 **Riesgo:** licitar MR-6 como integración automática sin vía asistida y no poder cerrar actos de personal.
 
@@ -241,7 +256,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | ChileCompra |
 | **Qué hacía el sistema anterior** | Continuidad del patrón read-only (no automatizar escritura) |
 | **Pendientes asociados** | X-70, X-32, X-94 |
-| **Destino CPI / consulta** | **Ambas** — ChileCompra: «¿Canal de lectura (webhook, polling o ambos) y condiciones de sandbox/rate limits?» · Mercado (RFI): «¿Cómo diseñan resiliencia si MP no responde (X-32)?» |
+| **Quién puede responder** | **El organismo y, en parte, un proveedor** — ChileCompra: «¿Canal de lectura (webhook, polling o ambos) y condiciones de sandbox/rate limits?» · Mercado (RFI): «¿Cómo diseñan resiliencia si MP no responde (X-32)?» |
 
 **Riesgo:** exigir escritura API en bases (prohibida) o dejar el canal de lectura sin acuerdo y no poder recepcionar C7.
 
@@ -268,7 +283,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | FirmaGob / Gobierno Digital |
 | **Qué hacía el sistema anterior** | Auditoría: pantalla de configuración ≠ integración funcional (lección de recepción E2E) |
 | **Pendientes asociados** | Pendientes locales del estándar §8; X-67 (firma contratista); reclasificación actos → C11; X-72 |
-| **Destino CPI / consulta** | **Consulta institucional** — Gobierno Digital: «¿Qué operaciones expone FirmaGob para firma asistida y desatendida, y con qué límites?» |
+| **Quién puede responder** | **Solo el organismo** — Gobierno Digital: «¿Qué operaciones expone FirmaGob para firma asistida y desatendida, y con qué límites?» |
 
 **Riesgo:** declarar recepción de firma sin prueba E2E real (misma falla del as-is).
 
@@ -279,25 +294,29 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | Campo | Contenido |
 |---|---|
 | **Organismo y sistema** | IdP del Estado — ClaveÚnica |
-| **Qué hace SGM con esto** | Autentica a la persona funcionaria para entrar al sistema; DocDigital también la usa al tramitar actos |
+| **Qué hace SGM con esto** | Autentica a la persona funcionaria para entrar al sistema; DocDigital también la usa al tramitar actos. **SGM no es proveedor de identidad**: no almacena contraseñas ni emite credenciales de persona. El registro local de usuario, unidad, rol y subrogancia sí vive en SGM (C2, C8) y no sale del alcance — ver [`plataforma-core.md`](./plataforma-core.md) §7ter |
 | **Módulos afectados** | Plataforma transversal (C1); DocDigital (actos) |
 | **Obligatoria por ley o por conveniencia** | Autenticación Estado — DS N°4/2020 citado en `seguridad.md` §2.1; **[NORMA N-15]** Ley 21.180 |
 | **Dirección del flujo** | SGM consume identidad (OIDC). Fuente de verdad de identidad ciudadana: ClaveÚnica |
-| **Estado del mecanismo** | Uso como IdP del plano personas: **Supuesto** de arquitectura (`seguridad.md`, `plataforma-core.md`). Duración/renovación de sesión: **Desconocido** (X-22) |
-| **Convenio o habilitación previa** | Integración OIDC a nivel plataforma SUBDERE |
+| **Estado del mecanismo** | **Verificado** — Gobierno Digital, Mesa de Ayuda, 27-01-2026: el uso de un *Identity Broker* entre las aplicaciones y ClaveÚnica es «una arquitectura aceptada», con alcance según el modo de consumo (ver fila siguiente). SUBDERE ya opera una instancia de broker para otras plataformas. Duración/renovación de sesión: **Desconocido** (X-22) |
+| **Convenio o habilitación previa** | **Depende del modo de consumo** (Gobierno Digital, 27-01-2026): · **SaaS centralizado en SUBDERE, municipios como usuarios** → SUBDERE actúa como broker con su Client ID y Secret institucional; la pantalla de ClaveÚnica muestra «Usted está iniciando sesión en: SUBDERE». · **Instancia municipal autónoma, con dominio propio y el municipio como responsable del tratamiento** → **cada municipio debe solicitar su propio Client ID y Secret ante Gobierno Digital**; SUBDERE puede seguir como administrador técnico del broker, configurando un cliente que apunte a las credenciales del municipio |
 | **Ambiente de pruebas del tercero** | no está en el corpus |
-| **Modo degradado** | no está en el corpus |
+| **Modo degradado** | No hay degradación a trabajo manual: la ausencia obliga a decidir otro mecanismo de autenticación. Clasificada **indispensable** (§1.2) |
 | **Consecuencia jurídica de la falla** | Sin acceso al plano personas no hay operación interactiva |
 | **Plazos legales asociados** | no está en el corpus |
-| **Quién opera** | SUBDERE (plano plataforma) |
+| **Quién opera** | **Depende del modo de consumo.** Hosting completo → SUBDERE con credenciales institucionales. À la carte → credenciales del municipio, con SUBDERE como administrador técnico del broker. Detalle y posición de informática: [`plataforma-core.md`](./plataforma-core.md) §7ter.1 |
 | **¿Condición de puesta en marcha?** | Sí |
 | **Datos personales que cruzan** | RUN / identidad. Tratamiento bajo **[NORMA N-17]** Ley 21.719 — detalle de roles en esta integración: no está en el corpus |
-| **Contraparte institucional** | sin contraparte designada (unidad); operación citada como plataforma SUBDERE |
+| **Contraparte institucional** | Gobierno Digital — Mesa de Ayuda (canal usado y con respuesta técnica documentada, 27-01-2026). Unidad nominada para el proyecto: sin designar |
 | **Qué hacía el sistema anterior** | no está en el corpus en las fuentes de esta ficha |
 | **Pendientes asociados** | X-22; comparecientes externos (estándar firma §5) |
-| **Destino CPI / consulta** | **Consulta institucional** (si se fijan valores de sesión con el IdP) — «¿Cuáles son los parámetros de sesión/renovación exigibles?» · Diseño interno X-22 también puede cerrarse en arquitectura |
+| **Quién puede responder** | **Solo el organismo** (si se fijan valores de sesión con el IdP) — «¿Cuáles son los parámetros de sesión/renovación exigibles?» · Diseño interno X-22 también puede cerrarse en arquitectura |
 
-**Riesgo:** municipios sin login usable o sesiones mal calibradas frente a política Estado.
+**Riesgo:** que el modo à la carte se especifique sin considerar que exige un trámite de credenciales por municipio ante Gobierno Digital, y que aparezca durante la incorporación en vez de en las bases.
+
+> **Alcance de lo verificado.** La respuesta de Gobierno Digital resuelve la **autenticación** y el uso de credenciales. **No define quién es responsable y quién encargado del tratamiento** de los datos financieros municipales bajo Ley 21.719 — eso sigue abierto en **X-01**. Además, el escenario de SaaS centralizado está redactado pensando en servicios al ciudadano («percibido como una prestación de la Subsecretaría hacia la comunidad»); el plano de personas de SGM son funcionarios municipales. La lectura calza, pero si Rentas entra al alcance habrá ciudadanos autenticándose y conviene reconsultarlo.
+
+> **Nota de especificación.** En bases y contratos se exige la **propiedad** —Identity Broker con federación a ClaveÚnica— y no un producto determinado, conforme al principio de propiedades y no marcas.
 
 ---
 
@@ -322,7 +341,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | sin contraparte designada (más allá de «SEM» / plataforma SUBDERE) |
 | **Qué hacía el sistema anterior** | Único patrón productivo de ingreso externo; API sin autenticación (H-2) |
 | **Pendientes asociados** | T-12, T-1; fundamento H-2 / Anexo A |
-| **Destino CPI / consulta** | **Ambas** — Institucional/plataforma: semántica del feed y dueños SEM. Mercado (RFI): «¿Cómo implementan el contrato de giradores con auth M2M fuerte sin heredar `auth=none`?» |
+| **Quién puede responder** | **El organismo y, en parte, un proveedor** — Institucional/plataforma: semántica del feed y dueños SEM. Mercado (RFI): «¿Cómo implementan el contrato de giradores con auth M2M fuerte sin heredar `auth=none`?» |
 
 **Riesgo:** repetir un feed sin autenticación con efecto patrimonial, o no tener contrato de giradores y dejar Caja sin ingreso externo.
 
@@ -349,7 +368,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | sin contraparte designada (DM / giradores en glosario de pendientes) |
 | **Qué hacía el sistema anterior** | SEM como patrón productivo; resto parcial vía OI Cont |
 | **Pendientes asociados** | T-1 (bloqueante); ancla T-12 |
-| **Destino CPI / consulta** | **Consulta al mercado (RFI)** — «¿Cómo especifican e inventarian el contrato de entrada de OI desde giradores heterogéneos?» · Inventario local: DM/municipio piloto |
+| **Quién puede responder** | **Un proveedor** — «¿Cómo especifican e inventarian el contrato de entrada de OI desde giradores heterogéneos?» · Inventario local: DM/municipio piloto |
 
 **Riesgo:** Caja sin entradas reales el día uno porque los giradores quedaron fuera de construcción y sin contrato.
 
@@ -376,7 +395,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | SII |
 | **Qué hacía el sistema anterior** | Sin integración al Registro de Transferencias; factoring TUPA manual |
 | **Pendientes asociados** | C-4; X-45; X-79; fuente de PriceReference abierta |
-| **Destino CPI / consulta** | **Consulta institucional** — SII: «¿Existe push o consulta dirigida al Registro Público de Transferencias de Créditos? ¿Qué canal hay para UTM/DTE usable por un sistema municipal?» |
+| **Quién puede responder** | **Solo el organismo** — SII: «¿Existe push o consulta dirigida al Registro Público de Transferencias de Créditos? ¿Qué canal hay para UTM/DTE usable por un sistema municipal?» |
 
 **Riesgo:** afirmar API de cesión en bases y no poder cumplir; o operar factoring a ciegas.
 
@@ -403,7 +422,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | Contraloría |
 | **Qué hacía el sistema anterior** | PDF/TXT parciales; archivo plano ausente; TdR no integrada |
 | **Pendientes asociados** | X-64, C-5, C-6, P-8 (residual TXT CGR) |
-| **Destino CPI / consulta** | **Consulta institucional** — Contraloría: «¿Existe API o canal machine-readable para estado de Toma de Razón? ¿Cuál es el formato vigente del archivo plano mensual?» |
+| **Quién puede responder** | **Solo el organismo** — Contraloría: «¿Existe API o canal machine-readable para estado de Toma de Razón? ¿Cuál es el formato vigente del archivo plano mensual?» |
 
 **Riesgo:** comprometer automatización de TdR en bases sin verificación, o no cerrar formato de reporte exigible.
 
@@ -430,7 +449,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | sin contraparte designada |
 | **Qué hacía el sistema anterior** | Export/cálculo; sin plazo 13:45 ni doble firma en código |
 | **Pendientes asociados** | Sin ID dedicado en `pendientes.md` (propuesto en Parte 3.4) |
-| **Destino CPI / consulta** | **Consulta institucional** — Previred: «¿Cuál es el canal, formato y acuse aceptados para nómina municipal desde un sistema de gestión?» |
+| **Quién puede responder** | **Solo el organismo** — Previred: «¿Cuál es el canal, formato y acuse aceptados para nómina municipal desde un sistema de gestión?» |
 
 **Riesgo:** perder el plazo previsional mensual por falta de canal/acuse definidos.
 
@@ -457,7 +476,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | sin contraparte designada |
 | **Qué hacía el sistema anterior** | XLSX en reportes; sin entidad de envío/acuse |
 | **Pendientes asociados** | Spec F1 en plan RRHH; sin ID en `pendientes.md` (propuesto en Parte 3.4) |
-| **Destino CPI / consulta** | **Consulta institucional** — DIPRES: «¿Formato, canal y acuse del informe mensual de nómina municipal?» |
+| **Quién puede responder** | **Solo el organismo** — DIPRES: «¿Formato, canal y acuse del informe mensual de nómina municipal?» |
 
 **Riesgo:** entregar export sin canal verificable y no demostrar cumplimiento ante DIPRES.
 
@@ -484,7 +503,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | TGR (sin unidad nominada) |
 | **Qué hacía el sistema anterior** | Sin modelos de dominio FCM/Form. 10; TUPA vacío |
 | **Pendientes asociados** | T-2; spec Formulario 10 F1 |
-| **Destino CPI / consulta** | **Consulta institucional** — TGR: «¿Formato, canal y acuse vigentes del Formulario 10 para municipios?» |
+| **Quién puede responder** | **Solo el organismo** — TGR: «¿Formato, canal y acuse vigentes del Formulario 10 para municipios?» |
 
 **Riesgo:** validadores legales con cifras no verificadas (T-2) o formulario sin canal.
 
@@ -511,7 +530,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | sin contraparte designada (marco FCM / TGR) |
 | **Qué hacía el sistema anterior** | Sin modelos FCM; comentarios residuales |
 | **Pendientes asociados** | T-2; C-7 / informes Cont |
-| **Destino CPI / consulta** | **No aplica** como pregunta de API FCM — redirigir a ficha TGR / SINIM |
+| **Quién puede responder** | **No aplica** como pregunta de API FCM — redirigir a ficha TGR / SINIM |
 
 **Riesgo:** tratar FCM como integración distinta de TGR y duplicar exigencias contradictorias.
 
@@ -538,7 +557,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | SUBDERE / DM |
 | **Qué hacía el sistema anterior** | Pres: TXT CGR parcial, SINIM/BEP no estructurados; Cont: PDF ≠ BEP |
 | **Pendientes asociados** | P-8; C-7; P-12; X-08 (frescura SINIM) |
-| **Destino CPI / consulta** | **Consulta institucional** — SUBDERE/SINIM: «¿Vigencia de planillas BEP, canal de carga y periodicidad exigibles al SGM?» |
+| **Quién puede responder** | **Solo el organismo** — SUBDERE/SINIM: «¿Vigencia de planillas BEP, canal de carga y periodicidad exigibles al SGM?» |
 
 **Riesgo:** exportar formatos obsoletos y fallar el ciclo nacional de observaciones.
 
@@ -565,9 +584,9 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | SGD / DM / operación — sin persona nominada |
 | **Qué hacía el sistema anterior** | Integraciones directas a terceros (patrón a no replicar para OAE↔OAE) |
 | **Pendientes asociados** | X-61, X-82, X-57 |
-| **Destino CPI / consulta** | **Ambas** — Institucional: quién opera el nodo y enrolamiento. **Consulta al mercado (RFI):** «¿Cómo resolverían la integración con múltiples organismos del Estado bajo la red de interoperabilidad del D.S. N° 12/2023 sin que SGM sea el nodo?» |
+| **Quién puede responder** | **El organismo y, en parte, un proveedor** — Institucional: quién opera el nodo y enrolamiento. **Un proveedor:** «¿Cómo resolverían la integración con múltiples organismos del Estado bajo la red de interoperabilidad del D.S. N° 12/2023 sin que SGM sea el nodo?» |
 
-**Riesgo:** prometer la red de interoperabilidad en v1 sin decisión de operación, o omitirla del RFI y descubrir el costo tarde.
+**Riesgo:** prometer la red de interoperabilidad en v1 sin decisión de operación, o dejarla fuera de la consulta y descubrir el costo tarde.
 
 ---
 
@@ -592,9 +611,9 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | Estándar Gobierno Digital (norma) — sin contraparte operativa de «API» |
 | **Qué hacía el sistema anterior** | no está en el corpus como cumplimiento NTDEE |
 | **Pendientes asociados** | X-60, X-62, X-63, X-58 |
-| **Destino CPI / consulta** | **Consulta al mercado (RFI)** — «¿Cómo demuestran cumplimiento NTDEE (matriz + checklist art. 35) sin reescribir el expediente de negocio?» · Institucional solo si se valida interpretación normativa |
+| **Quién puede responder** | **Un proveedor** — «¿Cómo demuestran cumplimiento NTDEE (matriz + checklist art. 35) sin reescribir el expediente de negocio?» · Institucional solo si se valida interpretación normativa |
 
-**Riesgo:** listarla como «integración Estado» con endpoint y malgastar el RFI; o no exigir checklist art. 35 en recepción.
+**Riesgo:** listarla como «integración Estado» con endpoint que no existe; o no exigir checklist art. 35 en recepción.
 
 ---
 
@@ -619,7 +638,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | DM / Registro Civil |
 | **Qué hacía el sistema anterior** | Sin dominio; comentario residual |
 | **Pendientes asociados** | T-9 |
-| **Destino CPI / consulta** | **Consulta institucional** — Registro Civil: «¿Mecanismo (API, archivo o portal), periodicidad y manejo de errores para RMTNP municipal?» |
+| **Quién puede responder** | **Solo el organismo** — Registro Civil: «¿Mecanismo (API, archivo o portal), periodicidad y manejo de errores para RMTNP municipal?» |
 
 **Riesgo:** asumir API y no poder cargar multas; o dejar el proceso solo en portal sin trazabilidad SGM.
 
@@ -646,7 +665,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | sin contraparte designada en el organismo; DM + Tes/Cont |
 | **Qué hacía el sistema anterior** | Estados `hr.leave.isapre` + vínculo OI/pago; sin integración a portales |
 | **Pendientes asociados** | R-7 |
-| **Destino CPI / consulta** | **Consulta institucional** — COMPIN/Isapre (si se incluye v1): «¿Canal de consulta/estado de licencias y subsidios?» · Decisión de alcance: DM |
+| **Quién puede responder** | **Solo el organismo** — COMPIN/Isapre (si se incluye v1): «¿Canal de consulta/estado de licencias y subsidios?» · Decisión de alcance: DM |
 
 **Riesgo:** datos de salud sin dueño de cobranza ni canal, o prometer integración inexistente.
 
@@ -673,7 +692,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | DM / registro externo — sin unidad nominada |
 | **Qué hacía el sistema anterior** | Ausente |
 | **Pendientes asociados** | R-11 |
-| **Destino CPI / consulta** | **Consulta institucional** — administrador del Registro: «¿Existe consulta integrable desde un sistema municipal o solo portal con evidencia manual?» |
+| **Quién puede responder** | **Solo el organismo** — administrador del Registro: «¿Existe consulta integrable desde un sistema municipal o solo portal con evidencia manual?» |
 
 **Riesgo:** contratar honorarios sin evidencia de consulta y quedar en falta legal.
 
@@ -700,7 +719,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | sin contraparte designada por portal |
 | **Qué hacía el sistema anterior** | `report.transparency`, `report.ine`; LRE wizard CSV sin dominio; sin envío/acuse |
 | **Pendientes asociados** | R-5; spec reportes F1 |
-| **Destino CPI / consulta** | **Consulta institucional** (por portal, si se exige envío): formato/canal/acuse. **R-5** es decisión jurídica interna SUBDERE/DM sobre LRE |
+| **Quién puede responder** | **Solo el organismo** (por portal, si se exige envío): formato/canal/acuse. **R-5** es decisión jurídica interna SUBDERE/DM sobre LRE |
 
 **Riesgo:** exportar CSV sin acuse y no poder demostrar cumplimiento; o implementar LRE sin saber si aplica a municipios.
 
@@ -727,7 +746,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | sin contraparte designada (banco del municipio) |
 | **Qué hacía el sistema anterior** | `partner.bank.transfer.file` en Cont Odoo |
 | **Pendientes asociados** | Propiedad `BankTransferFile` (F0 Tes); T-5 / C-10 certificado saldos |
-| **Destino CPI / consulta** | **Consulta al mercado (RFI)** — «¿Cómo cubren archivo bancario / host-to-host y certificado de saldos multi-banco municipal?» · Convenios: cada municipio |
+| **Quién puede responder** | **Un proveedor** — «¿Cómo cubren archivo bancario / host-to-host y certificado de saldos multi-banco municipal?» · Convenios: cada municipio |
 
 **Riesgo:** frontera Cont/Tes sin dueño del archivo bancario y pagos o cierres rotos.
 
@@ -753,29 +772,29 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 
 Las mismas **10** filas del listado bajo §1.4 punto 1: red de interoperabilidad; SEM / giradores; Previred; DIPRES; TGR / FCM; COMPIN / Isapre; Registro Deudores Pensiones Alimentos; Transparencia / INE / LRE; Bancos; ClaveÚnica.
 
-### 3.2 Mecanismos nunca verificados — pregunta exacta y destino CPI
+### 3.2 Mecanismos no confirmados — pregunta a formular y de quién depende la respuesta
 
-| Integración | Pregunta exacta | Destino CPI |
+| Integración | Pregunta a formular | Quién puede responder |
 |---|---|---|
-| DocDigital | ¿Existe M2M para originar y recuperar acto+folio? | Consulta institucional — Gobierno Digital |
-| SIAPER | ¿M2M o solo portal? | Consulta institucional — CGR |
-| Mercado Público | ¿Webhook, polling o ambos? ¿Sandbox y rate limits? / ¿Cómo diseñan resiliencia si MP no responde? | **Ambas** — ChileCompra + RFI (X-32) |
-| FirmaGob | ¿Operaciones FEA asistida/desatendida y límites? | Consulta institucional — Gobierno Digital |
-| SII cesión / DTE / UTM | ¿Push o consulta dirigida? ¿Canal DTE/UTM? | Consulta institucional — SII |
-| CGR TdR / archivo plano | ¿API TdR? ¿Formato archivo plano vigente? | Consulta institucional — Contraloría |
-| Previred | ¿Canal, formato, acuse nómina municipal? | Consulta institucional — Previred |
-| DIPRES | ¿Formato, canal, acuse informe nómina? | Consulta institucional — DIPRES |
-| TGR Form. 10 | ¿Formato, canal, acuse? | Consulta institucional — TGR |
-| SINIM/BEP | ¿Vigencia planillas, canal, periodicidad? | Consulta institucional — SUBDERE |
-| Registro Civil RMTNP | ¿API, archivo o portal? | Consulta institucional — Registro Civil |
-| Deudores alimentos | ¿Consulta integrable? | Consulta institucional — administrador del Registro |
-| COMPIN/Isapre | ¿Canal de estado de licencias/subsidios? | Consulta institucional (si v1) |
-| Red de interoperabilidad | ¿Quién opera el nodo? / ¿Cómo diseñar borde C-PISEE multi-organismo? | Ambas — DM/SGD + RFI |
-| NTDEE | ¿Cómo demostrar matriz + art. 35? | RFI (+ jurídico si interpreta norma) |
-| Giradores | ¿Contrato OI multi-origen? | RFI + inventario DM |
-| SEM to-be | ¿Auth M2M sobre semántica SEM? | Ambas |
-| Bancos | ¿Archivo vs host-to-host multi-banco? | RFI |
-| ClaveÚnica sesión | ¿Parámetros de sesión exigibles? | Consulta institucional (si aplica) / cierre X-22 interno |
+| DocDigital | ¿Existe M2M para originar y recuperar acto+folio? | Solo el organismo — Gobierno Digital |
+| SIAPER | ¿M2M o solo portal? | Solo el organismo — CGR |
+| Mercado Público | ¿Webhook, polling o ambos? ¿Sandbox y rate limits? / ¿Cómo diseñan resiliencia si MP no responde? | **El organismo y, en parte, un proveedor** — ChileCompra + RFI (X-32) |
+| FirmaGob | ¿Operaciones FEA asistida/desatendida y límites? | Solo el organismo — Gobierno Digital |
+| SII cesión / DTE / UTM | ¿Push o consulta dirigida? ¿Canal DTE/UTM? | Solo el organismo — SII |
+| CGR TdR / archivo plano | ¿API TdR? ¿Formato archivo plano vigente? | Solo el organismo — Contraloría |
+| Previred | ¿Canal, formato, acuse nómina municipal? | Solo el organismo — Previred |
+| DIPRES | ¿Formato, canal, acuse informe nómina? | Solo el organismo — DIPRES |
+| TGR Form. 10 | ¿Formato, canal, acuse? | Solo el organismo — TGR |
+| SINIM/BEP | ¿Vigencia planillas, canal, periodicidad? | Solo el organismo — SUBDERE |
+| Registro Civil RMTNP | ¿API, archivo o portal? | Solo el organismo — Registro Civil |
+| Deudores alimentos | ¿Consulta integrable? | Solo el organismo — administrador del Registro |
+| COMPIN/Isapre | ¿Canal de estado de licencias/subsidios? | Solo el organismo (si v1) |
+| Red de interoperabilidad | ¿Quién opera el nodo? / ¿Cómo diseñar borde C-PISEE multi-organismo? | El organismo y, en parte, un proveedor — DM/SGD + RFI |
+| NTDEE | ¿Cómo demostrar matriz + art. 35? | Un proveedor (+ criterio jurídico si interpreta norma) |
+| Giradores | ¿Contrato OI multi-origen? | Un proveedor + inventario de giradores de DM |
+| SEM to-be | ¿Auth M2M sobre semántica SEM? | El organismo y, en parte, un proveedor |
+| Bancos | ¿Archivo vs host-to-host multi-banco? | Un proveedor |
+| ClaveÚnica sesión | ¿Parámetros de sesión exigibles? *(el mecanismo de broker ya está verificado — 27-01-2026; queda solo la calibración de sesión)* | Solo el organismo (si aplica) / cierre X-22 interno |
 
 ### 3.3 Contradicciones entre documentos
 
@@ -802,7 +821,7 @@ Formato alineado a `pendientes.md`. **No se da de alta aquí.**
 
 1. **¿Se afirmó qué ofrece un tercero sin respaldo?** Se revisaron las fichas: capacidades API no verificadas quedan en **Desconocido** / «no asumir». Cobertura DocDigital 80 %, H-2 SEM y read-only MP citan rutas. Si aparece redacción que suene a catálogo comercial de un tercero, corregir contra esta regla.
 2. **¿Campos en blanco?** No: ausencias usan `no está en el corpus` o `sin contraparte designada`.
-3. **¿Parte 1 legible sola con acciones?** Sí: cifras, bloqueos bases vs go-live, lo que el mercado no resuelve (§1.3), contrapartes, convenios, decisión híbrida citada.
-4. **¿Verificado vs supuesto?** **Cero** capacidades de integración verificadas con el organismo titular; **19/21** en Supuesto o Desconocido (las otras 2 son MP y SEM: Verificado de decisión/hallazgo, no de capacidad de tercero). Destinos CPI de las 19: 13 institucional / 3 Ambas / 3 RFI. Los tres hechos verificados del corpus (cobertura DocDigital, hallazgo H-2, decisión read-only MP) no son capacidades de terceros y así se declara en 1.1, sin suavizar.
+3. **¿Parte 1 legible sola con acciones?** Sí: cifras, bloqueos bases vs go-live, contrapartes, convenios, decisión híbrida citada.
+4. **¿Confirmado vs supuesto?** **Una** capacidad confirmada con el organismo titular (Clave Única, 27-01-2026); **20/21** sobre supuesto o sin información (las otras 2 son MP y SEM: Verificado de decisión/hallazgo, no de capacidad de tercero). Destinos CPI de las 19: 13 institucional / 3 El organismo y, en parte, un proveedor / 3 RFI. Los tres hechos verificados del corpus (cobertura DocDigital, hallazgo H-2, decisión read-only MP) no son capacidades de terceros y así se declara en 1.1, sin suavizar.
 5. **¿Rutas citadas existen?** Comprobadas al redactar: `integracion-docdigital.md`, `integracion-mercado-publico.md`, `estandar-firma-electronica.md`, `plataforma-core.md`, `seguridad.md`, ADR DocDigital, `brechas-estandarizacion-ntdee-pisee.md`, `nodo-integracion-subdere.md`, `pendientes.md`, planes de módulo, `inventario-repositorio.md`, `registro-normas.md` (N-02, N-06, N-09, N-15, N-17, N-21, N-22).
-6. **Ajustes de plan:** cada no verificado tiene Destino CPI; Grupo B es tabla; Parte 1 se cerró tras las fichas; SEM H-2 figura como hallazgo Verificado, no como «descartado».
+6. **Ajustes de plan:** cada mecanismo no confirmado declara de quién depende la respuesta; Grupo B es tabla; Parte 1 se cerró tras las fichas; SEM H-2 figura como hallazgo Verificado, no como «descartado».

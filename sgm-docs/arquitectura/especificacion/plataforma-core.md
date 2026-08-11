@@ -50,7 +50,7 @@ Consecuencias:
 
 | # | Servicio | Qué resuelve | Base normativa ya escrita | Estado |
 |---|---|---|---|---|
-| C1 | **Identidad y autenticación** | Plano personas (Clave Única) y plano sistemas (M2M, scopes por módulo y municipio) | `seguridad.md` §2, `estandares-api.md` §8 | Exigencias definidas; diseño abierto (**X-02**, **X-22**, **X-23**) |
+| C1 | **Autenticación federada y registro local de usuario** | Plano personas: autenticación federada contra Clave Única mediante *Identity Broker*; **SGM no es proveedor de identidad**. Plano sistemas (M2M, scopes por módulo y municipio) | `seguridad.md` §2, `estandares-api.md` §8; ver §7ter | Mecanismo de broker **Verificado** (Gobierno Digital, 27-01-2026); diseño abierto (**X-02**, **X-22**, **X-23**) |
 | C2 | **Autorización (RBAC + SoD)** | Roles por módulo asignados por tenant y unidad; incompatibilidades SoD aplicadas por el motor; administración delegada | `seguridad.md` §3–§4; [`catalogo-roles.md`](./catalogo-roles.md) | Modelo exigido; catálogo en **Borrador** (**X-24**, **X-25**) |
 | C3 | **Gestión de tenants** | Ciclo de vida del municipio: alta, aprovisionamiento de schema, configuración, suspensión, baja; catálogo de módulos habilitados por tenant | `principios-no-negociables.md` §2, `musts-arquitectura.md` §3 | **Nuevo en este documento** (§5) |
 | C4 | **Parámetros** | Dos familias: `NormativeParameter` (legal, administrado por SUBDERE, doble control, vigencia temporal) y parámetros operativos por tenant (perfil de recepción, vistos buenos configurables) | Fichas etapa 2; **X-37**, **X-39**, **X-42** | Entidad definida; administración sin especificar (§6) |
@@ -187,6 +187,74 @@ Los módulos **nunca** escriben en S3/Azure/GCS ni en un DMS directamente. Siemp
 | **Repositorio DMS** | C10 `external_dms` | Solo si el municipio usa DocDigital como gestor documental de archivos |
 
 **FirmaGob + documentos:** C9 lee el PDF vía C10 y persiste la versión firmada vía C10; el módulo solo recibe `DocumentRef` actualizado. Para actos administrativos tramitados en DocDigital, la FEA ocurre **dentro** de C11; C9 permanece para documentos que no son esos actos.
+
+## 7ter. Identidad: qué hace SGM y qué no
+
+Distinción necesaria porque determina el alcance de lo licitado y se presta a malentendidos.
+
+**SGM no hace identificación ni es proveedor de identidad.** No mantiene almacén de contraseñas, no emite credenciales de persona y no actúa como autoridad de atributos. La autenticación es federada contra Clave Única a través de un *Identity Broker*, patrón que **Gobierno Digital declaró arquitectura aceptada** (Mesa de Ayuda, 27-01-2026). SUBDERE ya opera hoy una instancia de broker, con administración de reinos, para otros sistemas en producción.
+
+**SGM sí mantiene el registro local de usuario.** Clave Única responde quién es una persona; no sabe que ese RUN es el director de administración y finanzas de un municipio determinado. El vínculo entre persona, municipio, unidad, rol, subrogancia y vigencia vive en SGM y está especificado en **C2** (autorización, RBAC y SoD) y **C8** (ciclo de vida de usuarios). Esa parte **no sale del alcance**.
+
+Formulación exigible en bases: *autenticación federada por OIDC contra el broker de identidad institucional, sin proveedor de identidad propio; registro local de usuario, unidad, rol y vigencia dentro del sistema.* Se exige la propiedad, no un producto — el broker que SUBDERE opera hoy es un hecho del entorno con el que el sistema debe integrarse, no un requisito impuesto al oferente.
+
+### 7ter.1 Credenciales de Clave Única por modo de consumo
+
+Gobierno Digital acotó el alcance del broker según quién sea el **responsable del tratamiento de los datos** — no es una preferencia de arquitectura:
+
+| Modo de consumo (§1 `decisiones-macro-stack.md`) | Quién autentica a la persona | Credenciales de Clave Única |
+|---|---|---|
+| **Hosting completo** y **hosting híbrido** — el municipio opera contra el frontend de SUBDERE | SGM, vía broker | **Client ID y Secret institucional de SUBDERE**. La pantalla de Clave Única muestra «Usted está iniciando sesión en: SUBDERE». El municipio no gestiona credenciales |
+| **Módulos à la carte vía API** — el municipio integra los módulos en sus propios sistemas | **El sistema del municipio, no SGM** | **Clave Única no participa en la relación con SGM.** SGM solo ve una credencial máquina a máquina (`ApiClient` con scopes). El Client ID que el municipio tramite ante Gobierno Digital es para *su* aplicación, y SUBDERE no intermedia |
+
+El híbrido se confunde fácil con el à la carte y no lo es: en el híbrido solo los **archivos** residen en nube municipal; la operación ocurre igual contra el frontend de SUBDERE. Para efectos de identidad, híbrido y hosting completo son el mismo caso.
+
+**Caso residual, sin decidir.** Un administrador de un municipio à la carte podría necesitar entrar a la consola municipal (§9.2) para administrar usuarios, roles y unidades. Ese login ocurre en el dominio de SUBDERE, contra un servicio de SUBDERE, de modo que corresponde al primer caso — aunque el municipio sea responsable del dato. La alternativa es que administre roles por API y no entre nunca. **Falta decidirlo.**
+
+**Posición registrada de informática de SUBDERE.** Durante el proyecto Odoo, informática recomendó el escenario de credenciales por municipio, con el argumento de que operar la integración centralizadamente responsabiliza a SUBDERE ante cualquier fallo. La recomendación se emitió para una arquitectura y una escala distintas —pilotos, no servicio nacional— y no ha sido reevaluada para 345 municipios, donde el costo del trámite por municipio escala linealmente y el centralizado no.
+
+**Tensión que la decisión debe resolver.** Bajo hosting completo, SUBDERE ya es responsable de la disponibilidad del servicio: la autenticación no es un caso especial. Lo que sí distingue el argumento de informática es que un fallo de Clave Única o del broker es **externo**, y SUBDERE cargaría con la responsabilidad de algo que no controla — matiz que aplica por igual a toda integración intermediada centralmente.
+
+### 7ter.2 Organización del broker: un reino, y credenciales por tenant como propiedad diferida
+
+**Decisión: un único reino en el broker.** No hay reino por municipio. El trabajo del broker aquí es delgado —autenticar y afirmar un RUN—; toda la autorización vive en SGM (**C2**, **C8**, consola municipal §9.2), y los administradores municipales nunca acceden al broker.
+
+Fundamentos:
+
+| Razón | Detalle |
+|---|---|
+| **Una persona puede servir a más de un municipio** | Ocurre en la práctica, y con certeza en el caso de quien cambia de municipio y deja registros en ambos. Con un reino por municipio serían cuentas separadas, sin vínculo, con relogin para cambiar de contexto y auditorías que no se cruzan |
+| **El RUN es identificador nacional y único** | No hay colisión que obligue a separar espacios de identidad |
+| **El aislamiento ya existe en la capa de datos** | La multitenencia es por schema. Un reino por municipio sería una segunda tenencia paralela que hay que mantener sincronizada con la primera |
+| **Costo de mantención lineal** | Cada reino exige su propia configuración de proveedor de identidad. Un reino por municipio significa cientos de configuraciones de Clave Única que actualizar ante cualquier cambio de endpoint o rotación de certificado |
+
+**La tenencia no viaja en el token.** El token afirma el RUN; SGM resuelve contra sus propios `RoleAssignment` sobre qué municipios puede actuar esa persona. Es más seguro que confiar en un *claim* de tenant, y resuelve por diseño el caso de la persona con vínculo en dos municipios.
+
+**Contrapartida asumida:** el radio de impacto de una mala configuración alcanza a todos los municipios alojados. Se mitiga con control de cambios sobre el broker, no con separación de reinos.
+
+#### Credenciales de Clave Única por tenant — propiedad declarada, implementación diferida
+
+Si un municipio exigiera su propio Client ID para autenticar personas contra SGM, el mecanismo es el que Gobierno Digital describió: *«SUBDERE puede seguir actuando como administrador técnico a través de Keycloak, pero configurando un Client específico que apunte a las credenciales del municipio respectivo»* (27-01-2026).
+
+Forma exigible:
+
+1. El municipio tramita su Client ID y Secret ante Gobierno Digital.
+2. Un administrador municipal los ingresa en la vista de configuración de integraciones de la consola municipal (§9.2).
+3. El core registra una configuración de proveedor de identidad adicional **dentro del mismo reino**, con alias asociado al tenant. El municipio nunca accede al broker: la consola es toda la interfaz.
+4. En el login, el punto de entrada rutea al proveedor del tenant; el institucional de SUBDERE es el default cuando el municipio no tiene el suyo. **[PENDIENTE X-95]** — cómo se expresa el tenant en el punto de entrada (subdominio, ruta o selección posterior) está sin decidir; si se activa esta capacidad, el tenant debe conocerse **antes** de autenticar, lo que descarta resolverlo después del login.
+5. Emitido el token, SGM resuelve roles desde sus propios `RoleAssignment`, igual que en el caso institucional.
+
+Tres exigencias que acompañan a este mecanismo:
+
+- **SGM no persiste el secreto.** La consola lo recibe y lo escribe en el broker; SGM conserva solo el alias y los metadatos. El campo es de sola escritura: se ingresa y se rota, nunca se lee de vuelta. Un almacén menos donde vive un secreto de un tercero.
+- **Privilegio acotado.** El core opera con una cuenta de servicio limitada a administrar proveedores de identidad en el reino, no con un administrador general del broker.
+- **Sin federación en la aplicación.** La federación OIDC la resuelve el broker. SGM no implementa intercambio de tokens, manejo de sesión ni rotación de llaves por tenant en código de aplicación.
+
+**Estado: contrato completo, implementación diferida.** Dado que los usuarios à la carte no autentican contra SGM, esta capacidad puede no ejercitarse nunca. Se declara para que exista la condición de activación y no se rediseñe el borde cuando alguien la pida. Patrón coherente con **X-81** (alcance parcial declarado y auditable). **Condición de activación:** que un municipio requiera formalmente autenticar personas contra SGM con Client ID propio.
+
+> **Nota de bases.** Nada de lo anterior nombra un producto. Lo exigible es la propiedad: federación OIDC contra un broker de identidad institucional, con soporte de configuración de proveedor por tenant administrable desde la consola, sin persistencia del secreto en la aplicación. La organización interna del broker es decisión de operación de SUBDERE sobre infraestructura que ya opera, **no forma parte de lo licitado**, y puede cambiarse sin tocar el contrato.
+
+> **Alcance de lo verificado.** La respuesta de Gobierno Digital resuelve autenticación y uso de credenciales. **No define quién es responsable y quién encargado del tratamiento** de los datos financieros municipales bajo Ley 21.719 (**X-01**). El escenario de SaaS centralizado está además redactado pensando en servicios al ciudadano; el plano de personas de SGM son funcionarios municipales. Si Rentas entra al alcance habrá ciudadanos autenticándose y corresponde reconsultar.
 
 ## 8. Autorización en runtime: decisión pendiente con opciones acotadas
 

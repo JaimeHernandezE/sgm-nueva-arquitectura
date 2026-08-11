@@ -18,13 +18,13 @@ Registro centralizado de pendientes del corpus por prefijo ([`../../plan-general
 
 | Serie | Ámbito | Fuente de detalle | Total | Abiertos | Parciales | Resueltos / cerrados / absorbidos |
 |---|---|---|---:|---:|---:|---:|
-| [X-nn](#transversales-x-nn--94-pendientes-histórico) | Transversal | esta sección | 94 | 91 | 0 | 3 (X-46, X-47, X-80) |
+| [X-nn](#transversales-x-nn--95-pendientes-histórico) | Transversal | esta sección | 95 | 92 | 0 | 3 (X-46, X-47, X-80) |
 | [P-nn](#presupuestos-p-nn--31-pendientes-histórico) | Presupuestos | [`presupuestos/plan-de-trabajo_presupuestos.md`](../../modulos/presupuestos/plan-de-trabajo_presupuestos.md) §9 | 31 | 26 | 3 (P-3, P-8, P-25) | 2 (P-2, P-9) |
 | [C-nn](#contabilidad-c-nn--18-pendientes-histórico) | Contabilidad | [`contabilidad/plan-de-trabajo-contabilidad.md`](../../modulos/contabilidad/plan-de-trabajo-contabilidad.md) §8 | 18 | 18 | 0 | 0 |
 | [T-nn](#tesorería-t-nn--14-pendientes-histórico) | Tesorería | [`tesoreria/plan-de-trabajo-tesoreria.md`](../../modulos/tesoreria/plan-de-trabajo-tesoreria.md) §8 | 14 | 14 | 0 | 0 |
 | [R-nn](#rrhh-r-nn--14-pendientes-histórico) | RRHH | [`rrhh/plan-de-trabajo-rrhh.md`](../../modulos/rrhh/plan-de-trabajo-rrhh.md) §8 | 14 | 14 | 0 | 0 |
 | [A-nn](#adquisiciones-a-nn--5-pendientes-histórico) | Adq. decisiones humanas | [`adquisiciones/comparativa-odoo-vs-nuevo.md`](../../modulos/adquisiciones/comparativa-odoo-vs-nuevo.md) §5 | 5 | 5 | 0 | 0 |
-| | | **Corpus** | **176** | **168** | **3** | **5** |
+| | | **Corpus** | **177** | **169** | **0** | **8** |
 
 **Prioridad (corpus):** Bloqueante 6 · Alta 96 · Media 33 · Baja 36 · — 5
 
@@ -66,11 +66,11 @@ Quién debe aportar el cierre (no siempre es el dueño del documento origen). Va
 
 ---
 
-## Transversales (X-nn) — 94 pendientes (histórico)
+## Transversales (X-nn) — 95 pendientes (histórico)
 
 Pendientes transversales de arquitectura, seguridad, API, Adquisiciones en registro, DocDigital, nodo SUBDERE y estándar de pruebas. Prefijo **X-nn** (ex P-nn de arquitectura).
 
-**Conteo:** 94 total · 91 abiertos (incl. borradores / propuestos / bloqueados) · 3 cerrados/absorbidos (X-46, X-47, X-80).
+**Conteo:** 95 total · 92 abiertos (incl. borradores / propuestos / bloqueados) · 3 cerrados/absorbidos (X-46, X-47, X-80).
 
 | ID | Pendiente | Documento(s) origen | Dependencia externa | Estado | Prioridad | Opciones | Default propuesto | Criterio de cierre |
 |---|---|---|---|---|---|---|---|---|
@@ -170,6 +170,7 @@ Pendientes transversales de arquitectura, seguridad, API, Adquisiciones en regis
 | X-94 | Definición del catálogo / base de productos (`Product`): campos, dueño, fuente, y `searchProducts` para `PurchaseRequestLine.product_code` | entidades-adquisiciones.md (`Product`, `PurchaseRequestLine.product_code`); 1-solped.md §1.1; contracts.md | DM / Adquisiciones | Abierto | Alta | (a) fuente ChileCompra; (b) catálogo municipal; (c) híbrido (código externo opcional) | hasta cierre: `product_code` opcional + typeahead demo | Modelo `Product` + op `searchProducts` en contracts; dueño fijado |
 
 ---
+| X-95 | **Punto de entrada del usuario y expresión del tenant en el front.** Cómo llega una persona a *su* municipio en SGM. Distinto de X-03, que resuelve el lado de la API. Con credenciales de Clave Única por tenant (`plataforma-core.md` §7ter.2) el tenant debe conocerse **antes** de autenticar, lo que condiciona las opciones | `plataforma-core.md` §7ter.2; `estandares-api.md` §6 (X-03); landing de `sgm-prototipos` | ninguna | Abierto | Alta | (a) subdominio por municipio (`quilaco.sgm.gob.cl`), con comodín de certificado y DNS; (b) tenant en ruta (`sgm.gob.cl/quilaco`); (c) entrada única y selección de municipio tras autenticar; (d) dominio propio por municipio (`tramites.quilaco.cl`) | (a) subdominio — propuesta de trabajo: aísla cookies y almacenamiento por origen entre municipios, deja el tenant conocido antes de autenticar y admite dominio propio por CNAME. (d) se conserva como propiedad disponible para el municipio que la exija, no como default. (c) queda descartada si se activan credenciales por tenant, salvo paso previo de selección de municipio | Decisión de arquitectura escrita + wireframe del punto de entrada; coherencia resuelta con X-03; landing del prototipo actualizado |
 
 ## Presupuestos (P-nn) — 31 pendientes (histórico)
 
