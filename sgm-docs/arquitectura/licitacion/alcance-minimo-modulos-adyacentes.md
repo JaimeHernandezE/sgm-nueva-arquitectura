@@ -2,9 +2,11 @@
 
 **Proyecto:** SGM — Sistema de Gestión Municipal
 **Pregunta:** para que **Adquisiciones y Presupuestos** sean completamente funcionales, ¿qué se necesita como mínimo de Contabilidad, Tesorería y RRHH?
-**Versión:** 0.2 (borrador para revisión interna)
+**Versión:** 0.3 (borrador para revisión interna)
 **Estado:** propuesta de alcance, no validada con DM
 **Fecha:** julio 2026
+
+**Cambios v0.3:** §7 — mínimo de integraciones con terceros derivado del alcance de este documento y del registro [`integraciones-terceros.md`](../especificacion/integraciones-terceros.md) (clases §1.2 + patrón **X-81**). Ajuste §8: X-80 cerrado (motor de liquidación incluido).
 
 **Cambios v0.2:** renumeración de pendientes a la serie transversal **X-nn**, conforme al registro único `arquitectura/decisiones/pendientes.md`. Correspondencia: P-18 → **X-78**, P-19 → **X-79**, P-20 → **X-80**, P-21 → **X-81**. **X-80 consta cerrado** en el registro: la decisión D-1 del plan de RRHH incorpora el motor de liquidación al alcance; se conserva aquí el enunciado original como antecedente de esa decisión.
 
@@ -177,7 +179,57 @@ Si el motor de liquidación de remuneraciones **no** entra en esta licitación, 
 
 ---
 
-## 7. Cómo especificar un módulo reducido sin construir un callejón sin salida
+## 7. Integraciones con terceros en este alcance
+
+**Fuente de fichas y clases:** [`integraciones-terceros.md`](../especificacion/integraciones-terceros.md) (Parte 1; Parte 2 fichas A1–A21 y Grupo B). Este apartado **no** redefine el registro: filtra qué relaciones caen dentro del conjunto mínimo de §6 y §9.
+
+**Regla de compra (mismas clases del registro §1.2):**
+
+| Modo en bases | Significado | Patrón |
+|---|---|---|
+| **Construir** | Automatización o canal operativo en v1; sin ella el núcleo de §3–§5 no cierra o pierde el valor de la licitación | Indispensable o degradable de costo alto del registro |
+| **Export / manual (X-81)** | Contrato completo especificado; v1 implementa generación de archivo o carga asistida; automatización activable después **sin recortar el modelo de datos** | Degradable de costo acotado; **[PENDIENTE X-81]** |
+| **Diferir** | Fuera de la primera versión según pendiente ya formulado, o fuera porque el módulo adyacente quedó diferido en §3.3 / §4.3 | Diferible del registro o del alcance de módulo |
+
+### 7.1 Tabla integración × módulos × modo
+
+IDs `A-nn` = fichas del registro. Módulos: **P** Presupuestos, **Adq** Adquisiciones, **C** Contabilidad, **T** Tesorería, **R** RRHH, **Plat** plataforma.
+
+| ID | Integración | Módulos | Modo en este alcance | Notas (solo corpus) |
+|---|---|---|---|---|
+| A5 | ClaveÚnica | Plat | **Construir** | Indispensable; Identity Broker verificado (27-01-2026) |
+| A3 | Mercado Público | Adq | **Construir** | Lectura + deep link (C7); escritura API **prohibida** |
+| A1 | DocDigital | P, Adq, C, T, R | **Construir** | Actos; vía asistida admisible si X-72 no confirma M2M |
+| A4 | FirmaGob | Adq (+ no-actos) | **Construir** | FEA no-acto (C9); actos vía DocDigital |
+| A8 | SII — UTM / precios | Adq | **Construir** | Umbrales SOLPED / modalidad |
+| A8 | SII — DTE | C (dueño **[PENDIENTE X-79]**) | **Construir** | Núcleo Cont §3.2 / §3.4; tipo C para Adq etapa 4 |
+| A8 | SII — cesión | C | **Export / manual** | Hasta C-4; no exigir API del Registro de Transferencias |
+| A14 | SINIM / BEP | P, C | **Export / manual** | Magnitudes BEP; canal residual P-8 |
+| A9 | CGR (reportes / TdR) | C, P, Adq | **Export / manual** | Archivo/export exigibles; TdR **manual** (X-64). EEFF elaborados = diferibles Cont §3.3 |
+| A12 / A13 | TGR Form. 10 / FCM | T (C en reportes) | **Export / manual** | FCM en Tes núcleo §4.2; entero vía TGR |
+| A21 | Bancos | T (C si cierre) | **Export / manual** | Archivo transferencia + saldos; conciliación Cont automatizada = diferible §3.3 |
+| A10 | Previred | R | **Export / manual** | Cotizaciones + liquidación (X-80 cerrado); M2M desconocido |
+| A11 | DIPRES | R | **Export / manual** | Informe nómina si hay liquidación; canal/acuse desconocidos |
+| A6 / A7 | SEM / giradores | T | **Contrato de entrada** (no construir recaudación) | Recaudación por tributo = diferible §4.3; giradores fuera de construcción (Tes D-3). Percepción del núcleo exige T-1 acotado o carga/histórico (§4.2) |
+| — | Object storage (Grupo B) | Plat (C10) | **Construir** | Algún backend de expediente |
+| A2 | SIAPER | R | **Diferir** | Opción c de R-2 |
+| A18 | COMPIN / Isapre | R | **Diferir** | Opción c de R-7 |
+| A15 | Red de interoperabilidad | Plat | **Diferir** | Opción c de X-61 |
+| A17 | Registro Civil RMTNP | T | **Diferir** | Alineado a recaudación / procesos Tes diferibles |
+| A20 | Transparencia / INE / LRE | R | **Diferir** (o solo export si bases lo exigen) | No están en núcleo RRHH §5.3 |
+| A19 | Deudores de alimentos | R | **Diferir** / evidencia manual | Si honorarios; opción b del registro |
+| A16 | NTDEE | Transversal | **Diferir** como API | Marco/perfil; subset piloto Adq según X-60 — no es endpoint |
+
+### 7.2 Lectura para bases
+
+- El valor de la licitación se juega en la columna **Construir** (sobre todo MP, DocDigital, FirmaGob, DTE). Dejarlas como «solo archivo» reproduce el as-is con UI nueva.
+- La columna **Export / manual** es compra parcial legítima **solo** si el contrato y el modelo quedan completos (**X-81**).
+- SEM/giradores no inflan el alcance con patentes/cobranza; sí obligan a declarar **cómo entra la percepción** del núcleo Tes (T-1 acotado, histórico o registro asistido).
+- El inventario completo de las 21 fichas sigue en el registro; este §7 es el subconjunto del alcance mínimo de §9.
+
+---
+
+## 8. Cómo especificar un módulo reducido sin construir un callejón sin salida
 
 Este es el riesgo real de la estrategia, y conviene nombrarlo antes de escribir las bases.
 
@@ -189,11 +241,11 @@ Tres reglas:
 2. **El modelo de datos no se recorta.** Recortar el modelo es lo que obliga a migrar después. Recortar la interfaz de usuario y los procesos automatizados, no.
 3. **Cada reducción se declara con su condición de salida.** "Conciliación bancaria diferida" debe venir con el criterio que la vuelve exigible, no quedar como omisión silenciosa.
 
-> **PENDIENTE X-81:** Definir el mecanismo formal para declarar alcance parcial en las bases —qué se implementa, qué se contrata como contrato sin implementación, y bajo qué condición se activa— de modo que la reducción sea auditable y no una omisión.
+> **PENDIENTE X-81:** Definir el mecanismo formal para declarar alcance parcial en las bases —qué se implementa, qué se contrata como contrato sin implementación, y bajo qué condición se activa— de modo que la reducción sea auditable y no una omisión. Aplica también a la columna «Export / manual» de §7.
 
 ---
 
-## 8. Lo que esto implica para la licitación
+## 9. Lo que esto implica para la licitación
 
 Traducido a alcance: **la licitación no puede ser "Adquisiciones y Presupuestos"**. El conjunto mínimo funcional es:
 
@@ -203,28 +255,32 @@ Plataforma transversal          (6 servicios, §2)
 + Adquisiciones                 (completo)
 + Contabilidad                  (núcleo, no reducible en el libro mayor)
 + Tesorería                     (percepción y pago; sin recaudación por tributo)
-+ RRHH                          (dotación y costo; liquidación por decidir, X-80)
++ RRHH                          (dotación y costo; liquidación incluida — X-80 cerrado)
 ```
 
 Los dos módulos "completos" descansan sobre tres módulos parciales y una plataforma, y esa es la unidad mínima que produce un municipio operable. Presentarlo así —y no como dos módulos más algunos apéndices— es también más defendible: describe un sistema que funciona en vez de dos piezas que necesitan andamios.
 
+El subconjunto de integraciones con terceros de esa unidad está en **§7**.
+
 ---
 
-## 9. Pendientes abiertos en este documento
+## 10. Pendientes abiertos en este documento
 
 | ID | Pendiente | Bloquea |
 |---|---|---|
 | **X-78** | Lista cerrada de servicios transversales y su propiedad | Alcance por módulo |
-| **X-79** | Propiedad de la recepción y aceptación de DTE; integración requerida | Adquisiciones etapa 4; devengo |
+| **X-79** | Propiedad de la recepción y aceptación de DTE; integración requerida | Adquisiciones etapa 4; devengo; fila SII–DTE de §7 |
 | **X-80** *(cerrado)* | ¿Entra el motor de liquidación de remuneraciones en esta licitación? | Alcance RRHH; exactitud de validadores del 42% y 20% |
-| **X-81** | Mecanismo formal para declarar alcance parcial en las bases | Redacción de bases |
+| **X-81** | Mecanismo formal para declarar alcance parcial en las bases (módulos e integraciones export/manual de §7) | Redacción de bases |
 
 ---
 
-## 10. Advertencias sobre este documento
+## 11. Advertencias sobre este documento
 
 Escrito a partir de lo establecido en el plan de trabajo de Presupuestos v0.9 y de lo que consta del trabajo previo en Adquisiciones. **Tres áreas se apoyan en inferencia y requieren verificación antes de convertirse en alcance:**
 
 1. **El detalle del núcleo contable** se deriva de los requisitos que Presupuestos y el BEP le imponen, no de una lectura del Manual de Procedimientos Contables (Oficio CGR N° E59549/2020), que todavía no se ha revisado. Puede haber procedimientos obligatorios adicionales.
 2. **La dependencia de DTE** (X-79) es una inferencia a partir del *three-way match* y del requisito de documento sustentatorio del devengo. No está levantada como proceso en ninguna fuente disponible.
 3. **La frontera de Tesorería** entre percepción y sistemas de recaudación no está validada con municipios. Es plausible y económicamente conveniente, pero es una propuesta, no un hallazgo.
+
+**Cuarta advertencia (v0.3):** la tabla de §7 es un **filtro** del registro de integraciones aplicado a este alcance; no verifica capacidades de terceros ni cierra mecanismos en **Desconocido**. Cualquier exigencia contractual sigue las fichas y pendientes del registro.

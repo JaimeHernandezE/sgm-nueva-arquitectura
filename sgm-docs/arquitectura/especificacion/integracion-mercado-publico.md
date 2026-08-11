@@ -43,15 +43,17 @@ La etapa 2 (`modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md`
 
 ## Requerimientos a negociar con ChileCompra
 
-La *Guía de integración SGM – ChileCompra* registra además cinco requerimientos estratégicos a negociar en mesa técnica con ChileCompra:
+La *Guía de integración SGM – ChileCompra* registra además cinco requerimientos estratégicos a negociar en mesa técnica con ChileCompra. No alteran el principio read-only vigente; habilitan que la lectura y el espejo de catálogo sean operables a escala municipal. Su resolución define el alcance futuro de esta integración más allá del diseño actual.
 
-1. **APIs transaccionales completas** para las cuatro modalidades.
-2. **Sincronización diferencial del catálogo** de Convenio Marco (deltas diarios de productos, precios, quiebres de stock y cobertura regional).
-3. **Arquitectura de webhooks** para eventos críticos (OC Aceptada/Rechazada, Proveedor Inhábil) en reemplazo de polling.
-4. **Entorno sandbox** de certificación.
-5. **Acuerdo de rate limits** para fechas de alta demanda.
+| # | Requerimiento | Para qué lo necesita SGM |
+|---|---|---|
+| 1 | **APIs transaccionales completas** para las cuatro modalidades | Cada modalidad tiene hitos distintos (tabla anterior: Compra Ágil y CM con OC Aceptada; Licitación con publicación + Resolución de Adjudicación + OC; Trato Directo con Publicado + OC). Sin APIs estables y homogéneas por modalidad, las lecturas (`readMpProcess` / `MpStateChanged`) quedan incompletas o ad hoc y no cubren el monitoreo documentado en cada macroproceso. |
+| 2 | **Sincronización diferencial del catálogo** de Convenio Marco (deltas diarios de productos, precios, quiebres de stock y cobertura regional) | Es el único punto de la integración MP que va más allá de estados de proceso: permite armar la SOLPED y validar disponibilidad sobre un catálogo espejado en SGM (`checkCatalogAvailability`, frescura diaria) sin dumps completos ni precios/stock desactualizados al carro o a la Gran Compra. |
+| 3 | **Arquitectura de webhooks** para eventos críticos (OC Aceptada/Rechazada, Proveedor Inhábil) en reemplazo de polling | Esos eventos gatillan efectos internos (p. ej. OC Aceptada → Compromiso Cierto; rechazo / inhábil → liberaciones o bloqueos). El polling retrasa el estado, satura la API y falla en picos; los webhooks acercan SGM al estado real de MP y bajan latencia y costo operativo (canal push vs polling: X-70). |
+| 4 | **Entorno sandbox** de certificación | Permite probar credenciales, vinculación `mp_process_id`, mapeo de estados por modalidad y (si llegan) webhooks sin tocar procesos reales ni riesgo normativo/contable. Sin sandbox del tercero, la certificación queda “en vivo” o a ciegas. |
+| 5 | **Acuerdo de rate limits** para fechas de alta demanda | En cierres de año, licitaciones masivas u operación concurrente de muchos municipios, un cupo acordado (y degradación controlada) evita fallas masivas de lectura/sincronización justo cuando más se necesita. |
 
-Estos requerimientos no pertenecen a los overviews de modalidad; su resolución define el alcance futuro de esta integración más allá del diseño read-only actual.
+Negociación nacional (webhooks, sandbox MP, rate limits): activo de plataforma administrado por SUBDERE — ver también A3 en `integraciones-terceros.md`. Estos requerimientos no pertenecen a los overviews de modalidad.
 
 ## Fuente
 

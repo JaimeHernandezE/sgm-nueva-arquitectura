@@ -9,6 +9,8 @@
 
 **Cambios v0.2:** default **X-44 → (a)** (acoplamiento normativo proceso 28); aclaración mapa seguridad X-21…X-31 vs X-32; **X-80** nace cerrado (RRHH D-1); declaración de mantención; nota de verificación «Corregido» = editado en archivo.
 
+**Nota posterior:** fila «Alcance mínimo módulos adyacentes» del §2 actualizada — documento v0.3 en repo; §7 filtro de integraciones; X-78/X-79/X-81 dejan de figurar como «reservados / ausente del repo».
+
 **Cambios v0.1:** primera versión. Consolida deuda de consistencia entre módulos, declara decisiones transversales, unifica pendientes con prefijo **X-nn**, define secuencia B0–B2 y grafo de dependencias cruzadas.
 
 ---
@@ -38,7 +40,7 @@ Este documento **gobierna el conjunto** del corpus de planificación y especific
 | **Contabilidad** [`plan-de-trabajo-contabilidad.md`](modulos/contabilidad/plan-de-trabajo-contabilidad.md) | 0.6 | 10 procesos; sustancial | C-1…C-18 | Borrador; no validado DM |
 | **Tesorería** [`plan-de-trabajo-tesoreria.md`](modulos/tesoreria/plan-de-trabajo-tesoreria.md) | 0.3 | 5 procesos; ciclo diario fuerte | T-1…T-14 | Borrador; no validado DM |
 | **RRHH** [`plan-de-trabajo-rrhh.md`](modulos/rrhh/plan-de-trabajo-rrhh.md) | 0.3 | 18 procesos; mejor del corpus | R-1…R-14 | Borrador; no validado DM |
-| **Alcance mínimo módulos adyacentes** | — | — | X-78, X-79, X-81 reservados abiertos al incorporar; **X-80 cerrado** (RRHH D-1: motor de liquidación incluido) | **Ausente del repo** al cerrar v0.1; ubicación destino: [`arquitectura/licitacion/alcance-minimo-modulos-adyacentes.md`](arquitectura/licitacion/alcance-minimo-modulos-adyacentes.md). No inventar contenido. |
+| **Alcance mínimo módulos adyacentes** | 0.3 | — | X-78, X-79, X-81 abiertos; **X-80 cerrado** (RRHH D-1) | En repo: [`arquitectura/licitacion/alcance-minimo-modulos-adyacentes.md`](arquitectura/licitacion/alcance-minimo-modulos-adyacentes.md). v0.3 añade §7 (filtro de integraciones vs [`integraciones-terceros.md`](arquitectura/especificacion/integraciones-terceros.md)). Propuesta; no validada DM. |
 | ADR DocDigital | Aceptada (cond. X-72) | — | X-72…X-76 | Canónica |
 | ADR Eliminación Odoo | Aceptada | — | — | Canónica |
 | ADR Ventana de mutabilidad | Aceptada | — | — | Canónica |
@@ -137,7 +139,7 @@ Registro unificado X/P/C/T/R/A: [`arquitectura/decisiones/pendientes.md`](arquit
 | P-32 del registro (resiliencia MP / APIs externas) | **X-32** | Origen Adquisiciones (también citado históricamente desde seguridad §14); **no** es “completar Anexo A” |
 | Seguridad Anexo A «P-32» (completar hallazgos Odoo) | **X-77** | Colisión semántica histórica con X-32; ID propio |
 | Nodo SUBDERE «P-71…P-74» (propuestos, no en registro) | **X-82…X-85** | No pisar X-71…X-74 (Trato Directo / DocDigital) |
-| Alcance mínimo P-18, P-19, P-21 | **X-78, X-79, X-81** reservados (abiertos al incorporar) | Documento aún no en repo; no inventar texto |
+| Alcance mínimo P-18, P-19, P-21 | **X-78, X-79, X-81** (abiertos) | Documento en [`alcance-minimo-modulos-adyacentes.md`](arquitectura/licitacion/alcance-minimo-modulos-adyacentes.md); §7 filtro de integraciones |
 | Alcance mínimo P-20 (motor de liquidación) | **X-80** — **cerrado** | Ya cerrado por RRHH D-1; al incorporar el alcance mínimo entra con ese fundamento, no como abierto |
 | Presupuestos P-1…P-31 | **Sin cambio de prefijo** | Refs DocDigital → X-73…X-76; serie ampliada a P-31 (v0.17) |
 

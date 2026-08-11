@@ -34,7 +34,7 @@
 
 ---
 
-## Parte 1 — Triage
+## Parte 1 — Resumen
 
 *Derivada de las fichas de la Parte 2.*
 
@@ -60,6 +60,8 @@ Eso pesa menos sobre el diseño —que se corrige— que sobre las bases de lici
 | Organismos sin contraparte designada | **10** |
 
 Hay además tres hechos verificados que **no** son capacidades ofrecidas por un tercero, y conviene no contarlos como tales: la cobertura municipal de DocDigital (~80 %, fuente Ministerio de Hacienda), el hallazgo de seguridad H-2 sobre el sistema anterior, y la decisión propia de consumir Mercado Público en solo lectura.
+
+**Filtro por alcance mínimo de licitación.** Este registro indexa las 21 relaciones. El subconjunto que cae en la unidad mínima (plataforma + Presupuestos + Adquisiciones + Contabilidad núcleo + Tesorería percepción/pago + RRHH dotación/costo/liquidación) —construir / export-manual / diferir— está en [`alcance-minimo-modulos-adyacentes.md`](../licitacion/alcance-minimo-modulos-adyacentes.md) **§7**. No duplicar esa tabla aquí.
 
 ### 1.2 Qué pasa si una integración no existe
 
