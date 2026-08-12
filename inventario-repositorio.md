@@ -88,7 +88,7 @@ El resto de normas del corpus **no** declara verificación en fuente primaria en
 
 ### 1.4 Integraciones Estado (deduplicadas)
 
-**Registro canónico:** [`sgm-docs/arquitectura/especificacion/integraciones-terceros.md`](sgm-docs/arquitectura/especificacion/integraciones-terceros.md) — 21 fichas Estado/organismos (Grupo A) + 7 dependencias infra/ecosistema en tabla (Grupo B). Esta tabla §1.4 conserva el índice histórico de **15**; el registro explica la diferencia (organismos adicionales en planes, desglose FCM/TGR/SEM/giradores, NTDEE como marco).
+**Registro canónico:** [`sgm-docs/arquitectura/especificacion/integraciones-terceros.md`](sgm-docs/arquitectura/especificacion/integraciones-terceros.md) — 21 fichas Estado/organismos (Grupo A) + dependencias infra/ecosistema (Grupo B) + **5** plataformas SUBDERE (Grupo C: SINIM, SEM, FIGEM, SIFIM, SIM). Esta tabla §1.4 conserva el índice histórico de **15**; el registro explica la diferencia (organismos adicionales en planes, desglose FCM/TGR/SEM/giradores, NTDEE como marco; Grupo C no suma a las 21).
 
 | Sistema | Evidencia en corpus (ejemplos de ruta) |
 |---|---|

@@ -26,9 +26,10 @@
 | **Solo el organismo** | La respuesta la tiene el organismo titular; nadie más puede darla |
 | **El organismo y, en parte, un proveedor** | Un tramo depende del organismo; otro admite respuesta de quien implemente |
 | **Un proveedor** | Es materia de diseño o de oferta, no de una definición institucional |
+| **Jefatura / dueño plataforma SUBDERE** | Plataformas propias SUBDERE (Grupo C): canal, prioridad y borde con SGM los define la institución, no un organismo ajeno |
 | **No aplica** | Confirmado, fuera de alcance, o sin pregunta de mecanismo pendiente |
 
-**Conteo frente a inventario.** [`inventario-repositorio.md`](../../../inventario-repositorio.md) §1.4 lista **15** sistemas Estado. Este registro cubre **21** fichas de organismos/Estado (Grupo A) más **7** dependencias infra/ecosistema en tabla (Grupo B). La diferencia son organismos citados en planes (Registro Civil, COMPIN/Isapre, deudores de alimentos, reportes RRHH, bancos, giradores) y la separación FCM / TGR / SEM; NTDEE se mantiene aunque es marco, no endpoint.
+**Conteo frente a inventario.** [`inventario-repositorio.md`](../../../inventario-repositorio.md) §1.4 lista **15** sistemas Estado. Este registro cubre **21** fichas de organismos/Estado (Grupo A), dependencias infra/ecosistema en tabla (Grupo B) y **5** fichas de plataformas SUBDERE (Grupo C: C1–C5). El Grupo C **no** suma a las 21: son hermanas internas, no OAE ajenos. La diferencia A vs inventario §1.4 son organismos citados en planes (Registro Civil, COMPIN/Isapre, deudores de alimentos, reportes RRHH, bancos, giradores) y la separación FCM / TGR / SEM; NTDEE se mantiene aunque es marco, no endpoint.
 
 **Fuera de alcance / no heredar (explícito en corpus):** escritura API hacia Mercado Público; heredar `auth=none` del feed SEM as-is en el to-be; Rentas/cálculo tributario salvo decisión de jefatura; construcción de giradores (Tesorería D-3); fundir el nodo SUBDERE de privados en la licitación SGM.
 
@@ -42,7 +43,7 @@
 
 SGM no opera aislado. Para cumplir su función tiene que relacionarse con sistemas de otras instituciones: publicar los procesos de compra en Mercado Público, tramitar decretos y resoluciones en DocDigital, autenticar a los funcionarios contra Clave Única, declarar la nómina previsional, informar a Contraloría y a SINIM, consultar valores al SII, enterar fondos en Tesorería General. **Este documento indexa esas relaciones y deja constancia del estado en que está cada una.**
 
-Son **21 relaciones con instituciones**, más siete dependencias de infraestructura y ecosistema que se tratan aparte por ser de otra naturaleza.
+Son **21 relaciones con instituciones** (Grupo A), más dependencias de infraestructura y ecosistema (Grupo B) y **plataformas propias de SUBDERE** (Grupo C) que se tratan aparte por ser de otra naturaleza.
 
 **Ninguna es condición técnica de funcionamiento.** El sistema opera sin ellas. Lo que cambia es quién hace el trabajo: la obligación legal no desaparece, la ejecuta un funcionario a mano, con el reingreso de datos y la verificación manual que eso implica. No todas pesan igual — §1.2 las clasifica según qué ocurre si faltan.
 
@@ -54,14 +55,18 @@ Eso pesa menos sobre el diseño —que se corrige— que sobre las bases de lici
 
 | | |
 |---|---|
-| Relaciones con instituciones indexadas | **21** (más 7 dependencias de infraestructura) |
-| Con interfaz confirmada por el organismo titular | **1** — Clave Única |
-| Sobre supuesto de diseño o sin información alguna | **20** |
+| Relaciones con instituciones indexadas (Grupo A) | **21** |
+| Dependencias infra/ecosistema (Grupo B) | Tabla compacta (object storage, DMS, IdP M2M, correo, webhooks, ERPs; plataformas SUBDERE → Grupo C) |
+| Plataformas SUBDERE (Grupo C) | **5** — C1 SINIM · C2 SEM · C3 FIGEM · C4 SIFIM · C5 SIM |
+| Con interfaz confirmada por el organismo titular | **1** — Clave Única (Grupo A) |
+| Sobre supuesto de diseño o sin información alguna | **20** (Grupo A) |
 | Organismos sin contraparte designada | **10** |
 
 Hay además tres hechos verificados que **no** son capacidades ofrecidas por un tercero, y conviene no contarlos como tales: la cobertura municipal de DocDigital (~80 %, fuente Ministerio de Hacienda), el hallazgo de seguridad H-2 sobre el sistema anterior, y la decisión propia de consumir Mercado Público en solo lectura.
 
-**Filtro por alcance mínimo de licitación.** Este registro indexa las 21 relaciones. El subconjunto que cae en la unidad mínima (plataforma + Presupuestos + Adquisiciones + Contabilidad núcleo + Tesorería percepción/pago + RRHH dotación/costo/liquidación) —construir / export-manual / diferir— está en [`alcance-minimo-modulos-adyacentes.md`](../licitacion/alcance-minimo-modulos-adyacentes.md) **§7**. No duplicar esa tabla aquí.
+**Filtro por alcance mínimo de licitación.** Este registro indexa las 21 relaciones del Grupo A. El subconjunto que cae en la unidad mínima (plataforma + Presupuestos + Adquisiciones + Contabilidad núcleo + Tesorería percepción/pago + RRHH dotación/costo/liquidación) —construir / export-manual / diferir— está en [`alcance-minimo-modulos-adyacentes.md`](../licitacion/alcance-minimo-modulos-adyacentes.md) **§7**. No duplicar esa tabla aquí.
+
+**Plataformas hermanas SUBDERE (Grupo C).** No son terceros Estado: son sistemas **propios** de SUBDERE. El borde con SGM es un *desde* interno; canal, prioridad y qué módulos se conectan dependen de **jefatura** y del inventario **[PENDIENTE X-83]**. Fichas en Parte 2 — Grupo C. SINIM y SEM conservan además A14/A6 (obligación de reporte / feed de caja) con enlace a C1/C2.
 
 ### 1.2 Qué pasa si una integración no existe
 
@@ -179,9 +184,9 @@ Sigue abierto: gobernanza exacta del catálogo y rotación (**X-57**), operació
 
 ---
 
-## Parte 2 — Fichas (Grupo A) y tabla (Grupo B)
+## Parte 2 — Fichas (Grupo A), tabla (Grupo B) y plataformas SUBDERE (Grupo C)
 
-Orden: criticidad para bases y puesta en marcha, no alfabético.
+Orden en Grupo A: criticidad para bases y puesta en marcha, no alfabético. Grupo C: familia de plataformas propias (después de B).
 
 ### A1. DocDigital
 
@@ -343,6 +348,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | sin contraparte designada (más allá de «SEM» / plataforma SUBDERE) |
 | **Qué hacía el sistema anterior** | Único patrón productivo de ingreso externo; API sin autenticación (H-2) |
 | **Pendientes asociados** | T-12, T-1; fundamento H-2 / Anexo A |
+| **Familia plataformas SUBDERE** | Ver **C2** (Grupo C) |
 | **Quién puede responder** | **El organismo y, en parte, un proveedor** — Institucional/plataforma: semántica del feed y dueños SEM. Mercado (RFI): «¿Cómo implementan el contrato de giradores con auth M2M fuerte sin heredar `auth=none`?» |
 
 **Riesgo:** repetir un feed sin autenticación con efecto patrimonial, o no tener contrato de giradores y dejar Caja sin ingreso externo.
@@ -559,6 +565,7 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | **Contraparte institucional** | SUBDERE / DM |
 | **Qué hacía el sistema anterior** | Pres: TXT CGR parcial, SINIM/BEP no estructurados; Cont: PDF ≠ BEP |
 | **Pendientes asociados** | P-8; C-7; P-12; X-08 (frescura SINIM) |
+| **Familia plataformas SUBDERE** | Ver **C1** (Grupo C) |
 | **Quién puede responder** | **Solo el organismo** — SUBDERE/SINIM: «¿Vigencia de planillas BEP, canal de carga y periodicidad exigibles al SGM?» |
 
 **Riesgo:** exportar formatos obsoletos y fallar el ciclo nacional de observaciones.
@@ -763,8 +770,106 @@ Orden: criticidad para bases y puesta en marcha, no alfabético.
 | IdP M2M / credenciales sistemas | Autentica sistemas que llaman a SGM (`ApiClient`) | Supuesto (OAuth2 propuesto) | SUBDERE emite | Sí para ecosistema M2M | X-02; cero `auth=none` (H-2) |
 | Correo (C6) | Entrega notificaciones | Supuesto; matriz abierta | Plataforma / tenant | Sí para canales correo | X-05, X-06 |
 | Webhooks a terceros | SGM notifica a sistemas municipales/privados | Supuesto | SUBDERE scopes; consumidor externo | Según modo ecosistema | X-05, X-15 |
-| SIFIM / SIM / FIGEM | Plataformas SUBDERE (dato propio / integración interna) | Desconocido como API SGM | SUBDERE | Fuera licitación SGM (recomendación nodo) | `nodo-integracion-subdere.md`; X-83 |
+| Plataformas SUBDERE (SINIM, SEM, FIGEM, SIFIM, SIM) | Ver **Grupo C** | — | SUBDERE | Según ficha C | No duplicar aquí; `nodo-integracion-subdere.md`; **X-83** |
 | ERPs municipales | Consumen APIs SGM / actúan como giradores | Desconocido por municipio | Municipio | Según à la carte / T-1 | T-1; macro-stack |
+
+---
+
+### Grupo C — Plataformas SUBDERE (integración interna)
+
+**Qué es.** Sistemas **propios** de SUBDERE, no OAE ajenos. La integración con SGM es un *desde* interno: canal, prioridad y bordes los define **jefatura** / el dueño de cada plataforma. No confundir con el Grupo A (organismos Estado) ni con fundir el **nodo de acceso a privados** en la licitación SGM — ver [`nodo-integracion-subdere.md`](../decisiones/nodo-integracion-subdere.md). Inventario de propósito, API, datos e integraciones (incl. manuales): **[PENDIENTE X-83]**.
+
+**Relación con Grupo A.** SINIM y SEM ya tienen ficha de borde operativo municipal (**A14**, **A6**). Aquí se indexan como familia de plataformas hermanas (**C1**, **C2**). FIGEM, SIFIM y SIM no tienen ficha A: solo C3–C5 hasta que X-83 cierre propósito y módulos.
+
+#### C1. SINIM
+
+| Campo | Contenido |
+|---|---|
+| **Organismo y sistema** | SUBDERE — Sistema Nacional de Información Municipal (SINIM) |
+| **Qué hace / borde con SGM** | Recibe carga BEP y ciclo de observaciones; publica Manual de Imputaciones y datos de ejecución; agregados institucionales (nodo §4.2). Detalle de obligación de reporte municipal: **A14** |
+| **Módulos SGM** | Presupuestos (MP-4, P-8); Contabilidad (proceso 36, C-7); capa de lectura / frescura (**X-08**) |
+| **Dirección del flujo** | SGM → SINIM (export/carga); SUBDERE observa. Posible consumo de catálogos/agregados SINIM → SGM (diseño; canal M2M: **Desconocido**) |
+| **Clase de dato (nodo §4)** | Agregados / indicadores: dato propio SUBDERE (§4.2). Cargas BEP: origen municipal alojado en plataforma SUBDERE |
+| **Estado del mecanismo** | Estructura BEP: parcialmente Verificado (P-8). API SGM↔SINIM: **Desconocido**. Ver A14 |
+| **Modo degradado** | Export + carga manual / ciclo de observaciones (as-is) |
+| **¿En licitación SGM?** | Borde de **export/reporte** sí (alcance-mínimo §7, patrón X-81). Automatización M2M y resto de usos internos: decisión jefatura / X-83 |
+| **Contraparte** | SUBDERE / DM / Unidad de Información Municipal (citada en P-12) |
+| **Pendientes** | P-8; C-7; P-12; X-08; X-83 (inventario familia) |
+| **Ficha espejo Grupo A** | **A14** |
+| **Quién puede responder** | **Jefatura / dueño plataforma SUBDERE** — prioridad del borde y canal. Formato BEP vigente: también A14 / SUBDERE-SINIM |
+
+---
+
+#### C2. SEM
+
+| Campo | Contenido |
+|---|---|
+| **Organismo y sistema** | SEM — plataforma SUBDERE; feed hacia caja (as-is Odoo) |
+| **Qué hace / borde con SGM** | Origina datos de cobro que SGM convierte en órdenes de ingreso y pagos. Ancla semántica del contrato de giradores (T-12). Detalle operativo/seguridad: **A6** |
+| **Módulos SGM** | Tesorería (Caja); Contabilidad (OI — D-1 Tes) |
+| **Dirección del flujo** | SEM → SGM (escritura). Fuente del cobro originado fuera: SEM/girador |
+| **Clase de dato (nodo §4)** | Puede incluir datos de origen municipal (contribuyente en OI). Régimen exacto: no está en el corpus en esta ficha |
+| **Estado del mecanismo** | As-is Verificado con `auth=none` (**H-2**). To-be: semántica + auth M2M (**Supuesto**, T-12); heredar `auth=none` rechazado |
+| **Modo degradado** | Sin feed válido autenticado, Caja no cobra de forma fiable (T-1) |
+| **¿En licitación SGM?** | Contrato de entrada / semántica del feed: sí como borde (T-1, T-12). Construcción de SEM como producto: **fuera** (plataforma SUBDERE). Nodo de privados: no fundir (recomendación nodo) |
+| **Contraparte** | Plataforma SUBDERE / sin unidad nominada en corpus |
+| **Pendientes** | T-12; T-1; H-2; X-83 |
+| **Ficha espejo Grupo A** | **A6** |
+| **Quién puede responder** | **Jefatura / dueño plataforma SUBDERE** (+ RFI de implementación auth M2M — ver A6) |
+
+---
+
+#### C3. FIGEM
+
+| Campo | Contenido |
+|---|---|
+| **Organismo y sistema** | FIGEM — plataforma / programa SUBDERE (sigla citada; expansión literal: **no está en el corpus**) |
+| **Qué hace / borde con SGM** | Citado como información de programas / dato propio SUBDERE ([`nodo-integracion-subdere.md`](../decisiones/nodo-integracion-subdere.md) §4.2). Aparece como etiqueta de programa en eje de gestión piloto (Presupuestos). Propósito operativo cerrado y API: **no está en el corpus** |
+| **Módulos SGM** | **no está en el corpus** (sin borde de módulo declarado) |
+| **Dirección del flujo** | **Desconocido** |
+| **Clase de dato (nodo §4)** | Dato propio SUBDERE (programas/agregados) — supuesto del nodo §4.2 |
+| **Estado del mecanismo** | **Desconocido** |
+| **Modo degradado** | no está en el corpus |
+| **¿En licitación SGM?** | **Fuera** hasta decisión jefatura / cierre X-83 (recomendación nodo: integración interna ≠ objeto de la licitación SGM del nodo de privados) |
+| **Contraparte** | SUBDERE — sin unidad nominada |
+| **Pendientes** | **X-83** |
+| **Quién puede responder** | **Jefatura / dueño plataforma SUBDERE** — «¿Qué es FIGEM, qué datos publica/consume y qué módulo SGM debe conectar?» |
+
+---
+
+#### C4. SIFIM
+
+| Campo | Contenido |
+|---|---|
+| **Organismo y sistema** | SIFIM — plataforma SUBDERE (sigla citada en nodo y en etiquetas de gestión piloto; expansión literal: **no está en el corpus**) |
+| **Qué hace / borde con SGM** | Citado junto a SEM/SIM como integración interna SUBDERE. Propósito, API y borde SGM: **no está en el corpus** |
+| **Módulos SGM** | **no está en el corpus** |
+| **Dirección del flujo** | **Desconocido** |
+| **Clase de dato (nodo §4)** | no está en el corpus |
+| **Estado del mecanismo** | **Desconocido** |
+| **Modo degradado** | no está en el corpus |
+| **¿En licitación SGM?** | **Fuera** hasta jefatura / X-83 |
+| **Contraparte** | SUBDERE — sin unidad nominada |
+| **Pendientes** | **X-83** |
+| **Quién puede responder** | **Jefatura / dueño plataforma SUBDERE** |
+
+---
+
+#### C5. SIM
+
+| Campo | Contenido |
+|---|---|
+| **Organismo y sistema** | SIM — plataforma SUBDERE (sigla citada en nodo junto a SEM/SIFIM; expansión literal: **no está en el corpus**) |
+| **Qué hace / borde con SGM** | Citado como plataforma SUBDERE de integración interna. Propósito, API y borde SGM: **no está en el corpus** |
+| **Módulos SGM** | **no está en el corpus** |
+| **Dirección del flujo** | **Desconocido** |
+| **Clase de dato (nodo §4)** | no está en el corpus |
+| **Estado del mecanismo** | **Desconocido** |
+| **Modo degradado** | no está en el corpus |
+| **¿En licitación SGM?** | **Fuera** hasta jefatura / X-83 |
+| **Contraparte** | SUBDERE — sin unidad nominada |
+| **Pendientes** | **X-83** |
+| **Quién puede responder** | **Jefatura / dueño plataforma SUBDERE** |
 
 ---
 
@@ -787,14 +892,15 @@ Las mismas **10** filas del listado bajo §1.4 punto 1: red de interoperabilidad
 | Previred | ¿Canal, formato, acuse nómina municipal? | Solo el organismo — Previred |
 | DIPRES | ¿Formato, canal, acuse informe nómina? | Solo el organismo — DIPRES |
 | TGR Form. 10 | ¿Formato, canal, acuse? | Solo el organismo — TGR |
-| SINIM/BEP | ¿Vigencia planillas, canal, periodicidad? | Solo el organismo — SUBDERE |
+| SINIM/BEP | ¿Vigencia planillas, canal, periodicidad? | Solo el organismo — SUBDERE (también **C1** / jefatura para prioridad del borde interno) |
+| FIGEM / SIFIM / SIM | ¿Propósito, datos, API y módulo SGM a conectar? | **Jefatura / dueño plataforma SUBDERE** — **X-83** |
 | Registro Civil RMTNP | ¿API, archivo o portal? | Solo el organismo — Registro Civil |
 | Deudores alimentos | ¿Consulta integrable? | Solo el organismo — administrador del Registro |
 | COMPIN/Isapre | ¿Canal de estado de licencias/subsidios? | Solo el organismo (si v1) |
 | Red de interoperabilidad | ¿Quién opera el nodo? / ¿Cómo diseñar borde C-PISEE multi-organismo? | El organismo y, en parte, un proveedor — DM/SGD + RFI |
 | NTDEE | ¿Cómo demostrar matriz + art. 35? | Un proveedor (+ criterio jurídico si interpreta norma) |
 | Giradores | ¿Contrato OI multi-origen? | Un proveedor + inventario de giradores de DM |
-| SEM to-be | ¿Auth M2M sobre semántica SEM? | El organismo y, en parte, un proveedor |
+| SEM to-be | ¿Auth M2M sobre semántica SEM? | El organismo y, en parte, un proveedor (también **C2** / jefatura plataforma) |
 | Bancos | ¿Archivo vs host-to-host multi-banco? | Un proveedor |
 | ClaveÚnica sesión | ¿Parámetros de sesión exigibles? *(el mecanismo de broker ya está verificado — 27-01-2026; queda solo la calibración de sesión)* | Solo el organismo (si aplica) / cierre X-22 interno |
 
@@ -805,6 +911,7 @@ Las mismas **10** filas del listado bajo §1.4 punto 1: red de interoperabilidad
 3. **FCM bajo SINIM vs TGR.** Contabilidad agrupa FCM en informes SINIM; Tesorería lo entera por Formulario 10 TGR. No son dos APIs: es obligación + dos artefactos de reporte/entero.
 4. **Overview Adquisiciones vs `contracts.md`.** Overview aún marca CM/LP/TD como pendientes de especificación en partes; `contracts.md` ya cubre modalidades. Desalineación de estado documental, no de tercero.
 5. **IDs X-86…X-90.** `nodo-integracion-subdere.md` §15 propuso esos IDs para el nodo; `pendientes.md` ya los usa para el estándar de pruebas. Colisión de numeración; del nodo quedaron X-82…X-85.
+6. **SINIM/SEM en A y en C.** A14/A6 conservan el borde operativo (reporte / feed caja). C1/C2 indexan la misma plataforma como hermana SUBDERE. No son dos integraciones distintas: son dos lentes.
 
 ### 3.4 Pendientes que deberían existir y no están (propuesta — no registrados)
 
@@ -826,4 +933,4 @@ Formato alineado a `pendientes.md`. **No se da de alta aquí.**
 3. **¿Parte 1 legible sola con acciones?** Sí: cifras, bloqueos bases vs go-live, contrapartes, convenios, decisión híbrida citada.
 4. **¿Confirmado vs supuesto?** **Una** capacidad confirmada con el organismo titular (Clave Única, 27-01-2026); **20/21** sobre supuesto o sin información (las otras 2 son MP y SEM: Verificado de decisión/hallazgo, no de capacidad de tercero). Destinos CPI de las 19: 13 institucional / 3 El organismo y, en parte, un proveedor / 3 RFI. Los tres hechos verificados del corpus (cobertura DocDigital, hallazgo H-2, decisión read-only MP) no son capacidades de terceros y así se declara en 1.1, sin suavizar.
 5. **¿Rutas citadas existen?** Comprobadas al redactar: `integracion-docdigital.md`, `integracion-mercado-publico.md`, `estandar-firma-electronica.md`, `plataforma-core.md`, `seguridad.md`, ADR DocDigital, `brechas-estandarizacion-ntdee-pisee.md`, `nodo-integracion-subdere.md`, `pendientes.md`, planes de módulo, `inventario-repositorio.md`, `registro-normas.md` (N-02, N-06, N-09, N-15, N-17, N-21, N-22).
-6. **Ajustes de plan:** cada mecanismo no confirmado declara de quién depende la respuesta; Grupo B es tabla; Parte 1 se cerró tras las fichas; SEM H-2 figura como hallazgo Verificado, no como «descartado».
+6. **Ajustes de plan:** cada mecanismo no confirmado declara de quién depende la respuesta; Grupo B es tabla; **Grupo C** indexa plataformas SUBDERE (C1–C5) sin inventar APIs; Parte 1 se cerró tras las fichas; SEM H-2 figura como hallazgo Verificado, no como «descartado».

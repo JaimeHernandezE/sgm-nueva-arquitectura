@@ -225,7 +225,8 @@ IDs `A-nn` = fichas del registro. Módulos: **P** Presupuestos, **Adq** Adquisic
 - El valor de la licitación se juega en la columna **Construir** (sobre todo MP, DocDigital, FirmaGob, DTE). Dejarlas como «solo archivo» reproduce el as-is con UI nueva.
 - La columna **Export / manual** es compra parcial legítima **solo** si el contrato y el modelo quedan completos (**X-81**).
 - SEM/giradores no inflan el alcance con patentes/cobranza; sí obligan a declarar **cómo entra la percepción** del núcleo Tes (T-1 acotado, histórico o registro asistido).
-- El inventario completo de las 21 fichas sigue en el registro; este §7 es el subconjunto del alcance mínimo de §9.
+- El inventario completo de las 21 fichas del Grupo A sigue en el registro; este §7 es el subconjunto del alcance mínimo de §9.
+- **SINIM (A14) y SEM (A6)** son también plataformas SUBDERE (**C1**, **C2** en Grupo C del registro). **FIGEM / SIFIM / SIM** (C3–C5) quedan fuera de este filtro de licitación hasta el inventario **X-83** — no inventar filas de módulo aquí.
 
 ---
 

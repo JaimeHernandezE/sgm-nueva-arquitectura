@@ -16,6 +16,10 @@
 | DT | Dirección del Trabajo |
 | PISEE | Plataforma Integrada de Servicios Electrónicos del Estado |
 | SINIM | Sistema Nacional de Información Municipal |
+| SEM | Plataforma SUBDERE; feed hacia caja SGM (as-is). Fichas: [`integraciones-terceros.md`](arquitectura/especificacion/integraciones-terceros.md) A6 / **C2**. Expansión literal de la sigla: no está en el corpus |
+| SIFIM | Plataforma SUBDERE (integración interna). Ficha **C4**. Expansión literal: no está en el corpus |
+| SIM | Plataforma SUBDERE (integración interna). Ficha **C5**. Expansión literal: no está en el corpus |
+| FIGEM | Plataforma / programas SUBDERE (dato propio citado en nodo). Ficha **C3**. Expansión literal: no está en el corpus |
 | FNDR | Fondo Nacional de Desarrollo Regional |
 | EVALTIC | Plataforma de evaluación para financiamiento de proyectos TIC |
 | UTM | Unidad Tributaria Mensual |
