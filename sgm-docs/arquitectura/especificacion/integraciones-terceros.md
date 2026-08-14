@@ -57,7 +57,7 @@ Eso pesa menos sobre el diseño —que se corrige— que sobre las bases de lici
 |---|---|
 | Relaciones con instituciones indexadas (Grupo A) | **21** |
 | Dependencias infra/ecosistema (Grupo B) | Tabla compacta (object storage, DMS, IdP M2M, correo, webhooks, ERPs; plataformas SUBDERE → Grupo C) |
-| Plataformas SUBDERE (Grupo C) | **5** — C1 SINIM · C2 SEM · C3 FIGEM · C4 SIFIM · C5 SIM |
+| Plataformas SUBDERE (Grupo C) | **3 plataformas** — C1 SINIM · C2 SEM · C5 SIM-FIMU. Más dos fichas que **no son plataformas**: C3 FIGEM (fondo) y C4 SIFIM (programa) |
 | Con interfaz confirmada por el organismo titular | **1** — Clave Única (Grupo A) |
 | Sobre supuesto de diseño o sin información alguna | **20** (Grupo A) |
 | Organismos sin contraparte designada | **10** |
@@ -103,26 +103,27 @@ No todas pesan igual. La clasificación siguiente no es un criterio añadido aqu
 
 Sin respuesta no se puede escribir la exigencia contractual con precisión.
 
-| Integración | Qué está sin resolver | Qué bloquea | Quién puede resolverlo | Quién puede responder |
-|---|---|---|---|---|
-| DocDigital | ¿API máquina-a-máquina (M2M: sistema a sistema) o solo web? (X-72) | Exigencia C11, modos M2M vs asistido, recepción | Gobierno Digital | Solo el organismo |
-| SIAPER | ¿Interfaz M2M o solo portal? (R-2) | Exigencia MR-6 y vía alternativa | CGR / SIAPER | Solo el organismo |
-| Mercado Público | Canal de lectura push vs polling (X-70); sandbox/rate limits a negociar | Texto de borde C7 y SLA de lectura | ChileCompra (+ SUBDERE negociación) | **El organismo y, en parte, un proveedor** — ChileCompra (canal/sandbox); RFI para resiliencia si MP no responde (X-32) |
-| Red de interoperabilidad (D.S. N° 12/2023) | Quién opera el nodo y si el borde entra en v1 (X-61) | Alcance de interoperabilidad OAE en bases | DM / operación; oferta si entra RFI de diseño | El organismo y, en parte, un proveedor |
-| Giradores / SEM | Contrato de entrada de órdenes de ingreso (T-1) + feed SEM con auth (T-12) | Exigencia de Caja y superficie M2M | DM / giradores; plataforma | El organismo y, en parte, un proveedor |
-| SII (cesión) | ¿Existe push/consulta dirigida al Registro de Transferencias? (C-4) | Si las bases exigen automatizar factoring | SII | Solo el organismo |
+| Integración | Qué está sin resolver | Qué bloquea | Quién responde |
+|---|---|---|---|
+| **DocDigital** | ¿Existe interfaz máquina a máquina, o solo opera por web? (X-72) | La exigencia sobre tramitación de actos (C11), los dos modos posibles y qué se verifica en recepción | **Gobierno Digital** — hay canal probado: la Mesa de Ayuda respondió una consulta de arquitectura el 27-01-2026 |
+| **SIAPER** | ¿Interfaz máquina a máquina o solo portal? (R-2) | La exigencia del macroproceso de personal y su vía alternativa | **Contraloría / SIAPER** |
+| **Mercado Público** | Canal de lectura: ¿aviso automático o consulta periódica? (X-70). Ambiente de pruebas y límites de consulta, a negociar | El texto del borde con Mercado Público y el compromiso de disponibilidad de la lectura | **ChileCompra.** El diseño de qué hacer cuando Mercado Público no responde (X-32) lo puede resolver quien implemente |
+| **Red de interoperabilidad** (D.S. N° 12/2023) | Quién opera el nodo y si el borde entra en la primera versión (X-61) | El alcance de interoperabilidad con otros organismos en las bases | **DM / operación SUBDERE.** El diseño del borde puede resolverlo quien implemente |
+| **Giradores y feed SEM** | Contrato de entrada de las órdenes de ingreso (T-1) y feed SEM autenticado (T-12) | La exigencia sobre Caja y la superficie de integración expuesta | **DM y los dueños de cada girador.** El diseño del contrato dual puede resolverlo quien implemente |
+| **SII (cesión de facturas)** | ¿Existe consulta o aviso dirigido al Registro de Transferencias de Créditos? (C-4) | Si las bases exigen o no automatizar el factoring | **SII** |
 
 #### Bloquean la puesta en marcha de un municipio
 
-Las bases pueden redactarse; el municipio no opera completo sin esto.
+Las bases se pueden redactar igual; el municipio no opera completo sin esto.
 
-| Integración | Qué está sin resolver | Qué bloquea | Quién puede resolverlo | Quién puede responder |
-|---|---|---|---|---|
-| DocDigital (habilitación) | Vía del ~20 % sin DocDigital (X-73); habilitación por tenant | Dictar actos con folio oficial | DM / jurídica; municipio | Solo el organismo (política); operación municipal |
-| ClaveÚnica | Operación OIDC del plano personas; duración de sesión (X-22) | Login de funcionarios | SUBDERE plataforma | Solo el organismo (valores de sesión si aplica) |
-| Credenciales tenant (MP, FirmaGob, SII, DocDigital) | `TenantIntegrationConfig` / rotación (X-57) | Uso real de C7/C9/C11 | SUBDERE y/o admin municipal según proveedor | No aplica (gobernanza interna) |
-| Previred / TGR Form. 10 / DIPRES | Canal, formato y acuse | Nómina previsional, aporte FCM, informe DIPRES | Municipio + organismo; formatos a verificar | Solo el organismo |
-| SINIM / BEP / CGR reportes | Canal y periodicidad residuales (P-8, C-5) | Cumplir cargas e informes | SUBDERE / CGR / DM | Solo el organismo |
+| Integración | Qué está sin resolver | Qué bloquea | Quién responde |
+|---|---|---|---|
+| **DocDigital — habilitación** | Vía para el ~20 % de municipios no habilitados (X-73); habilitación de cada municipio | Dictar actos con folio oficial | **DM y jurídica** para la política; cada municipio tramita su habilitación |
+| **Clave Única** | Mecanismo **confirmado** el 27-01-2026. Queda calibrar duración y renovación de sesión (X-22), y **definir el mecanismo de contingencia** cuando Clave Única no esté disponible | El acceso de los funcionarios, y la continuidad en caso de caída | **Decisión interna de arquitectura**; valores de sesión con Gobierno Digital si corresponde |
+| **Previred · TGR Formulario 10 · DIPRES** | Canal, formato y acuse de recepción | Nómina previsional, aporte al Fondo Común Municipal, informe a DIPRES | **Cada organismo** |
+| **SINIM · BEP · reportes a Contraloría** | Canal y periodicidad residuales (P-8, C-5) | Cumplir las cargas e informes obligatorios | **SUBDERE — Unidad de Información Municipal** y **Contraloría** |
+
+**No es un bloqueo externo, pero condiciona el alta de cada municipio:** la administración de credenciales del municipio hacia terceros —Mercado Público, FirmaGob, SII, DocDigital— y su rotación (**X-57**). Es trabajo interno de gobernanza, no una respuesta que alguien deba dar.
 
 ### 1.4 Qué se necesita de jefatura
 
@@ -169,11 +170,7 @@ Las bases pueden redactarse; el municipio no opera completo sin esto.
 | **A — Todo centralizado SUBDERE** | Un solo set de credenciales hacia terceros; el alta del municipio no exige gestionar secretos locales hacia MP/FirmaGob/SII/DocDigital. Menor autonomía municipal; mayor carga y responsabilidad SUBDERE frente a cada organismo. |
 | **B — Todo por municipio** | Cada alta exige habilitar y rotar credenciales del tenant; el municipio no opera si faltan. Escala con el número de municipios; negociación con terceros se multiplica. |
 
-**Un dato verificado que acota la decisión.** Gobierno Digital respondió el 27-01-2026 que, para ClaveÚnica, la elección **no es libre**: depende de quién sea el responsable del tratamiento de los datos. Si SGM opera como servicio centralizado y los municipios son usuarios, SUBDERE puede usar sus credenciales institucionales. Si el municipio opera una instancia propia y es responsable del tratamiento, **cada municipio debe solicitar su propio Client ID y Secret ante Gobierno Digital**, y SUBDERE queda solo como administrador técnico.
-
-Es un precedente relevante para el resto: la pregunta «¿centralizado o por municipio?» probablemente no se responde igual para todas las integraciones, y en varias estará determinada por la misma cuestión jurídica —quién es responsable y quién encargado— que plantea **X-01**. La respuesta también agrega un trámite por municipio al proceso de incorporación en el modo à la carte (**X-50**, sin ficha).
-
-**Consecuencia para ClaveÚnica: no es elegir entre centralizado y por municipio, es repartir por modo.** Hosting completo cae en el escenario centralizado por definición —SUBDERE opera el servicio—; à la carte cae en el de credenciales propias, sin margen de elección. Informática de SUBDERE recomendó en su momento el segundo escenario para todo el proyecto Odoo, por el riesgo de que un fallo de la integración responsabilice a SUBDERE; esa recomendación no ha sido reevaluada para un servicio nacional de 345 municipios. Ambos argumentos y su tensión quedan en [`plataforma-core.md`](./plataforma-core.md) §7ter.1.
+**No es una elección libre.** Gobierno Digital respondió el 27-01-2026 que, al menos para Clave Única, la respuesta depende de **quién sea el responsable del tratamiento de los datos**, no de una preferencia de arquitectura. Eso reparte por modo de consumo en vez de elegir una opción única, y probablemente aplique a otras integraciones. El argumento completo, la posición registrada de informática de SUBDERE y la tensión entre ambas están en [`plataforma-core.md`](./plataforma-core.md) §7ter.1.
 
 **Postura ya escrita en el corpus (híbrida), no inventada aquí:** [`plataforma-core.md`](./plataforma-core.md) §7 distingue dos planos y dos niveles:
 
@@ -770,106 +767,123 @@ Orden en Grupo A: criticidad para bases y puesta en marcha, no alfabético. Grup
 | IdP M2M / credenciales sistemas | Autentica sistemas que llaman a SGM (`ApiClient`) | Supuesto (OAuth2 propuesto) | SUBDERE emite | Sí para ecosistema M2M | X-02; cero `auth=none` (H-2) |
 | Correo (C6) | Entrega notificaciones | Supuesto; matriz abierta | Plataforma / tenant | Sí para canales correo | X-05, X-06 |
 | Webhooks a terceros | SGM notifica a sistemas municipales/privados | Supuesto | SUBDERE scopes; consumidor externo | Según modo ecosistema | X-05, X-15 |
-| Plataformas SUBDERE (SINIM, SEM, FIGEM, SIFIM, SIM) | Ver **Grupo C** | — | SUBDERE | Según ficha C | No duplicar aquí; `nodo-integracion-subdere.md`; **X-83** |
+| Plataformas SUBDERE (SINIM, SEM, SIM-FIMU) | Ver **Grupo C** | — | SUBDERE | Según ficha C | No duplicar aquí; `nodo-integracion-subdere.md`; **X-83** |
 | ERPs municipales | Consumen APIs SGM / actúan como giradores | Desconocido por municipio | Municipio | Según à la carte / T-1 | T-1; macro-stack |
 
 ---
 
 ### Grupo C — Plataformas SUBDERE (integración interna)
 
-**Qué es.** Sistemas **propios** de SUBDERE, no OAE ajenos. La integración con SGM es un *desde* interno: canal, prioridad y bordes los define **jefatura** / el dueño de cada plataforma. No confundir con el Grupo A (organismos Estado) ni con fundir el **nodo de acceso a privados** en la licitación SGM — ver [`nodo-integracion-subdere.md`](../decisiones/nodo-integracion-subdere.md). Inventario de propósito, API, datos e integraciones (incl. manuales): **[PENDIENTE X-83]**.
+**Qué es.** Sistemas **propios** de SUBDERE, no OAE ajenos. La integración con SGM es un *desde* interno: canal, prioridad y bordes los define **jefatura** / el dueño de cada plataforma. No confundir con el Grupo A (organismos Estado) ni con fundir el **nodo de acceso a privados** en la licitación SGM — ver [`nodo-integracion-subdere.md`](../decisiones/nodo-integracion-subdere.md).
 
-**Relación con Grupo A.** SINIM y SEM ya tienen ficha de borde operativo municipal (**A14**, **A6**). Aquí se indexan como familia de plataformas hermanas (**C1**, **C2**). FIGEM, SIFIM y SIM no tienen ficha A: solo C3–C5 hasta que X-83 cierre propósito y módulos.
+**Fuente.** Propósito, origen y financiamiento de cada plataforma provienen del documento interno «Estado del arte — servicios digitales División de Municipalidades SUBDERE», 15-05-2023. **Es una línea base documentada, no estado actual verificado:** tiene tres años y conviene confirmar qué cambió antes de citarlo como vigente. El inventario que exige **X-83** —datos que mantiene cada una, duplicaciones, integraciones existentes incluidas las manuales— sigue abierto.
 
-#### C1. SINIM
+**Relación con Grupo A.** SINIM y SEM ya tienen ficha de borde operativo municipal (**A14**, **A6**). Aquí se indexan como familia de plataformas hermanas. **FIGEM se reclasifica: no es una plataforma** (ver C3).
+
+**Dos hechos de esta familia que exceden el registro de integraciones** y que pertenecen al argumento de propósito del proyecto:
+
+1. **La distribución de fondos se apoya en dato declarativo.** SINIM levanta 153 indicadores usados «principalmente para hacer estimaciones de distribución del Fondo Común Municipal»; y siendo plataforma de formularios, «no se encuentra integrada a sistemas tecnológicos municipales, por lo que dependen de un funcionario que complete la información solicitada. A riesgo siempre que esta se encuentre errónea o manipulada, al ser de carácter declarativa» («Estado del arte — servicios digitales División de Municipalidades SUBDERE», 15-05-2023).
+2. **Ya ocurrió una pérdida de propiedad intelectual con el mismo patrón que el sistema anterior.** Ver C4.
+
+#### C1. SINIM — Sistema Nacional de Información Municipal
 
 | Campo | Contenido |
 |---|---|
-| **Organismo y sistema** | SUBDERE — Sistema Nacional de Información Municipal (SINIM) |
-| **Qué hace / borde con SGM** | Recibe carga BEP y ciclo de observaciones; publica Manual de Imputaciones y datos de ejecución; agregados institucionales (nodo §4.2). Detalle de obligación de reporte municipal: **A14** |
-| **Módulos SGM** | Presupuestos (MP-4, P-8); Contabilidad (proceso 36, C-7); capa de lectura / frescura (**X-08**) |
-| **Dirección del flujo** | SGM → SINIM (export/carga); SUBDERE observa. Posible consumo de catálogos/agregados SINIM → SGM (diseño; canal M2M: **Desconocido**) |
-| **Clase de dato (nodo §4)** | Agregados / indicadores: dato propio SUBDERE (§4.2). Cargas BEP: origen municipal alojado en plataforma SUBDERE |
-| **Estado del mecanismo** | Estructura BEP: parcialmente Verificado (P-8). API SGM↔SINIM: **Desconocido**. Ver A14 |
-| **Modo degradado** | Export + carga manual / ciclo de observaciones (as-is) |
-| **¿En licitación SGM?** | Borde de **export/reporte** sí (alcance-mínimo §7, patrón X-81). Automatización M2M y resto de usos internos: decisión jefatura / X-83 |
-| **Contraparte** | SUBDERE / DM / Unidad de Información Municipal (citada en P-12) |
-| **Pendientes** | P-8; C-7; P-12; X-08; X-83 (inventario familia) |
+| **Qué es** | Plataforma de SUBDERE creada en 2001, en cumplimiento del mandato de la **Ley N° 19.602** (1998), que encomienda a la Subsecretaría recoger, procesar y difundir la información municipal de gestión financiera y tributaria, administración de personal y prestación de servicios. Administrada por la **Unidad de Información Municipal (UIM)** |
+| **Qué hace** | Recoge información de la totalidad de los municipios **mediante formularios**, de forma declarativa. Levanta **153 indicadores**. Publica además el Manual de Imputaciones y datos de ejecución |
+| **Para qué se usa el dato** | «Principalmente para hacer estimaciones de distribución del **Fondo Común Municipal**»; también bonos y aguinaldos, ley de retiro voluntario y otros |
+| **Debilidad declarada en la fuente** | No integrada a los sistemas municipales; depende de que un funcionario complete la información, «a riesgo siempre que esta se encuentre errónea o manipulada, al ser de carácter declarativa» |
+| **Borde con SGM** | SGM → SINIM (export / carga BEP y ciclo de observaciones). Posible consumo de catálogos y agregados SINIM → SGM. Detalle de la obligación municipal de reporte: **A14** |
+| **Módulos SGM** | Presupuestos (MP-4, P-8); Contabilidad (proceso 36, C-7); capa de lectura y frescura (**X-08**) |
+| **Estado del mecanismo** | Estructura BEP: parcialmente verificada (P-8). Canal M2M SGM ↔ SINIM: **Desconocido** |
+| **Modo degradado** | Export y carga manual con ciclo de observaciones — es el funcionamiento actual |
+| **Presupuesto declarado (2023)** | M$50.000 asignados 2023; M$120.000 gestionados para 2024. Ley de Presupuesto 2023, programa 02, subtítulo 33, ítem 03, asignación 602, línea 05 |
+| **¿En licitación SGM?** | El borde de export/reporte sí (alcance mínimo §7, patrón X-81). Automatización M2M y usos internos: decisión de jefatura / **X-83** |
+| **Contraparte** | SUBDERE — Unidad de Información Municipal |
+| **Pendientes** | P-8; C-7; P-12; X-08; X-83 |
 | **Ficha espejo Grupo A** | **A14** |
-| **Quién puede responder** | **Jefatura / dueño plataforma SUBDERE** — prioridad del borde y canal. Formato BEP vigente: también A14 / SUBDERE-SINIM |
+| **Quién puede responder** | **Jefatura / UIM** — prioridad del borde, canal y formato BEP vigente |
+
+**Riesgo:** que el reparto del Fondo Común Municipal siga apoyándose en dato declarativo cuando SGM podría entregar el dato del sistema de registro.
 
 ---
 
-#### C2. SEM
+#### C2. SEM — Plataforma de Servicios Municipales
 
 | Campo | Contenido |
 |---|---|
-| **Organismo y sistema** | SEM — plataforma SUBDERE; feed hacia caja (as-is Odoo) |
-| **Qué hace / borde con SGM** | Origina datos de cobro que SGM convierte en órdenes de ingreso y pagos. Ancla semántica del contrato de giradores (T-12). Detalle operativo/seguridad: **A6** |
-| **Módulos SGM** | Tesorería (Caja); Contabilidad (OI — D-1 Tes) |
-| **Dirección del flujo** | SEM → SGM (escritura). Fuente del cobro originado fuera: SEM/girador |
-| **Clase de dato (nodo §4)** | Puede incluir datos de origen municipal (contribuyente en OI). Régimen exacto: no está en el corpus en esta ficha |
-| **Estado del mecanismo** | As-is Verificado con `auth=none` (**H-2**). To-be: semántica + auth M2M (**Supuesto**, T-12); heredar `auth=none` rechazado |
-| **Modo degradado** | Sin feed válido autenticado, Caja no cobra de forma fiable (T-1) |
-| **¿En licitación SGM?** | Contrato de entrada / semántica del feed: sí como borde (T-1, T-12). Construcción de SEM como producto: **fuera** (plataforma SUBDERE). Nodo de privados: no fundir (recomendación nodo) |
-| **Contraparte** | Plataforma SUBDERE / sin unidad nominada en corpus |
-| **Pendientes** | T-12; T-1; H-2; X-83 |
+| **Qué es** | Plataforma web creada en **2011**, gratuita para los municipios. Unidad de plataforma de servicios municipales |
+| **Qué hace** | Permite el pago en línea de **patentes municipales y derechos de aseo**, y la **validación y obtención de permisos de circulación**. Mantiene integraciones con otros servicios públicos y privados para validar en línea los requisitos legales del permiso de circulación |
+| **Arquitectura declarada** | Opera con **Clave Única** y **firma electrónica avanzada**; arquitectura de microservicios; alojada en nube pública |
+| **Por qué está subutilizada** | «No es utilizada por todos los municipios, principalmente por las **dificultades de integración con los softwares de gestión municipal que dominan el mercado**» («Estado del arte — servicios digitales División de Municipalidades SUBDERE», 15-05-2023) |
+| **Borde con SGM** | SEM → SGM: origina datos de cobro que SGM convierte en órdenes de ingreso y pagos. Ancla semántica del contrato de giradores (**T-12**). Detalle operativo y de seguridad: **A6** |
+| **Módulos SGM** | Tesorería (Caja); Contabilidad (orden de ingreso — D-1 Tesorería) |
+| **Estado del mecanismo** | As-is verificado con `auth=none` (**H-2**). To-be: semántica y autenticación M2M **Supuesto** (T-12); heredar `auth=none` está rechazado |
+| **Modo degradado** | Sin feed válido autenticado, Caja no cobra de forma fiable (**T-1**) |
+| **Financiamiento declarado** | Subtítulo 33, transferencias corrientes, asignación 602, glosa 07 del presupuesto SUBDERE |
+| **¿En licitación SGM?** | Contrato de entrada y semántica del feed: sí, como borde (T-1, T-12). Construir SEM como producto: **fuera** |
+| **Contraparte** | Unidad de plataforma de servicios municipales — sin persona nominada |
+| **Pendientes** | T-1; T-12; H-2; X-83 |
 | **Ficha espejo Grupo A** | **A6** |
-| **Quién puede responder** | **Jefatura / dueño plataforma SUBDERE** (+ RFI de implementación auth M2M — ver A6) |
+| **Quién puede responder** | **Jefatura / dueño de la plataforma**, más un proveedor para la implementación de autenticación M2M (ver A6) |
+
+**Riesgo:** que SGM repita la causa por la que SEM quedó subutilizada — no poder integrarse con los sistemas de gestión que dominan el mercado.
 
 ---
 
-#### C3. FIGEM
+#### C3. FIGEM — Fondo, no plataforma
 
 | Campo | Contenido |
 |---|---|
-| **Organismo y sistema** | FIGEM — plataforma / programa SUBDERE (sigla citada; expansión literal: **no está en el corpus**) |
-| **Qué hace / borde con SGM** | Citado como información de programas / dato propio SUBDERE ([`nodo-integracion-subdere.md`](../decisiones/nodo-integracion-subdere.md) §4.2). Aparece como etiqueta de programa en eje de gestión piloto (Presupuestos). Propósito operativo cerrado y API: **no está en el corpus** |
-| **Módulos SGM** | **no está en el corpus** (sin borde de módulo declarado) |
-| **Dirección del flujo** | **Desconocido** |
-| **Clase de dato (nodo §4)** | Dato propio SUBDERE (programas/agregados) — supuesto del nodo §4.2 |
-| **Estado del mecanismo** | **Desconocido** |
-| **Modo degradado** | no está en el corpus |
-| **¿En licitación SGM?** | **Fuera** hasta decisión jefatura / cierre X-83 (recomendación nodo: integración interna ≠ objeto de la licitación SGM del nodo de privados) |
-| **Contraparte** | SUBDERE — sin unidad nominada |
-| **Pendientes** | **X-83** |
-| **Quién puede responder** | **Jefatura / dueño plataforma SUBDERE** — «¿Qué es FIGEM, qué datos publica/consume y qué módulo SGM debe conectar?» |
+| **Qué es** | **No es una plataforma ni un sistema.** Es un **fondo** cuyos recursos se distribuyen anualmente por resolución de SUBDERE, con toma de razón de Contraloría. Los antecedentes se publican en el sitio de SINIM: una resolución de distribución y una planilla de cálculo por año, disponibles desde 2012 |
+| **Norma de distribución** | **Resolución N° 178 de 2015**, que fija el procedimiento de distribución (antes, Resolución N° 115); modificada por **Resolución N° 84 de 14 de junio de 2021** |
+| **Borde con SGM** | **Ninguno.** No requiere integración propia: lo que informa es parte de lo que publica SINIM (**C1**) |
+| **Módulos SGM** | No aplica |
+| **Relación pendiente de verificar** | Si el cálculo de distribución usa indicadores de SINIM como insumo — lo que sumaría un segundo fondo repartido sobre dato declarativo, junto al Fondo Común Municipal. **Es una inferencia, no un hecho verificado**; la Resolución N° 178 lo confirmaría |
+| **¿En licitación SGM?** | **Fuera.** No es un sistema |
+| **Pendientes** | Verificación de la Resolución N° 178 (sin pendiente registrado) |
+| **Quién puede responder** | **La propia resolución** — es documento público en el sitio de SINIM |
+
+**Riesgo:** mantenerlo listado como plataforma y dimensionar una integración que no existe.
 
 ---
 
-#### C4. SIFIM
+#### C4. SIFIM — Programa de fortalecimiento, no plataforma única
 
 | Campo | Contenido |
 |---|---|
-| **Organismo y sistema** | SIFIM — plataforma SUBDERE (sigla citada en nodo y en etiquetas de gestión piloto; expansión literal: **no está en el corpus**) |
-| **Qué hace / borde con SGM** | Citado junto a SEM/SIM como integración interna SUBDERE. Propósito, API y borde SGM: **no está en el corpus** |
-| **Módulos SGM** | **no está en el corpus** |
-| **Dirección del flujo** | **Desconocido** |
-| **Clase de dato (nodo §4)** | no está en el corpus |
-| **Estado del mecanismo** | **Desconocido** |
-| **Modo degradado** | no está en el corpus |
-| **¿En licitación SGM?** | **Fuera** hasta jefatura / X-83 |
+| **Qué es** | **Un programa**, no una plataforma. Sistema Nacional de Información Financiera Municipal. Nace de un convenio con el **Banco Internacional de Reconstrucción y Fomento** en 2007, se adjudica en 2009 y se ejecuta desde 2010 con **103 municipios y 3 corporaciones** de alta dependencia del Fondo Común Municipal |
+| **Qué hizo** | Dos componentes: (a) desarrollo de plataformas para digitalizar procesos municipales, **principalmente contabilidad interna y recursos humanos**; (b) entrega de recursos —20 millones anuales— para equipos, capacitación y licencias |
+| **Hallazgo central** | «Si bien el desarrollo de estas fue financiado por SUBDERE, el producto resultante (los softwares mismos) **no quedaron en su propiedad**, por lo que los municipios adscritos al programa **deben pagar mes a mes el derecho a uso** de dichos softwares. Del mismo modo, estos softwares **no se integran tecnológicamente** con otros de otros proveedores o de SUBDERE, por lo que no es posible que municipios utilicen plataformas diferentes a la de este proveedor, **quedando capturado al uso único de sus soluciones**» («Estado del arte — servicios digitales División de Municipalidades SUBDERE», 15-05-2023) |
+| **Por qué importa al proyecto** | Es el **mismo patrón de captura** que el del proveedor del sistema anterior, quince años antes y todavía en curso. Da fundamento documentado a los no negociables de propiedad del código y portabilidad (`principios-no-negociables.md`) |
+| **Borde con SGM** | No hay borde de integración: sus plataformas son **el competidor instalado**, no un destino de reporte. Los 103 municipios y 3 corporaciones son, por la misma razón, el primer universo natural de adopción |
+| **Módulos SGM** | Contabilidad y RRHH por competencia funcional, no por integración |
+| **Financiamiento declarado** | Programa 01, subtítulo 22, glosa 04 (servicios cloud para continuidad operacional); Programa 02, subtítulo 33, ítem 03, asignación 602, glosa 07 (transferencias a municipalidades) |
+| **¿En licitación SGM?** | **Fuera como integración.** Relevante como antecedente de mercado y de riesgo contractual |
 | **Contraparte** | SUBDERE — sin unidad nominada |
-| **Pendientes** | **X-83** |
-| **Quién puede responder** | **Jefatura / dueño plataforma SUBDERE** |
+| **Pendientes** | **X-83** (qué plataformas concretas, qué proveedor, qué vigencia contractual) |
+| **Quién puede responder** | **Jefatura / responsable del programa** — «¿Qué softwares concretos, de qué proveedor, con qué contratos vigentes y qué costo mensual pagan hoy los 103 municipios?» |
+
+**Riesgo:** repetir por tercera vez la pérdida de propiedad intelectual, o ignorar que existe un incumbente contractualmente instalado en 103 municipios.
 
 ---
 
-#### C5. SIM
+#### C5. SIM-FIMU — Sistema de Información Municipal y Ficha Única
 
 | Campo | Contenido |
 |---|---|
-| **Organismo y sistema** | SIM — plataforma SUBDERE (sigla citada en nodo junto a SEM/SIFIM; expansión literal: **no está en el corpus**) |
-| **Qué hace / borde con SGM** | Citado como plataforma SUBDERE de integración interna. Propósito, API y borde SGM: **no está en el corpus** |
-| **Módulos SGM** | **no está en el corpus** |
-| **Dirección del flujo** | **Desconocido** |
-| **Clase de dato (nodo §4)** | no está en el corpus |
-| **Estado del mecanismo** | **Desconocido** |
-| **Modo degradado** | no está en el corpus |
-| **¿En licitación SGM?** | **Fuera** hasta jefatura / X-83 |
-| **Contraparte** | SUBDERE — sin unidad nominada |
+| **Qué es** | Plataforma creada en **2019**, gestionada por la Unidad de información municipal y ficha de información municipal única. Su producto asociado es la **FIMU**, ficha que reúne e integra la información relevante de estados financieros |
+| **Qué hace** | **Captura automatizada** de datos municipales desde **16 fuentes gubernamentales** —entre ellas el propio SINIM, Contraloría General de la República, Servicio de Impuestos Internos y Tesorería—, con integración y visualización estadística de la gestión financiera y contable de las 345 municipalidades y sus corporaciones de educación y salud. Periodicidad **trimestral**. Perfiles de acceso para ciudadanos, municipalidades y SUBDERE |
+| **Diferencia con SINIM** | SINIM levanta de primera fuente por formulario declarativo; SIM-FIMU **contrasta desde otros generadores de información**. La fuente califica esta coexistencia como parte del desafío: «tenemos dos plataformas de visualización de datos para la evaluación de la gestión municipal» |
+| **Borde con SGM** | **No está en el corpus.** Si SIM captura desde 16 fuentes, SGM sería una fuente adicional o sustituiría el tramo que hoy llega declarativo vía SINIM — **decisión abierta** |
+| **Módulos SGM** | No declarado |
+| **Estado del mecanismo** | **Desconocido.** Que capture automáticamente desde 16 fuentes implica que tiene algún mecanismo de ingesta; cuál, no está documentado |
+| **¿En licitación SGM?** | **Fuera** hasta jefatura / **X-83** |
+| **Contraparte** | SUBDERE — Unidad de información municipal y FIMU |
 | **Pendientes** | **X-83** |
-| **Quién puede responder** | **Jefatura / dueño plataforma SUBDERE** |
+| **Quién puede responder** | **Jefatura / unidad SIM-FIMU** — «¿Por qué mecanismo ingesta las 16 fuentes, y podría SGM ser una de ellas?» |
+
+**Riesgo:** duplicar la función de SIM-FIMU en la capa de reportería de SGM en vez de alimentarla.
 
 ---
 
