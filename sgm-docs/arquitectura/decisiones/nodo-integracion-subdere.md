@@ -212,7 +212,9 @@ Observaciones sobre la mención a **MuleSoft**:
 
 ## 8. Arquitectura de referencia propuesta
 
-La propuesta técnica interna («Plataforma Institucional de Gestión de APIs») aporta dos diagramas: un flujo mínimo de prueba de concepto y una vista con separación de zonas de red. Componentes:
+La propuesta técnica interna («Plataforma Institucional de Gestión de APIs» / **Plataforma de Control**) aporta dos diagramas: un flujo mínimo de prueba de concepto y una vista con separación de zonas de red. La base técnica canónica —deslinde frente al core y a los módulos, propiedades para licitar, casos de uso— vive en el repositorio del Nodo SUBDERE: [`plataforma-control.md`](https://github.com/jaimehernandeze/nodo-subdere/blob/main/docs/plataforma-control.md) (diagramas [`flujo_1`](https://github.com/jaimehernandeze/nodo-subdere/blob/main/docs/flujo_1.md) / [`flujo_2`](https://github.com/jaimehernandeze/nodo-subdere/blob/main/docs/flujo_2.md)). Este §8 no la duplica.
+
+Componentes:
 
 | Componente | Rol | Observación |
 |---|---|---|
