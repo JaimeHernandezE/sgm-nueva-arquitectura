@@ -1,0 +1,147 @@
+/* SGM · Contabilidad — estilos del módulo (acotados a .conta para convivir con el shell SGM) */
+body.conta-body{margin:0;background:#fff}
+.app-layout.app-layout--wide{max-width:1320px}
+.conta{
+  --ground:#f3f5f7; --surface:#ffffff; --surface2:#f6f8fa; --ink:#14202e; --muted:#5a6778; --line:#d5dbe3; --line2:#e6eaef;
+  --accent:#0a5bb5; --accent-ink:#ffffff; --accent-soft:#e3eefb;
+  --ok:#1d7349; --ok-soft:#e1f2e8; --warn:#9a5b06; --warn-soft:#fbefd9; --crit:#b42b28; --crit-soft:#fbe4e3;
+  --sup:#6b3fa0; --sup-soft:#efe7f8;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --cond:"IBM Plex Sans Condensed","IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+  color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.45;
+}
+.conta .conta-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 18px;padding:10px 14px;margin-bottom:16px;background:var(--surface2);border:1px solid var(--line);border-radius:8px}
+.conta .conta-toolbar .brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.conta .conta-toolbar .brand b{font-family:var(--cond);font-size:17px}
+.conta .conta-toolbar .brand span{color:var(--muted);font-size:12.5px}
+.conta .conta-toolbar .proto{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--sup);background:var(--sup-soft);padding:2px 7px;border-radius:3px}
+.conta .rolebox{display:flex;align-items:center;gap:8px}
+.conta .rolebox label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.conta .cnt{font-family:var(--mono);font-size:11.5px;min-width:20px;text-align:center;padding:0 5px;border-radius:9px;background:var(--line2);color:var(--muted)}
+.conta .adq-banner{margin-bottom:12px}
+/* Navegación del módulo dentro del sidebar del shell SGM */
+#contabilidad-nav .conta-nav-grp{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted,#888);margin:10px 0 2px}
+#contabilidad-nav a{display:flex;justify-content:space-between;align-items:center;gap:6px}
+#contabilidad-nav a .cnt{font-size:11px;min-width:18px;text-align:center;padding:0 5px;border-radius:9px;background:#e6eaef;color:#555}
+.conta *{box-sizing:border-box}
+.conta{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.45}
+.conta h1,.conta h2,.conta h3{font-family:var(--cond);font-weight:600;text-wrap:balance;margin:0}
+.conta h1{font-size:22px}
+.conta h2{font-size:17px}
+.conta h3{font-size:14.5px}
+.conta button,.conta select,.conta input{font:inherit;color:inherit}
+.conta .mono,.conta .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.conta .num{text-align:right;white-space:nowrap}
+.conta .muted{color:var(--muted)}
+.conta .small{font-size:12.5px}
+.conta a{color:var(--accent)}
+.conta :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.conta /* shell */
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.conta select,.conta input[type=text],.conta input[type=number],.conta input[type=date],.conta input[type=search]{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:6px 8px;min-width:0;max-width:100%}
+.conta .pagehead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:16px}
+.conta .pagehead p{margin:4px 0 0;color:var(--muted);max-width:70ch}
+.conta /* building blocks */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:6px}
+.conta .panel>.ph{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line2)}
+.conta .panel>.pb{padding:14px}
+.conta .stack{display:flex;flex-direction:column;gap:16px}
+.conta .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.conta .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:16px}
+.conta .kpi{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+.conta .kpi .l{font-size:12px;color:var(--muted)}
+.conta .kpi .v{font-family:var(--mono);font-size:19px;margin-top:2px}
+.conta .kpi .s{font-size:12px;color:var(--muted);margin-top:2px}
+.conta .bar{height:6px;background:var(--line2);border-radius:3px;overflow:hidden;display:flex;margin-top:8px}
+.conta .bar i{display:block;height:100%}
+.conta .tbl-wrap{overflow-x:auto}
+.conta table{border-collapse:collapse;width:100%}
+.conta th{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:500;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.conta td{padding:9px 10px;border-bottom:1px solid var(--line2);vertical-align:top}
+.conta tr.click{cursor:pointer}
+.conta tr.click:hover td{background:var(--surface2)}
+.conta tfoot td{font-weight:600;border-top:1px solid var(--line)}
+.conta .pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;padding:2px 8px;border-radius:10px;white-space:nowrap;background:var(--line2);color:var(--muted)}
+.conta .pill.ok{background:var(--ok-soft);color:var(--ok)}
+.conta .pill.warn{background:var(--warn-soft);color:var(--warn)}
+.conta .pill.crit{background:var(--crit-soft);color:var(--crit)}
+.conta .pill.acc{background:var(--accent-soft);color:var(--accent)}
+.conta .role{font-size:11.5px;padding:1px 7px;border-radius:3px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.conta .role.me{border-color:var(--accent);color:var(--accent)}
+.conta .sup{font-family:var(--mono);font-size:11px;padding:1px 6px;border-radius:3px;background:var(--sup-soft);color:var(--sup);cursor:pointer;border:0}
+.conta .btn{border:1px solid var(--line);background:var(--surface);padding:7px 13px;border-radius:4px;cursor:pointer;font-weight:500}
+.conta .btn:hover{border-color:var(--muted)}
+.conta .btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.conta .btn.pri:hover{filter:brightness(1.07)}
+.conta .btn.alt{color:var(--crit);border-color:var(--crit-soft)}
+.conta .btn.sm{padding:4px 9px;font-size:12.5px}
+.conta .btn:disabled{opacity:.5;cursor:not-allowed}
+.conta .alert{border-radius:5px;padding:10px 12px;font-size:13.5px}
+.conta .alert.crit{background:var(--crit-soft);color:var(--crit)}
+.conta .alert.ok{background:var(--ok-soft);color:var(--ok)}
+.conta .alert.warn{background:var(--warn-soft);color:var(--warn)}
+.conta .alert.sup{background:var(--sup-soft);color:var(--sup)}
+.conta .empty{padding:22px;text-align:center;color:var(--muted)}
+.conta .fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px 14px}
+.conta .field{display:flex;flex-direction:column;gap:4px}
+.conta .field label{font-size:12px;color:var(--muted)}
+.conta .check{display:flex;gap:8px;align-items:flex-start}
+.conta .tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px}
+.conta .tabs button{border:1px solid var(--line);background:var(--surface);padding:5px 11px;border-radius:14px;cursor:pointer;font-size:13px}
+.conta .tabs button.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.conta /* expediente */
+.xgrid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:16px;align-items:start}
+@media (max-width:1100px){.conta .xgrid{grid-template-columns:1fr}}
+.conta .xhead{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;margin-top:6px;color:var(--muted);font-size:13px}
+.conta .steps{list-style:none;margin:0;padding:0}
+.conta .steps li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:start;padding:7px 0;position:relative}
+.conta .steps li::before{content:"";position:absolute;left:10px;top:24px;bottom:-8px;width:2px;background:var(--line2)}
+.conta .steps li:last-child::before{display:none}
+.conta .dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);background:var(--surface);display:grid;place-items:center;font-size:11px;font-family:var(--mono);color:var(--muted);position:relative;z-index:1}
+.conta .steps li.done .dot{background:var(--ok);border-color:var(--ok);color:#fff}
+.conta .steps li.cur .dot{border-color:var(--accent);background:var(--accent);color:var(--accent-ink)}
+.conta .steps li.cur .sl{font-weight:600}
+.conta .steps li.pend .sl{color:var(--muted)}
+.conta .stagecard{border:1px solid var(--accent);border-radius:6px;background:var(--surface);overflow:hidden}
+.conta .stagecard .sh{background:var(--accent-soft);padding:12px 14px;display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center}
+.conta .stagecard .sb{padding:14px;display:flex;flex-direction:column;gap:12px}
+.conta .stagecard p{margin:0}
+.conta .doc{border:1px solid var(--line2);border-radius:5px;padding:10px 12px;background:var(--surface2)}
+.conta .doc .dt{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.conta .doc .dn{font-family:var(--mono);font-size:13.5px;margin-top:2px}
+.conta .hist{list-style:none;margin:0;padding:0;font-size:13px}
+.conta .hist li{padding:7px 0;border-bottom:1px solid var(--line2)}
+.conta .hist li:last-child{border:0}
+.conta .asiento{border:1px solid var(--line2);border-radius:5px;overflow:hidden}
+.conta .asiento .ah{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;padding:8px 10px;background:var(--surface2);font-size:12.5px}
+.conta .asiento td{padding:6px 10px;font-size:13px}
+.conta .lane-src{font-size:12px;color:var(--muted)}
+.conta .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:5px;font-size:13.5px;max-width:calc(100% - 32px);z-index:20;box-shadow:0 6px 24px rgba(0,0,0,.2)}
+.conta .items-row{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) auto;gap:8px;align-items:end}
+.conta .suplist{display:grid;gap:12px}
+.conta .supitem{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:6px}
+.conta .supitem .id{font-family:var(--mono);color:var(--sup);font-weight:500}
+.conta .supitem p{margin:4px 0 0}
+.conta .supitem.hl{outline:2px solid var(--sup)}
+.conta .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+@media (max-width:420px){.conta .two{grid-template-columns:1fr}}
+.conta a.ext{white-space:nowrap}
+.conta /* mapa de flujos */
+.lane{display:grid;gap:6px 8px;min-width:max-content;padding:4px 0;position:relative}
+.conta .lane-r{grid-column:1;align-self:stretch;display:flex;align-items:center;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;padding-right:8px;position:sticky;left:0;background:var(--surface);z-index:2}
+.conta .lane-bg{background:var(--surface2);border-radius:4px;border:1px dashed var(--line2);z-index:0}
+.conta .lane-s{position:relative;z-index:1;margin:6px 0;text-align:left;font-size:12.5px;line-height:1.3;border:1px solid var(--line);background:var(--surface);border-radius:5px;padding:7px 8px 8px;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.conta .lane-s:hover{border-color:var(--accent)}
+.conta .lane-s.live{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.conta .lane-s .cnt{position:absolute;top:-8px;right:-6px;background:var(--accent);color:var(--accent-ink)}
+.conta .lane-s .sup-dot{font-family:var(--mono);font-size:10.5px;color:var(--sup)}
+.conta details.how summary{cursor:pointer;padding:4px 0}
+.conta details.how ol{margin:8px 0 0;padding-left:22px;display:flex;flex-direction:column;gap:6px;max-width:90ch}
+.conta .steps li.hl{background:var(--sup-soft);border-radius:5px;outline:2px solid var(--sup);outline-offset:0}
+.conta section.panel{scroll-margin-top:70px}
+@media (prefers-reduced-motion:no-preference){.conta .toast{animation:up .18s ease-out}
+@keyframes up{from{transform:translate(-50%,8px);opacity:0}}}
+
+/* [Demo] los avisos morados usan la fuente normal (la clase .sup de los chips S1…S13 los ponía en monoespaciada) */
+.conta .alert.sup{font-family:inherit;font-size:13.5px;padding:10px 12px;border-radius:5px;cursor:auto}

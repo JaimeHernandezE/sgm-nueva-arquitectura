@@ -1,0 +1,107 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Registro Obligaciones" id="3XO1FZGtjdm5sP7muiAI">
+    <mxGraphModel dx="1653" dy="838" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-1" parent="1" style="swimlane;childLayout=stackLayout;resizeParent=1;resizeParentMax=0;horizontal=1;startSize=30;horizontalStack=0;html=1;fillColor=#1e293b;fontColor=#ffffff;fontStyle=1" value="PROCESO DE REGISTRO DE OBLIGACIONES MUNICIPALES (DEVENGADO)" vertex="1">
+          <mxGeometry height="640" width="1480" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-2" parent="Iwe7cKeXE440Fz0N3D2j-1" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;startSize=40;fillColor=#f8fafc;fontColor=#334155;fontStyle=1" value="Unidad Solicitante (SGM)" vertex="1">
+          <mxGeometry height="150" width="1480" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-3" parent="Iwe7cKeXE440Fz0N3D2j-2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;fontColor=#ffffff;strokeColor=#059669;" value="Recepción y Visación de Productos/Servicios" vertex="1">
+          <mxGeometry height="60" width="140" x="500" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-4" parent="Iwe7cKeXE440Fz0N3D2j-2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;fontColor=#ffffff;strokeColor=#059669;" value="Firma de Acta de Recepción Conforme" vertex="1">
+          <mxGeometry height="60" width="120" x="700" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-5" parent="Iwe7cKeXE440Fz0N3D2j-1" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;startSize=40;fillColor=#ffffff;fontColor=#334155;fontStyle=1" value="DAF / Abastecimiento y Compras" vertex="1">
+          <mxGeometry height="150" width="1480" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-6" parent="Iwe7cKeXE440Fz0N3D2j-5" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#64748b;fontColor=#ffffff;fontStyle=1;strokeColor=#475569;" value="Inicio" vertex="1">
+          <mxGeometry height="40" width="40" x="60" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-7" parent="Iwe7cKeXE440Fz0N3D2j-5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3b82f6;fontColor=#ffffff;strokeColor=#2563eb;" value="Emisión y Envío de Orden de Compra (OC)" vertex="1">
+          <mxGeometry height="60" width="120" x="150" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-8" parent="Iwe7cKeXE440Fz0N3D2j-5" style="rhombus;whiteSpace=wrap;html=1;fillColor=#94a3b8;fontColor=#ffffff;strokeColor=#64748b;" value="¿OC Aceptada por Proveedor?" vertex="1">
+          <mxGeometry height="80" width="120" x="320" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-9" parent="Iwe7cKeXE440Fz0N3D2j-5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a5fa;fontColor=#ffffff;strokeColor=#3b82f6;" value="Integración de Expediente (OC + DTE + CRC + Acta)" vertex="1">
+          <mxGeometry height="60" width="140" x="850" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-10" parent="Iwe7cKeXE440Fz0N3D2j-1" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;startSize=40;fillColor=#f8fafc;fontColor=#334155;fontStyle=1" value="Mercado Público (MP) / SII" vertex="1">
+          <mxGeometry height="150" width="1480" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-11" parent="Iwe7cKeXE440Fz0N3D2j-10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a5fa;fontColor=#ffffff;strokeColor=#3b82f6;" value="Validación de DTE y Emisión CRC (Mercado Público)" vertex="1">
+          <mxGeometry height="60" width="140" x="500" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-12" parent="Iwe7cKeXE440Fz0N3D2j-10" style="rhombus;whiteSpace=wrap;html=1;fillColor=#94a3b8;fontColor=#ffffff;strokeColor=#64748b;" value="¿DTE Acorde a OC?" vertex="1">
+          <mxGeometry height="80" width="120" x="700" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-13" parent="Iwe7cKeXE440Fz0N3D2j-1" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;startSize=40;fillColor=#ffffff;fontColor=#334155;fontStyle=1" value="Contabilidad y Tesorería (SGM)" vertex="1">
+          <mxGeometry height="160" width="1480" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-14" parent="Iwe7cKeXE440Fz0N3D2j-13" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ef4444;fontColor=#ffffff;strokeColor=#dc2626;" value="Notificar a Unidad Solicitante / Re-evaluar" vertex="1">
+          <mxGeometry height="60" width="120" x="320" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-15" parent="Iwe7cKeXE440Fz0N3D2j-13" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ef4444;fontColor=#ffffff;strokeColor=#dc2626;" value="Generar Rechazo de DTE" vertex="1">
+          <mxGeometry height="60" width="120" x="700" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-16" parent="Iwe7cKeXE440Fz0N3D2j-13" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;fontColor=#ffffff;strokeColor=#059669;" value="Registro Contable del Devengado (Obligación)" vertex="1">
+          <mxGeometry height="60" width="140" x="1030" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-17" parent="Iwe7cKeXE440Fz0N3D2j-13" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;fontColor=#ffffff;strokeColor=#059669;" value="Emisión de Decreto de Pago" vertex="1">
+          <mxGeometry height="60" width="120" x="1230" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-18" parent="Iwe7cKeXE440Fz0N3D2j-13" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#64748b;fontColor=#ffffff;fontStyle=1;strokeColor=#475569;" value="Fin" vertex="1">
+          <mxGeometry height="40" width="40" x="1400" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-19" edge="1" parent="1" source="Iwe7cKeXE440Fz0N3D2j-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;" target="Iwe7cKeXE440Fz0N3D2j-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-20" edge="1" parent="1" source="Iwe7cKeXE440Fz0N3D2j-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;" target="Iwe7cKeXE440Fz0N3D2j-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-21" edge="1" parent="1" source="Iwe7cKeXE440Fz0N3D2j-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;fontStyle=1;labelBackgroundColor=#ffffff;" target="Iwe7cKeXE440Fz0N3D2j-14" value="NO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-22" edge="1" parent="1" source="Iwe7cKeXE440Fz0N3D2j-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;fontStyle=1;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;entryX=0;entryY=0.5;" target="Iwe7cKeXE440Fz0N3D2j-3" value="SI">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-23" edge="1" parent="1" source="Iwe7cKeXE440Fz0N3D2j-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;fontStyle=1;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitDx=0;exitDy=0;" target="Iwe7cKeXE440Fz0N3D2j-11" value="SI">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="610" y="295" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-24" edge="1" parent="1" source="Iwe7cKeXE440Fz0N3D2j-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;" target="Iwe7cKeXE440Fz0N3D2j-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-25" edge="1" parent="1" source="Iwe7cKeXE440Fz0N3D2j-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;" target="Iwe7cKeXE440Fz0N3D2j-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-26" edge="1" parent="1" source="Iwe7cKeXE440Fz0N3D2j-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;fontStyle=1;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="Iwe7cKeXE440Fz0N3D2j-15" value="NO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-27" edge="1" parent="1" source="Iwe7cKeXE440Fz0N3D2j-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;fontStyle=1;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;entryX=0;entryY=0.75;" target="Iwe7cKeXE440Fz0N3D2j-9" value="SI">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-28" edge="1" parent="1" source="Iwe7cKeXE440Fz0N3D2j-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.25;" target="Iwe7cKeXE440Fz0N3D2j-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-29" edge="1" parent="1" source="Iwe7cKeXE440Fz0N3D2j-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="Iwe7cKeXE440Fz0N3D2j-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-30" edge="1" parent="1" source="Iwe7cKeXE440Fz0N3D2j-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;" target="Iwe7cKeXE440Fz0N3D2j-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Iwe7cKeXE440Fz0N3D2j-31" edge="1" parent="1" source="Iwe7cKeXE440Fz0N3D2j-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;" target="Iwe7cKeXE440Fz0N3D2j-18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

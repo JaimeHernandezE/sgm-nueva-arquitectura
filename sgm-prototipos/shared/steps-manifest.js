@@ -128,5 +128,24 @@ export default {
       operations: ['performThreeWayMatch', 'getInvoiceForMatch'],
       origin: { kind: 'module', label: 'Contabilidad', mode: 'dependencia' },
     },
+    // Sub-pasos resueltos por el módulo Contabilidad (prototipo de flujos contables).
+    {
+      stepId: '4.4',
+      stageName: 'Recepción Conforme',
+      stepName: 'Devengado',
+      processFicha: 'sgm-docs/modulos/adquisiciones/procesos-transversales/4-recepcion-conforme.md',
+      prototypeHtml: 'modulos/contabilidad/index.html',
+      operations: ['recordAccrual'],
+      origin: { kind: 'module', label: 'Contabilidad', mode: 'dependencia' },
+    },
+    {
+      stepId: '5.2',
+      stageName: 'Pago',
+      stepName: 'Registro de Devengado',
+      processFicha: 'sgm-docs/modulos/adquisiciones/procesos-transversales/5-pago.md',
+      prototypeHtml: 'modulos/contabilidad/index.html',
+      operations: ['registerAccrual'],
+      origin: { kind: 'module', label: 'Contabilidad', mode: 'dependencia' },
+    },
   ],
 };
