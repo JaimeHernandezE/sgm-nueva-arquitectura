@@ -20,8 +20,8 @@ export const modules = [
   {
     id: 'contabilidad',
     name: 'Contabilidad',
-    enabled: false,
-    hint: 'Próximamente',
+    path: 'modulos/contabilidad/index.html',
+    enabled: true,
   },
   {
     id: 'tesoreria',
@@ -41,6 +41,23 @@ export const adquisicionesNav = [
   { id: 'home', label: 'Inicio', path: 'modulos/adquisiciones/index.html' },
   { id: 'expedientes', label: 'Expedientes', path: 'modulos/adquisiciones/01-listado-expedientes.html' },
   { id: 'config', label: 'Configuraciones', path: 'modulos/adquisiciones/configuraciones/index.html' },
+];
+
+/** Módulo Contabilidad (prototipo de flujos contables). */
+export const contabilidadNav = [
+  { id: 'guia', label: 'Guía de demo', path: 'modulos/contabilidad/index.html#guia' },
+  { id: 'bandeja', label: 'Mi bandeja', path: 'modulos/contabilidad/index.html#bandeja' },
+  { id: 'flujos', label: 'Mapa de flujos', path: 'modulos/contabilidad/index.html#flujos' },
+  { id: 'oc', label: 'Desde Adquisiciones', path: 'modulos/contabilidad/index.html#oc' },
+  { id: 'sinoc', label: 'Servicios sin OC', path: 'modulos/contabilidad/index.html#sinoc' },
+  { id: 'ing', label: 'Órdenes de ingreso', path: 'modulos/contabilidad/index.html#ing' },
+  { id: 'tes', label: 'Pagos y cobros', path: 'modulos/contabilidad/index.html#tes' },
+  { id: 'conc', label: 'Conciliación bancaria', path: 'modulos/contabilidad/index.html#conc' },
+  { id: 'pres', label: 'Ejecución presupuestaria', path: 'modulos/contabilidad/index.html#pres' },
+  { id: 'diario', label: 'Libro diario', path: 'modulos/contabilidad/index.html#diario' },
+  { id: 'inv', label: 'Inventario', path: 'modulos/contabilidad/index.html#inv' },
+  { id: 'cfg', label: 'Configuración de cuentas', path: 'modulos/contabilidad/index.html#cfg' },
+  { id: 'sup', label: 'Supuestos', path: 'modulos/contabilidad/index.html#sup' },
 ];
 
 export const plataformaHubNav = [

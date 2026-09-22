@@ -71,7 +71,7 @@ sgm-prototipos/
 │   ├── notifications-ui.js # Campanita + menú cuenta; kinds en ES; leído solo en memoria (reset al refrescar)
 │   ├── chat-contextual-ui.js # FAB chat (cerrado por defecto; contexto opt-in; búsqueda persona/depto)
 │   ├── shell.css
-│   ├── modules-registry.js # Adquisiciones + Plataforma (consolas + Chats)
+│   ├── modules-registry.js # Adquisiciones + Contabilidad + Plataforma (consolas + Chats)
 │   ├── expedientes-demo.js # Perfiles de expediente demo (4 modalidades + caso sin saldo)
 │   ├── demo-data/          # Timeline por expediente + plataforma.js (notifications, chatThreads, users)
 │   ├── form-presets.js     # Valores de formulario por expediente
@@ -84,6 +84,7 @@ sgm-prototipos/
 │   ├── subdere/            # 01–07 pantallas admin plataforma
 │   └── municipal/          # 01–09 pantallas admin municipio (09 = preferencias notificación)
 └── modulos/
+    ├── contabilidad/               # Prototipo de flujos contables (index + contabilidad.js/.css)
     └── adquisiciones/
         ├── index.html                  # Bienvenida del módulo
         ├── 01-listado-expedientes.html # Listado (4 modalidades)
@@ -108,6 +109,15 @@ Local: `npx serve sgm-prototipos` → `/` (landing) → ClaveÚnica → home →
 | Chats | Nav Plataforma → `shell/05-chats.html`; hilos con contexto tienen «Ir a la vista citada» |
 
 Cada fila del listado abre un expediente con **las 5 etapas** parametrizadas por modalidad vía `?expediente=`. La **etapa 3** es específica de cada modalidad y está enlazada desde el shell. Los formularios transversales reutilizan el mismo HTML; los valores visibles vienen de `form-presets.js`.
+
+## Módulo Contabilidad
+
+Prototipo de los flujos contables levantados en `sgm-docs/modulos/contabilidad/diagramas/`: devengado de las compras que llegan desde Adquisiciones, gasto sin OC, ingresos, factoring y conciliación bancaria.
+
+- Entrada: `modulos/contabilidad/` (abre en **Guía de demo**, con 12 casos listos y botón para reiniciar los datos).
+- Pantalla única con rutas por hash (`#guia`, `#bandeja`, `#flujos`, `#exp=…`); estado en `localStorage` (clave `sgm-conta-proto-v5`).
+- Integración: 5.1 Cruce de 3 vías → "Registrar devengado en Contabilidad (5.2)" → `modulos/contabilidad/?expediente=ADQ-…&origen=5.2`. Lee `expedientes-demo.js` y `form-presets.js`.
+- Análisis y guion: `sgm-docs/modulos/contabilidad/prototipo/`.
 
 ## Convención de numeración
 

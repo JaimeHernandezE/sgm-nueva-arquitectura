@@ -1,0 +1,100 @@
+<mxfile host="app.diagrams.net" pages="2">
+  <diagram name="Ingreso Devengado" id="fCdfR6C5-usB00ldO6HY">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1600" pageHeight="900" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="pool" parent="1" style="shape=swimlane;horizontal=0;startSize=30;collapsible=0;horizontalPopup=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#0f172a;fontColor=#ffffff;fontStyle=1;fontSize=14;" value="PROCESO DE INGRESO DEVENGADO (ORDEN DE INGRESO)" vertex="1">
+          <mxGeometry height="780" width="1480" x="-42190" y="-22070" as="geometry" />
+        </mxCell>
+        <mxCell id="lane_emisora" parent="pool" style="shape=swimlane;startSize=30;collapsible=0;horizontal=0;html=1;fillColor=#f8fafc;strokeColor=#cbd5e1;fontColor=#1e293b;fontStyle=1;" value="UNIDAD EMISORA / SOLICITANTE&#xa;(Depto. Patentes / Permisos / Origen)" vertex="1">
+          <mxGeometry height="260" width="1450" x="30" as="geometry" />
+        </mxCell>
+        <mxCell id="node_start" parent="lane_emisora" style="ellipse;whiteSpace=wrap;html=1;fillColor=#22c55e;strokeColor=#15803d;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="40" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="KloGM5Q8DwpFk8Y3W0K2-1" edge="1" parent="lane_emisora" source="node_n1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="node_n2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="node_n1" parent="lane_emisora" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=11;" value="Crear Nueva&#xa;Orden de Ingreso" vertex="1">
+          <mxGeometry height="60" width="120" x="110" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="KloGM5Q8DwpFk8Y3W0K2-2" edge="1" parent="lane_emisora" source="node_n2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="node_n3" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="node_n2" parent="lane_emisora" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=11;" value="Seleccionar Depto.&#xa;y Fechas (Venc./Pago)" vertex="1">
+          <mxGeometry height="60" width="130" x="260" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="KloGM5Q8DwpFk8Y3W0K2-3" edge="1" parent="lane_emisora" source="node_n3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="node_n4" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="node_n3" parent="lane_emisora" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=11;" value="Buscar Contribuyente&#xa;(RUT / Nombre / Email)" vertex="1">
+          <mxGeometry height="60" width="130" x="420" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="KloGM5Q8DwpFk8Y3W0K2-4" edge="1" parent="lane_emisora" source="node_n4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="node_n5" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="node_n4" parent="lane_emisora" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=11;" value="Agregar Ítem de Ingreso&#xa;y Monto ($68.000)" vertex="1">
+          <mxGeometry height="60" width="130" x="580" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="node_n5" parent="lane_emisora" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=11;" value="Guardar Orden&#xa;[Estado: Borrador]" vertex="1">
+          <mxGeometry height="60" width="120" x="740" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="node_n6" parent="lane_emisora" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3b82f6;strokeColor=#1d4ed8;fontColor=#ffffff;fontStyle=1;fontSize=11;" value="Ejecutar Acción&#xa;[Confirmar]" vertex="1">
+          <mxGeometry height="60" width="110" x="890" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="lane_emisora" source="node_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;" target="node_n1" />
+        <mxCell id="e2" edge="1" parent="lane_emisora" source="node_n1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;" target="node_n2" />
+        <mxCell id="e3" edge="1" parent="lane_emisora" source="node_n2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;" target="node_n3" />
+        <mxCell id="e4" edge="1" parent="lane_emisora" source="node_n3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;" target="node_n4" />
+        <mxCell id="e5" edge="1" parent="lane_emisora" source="node_n4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;" target="node_n5" />
+        <mxCell id="e6" edge="1" parent="lane_emisora" source="node_n5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;" target="node_n6" />
+        <mxCell id="lane_sistema" parent="pool" style="shape=swimlane;startSize=30;collapsible=0;horizontal=0;html=1;fillColor=#f1f5f9;strokeColor=#cbd5e1;fontColor=#1e293b;fontStyle=1;" value="SISTEMA CONTABLE / SGM&#xa;(Motor de Reglas y Automatizaciones)" vertex="1">
+          <mxGeometry height="260" width="1450" x="30" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="KloGM5Q8DwpFk8Y3W0K2-6" edge="1" parent="lane_sistema" source="node_sys1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="node_sys2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="node_sys1" parent="lane_sistema" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fef08a;strokeColor=#ca8a04;fontColor=#854d0e;fontSize=10;fontStyle=1;" value="¿Auto-generar&#xa;Comprobante&#xa;Activo?" vertex="1">
+          <mxGeometry height="100" width="120" x="885" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="node_sys2" parent="lane_sistema" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#22c55e;strokeColor=#15803d;fontColor=#ffffff;fontStyle=1;fontSize=11;" value="Generar Comprobante&#xa;Contable (CID)&#xa;Correlativo y Cuentas" vertex="1">
+          <mxGeometry height="60" width="140" x="1050" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="e_sys_si" edge="1" parent="lane_sistema" source="node_sys1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16a34a;fontColor=#16a34a;fontStyle=1;" target="node_sys2" value="SÍ" />
+        <mxCell id="lane_receptora" parent="pool" style="shape=swimlane;startSize=30;collapsible=0;horizontal=0;html=1;fillColor=#f8fafc;strokeColor=#cbd5e1;fontColor=#1e293b;fontStyle=1;" value="UNIDAD RECEPTORA&#xa;(Contabilidad y Tesorería)" vertex="1">
+          <mxGeometry height="260" width="1450" x="30" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="node_rec1" parent="lane_receptora" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=11;" value="Revisión Manual&#xa;y Aprobación" vertex="1">
+          <mxGeometry height="60" width="130" x="880" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="node_rec2" parent="lane_receptora" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=11;" value="Comprobante en&#xa;Estado Confirmado&#xa;[Devengado Realizado]" vertex="1">
+          <mxGeometry height="60" width="150" x="1045" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="node_rec3" parent="lane_receptora" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;fontSize=11;" value="Recepcionar Pago /&#xa;Registrar Ingreso Percibido" vertex="1">
+          <mxGeometry height="60" width="150" x="1230" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="node_end" parent="lane_receptora" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ef4444;strokeColor=#b91c1c;strokeWidth=3;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="1400" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="e_rec_manual" edge="1" parent="lane_receptora" source="node_rec1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;" target="node_rec2" />
+        <mxCell id="e_rec_pago" edge="1" parent="lane_receptora" source="node_rec2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;" target="node_rec3" />
+        <mxCell id="e_end" edge="1" parent="lane_receptora" source="node_rec3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;" target="node_end" />
+        <mxCell id="e_confirm" edge="1" parent="pool" source="node_n6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;" target="node_sys1" />
+        <mxCell id="e_sys_no" edge="1" parent="pool" source="node_sys1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#dc2626;fontColor=#dc2626;fontStyle=1;" target="node_rec1" value="NO" />
+        <mxCell id="e_sys_auto" edge="1" parent="pool" source="node_sys2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748b;" target="node_rec2" />
+        <mxCell id="KloGM5Q8DwpFk8Y3W0K2-5" edge="1" parent="pool" source="node_n6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="node_sys1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="VvEtjrnNwgI0fIiOydS9" name="Ingreso Percibido">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1600" pageHeight="900" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

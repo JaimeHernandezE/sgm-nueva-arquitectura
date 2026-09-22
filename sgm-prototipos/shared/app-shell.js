@@ -1,6 +1,7 @@
 import {
   modules,
   adquisicionesNav,
+  contabilidadNav,
   plataformaHubNav,
   plataformaSubdereNav,
   plataformaMunicipalNav,
@@ -77,6 +78,15 @@ function renderModuleNav(activeModuleId, activeNavId, consoleId) {
     <div class="app-sidebar__nav">
       <div class="app-sidebar__nav-title">Adquisiciones</div>
       ${navLinks(adquisicionesNav, activeNavId)}
+    </div>
+  `;
+  }
+
+  if (activeModuleId === 'contabilidad') {
+    return `
+    <div class="app-sidebar__nav" id="contabilidad-nav">
+      <div class="app-sidebar__nav-title">Contabilidad</div>
+      ${navLinks(contabilidadNav, activeNavId)}
     </div>
   `;
   }

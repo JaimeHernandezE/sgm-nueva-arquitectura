@@ -1,0 +1,106 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Obligaciones sin OC" id="oPBQwSiKuDKqCCgfx96x">
+    <mxGraphModel dx="1653" dy="749" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ZDxsupvns2338cd2XKSJ-1" parent="1" style="swimlane;childLayout=stackLayout;resizeParent=1;resizeParentMax=0;horizontal=1;startSize=30;horizontalStack=0;html=1;fillColor=#1e293b;fontColor=#ffffff;fontStyle=1" value="PROCESO DE REGISTRO DE OBLIGACIONES SIN ORDEN DE COMPRA (SERVICIOS BÁSICOS, ARRIENDOS Y OTROS)" vertex="1">
+          <mxGeometry height="700" width="1560" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-2" parent="ZDxsupvns2338cd2XKSJ-1" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;startSize=40;fillColor=#f8fafc;fontColor=#334155;fontStyle=1" value="Proveedor / Plataforma SII" vertex="1">
+          <mxGeometry height="120" width="1560" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-3" parent="ZDxsupvns2338cd2XKSJ-2" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#64748b;fontColor=#ffffff;fontStyle=1;strokeColor=#475569;" value="Inicio" vertex="1">
+          <mxGeometry height="40" width="40" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-4" parent="ZDxsupvns2338cd2XKSJ-2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3b82f6;fontColor=#ffffff;strokeColor=#2563eb;" value="Emisión de Documento Tributario (DTE)" vertex="1">
+          <mxGeometry height="60" width="130" x="150" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-5" parent="ZDxsupvns2338cd2XKSJ-1" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;startSize=40;fillColor=#ffffff;fontColor=#334155;fontStyle=1" value="Unidad Administradora (SGM)" vertex="1">
+          <mxGeometry height="180" width="1560" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-6" parent="ZDxsupvns2338cd2XKSJ-5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;fontColor=#ffffff;strokeColor=#059669;" value="Recepción y Análisis Técnico del Cobro" vertex="1">
+          <mxGeometry height="60" width="130" x="150" y="17" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-7" parent="ZDxsupvns2338cd2XKSJ-5" style="rhombus;whiteSpace=wrap;html=1;fillColor=#94a3b8;fontColor=#ffffff;strokeColor=#64748b;" value="¿Cobro y Servicio Correctos?" vertex="1">
+          <mxGeometry height="80" width="120" x="340" y="7" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-8" parent="ZDxsupvns2338cd2XKSJ-5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ef4444;fontColor=#ffffff;strokeColor=#dc2626;" value="Generar Rechazo de DTE en Portal SII / Notificar" vertex="1">
+          <mxGeometry height="60" width="140" x="330" y="113" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-9" parent="ZDxsupvns2338cd2XKSJ-5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;fontColor=#ffffff;strokeColor=#059669;" value="Emisión de V°B° / Acta de Conformidad de Servicio" vertex="1">
+          <mxGeometry height="60" width="140" x="540" y="17" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-10" parent="ZDxsupvns2338cd2XKSJ-1" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;startSize=40;fillColor=#f8fafc;fontColor=#334155;fontStyle=1" value="Presupuesto" vertex="1">
+          <mxGeometry height="180" width="1560" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-11" parent="ZDxsupvns2338cd2XKSJ-10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3b82f6;fontColor=#ffffff;strokeColor=#2563eb;" value="Imputación y Verificación de Saldo Presupuestario" vertex="1">
+          <mxGeometry height="60" width="140" x="540" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-12" parent="ZDxsupvns2338cd2XKSJ-10" style="rhombus;whiteSpace=wrap;html=1;fillColor=#94a3b8;fontColor=#ffffff;strokeColor=#64748b;" value="¿Presupuesto Disponible?" vertex="1">
+          <mxGeometry height="80" width="120" x="760" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-13" parent="ZDxsupvns2338cd2XKSJ-10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f59e0b;fontColor=#ffffff;strokeColor=#d97706;" value="Solicitar Modificación o Suplemento Presupuestario" vertex="1">
+          <mxGeometry height="50" width="130" x="754" y="122" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-14" parent="ZDxsupvns2338cd2XKSJ-10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;fontColor=#ffffff;strokeColor=#059669;" value="Validación y Envío de Expediente" vertex="1">
+          <mxGeometry height="60" width="130" x="960" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-15" parent="ZDxsupvns2338cd2XKSJ-1" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;startSize=40;fillColor=#ffffff;fontColor=#334155;fontStyle=1" value="Contabilidad y Tesorería" vertex="1">
+          <mxGeometry height="190" width="1560" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-16" parent="ZDxsupvns2338cd2XKSJ-15" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8b5cf6;fontColor=#ffffff;strokeColor=#7c3aed;" value="Recepción de Expediente (DTE + V°B° + Imputación)" vertex="1">
+          <mxGeometry height="60" width="140" x="955" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-17" parent="ZDxsupvns2338cd2XKSJ-15" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;fontColor=#ffffff;strokeColor=#059669;" value="Registro Contable de Obligación (Devengado)" vertex="1">
+          <mxGeometry height="60" width="140" x="1160" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-18" parent="ZDxsupvns2338cd2XKSJ-15" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;fontColor=#ffffff;strokeColor=#059669;" value="Emisión y Firma de Decreto de Pago" vertex="1">
+          <mxGeometry height="60" width="130" x="1360" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-19" parent="ZDxsupvns2338cd2XKSJ-15" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#64748b;fontColor=#ffffff;fontStyle=1;strokeColor=#475569;" value="Fin" vertex="1">
+          <mxGeometry height="40" width="40" x="1500" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-20" edge="1" parent="1" source="ZDxsupvns2338cd2XKSJ-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;" target="ZDxsupvns2338cd2XKSJ-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-21" edge="1" parent="1" source="ZDxsupvns2338cd2XKSJ-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="ZDxsupvns2338cd2XKSJ-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-22" edge="1" parent="1" source="ZDxsupvns2338cd2XKSJ-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;" target="ZDxsupvns2338cd2XKSJ-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-23" edge="1" parent="1" source="ZDxsupvns2338cd2XKSJ-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;fontStyle=1;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="ZDxsupvns2338cd2XKSJ-8" value="NO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-24" edge="1" parent="1" source="ZDxsupvns2338cd2XKSJ-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;fontStyle=1;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="ZDxsupvns2338cd2XKSJ-9" value="SI">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-25" edge="1" parent="1" source="ZDxsupvns2338cd2XKSJ-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="ZDxsupvns2338cd2XKSJ-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-26" edge="1" parent="1" source="ZDxsupvns2338cd2XKSJ-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;" target="ZDxsupvns2338cd2XKSJ-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-27" edge="1" parent="1" source="ZDxsupvns2338cd2XKSJ-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;fontStyle=1;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="ZDxsupvns2338cd2XKSJ-13" value="NO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-28" edge="1" parent="1" source="ZDxsupvns2338cd2XKSJ-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;fontStyle=1;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="ZDxsupvns2338cd2XKSJ-14" value="SI">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-29" edge="1" parent="1" source="ZDxsupvns2338cd2XKSJ-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="ZDxsupvns2338cd2XKSJ-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-30" edge="1" parent="1" source="ZDxsupvns2338cd2XKSJ-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;" target="ZDxsupvns2338cd2XKSJ-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-31" edge="1" parent="1" source="ZDxsupvns2338cd2XKSJ-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;" target="ZDxsupvns2338cd2XKSJ-18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZDxsupvns2338cd2XKSJ-32" edge="1" parent="1" source="ZDxsupvns2338cd2XKSJ-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;" target="ZDxsupvns2338cd2XKSJ-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,101 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Flujo de Preobligaciones" id="yStA47owEocVnNgMmF3h">
+    <mxGraphModel dx="1653" dy="749" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-1" parent="1" style="swimlane;childLayout=stackLayout;resizeParent=1;resizeParentMax=0;horizontal=1;startSize=30;horizontalStack=0;html=1;fillColor=#1e293b;fontColor=#ffffff;fontStyle=1" value="PROCESO DE REGISTRO DE PREOBLIGACIONES MUNICIPALES (COMPROMISO)" vertex="1">
+          <mxGeometry height="640" width="1480" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-2" parent="NgeAlMc-n3_Q_oKQrgjX-1" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;startSize=40;fillColor=#f8fafc;fontColor=#334155;fontStyle=1" value="Unidad Solicitante (SGM)" vertex="1">
+          <mxGeometry height="150" width="1480" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-3" parent="NgeAlMc-n3_Q_oKQrgjX-2" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#64748b;fontColor=#ffffff;fontStyle=1;strokeColor=#475569;" value="Inicio" vertex="1">
+          <mxGeometry height="40" width="40" x="60" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-4" parent="NgeAlMc-n3_Q_oKQrgjX-2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;fontColor=#ffffff;strokeColor=#059669;" value="Generar Requerimiento de Compra / Memorándum" vertex="1">
+          <mxGeometry height="60" width="140" x="150" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-5" parent="NgeAlMc-n3_Q_oKQrgjX-1" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;startSize=40;fillColor=#ffffff;fontColor=#334155;fontStyle=1" value="Presupuesto / SECPLAN" vertex="1">
+          <mxGeometry height="150" width="1480" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-6" parent="NgeAlMc-n3_Q_oKQrgjX-5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3b82f6;fontColor=#ffffff;strokeColor=#2563eb;" value="Evaluar Disponibilidad Presupuestaria" vertex="1">
+          <mxGeometry height="60" width="130" x="260" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-7" parent="NgeAlMc-n3_Q_oKQrgjX-5" style="rhombus;whiteSpace=wrap;html=1;fillColor=#94a3b8;fontColor=#ffffff;strokeColor=#64748b;" value="¿Existe Saldo Disponible?" vertex="1">
+          <mxGeometry height="80" width="120" x="430" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-8" parent="NgeAlMc-n3_Q_oKQrgjX-5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ef4444;fontColor=#ffffff;strokeColor=#dc2626;" value="Devolver a Unidad o Solicitar Modificación" vertex="1">
+          <mxGeometry height="50" width="120" x="680" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-9" parent="NgeAlMc-n3_Q_oKQrgjX-5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;fontColor=#ffffff;strokeColor=#059669;" value="Emitir Certificado de Disponibilidad (CDP)" vertex="1">
+          <mxGeometry height="50" width="120" x="680" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-10" parent="NgeAlMc-n3_Q_oKQrgjX-1" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;startSize=40;fillColor=#f8fafc;fontColor=#334155;fontStyle=1" value="DAF / Abastecimiento" vertex="1">
+          <mxGeometry height="150" width="1480" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-11" parent="NgeAlMc-n3_Q_oKQrgjX-10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3b82f6;fontColor=#ffffff;strokeColor=#2563eb;" value="Gestionar Proceso de Compra (Licitación / Trato Directo)" vertex="1">
+          <mxGeometry height="60" width="140" x="800" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-12" parent="NgeAlMc-n3_Q_oKQrgjX-10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;fontColor=#ffffff;strokeColor=#059669;" value="Aprobar Decreto de Adjudicación" vertex="1">
+          <mxGeometry height="60" width="120" x="970" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-13" parent="NgeAlMc-n3_Q_oKQrgjX-10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3b82f6;fontColor=#ffffff;strokeColor=#2563eb;" value="Emisión de Orden de Compra (Mercado Público)" vertex="1">
+          <mxGeometry height="60" width="130" x="1220" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-14" parent="NgeAlMc-n3_Q_oKQrgjX-1" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;startSize=40;fillColor=#ffffff;fontColor=#334155;fontStyle=1" value="Contabilidad y Finanzas" vertex="1">
+          <mxGeometry height="160" width="1480" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-15" parent="NgeAlMc-n3_Q_oKQrgjX-14" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8b5cf6;fontColor=#ffffff;strokeColor=#7c3aed;" value="Registro Contable de Preobligación (Compromiso Cierto)" vertex="1">
+          <mxGeometry height="60" width="140" x="1040" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-16" parent="NgeAlMc-n3_Q_oKQrgjX-14" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#64748b;fontColor=#ffffff;fontStyle=1;strokeColor=#475569;" value="Fin del Proceso de Compromiso" vertex="1">
+          <mxGeometry height="70" width="70" x="1380" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-17" edge="1" parent="1" source="NgeAlMc-n3_Q_oKQrgjX-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;" target="NgeAlMc-n3_Q_oKQrgjX-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-18" edge="1" parent="1" source="NgeAlMc-n3_Q_oKQrgjX-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" target="NgeAlMc-n3_Q_oKQrgjX-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-19" edge="1" parent="1" source="NgeAlMc-n3_Q_oKQrgjX-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;" target="NgeAlMc-n3_Q_oKQrgjX-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-20" edge="1" parent="1" source="NgeAlMc-n3_Q_oKQrgjX-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;fontStyle=1;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0;entryY=0.5;" target="NgeAlMc-n3_Q_oKQrgjX-8" value="NO">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="650" y="335" />
+              <mxPoint x="650" y="335" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-21" edge="1" parent="1" source="NgeAlMc-n3_Q_oKQrgjX-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;fontStyle=1;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;entryX=0;entryY=0.5;exitDx=0;exitDy=0;" target="NgeAlMc-n3_Q_oKQrgjX-9" value="SI">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="720" y="255" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-22" edge="1" parent="1" source="NgeAlMc-n3_Q_oKQrgjX-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;exitX=1;exitY=0.5;entryX=0.5;entryY=0;exitDx=0;exitDy=0;" target="NgeAlMc-n3_Q_oKQrgjX-11">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="910" y="270" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-23" edge="1" parent="1" source="NgeAlMc-n3_Q_oKQrgjX-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;" target="NgeAlMc-n3_Q_oKQrgjX-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-24" edge="1" parent="1" source="NgeAlMc-n3_Q_oKQrgjX-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" target="NgeAlMc-n3_Q_oKQrgjX-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-25" edge="1" parent="1" source="NgeAlMc-n3_Q_oKQrgjX-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;exitX=1;exitY=0.5;entryX=0.5;entryY=1;" target="NgeAlMc-n3_Q_oKQrgjX-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NgeAlMc-n3_Q_oKQrgjX-26" edge="1" parent="1" source="NgeAlMc-n3_Q_oKQrgjX-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="NgeAlMc-n3_Q_oKQrgjX-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

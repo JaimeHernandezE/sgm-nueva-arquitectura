@@ -28,6 +28,7 @@ Desde bandeja / sidebar Plataforma:
   → plataforma/shell/05-chats.html (listado conversaciones)
   → plataforma/subdere/* | municipal/*
   → modulos/adquisiciones/…
+  → modulos/contabilidad/ (Guía de demo, flujos contables)
   → campanita global (notifications-ui.js)
   → chat contextual FAB (chat-contextual-ui.js)
 ```
@@ -141,6 +142,7 @@ Etapa 4 (Recepción Conforme, transversal) tiene prototipo HTML para 4.1; el flu
 | stepId | Wireframe | Prototipo | Operaciones principales |
 |---|---|---|---|
 | 4.1 | `41-recepcion-conforme.md` | `procesos-transversales/41-recepcion-conforme.html` | `createGoodsReceipt`, `confirmGoodsReceipt` |
+| 4.4 | — | `modulos/contabilidad/` (módulo Contabilidad) | `recordAccrual` |
 
 Ficha transversal: [`sgm-docs/modulos/adquisiciones/procesos-transversales/4-recepcion-conforme.md`](../sgm-docs/modulos/adquisiciones/procesos-transversales/4-recepcion-conforme.md)
 
@@ -149,12 +151,22 @@ Ficha transversal: [`sgm-docs/modulos/adquisiciones/procesos-transversales/4-rec
 | stepId | Wireframe | Prototipo | Operaciones principales |
 |---|---|---|---|
 | 5.1 | `51-cruce-tres-vias.md` | `procesos-transversales/51-cruce-tres-vias.html` | `performThreeWayMatch`, `getInvoiceForMatch` |
+| 5.2 | — | `modulos/contabilidad/?expediente=…&origen=5.2` (botón en 5.1) | `registerAccrual` |
 
 Ficha transversal: [`sgm-docs/modulos/adquisiciones/procesos-transversales/5-pago.md`](../sgm-docs/modulos/adquisiciones/procesos-transversales/5-pago.md)
 
 Shell expediente: [`modulos/adquisiciones/00-expediente/index.html`](./modulos/adquisiciones/00-expediente/index.html)
 
 Listado: [`modulos/adquisiciones/01-listado-expedientes.html`](./modulos/adquisiciones/01-listado-expedientes.html)
+
+## Módulo Contabilidad (prototipo)
+
+| Pantalla | Prototipo | Fuente |
+|---|---|---|
+| Guía de demo, bandeja por rol, mapa de flujos, expedientes, tesorería, conciliación, ejecución presupuestaria, libro diario, inventario, configuración de cuentas, supuestos | `modulos/contabilidad/index.html` (rutas por hash; lógica en `contabilidad.js`) | Diagramas [`sgm-docs/modulos/contabilidad/diagramas/`](../sgm-docs/modulos/contabilidad/diagramas/) y análisis [`prototipo/analisis-flujos.md`](../sgm-docs/modulos/contabilidad/prototipo/analisis-flujos.md) |
+
+- Aún sin wireframes ni fichas de proceso propias: los supuestos S1–S13 del análisis reemplazan los vacíos de los diagramas hasta la fase F3 del plan de trabajo de Contabilidad.
+- Depende de `expedientes-demo.js` y `form-presets.js` (datos de la solicitud de devengado) y de `siteUrl()` para los enlaces a Adquisiciones.
 
 ## Plataforma — consolas del core
 
