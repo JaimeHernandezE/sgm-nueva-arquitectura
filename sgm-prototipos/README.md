@@ -112,3 +112,39 @@ Cada fila del listado abre un expediente con **las 5 etapas** parametrizadas por
 ## Convención de numeración
 
 `NN` = etapa × 10 + sub-paso (ej. `11` → sub-paso 1.1 Creación SOLPED).
+
+## Módulo Contabilidad
+
+Módulo construido desde los diagramas draw.io de flujos contables (devengado, pagado, ingresos, tesorería, conciliación, factoring), habilitado dentro del mismo shell. Estado en `localStorage` (botón "Restablecer datos de ejemplo" en Configuración). Entrada directa: `modulos/contabilidad/index.html`. Análisis, supuestos y decisiones en [`docs/contabilidad-flujos-analisis.md`](./docs/contabilidad-flujos-analisis.md).
+
+### Cómo se conectan Adquisiciones y Contabilidad
+
+| Punto | Qué pasa |
+|---|---|
+| Menú lateral | Contabilidad aparece como módulo habilitado; su navegación (Mi bandeja, Mapa de flujos, Desde Adquisiciones…) vive en el mismo sidebar. |
+| 5.1 Cruce de 3 vías | Tras "Ejecutar match" aparece **Registrar devengado en Contabilidad (5.2)**, que abre Contabilidad con la solicitud precargada. |
+| Deep link | `modulos/contabilidad/index.html?expediente=ADQ-2026-00123&origen=5.2` (también `4.4`). Si ese expediente ya tiene solicitud, abre la existente: una sola por folio. |
+| Datos compartidos | Contabilidad lee `shared/expedientes-demo.js` y `shared/form-presets.js` (glosa, modalidad, monto, OC, proveedor) y lista "Todavía en Adquisiciones" los expedientes en curso antes de 4.4. |
+| Enlaces de vuelta | Documentos, recorrido y la tabla "Qué quedó en Adquisiciones" (Mapa de flujos) enlazan a las pantallas de Adquisiciones del mismo sitio. |
+| Manifiesto de pasos | `shared/steps-manifest.*` incluye 4.4, 5.2, 5.3 y 5.4 apuntando a Contabilidad. |
+
+Rutas internas de Contabilidad: `#bandeja`, `#flujos`, `#oc`, `#sinoc`, `#ing`, `#tes`, `#conc`, `#pres`, `#diario`, `#inv`, `#cfg`, `#sup`, `#exp=EXP-2026-0001`.
+
+### Cambios sobre Adquisiciones y shared
+
+Todos marcados con el comentario `[Integración SGM]`:
+
+- `shared/app-shell.js`: los enlaces conservan `.html` (y `carpeta/` → `carpeta/index.html`) para funcionar en hosting estático sin clean URLs; nav de Contabilidad en el sidebar.
+- `shared/form-shell.js`, `shared/expedientes-demo.js`, `procesos-transversales/12-visto-bueno-jefatura.html`: mismos ajustes de `.html`.
+- `shared/modules-registry.js`: módulo Contabilidad habilitado + `contabilidadNav`.
+- `shared/auth-demo.js`: sesión en memoria si `sessionStorage` no está disponible; sin sesión abre una sesión demo en vez de redirigir.
+- `shared/steps-manifest.js/.json`: pasos 4.4, 5.2, 5.3, 5.4.
+- `procesos-transversales/51-cruce-tres-vias.html`: botón hacia Contabilidad (5.2).
+
+### Pendientes para alinear con Adquisiciones
+
+1. El devengado se pide dos veces (4.4 `recordAccrual` y 5.2 `registerAccrual`): debería ser una sola solicitud.
+2. `registerInventoryEntry` (4.3) no tiene dueño (X-44); Contabilidad propone el alta de activos en el devengado (MC-3).
+3. 5.3/5.4 no contemplan facturas cedidas (factoring): el decreto y el pago deben ir al cesionario (MC-7).
+
+Detalle en `docs/contabilidad-flujos-analisis.md`.
