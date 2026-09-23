@@ -76,7 +76,7 @@
   </div>
 
   <script type="module">
-    import { initAppShell } from '../../../shared/app-shell.js';
+    import { initAppShell, siteUrl } from '../../../shared/app-shell.js';
     import { getExpedienteId, renderBreadcrumb, renderOriginBanner, demoAction, demoValidation, relativeFormHref, initStepSimulation } from '../../../shared/form-shell.js';
 
     initAppShell({ activeModule: 'adquisiciones', activeNav: 'expedientes' });
@@ -128,6 +128,9 @@
         document.getElementById('header-badge').textContent = 'Adjudicada';
         nextStepText.textContent = 'Continuar a 3.11 (Toma de Razón de la adjudicación, si aplica umbral) o directo a 3.12/3.13.';
         nextStepLink.href = relativeFormHref('311-toma-razon-adjudicacion.html');
+        // Con el decreto de adjudicación tramitado, Contabilidad registra la preobligación (compromiso cierto)
+        // antes de emitir la OC (flujo "Registro Preobligacion", 23-09-2026). Propuesta para acordar con Adquisiciones.
+        resultBanner.innerHTML += `<br /><a class="btn btn--primary" style="margin-top:8px;" href="${siteUrl(`modulos/contabilidad/index.html?expediente=${encodeURIComponent(expedienteId)}&origen=3.10`)}">Registrar preobligación en Contabilidad</a>`;
       } else if (type === 'desertion') {
         demoValidation('issueAwardResolution');
         resultBanner.className = 'banner';

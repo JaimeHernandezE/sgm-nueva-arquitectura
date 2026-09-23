@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Módulo Contabilidad — SGM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/shell.css" />
+  <link rel="stylesheet" href="contabilidad.css" />
+</head>
+<body class="conta-body">
+  <!-- Módulo Contabilidad dentro del shell común (menú lateral, campana, chat) -->
+  <div class="app-layout app-layout--wide">
+    <main class="app-main">
+      <div class="conta" id="conta">
+        <div class="conta-toolbar">
+          <div class="brand"><b>Contabilidad</b> <span>Municipalidad Alpha · Ejercicio 2026</span> <span class="proto">Prototipo</span></div>
+          <div class="rolebox"><label for="roleSel">Actuando como</label><select id="roleSel"></select></div>
+        </div>
+        <div id="main"></div>
+        <div id="toast" class="toast" hidden></div>
+      </div>
+    </main>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Módulos SGM"></aside>
+  </div>
+  <script src="contabilidad.js"></script>
+  <script type="module">
+    import { initAppShell, siteUrl } from '../../shared/app-shell.js';
+    import { expedientesDemo } from '../../shared/expedientes-demo.js';
+    import { formPresets } from '../../shared/form-presets.js';
+    initAppShell({ activeModule: 'contabilidad', activeNav: location.hash.slice(1).split('=')[0] || 'guia' });
+    window.contaBoot({ expedientes: expedientesDemo, presets: formPresets, siteUrl });
+  </script>
+</body>
+</html>

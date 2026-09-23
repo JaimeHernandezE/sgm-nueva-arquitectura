@@ -14,7 +14,11 @@
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md",
       "prototypeHtml": "modulos/adquisiciones/procesos-transversales/11-creacion-solped.html",
       "formPath": "../procesos-transversales/11-creacion-solped.html",
-      "operations": ["createPurchaseRequest", "submitPurchaseRequest", "previewBudgetAvailability"],
+      "operations": [
+        "createPurchaseRequest",
+        "submitPurchaseRequest",
+        "previewBudgetAvailability"
+      ],
       "origin": null
     },
     {
@@ -25,7 +29,11 @@
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md",
       "prototypeHtml": "modulos/adquisiciones/procesos-transversales/12-visto-bueno-jefatura.html",
       "formPath": "../procesos-transversales/12-visto-bueno-jefatura.html",
-      "operations": ["approvePurchaseRequest", "rejectPurchaseRequest", "previewBudgetAvailability"],
+      "operations": [
+        "approvePurchaseRequest",
+        "rejectPurchaseRequest",
+        "previewBudgetAvailability"
+      ],
       "origin": null
     },
     {
@@ -36,8 +44,14 @@
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md",
       "prototypeHtml": "modulos/adquisiciones/procesos-transversales/13-verificacion-disponibilidad.html",
       "formPath": "../procesos-transversales/13-verificacion-disponibilidad.html",
-      "operations": ["verifyBudgetAvailability"],
-      "origin": { "kind": "module", "label": "Presupuestos", "mode": "dependencia" }
+      "operations": [
+        "verifyBudgetAvailability"
+      ],
+      "origin": {
+        "kind": "module",
+        "label": "Presupuestos",
+        "mode": "dependencia"
+      }
     },
     {
       "stepId": "1.4",
@@ -47,8 +61,14 @@
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md",
       "prototypeHtml": "modulos/adquisiciones/procesos-transversales/16-solicitar-financiamiento.html",
       "formPath": "../procesos-transversales/16-solicitar-financiamiento.html",
-      "operations": ["requestBudgetFinancing"],
-      "origin": { "kind": "module", "label": "Presupuestos", "mode": "observado" }
+      "operations": [
+        "requestBudgetFinancing"
+      ],
+      "origin": {
+        "kind": "module",
+        "label": "Presupuestos",
+        "mode": "observado"
+      }
     },
     {
       "stepId": "1.5",
@@ -58,8 +78,15 @@
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md",
       "prototypeHtml": "modulos/adquisiciones/procesos-transversales/14-emision-cdp.html",
       "formPath": "../procesos-transversales/14-emision-cdp.html",
-      "operations": ["issueBudgetAvailabilityCertificate", "registerScannedBudgetAvailabilityCertificate"],
-      "origin": { "kind": "module", "label": "Presupuestos", "mode": "dependencia" }
+      "operations": [
+        "issueBudgetAvailabilityCertificate",
+        "registerScannedBudgetAvailabilityCertificate"
+      ],
+      "origin": {
+        "kind": "module",
+        "label": "Presupuestos",
+        "mode": "dependencia"
+      }
     },
     {
       "stepId": "1.6",
@@ -69,8 +96,14 @@
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/1-solped.md",
       "prototypeHtml": "modulos/adquisiciones/procesos-transversales/15-preobligacion.html",
       "formPath": "../procesos-transversales/15-preobligacion.html",
-      "operations": ["createBudgetPreCommitment"],
-      "origin": { "kind": "module", "label": "Presupuestos", "mode": "dependencia" }
+      "operations": [
+        "createBudgetPreCommitment"
+      ],
+      "origin": {
+        "kind": "module",
+        "label": "Presupuestos",
+        "mode": "dependencia"
+      }
     },
     {
       "stepId": "2.1",
@@ -80,7 +113,9 @@
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md",
       "prototypeHtml": "modulos/adquisiciones/procesos-transversales/21-ratificacion-modalidad.html",
       "formPath": "../procesos-transversales/21-ratificacion-modalidad.html",
-      "operations": ["confirmProcurementModality"],
+      "operations": [
+        "confirmProcurementModality"
+      ],
       "origin": null
     },
     {
@@ -91,7 +126,10 @@
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md",
       "prototypeHtml": "modulos/adquisiciones/procesos-transversales/22-aprobacion-jefatura.html",
       "formPath": "../procesos-transversales/22-aprobacion-jefatura.html",
-      "operations": ["approveModalityDecision", "rejectModalityDecision"],
+      "operations": [
+        "approveModalityDecision",
+        "rejectModalityDecision"
+      ],
       "origin": null
     },
     {
@@ -102,8 +140,14 @@
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/2-modalidad-compra.md",
       "prototypeHtml": "modulos/adquisiciones/procesos-transversales/23-vinculacion-mp.html",
       "formPath": "../procesos-transversales/23-vinculacion-mp.html",
-      "operations": ["linkMpProcess"],
-      "origin": { "kind": "external", "label": "Mercado Público", "mode": "solo lectura" }
+      "operations": [
+        "linkMpProcess"
+      ],
+      "origin": {
+        "kind": "external",
+        "label": "Mercado Público",
+        "mode": "solo lectura"
+      }
     },
     {
       "stepId": "4.1",
@@ -113,7 +157,10 @@
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/4-recepcion-conforme.md",
       "prototypeHtml": "modulos/adquisiciones/procesos-transversales/41-recepcion-conforme.html",
       "formPath": "../procesos-transversales/41-recepcion-conforme.html",
-      "operations": ["createGoodsReceipt", "confirmGoodsReceipt"],
+      "operations": [
+        "createGoodsReceipt",
+        "confirmGoodsReceipt"
+      ],
       "origin": null
     },
     {
@@ -124,8 +171,71 @@
       "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/5-pago.md",
       "prototypeHtml": "modulos/adquisiciones/procesos-transversales/51-cruce-tres-vias.html",
       "formPath": "../procesos-transversales/51-cruce-tres-vias.html",
-      "operations": ["performThreeWayMatch", "getInvoiceForMatch"],
-      "origin": { "kind": "module", "label": "Contabilidad", "mode": "dependencia" }
+      "operations": [
+        "performThreeWayMatch",
+        "getInvoiceForMatch"
+      ],
+      "origin": {
+        "kind": "module",
+        "label": "Contabilidad",
+        "mode": "dependencia"
+      }
+    },
+    {
+      "stepId": "4.4",
+      "stageName": "Recepción Conforme",
+      "stepName": "Devengado",
+      "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/4-recepcion-conforme.md",
+      "prototypeHtml": "modulos/contabilidad/index.html",
+      "operations": [
+        "recordAccrual"
+      ],
+      "origin": {
+        "kind": "module",
+        "label": "Contabilidad",
+        "mode": "dependencia"
+      }
+    },
+    {
+      "stepId": "5.2",
+      "stageName": "Pago",
+      "stepName": "Creación del egreso devengado (borrador)",
+      "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/5-pago.md",
+      "prototypeHtml": "modulos/contabilidad/index.html",
+      "operations": [
+        "registerAccrual"
+      ],
+      "origin": {
+        "kind": "module",
+        "label": "Contabilidad",
+        "mode": "dependencia"
+      }
+    },
+    {
+      "stepId": "5.3",
+      "stageName": "Pago",
+      "stepName": "Generación de Decreto de Pago",
+      "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/5-pago.md",
+      "prototypeHtml": "modulos/contabilidad/index.html",
+      "operations": [
+        "issuePaymentDecree"
+      ],
+      "origin": null
+    },
+    {
+      "stepId": "5.4",
+      "stageName": "Pago",
+      "stepName": "Ejecución del pago",
+      "processFicha": "sgm-docs/modulos/adquisiciones/procesos-transversales/5-pago.md",
+      "prototypeHtml": "modulos/contabilidad/index.html",
+      "operations": [
+        "executePayment"
+      ],
+      "origin": {
+        "kind": "module",
+        "label": "Tesorería",
+        "mode": "observado"
+      }
     }
   ]
 }

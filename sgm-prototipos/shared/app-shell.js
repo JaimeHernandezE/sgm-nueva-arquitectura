@@ -1,6 +1,7 @@
 import {
   modules,
   adquisicionesNav,
+  contabilidadNav,
   plataformaHubNav,
   plataformaSubdereNav,
   plataformaMunicipalNav,
@@ -24,22 +25,21 @@ export function getSiteBase() {
 }
 
 /**
- * Quita .html / index.html para que servidores con cleanUrls (p. ej. `npx serve`)
- * no redirijan perdiendo el query string (?expediente=…).
+ * [Integración SGM] Se conservan las extensiones .html y los directorios se
+ * resuelven a …/index.html, para que el prototipo funcione en cualquier hosting
+ * estático (GitHub Pages, artefacto de Claude, `npx serve` con serve.json
+ * cleanUrls=false). Antes se quitaba .html para convivir con cleanUrls.
  */
 function normalizePublicPath(relativePath) {
   let path = relativePath.replace(/^\//, '');
   let query = '';
-  const q = path.indexOf('?');
+  const q = path.search(/[?#]/);
   if (q >= 0) {
     query = path.slice(q);
     path = path.slice(0, q);
   }
-  if (path.endsWith('/index.html')) {
-    path = path.slice(0, -'index.html'.length);
-  } else if (path.endsWith('.html')) {
-    path = path.slice(0, -'.html'.length);
-  }
+  if (path === '' ) path = 'index.html';
+  else if (path.endsWith('/')) path += 'index.html';
   return { path, query };
 }
 
@@ -77,6 +77,15 @@ function renderModuleNav(activeModuleId, activeNavId, consoleId) {
     <div class="app-sidebar__nav">
       <div class="app-sidebar__nav-title">Adquisiciones</div>
       ${navLinks(adquisicionesNav, activeNavId)}
+    </div>
+  `;
+  }
+
+  if (activeModuleId === 'contabilidad') {
+    return `
+    <div class="app-sidebar__nav" id="contabilidad-nav">
+      <div class="app-sidebar__nav-title">Contabilidad</div>
+      ${navLinks(contabilidadNav, activeNavId)}
     </div>
   `;
   }
