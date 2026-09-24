@@ -380,8 +380,8 @@ export function getExpedienteProfile(id) {
 }
 
 export function getExpedienteDetailUrl(expedienteId) {
-  // Trailing slash (dir + index.html). Evitar …/index.html?…: cleanUrls pierde el query.
-  return `modulos/adquisiciones/00-expediente/?expediente=${encodeURIComponent(expedienteId)}`;
+  // [Integración SGM] index.html explícito (hosting estático sin cleanUrls).
+  return `modulos/adquisiciones/00-expediente/index.html?expediente=${encodeURIComponent(expedienteId)}`;
 }
 
 export function listDepartmentsFromDemo() {

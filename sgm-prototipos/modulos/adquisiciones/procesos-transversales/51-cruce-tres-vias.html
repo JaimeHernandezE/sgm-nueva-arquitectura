@@ -113,8 +113,8 @@
       }
       const panel = document.getElementById('match-result');
       panel.innerHTML = '<strong>Resultado del cruce</strong><br />OC vs Recepción vs Factura: <strong>COINCIDE</strong><br />Diferencia detectada: $ 0';
-      // Con el match conforme, el devengado (5.2) se registra en el módulo Contabilidad.
-      panel.innerHTML += `<br /><a class="btn btn--primary" style="margin-top:8px;" href="${siteUrl(`modulos/contabilidad/index.html?expediente=${encodeURIComponent(expedienteId)}&origen=5.2`)}">Registrar devengado en Contabilidad (5.2)</a>`;
+      // [Integración SGM] Con el match conforme, el CED (5.2) se crea en Contabilidad.
+      panel.innerHTML += `<br /><a class="btn btn--primary" style="margin-top:8px;" href="${siteUrl(`modulos/contabilidad/index.html?expediente=${encodeURIComponent(expedienteId)}&origen=5.2`)}">Crear egreso devengado (5.2)</a>`;
       demoValidation('performThreeWayMatch');
     });
   </script>

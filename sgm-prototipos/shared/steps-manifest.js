@@ -128,7 +128,7 @@ export default {
       operations: ['performThreeWayMatch', 'getInvoiceForMatch'],
       origin: { kind: 'module', label: 'Contabilidad', mode: 'dependencia' },
     },
-    // Sub-pasos resueltos por el módulo Contabilidad (prototipo de flujos contables).
+    // [Integración SGM] Sub-pasos resueltos por el módulo Contabilidad (prototipo de flujos).
     {
       stepId: '4.4',
       stageName: 'Recepción Conforme',
@@ -141,11 +141,29 @@ export default {
     {
       stepId: '5.2',
       stageName: 'Pago',
-      stepName: 'Registro de Devengado',
+      stepName: 'Creación del egreso devengado (borrador)',
       processFicha: 'sgm-docs/modulos/adquisiciones/procesos-transversales/5-pago.md',
       prototypeHtml: 'modulos/contabilidad/index.html',
       operations: ['registerAccrual'],
       origin: { kind: 'module', label: 'Contabilidad', mode: 'dependencia' },
+    },
+    {
+      stepId: '5.3',
+      stageName: 'Pago',
+      stepName: 'Generación de Decreto de Pago',
+      processFicha: 'sgm-docs/modulos/adquisiciones/procesos-transversales/5-pago.md',
+      prototypeHtml: 'modulos/contabilidad/index.html',
+      operations: ['issuePaymentDecree'],
+      origin: null,
+    },
+    {
+      stepId: '5.4',
+      stageName: 'Pago',
+      stepName: 'Ejecución del pago',
+      processFicha: 'sgm-docs/modulos/adquisiciones/procesos-transversales/5-pago.md',
+      prototypeHtml: 'modulos/contabilidad/index.html',
+      operations: ['executePayment'],
+      origin: { kind: 'module', label: 'Tesorería', mode: 'observado' },
     },
   ],
 };

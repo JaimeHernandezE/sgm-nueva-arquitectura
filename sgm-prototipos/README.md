@@ -110,15 +110,34 @@ Local: `npx serve sgm-prototipos` → `/` (landing) → ClaveÚnica → home →
 
 Cada fila del listado abre un expediente con **las 5 etapas** parametrizadas por modalidad vía `?expediente=`. La **etapa 3** es específica de cada modalidad y está enlazada desde el shell. Los formularios transversales reutilizan el mismo HTML; los valores visibles vienen de `form-presets.js`.
 
-## Módulo Contabilidad
-
-Prototipo de los flujos contables levantados en `sgm-docs/modulos/contabilidad/diagramas/`: devengado de las compras que llegan desde Adquisiciones, gasto sin OC, ingresos, factoring y conciliación bancaria.
-
-- Entrada: `modulos/contabilidad/` (abre en **Guía de demo**, con 12 casos listos y botón para reiniciar los datos).
-- Pantalla única con rutas por hash (`#guia`, `#bandeja`, `#flujos`, `#exp=…`); estado en `localStorage` (clave `sgm-conta-proto-v5`).
-- Integración: 5.1 Cruce de 3 vías → "Registrar devengado en Contabilidad (5.2)" → `modulos/contabilidad/?expediente=ADQ-…&origen=5.2`. Lee `expedientes-demo.js` y `form-presets.js`.
-- Análisis y guion: `sgm-docs/modulos/contabilidad/prototipo/`.
-
 ## Convención de numeración
 
 `NN` = etapa × 10 + sub-paso (ej. `11` → sub-paso 1.1 Creación SOLPED).
+
+## Módulo Contabilidad
+
+Prototipo de los flujos contables (devengado, pagado, ingresos, tesorería, conciliación, factoring, preobligación y cierres), habilitado en el mismo shell. Estado en `localStorage` (`sgm-conta-proto-v6`; botón «Restablecer datos de ejemplo» en Configuración). Entrada: `modulos/contabilidad/index.html`.
+
+- Diagramas: `sgm-docs/modulos/contabilidad/diagramas/`
+- Análisis v6, supuestos y decisiones: [`docs/contabilidad-flujos-analisis.md`](./docs/contabilidad-flujos-analisis.md)
+- Análisis y guion previos (v5): `sgm-docs/modulos/contabilidad/prototipo/`
+
+### Cómo se conectan Adquisiciones y Contabilidad
+
+| Punto | Qué pasa |
+|---|---|
+| Menú lateral | Contabilidad aparece como módulo habilitado; su navegación vive en el mismo sidebar. |
+| 3.10 Adjudicación | Tras adjudicar aparece **Registrar preobligación en Contabilidad**. |
+| 5.1 Cruce de 3 vías | Tras «Ejecutar match» aparece **Crear egreso devengado (5.2)**, que abre Contabilidad con la solicitud precargada. |
+| Deep link | `modulos/contabilidad/index.html?expediente=ADQ-2026-00123&origen=5.2` (también `3.10` y `4.4`). Si ese expediente ya tiene solicitud, abre la existente: una sola por folio. |
+| Datos compartidos | Contabilidad lee `shared/expedientes-demo.js` y `shared/form-presets.js` (glosa, modalidad, monto, OC, proveedor) y lista «Todavía en Adquisiciones» los expedientes en curso antes de 4.4. |
+| Enlaces de vuelta | Documentos, recorrido y la tabla «Qué quedó en Adquisiciones» (Mapa de flujos) enlazan a las pantallas de Adquisiciones del mismo sitio. |
+| Manifiesto de pasos | `shared/steps-manifest.*` incluye 4.4, 5.2, 5.3 y 5.4 apuntando a Contabilidad. |
+
+Rutas internas: `#guia`, `#bandeja`, `#flujos`, `#preob`, `#oc`, `#sinoc`, `#ing`, `#caja`, `#tes`, `#conc`, `#pres`, `#diario`, `#inv`, `#cierres`, `#cfg`, `#sup`, `#exp=…`.
+
+### Pendientes para alinear con Adquisiciones
+
+1. El devengado se pide dos veces (4.4 `recordAccrual` y 5.2 `registerAccrual`): debería ser una sola solicitud.
+2. `registerInventoryEntry` (4.3) no tiene dueño (X-44); Contabilidad propone el alta de activos en el devengado (MC-3).
+3. 5.3/5.4 no contemplan facturas cedidas (factoring): el decreto y el pago deben ir al cesionario (MC-7).

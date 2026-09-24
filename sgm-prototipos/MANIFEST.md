@@ -41,7 +41,7 @@ Desde bandeja / sidebar Plataforma:
 - Datos demo por expediente: [`shared/demo-data/`](./shared/demo-data/) (`getStages(expedienteId)`).
 - Datos demo core: [`shared/demo-data/plataforma.js`](./shared/demo-data/plataforma.js).
 - Presets de formularios: [`shared/form-presets.js`](./shared/form-presets.js) + [`shared/form-bootstrap.js`](./shared/form-bootstrap.js).
-- Manifiesto activo del shell: [`shared/steps-manifest.json`](./shared/steps-manifest.json) — pasos **transversales** (1.1–1.6, 2.1–2.3, 4.1, 5.1).
+- Manifiesto activo del shell: [`shared/steps-manifest.json`](./shared/steps-manifest.json) — pasos **transversales** (1.1–1.6, 2.1–2.3, 4.1, 4.4, 5.1–5.4).
 - Etapa 3 por modalidad: `steps-manifest-compra-agil.js`, `steps-manifest-convenio-marco.js`, `steps-manifest-licitacion-publica.js`, `steps-manifest-trato-directo.js` (fusionados en `getStepFormUrl`).
 - **Panel de simulación** ([`shared/roles.js`](./shared/roles.js) + `initStepSimulation` en `form-shell.js`): dos selects por expediente — «Ver como rol» (11 códigos `adq.*` del catálogo P-24, incl. `adq.solicitante` / `adq.solicitante_daf`) y «Situar en sub-paso». Sin selección, la vista se mantiene en su estado actual. Con rol: la acción del paso activo solo queda habilitada si el rol coincide con el responsable (`responsible.role` → `ROLE_TEXT_TO_CODES`); si no, se ve **Pendiente**. Con sub-paso: los anteriores se asumen aprobados y los siguientes quedan pendientes. La selección viaja por query string (`?rol=…&paso=…`) entre el expediente y las pantallas de sub-paso (donde el select de paso navega a la pantalla elegida).
 
@@ -151,7 +151,9 @@ Ficha transversal: [`sgm-docs/modulos/adquisiciones/procesos-transversales/4-rec
 | stepId | Wireframe | Prototipo | Operaciones principales |
 |---|---|---|---|
 | 5.1 | `51-cruce-tres-vias.md` | `procesos-transversales/51-cruce-tres-vias.html` | `performThreeWayMatch`, `getInvoiceForMatch` |
-| 5.2 | — | `modulos/contabilidad/?expediente=…&origen=5.2` (botón en 5.1) | `registerAccrual` |
+| 5.2 | — | `modulos/contabilidad/index.html?expediente=…&origen=5.2` (botón en 5.1) | `registerAccrual` |
+| 5.3 | — | `modulos/contabilidad/index.html` | `issuePaymentDecree` |
+| 5.4 | — | `modulos/contabilidad/index.html` | `executePayment` |
 
 Ficha transversal: [`sgm-docs/modulos/adquisiciones/procesos-transversales/5-pago.md`](../sgm-docs/modulos/adquisiciones/procesos-transversales/5-pago.md)
 
@@ -163,9 +165,9 @@ Listado: [`modulos/adquisiciones/01-listado-expedientes.html`](./modulos/adquisi
 
 | Pantalla | Prototipo | Fuente |
 |---|---|---|
-| Guía de demo, bandeja por rol, mapa de flujos, expedientes, tesorería, conciliación, ejecución presupuestaria, libro diario, inventario, configuración de cuentas, supuestos | `modulos/contabilidad/index.html` (rutas por hash; lógica en `contabilidad.js`) | Diagramas [`sgm-docs/modulos/contabilidad/diagramas/`](../sgm-docs/modulos/contabilidad/diagramas/) y análisis [`prototipo/analisis-flujos.md`](../sgm-docs/modulos/contabilidad/prototipo/analisis-flujos.md) |
+| Guía de demo, bandeja, mapa de flujos, preobligaciones, devengado desde Adquisiciones, servicios sin OC, ingresos, caja, tesorería, conciliación, ejecución, diario, inventario y bajas, cierres, configuración, supuestos | `modulos/contabilidad/index.html` (rutas por hash; lógica v6 en `contabilidad.js`) | Diagramas [`sgm-docs/modulos/contabilidad/diagramas/`](../sgm-docs/modulos/contabilidad/diagramas/), análisis v6 [`docs/contabilidad-flujos-analisis.md`](./docs/contabilidad-flujos-analisis.md) y análisis/guion v5 [`prototipo/analisis-flujos.md`](../sgm-docs/modulos/contabilidad/prototipo/analisis-flujos.md) |
 
-- Aún sin wireframes ni fichas de proceso propias: los supuestos S1–S13 del análisis reemplazan los vacíos de los diagramas hasta la fase F3 del plan de trabajo de Contabilidad.
+- Aún sin wireframes ni fichas de proceso propias: los supuestos S1–S18 del análisis v6 reemplazan los vacíos de los diagramas hasta la fase F3 del plan de trabajo de Contabilidad.
 - Depende de `expedientes-demo.js` y `form-presets.js` (datos de la solicitud de devengado) y de `siteUrl()` para los enlaces a Adquisiciones.
 
 ## Plataforma — consolas del core

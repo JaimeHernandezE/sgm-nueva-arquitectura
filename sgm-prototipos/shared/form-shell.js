@@ -37,10 +37,10 @@ export function getExpedienteUrl(expedienteId) {
 
 /**
  * Href relativo a otra pantalla del prototipo (mismo árbol).
- * Sin extensión .html: evita que cleanUrls de `serve` pierda ?expediente=.
+ * [Integración SGM] Conserva la extensión .html (hosting estático sin cleanUrls).
  */
 export function relativeFormHref(htmlPath, expedienteId = getExpedienteIdFromUrl()) {
-  const path = htmlPath.replace(/\.html$/i, '').replace(/\/index$/i, '/');
+  const path = htmlPath.endsWith('/') ? `${htmlPath}index.html` : htmlPath;
   return withSimulationParams(`${path}?expediente=${encodeURIComponent(expedienteId)}`);
 }
 
