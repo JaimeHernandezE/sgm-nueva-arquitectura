@@ -8,6 +8,8 @@ Documento de **gobierno operativo** del repo `nueva-arquitectura`. Define cómo 
 
 **Regla Cursor orquestadora:** [`.cursor/rules/sgm-gobierno-repo.mdc`](../../../.cursor/rules/sgm-gobierno-repo.mdc) (`alwaysApply: true`).
 
+**Flujo git (ramas, Pull Requests, espejo GitLab):** [`CONTRIBUTING.md`](../../../CONTRIBUTING.md). Ese documento cubre cómo llega un cambio a `main`; este, qué debe quedar coherente.
+
 ---
 
 ## 1. Mapa de fuentes de verdad
